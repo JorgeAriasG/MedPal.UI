@@ -1,0 +1,17 @@
+.task {
+  display: flex;
+  margin-bottom: 20px;
+}
+
+.task p {
+  padding: 0;
+  margin: 0;
+}
+
+.set-alarm {
+  background-color: #007bff;
+  color: #ffffff;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+}

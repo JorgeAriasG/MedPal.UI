@@ -1,0 +1,15 @@
+/* styles.css */
+.calendar {
+  flex: 1;
+  background-color: #ffffff;
+  border-radius: 1em;
+  padding: 20px;
+}
+
+.tasks {
+  flex: 2;
+  background-color: #97E7E1;
+  border-radius: 1em;
+  padding: 20px;
+}
+
