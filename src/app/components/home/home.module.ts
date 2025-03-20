@@ -20,7 +20,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { MatDialogModule } from '@angular/material/dialog';
 import { NewPatientComponent } from '../patients/new-patient/new-patient.component';
 import { AddClinicComponent } from '../clinics/add-clinic/add-clinic.component';
@@ -28,55 +28,48 @@ import { QuickactionMenuComponent } from '../quickaction-menu/quickaction-menu.c
 import { AppointmentComponent } from '../appointments/appointment/appointment.component';
 import { SharedModule } from 'src/app/shared/shared.module';
 
-@NgModule({
-  declarations: [
-    HomeComponent,
-    NewAppointmentComponent,
-    PatientsComponent,
-    ClinicListComponent,
-    NewPatientComponent,
-    AddClinicComponent,
-    QuickactionMenuComponent,
-    AppointmentComponent
-  ],
-  imports: [
-    CommonModule,
-    SharedModule,
-    MatCardModule,
-    MatCheckboxModule,
-    MatSidenavModule,
-    MatListModule,
-    MatIconModule,
-    MatToolbarModule,
-    FontAwesomeModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    MatTableModule,
-    MatButtonModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    ReactiveFormsModule,
-    FormsModule,
-    HttpClientModule,
-    MatDialogModule,
-    RouterModule.forChild([
-      { path: '', component: HomeComponent },
-      { path: 'appointments/new-appointment', component: NewAppointmentComponent },
-      { path: 'patients/list', component: PatientsComponent },
-      { path: 'clinics/list', component: ClinicListComponent }
-    ])
-  ],
-  providers: [MatNativeDateModule],
-  exports: [
-    HomeComponent,
-    NewAppointmentComponent,
-    PatientsComponent,
-    ClinicListComponent,
-    NewPatientComponent,
-    AddClinicComponent,
-    QuickactionMenuComponent,
-    AppointmentComponent
-  ]
-})
+@NgModule({ declarations: [
+        HomeComponent,
+        NewAppointmentComponent,
+        PatientsComponent,
+        ClinicListComponent,
+        NewPatientComponent,
+        AddClinicComponent,
+        QuickactionMenuComponent,
+        AppointmentComponent
+    ],
+    exports: [
+        HomeComponent,
+        NewAppointmentComponent,
+        PatientsComponent,
+        ClinicListComponent,
+        NewPatientComponent,
+        AddClinicComponent,
+        QuickactionMenuComponent,
+        AppointmentComponent
+    ], imports: [CommonModule,
+        SharedModule,
+        MatCardModule,
+        MatCheckboxModule,
+        MatSidenavModule,
+        MatListModule,
+        MatIconModule,
+        MatToolbarModule,
+        FontAwesomeModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatSelectModule,
+        MatTableModule,
+        MatButtonModule,
+        MatDatepickerModule,
+        MatNativeDateModule,
+        ReactiveFormsModule,
+        FormsModule,
+        MatDialogModule,
+        RouterModule.forChild([
+            { path: '', component: HomeComponent },
+            { path: 'appointments/new-appointment', component: NewAppointmentComponent },
+            { path: 'patients/list', component: PatientsComponent },
+            { path: 'clinics/list', component: ClinicListComponent }
+        ])], providers: [MatNativeDateModule, provideHttpClient(withInterceptorsFromDi())] })
 export class HomeModule { }
