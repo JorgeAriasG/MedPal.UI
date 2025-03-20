@@ -1,0 +1,108 @@
+<button (click)="addPatientToggle()" mat-button>Add Patient</button>
+<div *ngIf="addPatient">
+  <app-new-patient (patientAdded)="onPatientAdded()"></app-new-patient>
+</div>
+
+<table *ngIf="patients.length > 0" mat-table [dataSource]="patients">
+  <ng-container matColumnDef="name">
+    <th mat-header-cell *matHeaderCellDef> Name </th>
+    <td mat-cell *matCellDef="let patient">
+      <ng-container *ngIf="editPatientId === patient.id; else viewModeName">
+        <mat-form-field>
+          <input matInput [(ngModel)]="editPatientData.name" placeholder="Name" />
+        </mat-form-field>
+      </ng-container>
+      <ng-template #viewModeName>
+        {{ patient.name }}
+      </ng-template>
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="middlename">
+    <th mat-header-cell *matHeaderCellDef> Middlename </th>
+    <td mat-cell *matCellDef="let patient">
+      <ng-container *ngIf="editPatientId === patient.id; else viewModeMiddlename">
+        <mat-form-field>
+          <input matInput [(ngModel)]="editPatientData.middlename" placeholder="middlename" />
+        </mat-form-field>
+      </ng-container>
+      <ng-template #viewModeMiddlename>
+        {{patient.middlename}}
+      </ng-template>
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="lastname">
+    <th mat-header-cell *matHeaderCellDef> Lastname </th>
+    <td mat-cell *matCellDef="let patient">
+      <ng-container *ngIf="editPatientId === patient.id; else viewModeLastname">
+        <mat-form-field>
+          <input matInput [(ngModel)]="editPatientData.lastname" placeholder="Lastname" />
+        </mat-form-field>
+      </ng-container>
+      <ng-template #viewModeLastname>
+        {{ patient.lastname }}
+      </ng-template>
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="email">
+    <th mat-header-cell *matHeaderCellDef> Email </th>
+    <td mat-cell *matCellDef="let patient">
+      <ng-container *ngIf="editPatientId === patient.id; else viewModeEmail">
+        <mat-form-field>
+          <input matInput [(ngModel)]="editPatientData.email" placeholder="Email" />
+        </mat-form-field>
+      </ng-container>
+      <ng-template #viewModeEmail>
+        {{ patient.email }}
+      </ng-template>
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="phone">
+    <th mat-header-cell *matHeaderCellDef> Phone </th>
+    <td mat-cell *matCellDef="let patient">
+      <ng-container *ngIf="editPatientId === patient.id; else viewModePhone">
+        <mat-form-field>
+          <input matInput [(ngModel)]="editPatientData.phone" placeholder="Phone" />
+        </mat-form-field>
+      </ng-container>
+      <ng-template #viewModePhone>
+        {{ patient.phone }}
+      </ng-template>
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="clinicName">
+    <th mat-header-cell *matHeaderCellDef> Clinic </th>
+    <td mat-cell *matCellDef="let patient">
+      <ng-container *ngIf="editPatientId === patient.id; else viewModeClinic">
+        <mat-form-field>
+          <input matInput [ngModel]="editPatientData.clinic ? editPatientData.clinic : 'no clinic'" placeholder="clinicName" />
+        </mat-form-field>
+      </ng-container>
+      <ng-template #viewModeClinic>
+        {{ patient.clinic.name ? patient.clinic.name : 'no clinic' }}
+      </ng-template>
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="actions">
+    <th mat-header-cell *matHeaderCellDef> Actions </th>
+    <td mat-cell *matCellDef="let patient">
+      <ng-container *ngIf="editPatientId === patient.id; else viewModeActions">
+        <!-- <button mat-button (click)="savePatient()">Save</button> -->
+        <button mat-button (click)="saveEdit(editPatientData)">Save</button>
+        <button mat-button (click)="cancelEdit()">Cancel</button>
+      </ng-container>
+      <ng-template #viewModeActions>
+        <button mat-button (click)="editPatient(patient)">Edit</button>
+        <button mat-button (click)="deletePatient(patient.id)">Delete</button>
+      </ng-template>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>

@@ -1,12 +1,13 @@
-<div class="task">
+<button (click)="addAppointmentToggle()" mat-button>Add Appointment</button>
+<div class="task" *ngFor="let appointment of appointments" style="margin-bottom: 1em;">
   <div class="date">
     <h1>24</h1>
   </div>
   <div class="task-info">
-    <h3 class="mat-h3">Meeting - Daily SCRUM</h3>
-    <p class="mat-body-1">10:00 - 12:00</p>
+    <h3 class="mat-h3">{{appointment.patientId}}</h3>
+    <p class="mat-body-1">{{ appointment.appointmentDate }}</p>
     <p class="mat-body">Zoom Meeting</p>
-    <p class="mat-body">Status: Ongoing</p>
+    <p class="mat-body">Status: {{ appointment.status }}</p>
     <p class="mat-body">Notes: Develop DAILY SCRUM to manage performance process, especially in remote work with developers.</p>
   </div>
   <div class="task-actions">

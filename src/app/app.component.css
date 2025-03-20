@@ -1,4 +1,22 @@
+/* app.component.css */
 .app-container {
   display: flex;
+  flex-direction: column;
+  height: 100%;
   padding: 20px;
+}
+
+/* Ensure the sidenav container takes full height */
+mat-sidenav-container {
+  height: 100%;
+}
+
+mat-sidenav {
+  width: 250px;
+}
+
+.content {
+  flex: 1;
+  margin-top: 64px; /* Adjust this value based on the height of your menu */
+  padding: 16px;
 }

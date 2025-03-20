@@ -1,10 +1,24 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { rehydrateAuthState } from './store/actions/auth.actions';
+import { AuthState } from './store/reducers/auth.reducer';
+import { Observable } from 'rxjs';
+import { selectIsLoggedIn } from './store/selectors/auth.selectors';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'scheduling.ui';
+  isLoggedIn$: Observable<boolean>;
+
+  constructor(private store: Store<{ auth: AuthState }>) {
+    const userId = sessionStorage.getItem('userId');
+    this.store.dispatch(rehydrateAuthState({ userId: userId ? userId : null }));
+    this.isLoggedIn$ = this.store.select(selectIsLoggedIn);
+  }
+
+  ngOnInit(): void {}
 }

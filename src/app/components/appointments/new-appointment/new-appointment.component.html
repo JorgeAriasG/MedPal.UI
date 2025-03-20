@@ -1,31 +1,53 @@
-<form class="form">
-  <mat-form-field class="input">
-    <mat-label>Name</mat-label>
-    <input matInput>
-  </mat-form-field>
+<mat-dialog-content>
+  <div>
+    <form class="form" [formGroup]="patientForm">
+      <mat-form-field class="input">
+        <mat-label>Name</mat-label>
+        <input formControlName="name" matInput>
+      </mat-form-field>
 
-  <mat-form-field class="input">
-    <mat-label>Lastname</mat-label>
-    <input matInput>
-  </mat-form-field>
+      <mat-form-field class="input">
+        <mat-label>Lastname</mat-label>
+        <input formControlName="lastname" matInput>
+      </mat-form-field>
 
-  <mat-form-field class="input">
-    <mat-label>Email</mat-label>
-    <input matInput>
-  </mat-form-field>
+      <mat-form-field class="input">
+        <mat-label>Email</mat-label>
+        <input formControlName="email" matInput>
+      </mat-form-field>
 
-  <mat-form-field class="input">
-    <mat-label>Phone</mat-label>
-    <input matInput>
-  </mat-form-field>
+      <mat-form-field class="input">
+        <mat-label>Phone</mat-label>
+        <input formControlName="phone" matInput>
+      </mat-form-field>
+    </form>
+    <form [formGroup]="appointmentForm">
+      <mat-form-field class="input">
+        <mat-label>Date</mat-label>
+        <input formControlName="date" matInput [matDatepicker]="picker">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
 
-  <mat-form-field class="input">
-    <mat-label>Date</mat-label>
-    <input matInput type="date">
-  </mat-form-field>
+      <!-- <mat-form-field class="input">
+        <mat-label>Pick a time</mat-label>
+        <input formControlName="time" matInput [matTimepicker]="picker">
+        <mat-timepicker-toggle matIconSuffix [for]="picker"/>
+        <mat-timepicker #picker/>
+      </mat-form-field> -->
 
-  <mat-form-field class="input">
-    <mat-label>Comments</mat-label>
-    <textarea matInput></textarea>
-  </mat-form-field>
-</form>
+      <mat-form-field class="input">
+        <mat-label>Reason</mat-label>
+        <input formControlName="reason" matInput>
+      </mat-form-field>
+      <mat-form-field class="input">
+        <mat-label>Status</mat-label>
+        <input formControlName="status" matInput>
+      </mat-form-field>
+    </form>
+  </div>
+  <mat-dialog-actions>
+    <button mat-button (click)="saveAppointment()">Save</button>
+    <button mat-button (click)="closeDialog()">Cancel</button>
+  </mat-dialog-actions>
+</mat-dialog-content>

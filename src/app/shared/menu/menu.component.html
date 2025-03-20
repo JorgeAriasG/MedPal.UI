@@ -1,0 +1,26 @@
+<mat-list>
+  <mat-list-item>
+    <button mat-button routerLink="/home">
+      <mat-icon class="material-symbols-outlined">home</mat-icon>
+      <span>Home</span>
+    </button>
+  </mat-list-item>
+  <mat-list-item>
+    <button mat-button routerLink="/patients/list">
+      <mat-icon class="material-symbols-outlined">person</mat-icon>
+      <span>Patients</span>
+    </button>
+  </mat-list-item>
+  <mat-list-item>
+    <button mat-button routerLink="/clinics/list">
+      <mat-icon class="material-symbols-outlined">local_hospital</mat-icon>
+      <span>Clinic</span>
+    </button>
+  </mat-list-item>
+</mat-list>
+<div class="logout-button">
+  <button mat-button (click)="logout()">
+    <mat-icon class="material-symbols-outlined">logout</mat-icon>
+    <span>Logout</span>
+  </button>
+</div>

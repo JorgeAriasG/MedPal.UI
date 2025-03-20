@@ -1,0 +1,19 @@
+<mat-dialog-content>
+  <form (submit)="onSubmit($event)">
+    <mat-form-field appearance="fill">
+      <mat-label>Clinic name</mat-label>
+      <input matInput [(ngModel)]="clinic.name" name="name" required />
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Location</mat-label>
+      <input matInput [(ngModel)]="clinic.location" name="location" required />
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Contact Info</mat-label>
+      <input matInput [(ngModel)]="clinic.contactInfo" name="contactInfo" required />
+    </mat-form-field>
+    <mat-dialog-actions>
+      <button mat-raised-button color="primary" type="submit">Submit</button>
+    </mat-dialog-actions>
+  </form>
+</mat-dialog-content>

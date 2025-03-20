@@ -1,0 +1,11 @@
+<mat-dialog-content>
+  <form [formGroup]="form" (submit)="onSubmit($event)">
+    <mat-form-field *ngFor="let input of formInputs">
+      <mat-label>{{ input }}</mat-label>
+      <input [formControlName]="input" matInput />
+    </mat-form-field>
+    <mat-dialog-actions>
+      <button mat-raised-button color="primary" type="submit">Submit</button>
+    </mat-dialog-actions>
+  </form>
+</mat-dialog-content>

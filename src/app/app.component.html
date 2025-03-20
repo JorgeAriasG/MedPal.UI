@@ -1,5 +1,15 @@
 <link href="https://fonts.googleapis.com/css?family=Muli:400,700" rel="stylesheet">
-<div class="app-container">
-  <app-menu></app-menu>
-  <router-outlet></router-outlet>
-</div>
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav #sidenav mode="side" [opened]="isLoggedIn$ | async">
+    <app-menu></app-menu>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <mat-toolbar *ngIf="isLoggedIn$ | async">
+      <button mat-icon-button (click)="sidenav.toggle()" *ngIf="isLoggedIn$ | async">
+        <mat-icon class="material-symbols-outlined">menu</mat-icon>
+      </button>
+      <span>App Title</span>
+    </mat-toolbar>
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>

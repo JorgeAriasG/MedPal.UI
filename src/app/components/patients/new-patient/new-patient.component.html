@@ -1,0 +1,51 @@
+<form (submit)="onSubmit($event)">
+  <mat-form-field appearance="fill">
+    <mat-label>Name</mat-label>
+    <input matInput [(ngModel)]="newPatient.name" name="name" required />
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Middlename</mat-label>
+    <input matInput [(ngModel)]="newPatient.middlename" name="middlename" required />
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Lastname</mat-label>
+    <input matInput [(ngModel)]="newPatient.lastname" name="lastname" required />
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Phone</mat-label>
+    <input matInput [(ngModel)]="newPatient.phone" name="phone" required />
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Email</mat-label>
+    <input matInput [(ngModel)]="newPatient.email" name="email" required />
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Adress</mat-label>
+    <input matInput [(ngModel)]="newPatient.address" name="address" required />
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Date of Birth</mat-label>
+    <input [value]="newPatient.dob" matInput [matDatepicker]="picker">
+    <mat-hint>MM/DD/YYYY</mat-hint>
+    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Gender</mat-label>
+    <input matInput [(ngModel)]="newPatient.gender" name="gender" required />
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Emergency Contact</mat-label>
+    <input matInput [(ngModel)]="newPatient.emergencyContact" name="emergencyContact" required />
+  </mat-form-field>
+
+  <button mat-raised-button color="primary" type="submit">Submit</button>
+</form>
