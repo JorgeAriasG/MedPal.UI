@@ -6,9 +6,10 @@ import { AuthState } from 'src/app/store/reducers/auth.reducer';
 import { logout } from 'src/app/store/actions/auth.actions';
 
 @Component({
-  selector: 'app-menu',
-  templateUrl: './menu.component.html',
-  styleUrls: ['./menu.component.css']
+    selector: 'app-menu',
+    templateUrl: './menu.component.html',
+    styleUrls: ['./menu.component.css'],
+    standalone: false
 })
 export class MenuComponent {
   @ViewChild('sidenav') sidenav!: MatSidenav;

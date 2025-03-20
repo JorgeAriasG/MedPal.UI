@@ -10,9 +10,10 @@ import { AppointmentModel } from 'src/app/entities/AppointmentModel';
 import { IPatient } from 'src/app/entities/IPatient';
 
 @Component({
-  selector: 'app-appointment',
-  templateUrl: './appointment.component.html',
-  styleUrls: ['./appointment.component.css']
+    selector: 'app-appointment',
+    templateUrl: './appointment.component.html',
+    styleUrls: ['./appointment.component.css'],
+    standalone: false
 })
 export class AppointmentComponent {
   faPencil = faPencil

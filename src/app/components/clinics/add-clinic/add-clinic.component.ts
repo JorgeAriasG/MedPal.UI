@@ -4,9 +4,10 @@ import { IClinic } from 'src/app/entities/IClinic';
 import { ClinicService } from '../services/clinic.service';
 
 @Component({
-  selector: 'app-add-clinic',
-  templateUrl: './add-clinic.component.html',
-  styleUrls: ['./add-clinic.component.css']
+    selector: 'app-add-clinic',
+    templateUrl: './add-clinic.component.html',
+    styleUrls: ['./add-clinic.component.css'],
+    standalone: false
 })
 export class AddClinicComponent {
   data = inject(MAT_DIALOG_DATA);

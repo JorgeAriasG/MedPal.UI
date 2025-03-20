@@ -5,9 +5,10 @@ import { ClinicService } from '../services/clinic.service';
 import { IClinic } from 'src/app/entities/IClinic';
 
 @Component({
-  selector: 'app-clinic-list',
-  templateUrl: './clinic-list.component.html',
-  styleUrls: ['./clinic-list.component.css']
+    selector: 'app-clinic-list',
+    templateUrl: './clinic-list.component.html',
+    styleUrls: ['./clinic-list.component.css'],
+    standalone: false
 })
 export class ClinicListComponent {
   displayedColumns: string[] = ['clinicName', 'location', 'contactInfo', 'actions'];

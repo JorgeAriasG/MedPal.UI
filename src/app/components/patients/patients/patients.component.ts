@@ -6,9 +6,10 @@ import { EditModalComponent } from '../../../shared/edit-modal/edit-modal.compon
 import { MatDialog } from '@angular/material/dialog';
 
 @Component({
-  selector: 'app-patients',
-  templateUrl: './patients.component.html',
-  styleUrls: ['./patients.component.css']
+    selector: 'app-patients',
+    templateUrl: './patients.component.html',
+    styleUrls: ['./patients.component.css'],
+    standalone: false
 })
 export class PatientsComponent implements OnInit {
   patients: IPatient[] = [];

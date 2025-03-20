@@ -3,9 +3,10 @@ import { PatientsService } from 'src/app/components/patients/services/patients.s
 import { IPatient } from 'src/app/entities/IPatient';
 
 @Component({
-  selector: 'app-new-patient',
-  templateUrl: './new-patient.component.html',
-  styleUrls: ['./new-patient.component.css']
+    selector: 'app-new-patient',
+    templateUrl: './new-patient.component.html',
+    styleUrls: ['./new-patient.component.css'],
+    standalone: false
 })
 export class NewPatientComponent {
   @Output() patientAdded = new EventEmitter<void>();

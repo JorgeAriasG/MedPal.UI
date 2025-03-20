@@ -3,9 +3,10 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 
 @Component({
-  selector: 'app-edit-modal',
-  templateUrl: './edit-modal.component.html',
-  styleUrls: ['./edit-modal.component.css']
+    selector: 'app-edit-modal',
+    templateUrl: './edit-modal.component.html',
+    styleUrls: ['./edit-modal.component.css'],
+    standalone: false
 })
 export class EditModalComponent {
   inputData: { [key: string]: any } = inject(MAT_DIALOG_DATA)['data'];

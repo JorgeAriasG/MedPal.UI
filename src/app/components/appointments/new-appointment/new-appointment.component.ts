@@ -5,9 +5,10 @@ import { appointmentFormConfig, patientFormConfig } from 'src/app/conf/form-conf
 import { createFormGroupFromConfig } from 'src/app/shared/utils/form-utils';
 
 @Component({
-  selector: 'app-new-appointment',
-  templateUrl: './new-appointment.component.html',
-  styleUrls: ['./new-appointment.component.css'],
+    selector: 'app-new-appointment',
+    templateUrl: './new-appointment.component.html',
+    styleUrls: ['./new-appointment.component.css'],
+    standalone: false
 })
 export class NewAppointmentComponent {
   // @Output() closedDialog = new EventEmitter<void>();
