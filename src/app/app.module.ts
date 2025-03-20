@@ -60,7 +60,7 @@ import { AuthEffects } from './store/effects/auth.effects';
     MatDialogModule,
     StoreModule.forRoot({ auth: authReducer }),
     EffectsModule.forRoot([AuthEffects]),
-    StoreDevtoolsModule.instrument({ maxAge: 25 }),
+    StoreDevtoolsModule.instrument({ maxAge: 25 , connectInZone: true}),
     SharedModule
 ],
   providers: [],
