@@ -27,6 +27,8 @@ import { AddClinicComponent } from '../clinics/add-clinic/add-clinic.component';
 import { QuickactionMenuComponent } from '../quickaction-menu/quickaction-menu.component';
 import { AppointmentComponent } from '../appointments/appointment/appointment.component';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { MatTimepickerModule } from '@angular/material/timepicker';
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
 
 @NgModule({ declarations: [
         HomeComponent,
@@ -63,6 +65,8 @@ import { SharedModule } from 'src/app/shared/shared.module';
         MatButtonModule,
         MatDatepickerModule,
         MatNativeDateModule,
+        MatTimepickerModule,
+        MatAutocompleteModule,
         ReactiveFormsModule,
         FormsModule,
         MatDialogModule,

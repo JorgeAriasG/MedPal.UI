@@ -17,7 +17,9 @@ export class ClinicService {
   constructor(private http: HttpClient, private session: SessionService) { }
 
   addClinic(clinic: IClinic): Observable<any> {
-    return this.session.getStoreUserId(userId => this.http.post(`${this.baseUrl}?userId=${userId}`, clinic));
+    return this.session.getStoreUserId().pipe(
+      switchMap((userId: string | null) => this.http.post(`${this.baseUrl}?userId=${userId}`, clinic))
+    );
   }
 
   editClinic(clinic: IClinic): Observable<any> {
@@ -25,6 +27,8 @@ export class ClinicService {
   }
 
   getClinics(): Observable<any> {
-    return this.session.getStoreUserId(userId => this.http.get(`${this.baseUrl}?Id=${userId}`));
+    return this.session.getStoreUserId().pipe(
+      switchMap((userId: string | null) => this.http.get<IClinic[]>(`${this.baseUrl}?Id=${userId}`))
+    );
   }
 }

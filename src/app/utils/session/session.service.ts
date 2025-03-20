@@ -1,3 +1,4 @@
+import { selectClinicId } from 'src/app/store/selectors/auth.selectors';
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable, switchMap } from 'rxjs';
@@ -11,16 +12,13 @@ export class SessionService {
 
   constructor(private store: Store<{auth: AuthState}>) { }
 
-  getStoreUserId<T>(callback: (userId: string) => Observable<T>): Observable<T> {
-    return this.store.select(selectUserId).pipe(
-      switchMap(userId => {
-        if (userId) {
-          return callback(userId);
-        } else {
-          throw new Error('User ID not found');
-        }
-      })
-    );
+  getStoreUserId(): Observable<string | null> {
+    return this.store.select(selectUserId);
+  }
+
+  // TODO: Clinic is returning as 0
+  getClinicId(): Observable<string | null> {
+    return this.store.select(selectClinicId);
   }
 
 }

@@ -21,3 +21,8 @@ export const rehydrateAuthState = createAction(
 );
 
 export const logout = createAction('[Auth] Logout');
+
+export const setClinic = createAction(
+  '[Clinic] Set Clinic',
+  props<{ clinicId: string | null }>()
+);

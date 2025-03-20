@@ -1,4 +1,12 @@
 <button (click)="addClinicToggle()" mat-button>Add Clinic</button>
+<mat-form-field>
+  <mat-label>Selected Clinic</mat-label>
+  <mat-select>
+    @for (clinic of clinics; track clinic) {
+      <mat-option (onSelectionChange)="selectClinic($event)" [value]="clinic.name">{{clinic.name}}</mat-option>
+    }
+  </mat-select>
+</mat-form-field>
 <table mat-table [dataSource]="clinics">
   <ng-container matColumnDef="clinicName">
     <th mat-header-cell *matHeaderCellDef> Clinic Name </th>

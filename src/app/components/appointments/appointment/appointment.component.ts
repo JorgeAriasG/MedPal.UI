@@ -8,6 +8,7 @@ import { EditModalComponent } from 'src/app/shared/edit-modal/edit-modal.compone
 import { IInputData } from 'src/app/entities/IInputData';
 import { AppointmentModel } from 'src/app/entities/AppointmentModel';
 import { IPatient } from 'src/app/entities/IPatient';
+import { SessionService } from 'src/app/utils/session/session.service';
 
 @Component({
     selector: 'app-appointment',
@@ -18,17 +19,17 @@ import { IPatient } from 'src/app/entities/IPatient';
 export class AppointmentComponent {
   faPencil = faPencil
   appointments: any;
-  clinicId: number = 2;
+  clinicId: string | null | undefined;
   inputData: IInputData = {
     isEditable: false,
     data: {}
   }
 
 
-  constructor(private appointmentService: AppointmensService, private dialog: MatDialog) { }
+  constructor(private appointmentService: AppointmensService, private dialog: MatDialog, private session: SessionService) { }
 
   ngOnInit() {
-    this.getAllAppointmentsById();
+    this.getClinicId();
   }
 
   addAppointmentToggle(): void {
@@ -39,9 +40,22 @@ export class AppointmentComponent {
         });
   }
 
+  // TODO: Fix clinic id is coming as 0
+  getClinicId(): void {
+    this.session.getClinicId().subscribe({
+      next: clinicId => {
+        console.log('Clinic ID:', clinicId);
+        this.clinicId = clinicId;
+        this.getAllAppointmentsById();
+      },
+      error: err => {
+        console.error('Error fetching clinic ID:', err);
+      }});
+  }
+
   async getAllAppointmentsById() {
     try {
-      await this.appointmentService.getAppointments(this.clinicId).subscribe((response: any) => {
+      await this.appointmentService.getAppointments(Number(this.clinicId)).subscribe((response: any) => {
         this.appointments = response;
         console.log('Appointments:', this.appointments);
       });

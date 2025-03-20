@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { AuthService } from '../../services/auth.service';
-import { login, loginSuccess, loginFailure, rehydrateAuthState, logout } from '../actions/auth.actions';
+import { login, loginSuccess, loginFailure, rehydrateAuthState, logout, setClinic } from '../actions/auth.actions';
 import { catchError, map, mergeMap, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { Router } from '@angular/router';
@@ -60,6 +60,20 @@ export class AuthEffects {
         sessionStorage.removeItem('userId'); // Clear user ID from session storage
       })
     ),
+    { dispatch: false }
+  );
+
+  setClinic$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(setClinic),
+      tap(({ clinicId }) => { // Store selected clinic ID in session storage
+        console.log('Storing clinic ID in session storage');
+        if (clinicId) {
+          sessionStorage.setItem('clinicId', clinicId);
+        } else {
+          console.error('Clinic ID is undefined');
+        }
+      })),
     { dispatch: false }
   );
 

@@ -5,21 +5,7 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { MatNativeDateModule } from '@angular/material/core';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatCardModule } from '@angular/material/card';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatListModule } from '@angular/material/list';
-import { MatIconModule } from '@angular/material/icon';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatTableModule } from '@angular/material/table';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-// import {MatTimepickerModule} from '@angular/material/timepicker';
+
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { LoginComponent } from './components/user/login/login.component';
 import { SharedModule } from './shared/shared.module';
@@ -29,6 +15,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { authReducer } from './store/reducers/auth.reducer';
 import { AuthEffects } from './store/effects/auth.effects';
+import { AngularMaterialModule } from './angular-material.module';
 
 @NgModule({ declarations: [
         AppComponent,
@@ -37,26 +24,16 @@ import { AuthEffects } from './store/effects/auth.effects';
     ],
     bootstrap: [AppComponent], imports: [BrowserModule,
         AppRoutingModule,
-        MatCardModule,
-        MatCheckboxModule,
-        MatSidenavModule,
-        MatListModule,
-        MatIconModule,
-        MatToolbarModule,
-        FontAwesomeModule,
         BrowserAnimationsModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatSelectModule,
-        MatTableModule,
-        MatButtonModule,
-        MatDatepickerModule,
-        MatNativeDateModule,
+        FontAwesomeModule,
         ReactiveFormsModule,
         FormsModule,
-        MatDialogModule,
+        AngularMaterialModule,
+        SharedModule,
         StoreModule.forRoot({ auth: authReducer }),
         EffectsModule.forRoot([AuthEffects]),
-        StoreDevtoolsModule.instrument({ maxAge: 25, connectInZone: true }),
-        SharedModule], providers: [provideHttpClient(withInterceptorsFromDi())] })
+        StoreDevtoolsModule.instrument({ maxAge: 25, connectInZone: true }),],
+        providers: [provideHttpClient(withInterceptorsFromDi())],
+        schemas: [],
+      })
 export class AppModule { }

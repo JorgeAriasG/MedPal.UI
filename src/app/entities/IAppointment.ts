@@ -4,6 +4,7 @@ import { IPatient } from "./IPatient";
 export interface IAppointment {
   patientId?: string
   userId?: string,
+  clinicId?: string,
   appointmentDate: Date,
   status: string
 }

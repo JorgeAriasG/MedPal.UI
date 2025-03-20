@@ -17,3 +17,13 @@ export const selectIsLoggedIn = createSelector(
   selectUserId,
   (userId: string | null) => !!userId
 );
+
+export const setClinicId = createSelector(
+  selectAuthState,
+  (state: AuthState) => state.clinicId
+);
+
+export const selectClinicId = createSelector(
+  selectAuthState,
+  (state: AuthState) => state.clinicId
+);

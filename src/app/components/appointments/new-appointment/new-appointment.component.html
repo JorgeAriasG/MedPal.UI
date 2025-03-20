@@ -3,7 +3,12 @@
     <form class="form" [formGroup]="patientForm">
       <mat-form-field class="input">
         <mat-label>Name</mat-label>
-        <input formControlName="name" matInput>
+        <input formControlName="name" matInput [matAutocomplete]="auto">
+        <mat-autocomplete #auto="matAutocomplete" requireSelection (optionSelected)="selectPatient($event)">
+          @for (option of filteredPatients | async; track option) {
+            <mat-option [value]="option.name + ' ' + option.lastname">{{ option.name + ' ' + option.lastname }}</mat-option>
+          }
+        </mat-autocomplete>
       </mat-form-field>
 
       <mat-form-field class="input">
@@ -24,17 +29,17 @@
     <form [formGroup]="appointmentForm">
       <mat-form-field class="input">
         <mat-label>Date</mat-label>
-        <input formControlName="date" matInput [matDatepicker]="picker">
-        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-        <mat-datepicker #picker></mat-datepicker>
+        <input formControlName="date" matInput [matDatepicker]="datepicker">
+        <mat-datepicker-toggle matSuffix [for]="datepicker"></mat-datepicker-toggle>
+        <mat-datepicker #datepicker></mat-datepicker>
       </mat-form-field>
 
-      <!-- <mat-form-field class="input">
-        <mat-label>Pick a time</mat-label>
-        <input formControlName="time" matInput [matTimepicker]="picker">
-        <mat-timepicker-toggle matIconSuffix [for]="picker"/>
-        <mat-timepicker #picker/>
-      </mat-form-field> -->
+      <mat-form-field>
+        <mat-label>Meeting time</mat-label>
+        <input matInput [matTimepicker]="timepicker" formControlName="time">
+        <mat-timepicker #timepicker/>
+        <mat-timepicker-toggle [for]="timepicker" matSuffix/>
+      </mat-form-field>
 
       <mat-form-field class="input">
         <mat-label>Reason</mat-label>
