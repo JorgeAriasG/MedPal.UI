@@ -40,7 +40,6 @@ export class AppointmentComponent {
         });
   }
 
-  // TODO: Fix clinic id is coming as 0
   getClinicId(): void {
     this.session.getClinicId().subscribe({
       next: clinicId => {

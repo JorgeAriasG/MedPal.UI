@@ -1,4 +1,4 @@
-import { selectClinicId } from 'src/app/store/selectors/auth.selectors';
+import { selectDefaultClinicId } from 'src/app/store/selectors/auth.selectors';
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable, switchMap } from 'rxjs';
@@ -18,7 +18,7 @@ export class SessionService {
 
   // TODO: Clinic is returning as 0
   getClinicId(): Observable<string | null> {
-    return this.store.select(selectClinicId);
+    return this.store.select(selectDefaultClinicId);
   }
 
 }

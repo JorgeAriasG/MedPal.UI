@@ -8,7 +8,7 @@ import { SessionService } from 'src/app/utils/session/session.service';
 import { props, Store } from '@ngrx/store';
 import { AuthState } from 'src/app/store/reducers/auth.reducer';
 import { Observable } from 'rxjs';
-import { selectClinicId } from 'src/app/store/selectors/auth.selectors';
+import { selectDefaultClinicId } from 'src/app/store/selectors/auth.selectors';
 import { setClinic } from 'src/app/store/actions/auth.actions';
 
 @Component({
@@ -25,7 +25,7 @@ export class ClinicListComponent {
   selectClinic$: Observable<string | null>;
 
   constructor(private dialog: MatDialog, private clinicService: ClinicService, private store: Store<{ auth: AuthState }>, private session: SessionService) {
-    this.selectClinic$ = this.store.select(selectClinicId);
+    this.selectClinic$ = this.store.select(selectDefaultClinicId);
   }
 
   ngOnInit() {

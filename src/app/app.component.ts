@@ -17,7 +17,7 @@ export class AppComponent implements OnInit {
 
   constructor(private store: Store<{ auth: AuthState }>) {
     const userId = sessionStorage.getItem('userId');
-    this.store.dispatch(rehydrateAuthState({ userId: userId ? userId : null }));
+    this.store.dispatch(rehydrateAuthState({ userId: userId ? userId : null, defaultClinicId: sessionStorage.getItem('defaultClinicId') || null }));
     this.isLoggedIn$ = this.store.select(selectIsLoggedIn);
   }
 

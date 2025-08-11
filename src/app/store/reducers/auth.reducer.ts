@@ -4,18 +4,18 @@ import { loginSuccess, loginFailure, rehydrateAuthState, logout, setClinic } fro
 export interface AuthState {
   userId: string | null;
   error: string | null;
-  clinicId: string | null;
+  defaultClinicId: string | null;
 }
 
 export const initialState: AuthState = {
   userId: null,
   error: null,
-  clinicId: null
+  defaultClinicId: null
 };
 
 export const authReducer = createReducer(
   initialState,
-  on(loginSuccess, (state, { userId }) => ({ ...state, userId, error: null })),
+  on(loginSuccess, (state, { userId, defaultClinicId }) => ({ ...state, userId, defaultClinicId, error: null })),
   on(loginFailure, (state, { error }) => ({ ...state, error })),
   on(rehydrateAuthState, (state, { userId }) => ({ ...state, userId })),
   on(logout, state => ({ ...state, userId: null, error: null })), // Clear the state on logout

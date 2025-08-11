@@ -7,7 +7,7 @@ export const login = createAction(
 
 export const loginSuccess = createAction(
   '[Auth] Login Success',
-  props<{ userId: string }>()
+  props<{ userId: string, defaultClinicId: string }>()
 );
 
 export const loginFailure = createAction(
@@ -17,7 +17,7 @@ export const loginFailure = createAction(
 
 export const rehydrateAuthState = createAction(
   '[Auth] Rehydrate State',
-  props<{ userId: string | null }>() // Ensure the type is string | null
+  props<{ userId: string | null, defaultClinicId: string | null }>() // Ensure the type is string | null
 );
 
 export const logout = createAction('[Auth] Logout');

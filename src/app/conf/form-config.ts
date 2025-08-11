@@ -15,6 +15,6 @@ export const patientFormConfig = {
 export const appointmentFormConfig = {
   date: ['', Validators.required],
   time: ['', Validators.required],
-  reason: ['', Validators.required],
+  notes: ['', Validators.required],
   status: ['', Validators.required]
 };

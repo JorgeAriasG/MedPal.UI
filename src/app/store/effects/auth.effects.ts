@@ -17,7 +17,7 @@ export class AuthEffects {
         return this.authService.login(action.email, action.password).pipe(
           map(response => {
             console.log('Login successful:', response);
-            return loginSuccess({ userId: response.id });
+            return loginSuccess({ userId: response.id, defaultClinicId: response.defaultClinicId });
           }),
           catchError(error => {
             console.error('Login failed:', error);
@@ -31,9 +31,10 @@ export class AuthEffects {
   loginSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(loginSuccess),
-      tap(({ userId }) => {
+      tap(({ userId, defaultClinicId }) => {
         console.log('Storing user ID in session storage');
         sessionStorage.setItem('userId', userId); // Store user ID in session storage
+        sessionStorage.setItem('defaultClinicId', defaultClinicId ?? ''); // Store default clinic ID
       })
     ),
     { dispatch: false }
@@ -42,9 +43,9 @@ export class AuthEffects {
   rehydrateAuthState$ = createEffect(() =>
     this.actions$.pipe(
       ofType(rehydrateAuthState),
-      map(({ userId }) => {
+      map(({ userId, defaultClinicId }) => {
         if (userId) {
-          return loginSuccess({ userId });
+          return loginSuccess({ userId, defaultClinicId: defaultClinicId ?? '' });
         } else {
           return loginFailure({ error: 'No user ID found in session storage' });
         }

@@ -113,17 +113,22 @@ export class NewAppointmentComponent {
   }
 
   saveAppointment(): void {
+    const dateValue: Date = this.appointmentForm.get('date')?.value;
+    const timeValue: Date = this.appointmentForm.get('time')?.value;
+
     const appointment: IAppointment = {
       patientId: this.selectedPatient?.id ?? undefined,
       userId: this.userId ?? undefined,
       clinicId: this.clinicId ?? undefined,
-      appointmentDate: this.appointmentForm.get('appointmentDate')?.value,
-      status: 'Pending'
+      status: 'Pending',
+      notes: this.appointmentForm.get('notes')?.value || '',
+      date: dateValue ? dateValue.toISOString().split('T')[0] : '',
+      time: timeValue ? timeValue.toISOString().split('T')[1].substring(0, 5) : ''
     };
     console.log('Appointment:', appointment);
     this.appointment.saveAppointment(appointment).subscribe(response => {
       console.log('Appointment saved:', response);
-      // TODO: Show a modal when dialog is closed aftert saving the appointment
+      // TODO: Show a modal when dialog is closed after saving the appointment
       this.closeDialog();
     });
   }
