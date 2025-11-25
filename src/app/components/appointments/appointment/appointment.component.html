@@ -1,4 +1,4 @@
-<button (click)="addAppointmentToggle()" mat-button>Add Appointment</button>
+<!-- <button (click)="addAppointmentToggle()" mat-button>Add Appointment</button>
 <div class="task" *ngFor="let appointment of appointments" style="margin-bottom: 1em;">
   <div class="date">
     <h1>{{ appointment.date | slice:8:10 }}</h1>
@@ -13,4 +13,7 @@
     <button class="set-alarm">Set Alarm</button>
     <button class="mat-button"><fa-icon [icon]="faPencil"></fa-icon>Edit</button>
   </div>
-</div>
+</div> -->
+<button (click)="addAppointmentToggle()" mat-button>Add Appointment</button>
+<mwl-calendar-week-view [viewDate]="viewDate" [events]="events">
+</mwl-calendar-week-view>

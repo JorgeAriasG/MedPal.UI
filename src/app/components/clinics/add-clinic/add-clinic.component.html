@@ -12,6 +12,18 @@
       <mat-label>Contact Info</mat-label>
       <input matInput [(ngModel)]="clinic.contactInfo" name="contactInfo" required />
     </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Opening Time</mat-label>
+      <input matInput [matTimepicker]="timepicker" [(ngModel)]="clinic.open" name="open" required />
+      <mat-timepicker #timepicker/>
+      <mat-timepicker-toggle [for]="timepicker" matSuffix/>
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Closing Time</mat-label>
+      <input matInput [matTimepicker]="timepicker2" [(ngModel)]="clinic.close" name="close" required />
+      <mat-timepicker #timepicker2/>
+      <mat-timepicker-toggle [for]="timepicker2" matSuffix/>
+    </mat-form-field>
     <mat-dialog-actions>
       <button mat-raised-button color="primary" type="submit">Submit</button>
     </mat-dialog-actions>

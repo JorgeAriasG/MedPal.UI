@@ -22,6 +22,6 @@ export class MenuComponent {
 
   logout(): void {
     this.store.dispatch(logout());
-    this.router.navigate(['/login']);
+    // this.router.navigate(['/login']);
   }
 }

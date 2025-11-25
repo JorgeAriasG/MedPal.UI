@@ -1,7 +1,7 @@
 import { IClinic } from "./IClinic";
 
 export interface IPatient {
-  id?: string | null,
+  id?: number | null,
   name: string,
   middlename: string,
   lastname: string,
@@ -11,6 +11,6 @@ export interface IPatient {
   dob: Date,
   gender: string,
   emergencyContact: string,
-  clinicId?: string | null,
+  clinicId?: number | null,
   clinic?: IClinic
 }

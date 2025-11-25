@@ -8,6 +8,11 @@ export const selectUserId = createSelector(
   (state: AuthState) => state.userId
 );
 
+export const userToken = createSelector(
+  selectAuthState,
+  (state: AuthState) => state.userToken
+);
+
 export const selectAuthError = createSelector(
   selectAuthState,
   (state: AuthState) => state.error
@@ -15,15 +20,11 @@ export const selectAuthError = createSelector(
 
 export const selectIsLoggedIn = createSelector(
   selectUserId,
-  (userId: string | null) => !!userId
+  (userId: number | null) => !!userId
 );
 
-export const setDefaultClinicId = createSelector(
-  selectAuthState,
-  (state: AuthState) => state.defaultClinicId
-);
 
 export const selectDefaultClinicId = createSelector(
   selectAuthState,
-  (state: AuthState) => state.defaultClinicId
+  (state: AuthState) => state.clinicId
 );

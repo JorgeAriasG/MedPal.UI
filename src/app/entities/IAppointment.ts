@@ -1,9 +1,17 @@
 export interface IAppointment {
-  patientId?: string
-  userId?: string,
-  clinicId?: string,
-  date: string,
-  time: string,
-  status: string,
-  notes?: string
+  patientId?: number;
+  userId?: number;
+  clinicId?: number;
+  status: string;
+  notes?: string;
+  date: {
+    year: number;
+    month: number;
+    day: number;
+    dayOfWeek?: number;
+  };
+  time: {
+    hour: number;
+    minute: number;
+  };
 }
