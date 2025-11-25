@@ -18,17 +18,17 @@ export class ClinicService {
 
   addClinic(clinic: IClinic): Observable<any> {
     return this.session.getStoreUserId().pipe(
-      switchMap((userId: string | null) => this.http.post(`${this.baseUrl}?userId=${userId}`, clinic))
+      switchMap((userId: number | null) => this.http.post(`${this.baseUrl}?userId=${userId}`, clinic))
     );
   }
 
   editClinic(clinic: IClinic): Observable<any> {
-    return this.http.put(`${this.baseUrl}?id=${clinic.id}`, clinic);
+    return this.http.put(`${this.baseUrl}`, clinic);
   }
 
   getClinics(): Observable<any> {
     return this.session.getStoreUserId().pipe(
-      switchMap((userId: string | null) => this.http.get<IClinic[]>(`${this.baseUrl}?Id=${userId}`))
+      switchMap((userId: number | null) => this.http.get<IClinic[]>(`${this.baseUrl}?Id=${userId}`))
     );
   }
 }

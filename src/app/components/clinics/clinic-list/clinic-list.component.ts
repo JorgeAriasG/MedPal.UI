@@ -18,18 +18,20 @@ import { setClinic } from 'src/app/store/actions/auth.actions';
     standalone: false
 })
 export class ClinicListComponent {
-  displayedColumns: string[] = ['clinicName', 'location', 'contactInfo', 'actions'];
+  displayedColumns: string[] = ['clinicName', 'location', 'contactInfo', 'hours', 'actions'];
   clinics: IClinic[] = [];
   isEdit: boolean = false;
-  clinicId: string | null | undefined;
-  selectClinic$: Observable<string | null>;
+  clinicId: number | null | undefined;
+  selectedClinicName: string | null = null;
+  // selectClinic$: Observable<number | null>;
 
   constructor(private dialog: MatDialog, private clinicService: ClinicService, private store: Store<{ auth: AuthState }>, private session: SessionService) {
-    this.selectClinic$ = this.store.select(selectDefaultClinicId);
+    // this.selectClinic$ = this.store.select(selectDefaultClinicId);
   }
 
   ngOnInit() {
     this.getClinics();
+    this.getClinicId();
   }
 
   getClinicId(): void {
@@ -44,7 +46,7 @@ export class ClinicListComponent {
   }
 
   selectClinic($event: MatOptionSelectionChange): void {
-    const selectedClinidId = this.clinics.find(clinic => clinic.name === $event.source.value)?.id?.toString() ?? null;
+    const selectedClinidId = this.clinics.find(clinic => clinic.name === $event.source.value)?.id ?? null;
     this.store.dispatch(setClinic({ clinicId: selectedClinidId }));
       console.log('Selected Clinic ID:', selectedClinidId);
     console.log($event);
@@ -63,6 +65,7 @@ export class ClinicListComponent {
       await this.clinicService.getClinics().subscribe(clinics => {
         console.log('Clinics', clinics);
         this.clinics = clinics;
+        this.selectedClinicName = this.clinics.find(clinic => clinic.id === this.clinicId)?.name ?? null;
       });
     } catch(error) {
       console.error(error);

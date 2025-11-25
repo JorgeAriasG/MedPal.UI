@@ -11,12 +11,11 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatInputModule } from '@angular/material/input';
 
 @NgModule({
-  declarations: [
-    MenuComponent,
-    EditModalComponent
-  ],
+  declarations: [MenuComponent, EditModalComponent],
   imports: [
     CommonModule,
     MatToolbarModule,
@@ -26,13 +25,12 @@ import { RouterModule } from '@angular/router';
     MatButtonModule,
     MatDialogModule,
     MatFormFieldModule,
+    MatDatepickerModule,
+    MatInputModule,
     FormsModule,
     ReactiveFormsModule,
-    RouterModule
+    RouterModule,
   ],
-  exports: [
-    MenuComponent,
-    EditModalComponent
-  ]
+  exports: [MenuComponent, EditModalComponent],
 })
-export class SharedModule { }
+export class SharedModule {}

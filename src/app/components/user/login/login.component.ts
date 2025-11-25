@@ -8,21 +8,25 @@ import { selectAuthError, selectIsLoggedIn } from '../../../store/selectors/auth
 import { Router } from '@angular/router';
 
 @Component({
-    selector: 'app-login',
-    templateUrl: './login.component.html',
-    styleUrls: ['./login.component.css'],
-    standalone: false
+  selector: 'app-login',
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.css'],
+  standalone: false
 })
 export class LoginComponent implements OnInit {
   errorMessage$: Observable<string | null>;
   isLoggedIn$: Observable<boolean>;
 
-  constructor(private store: Store<{ auth: AuthState }>, private router: Router) {
+  constructor(
+    private store: Store<{ auth: AuthState }>,
+    private router: Router
+  ) {
     this.errorMessage$ = this.store.select(selectAuthError);
     this.isLoggedIn$ = this.store.select(selectIsLoggedIn);
   }
 
   ngOnInit(): void {
+    // Solo una suscripción para redirigir después de login
     this.isLoggedIn$.subscribe(isLoggedIn => {
       if (isLoggedIn) {
         this.router.navigate(['/']);
@@ -34,22 +38,7 @@ export class LoginComponent implements OnInit {
     if (form.valid) {
       const { email, password } = form.value;
       this.store.dispatch(login({ email, password }));
-
-      // Listen for login success or failure
-      this.isLoggedIn$.subscribe(isLoggedIn => {
-        if (isLoggedIn) {
-          console.log('Login successful');
-          this.router.navigate(['/']);
-          // Additional logic if needed
-        }
-      });
-
-      this.errorMessage$.subscribe(error => {
-        if (error) {
-          console.error('Login failed:', error);
-          // Additional logic if needed
-        }
-      });
+      // No hagas más subscripciones aquí — déjalo al ngOnInit
     }
   }
 }

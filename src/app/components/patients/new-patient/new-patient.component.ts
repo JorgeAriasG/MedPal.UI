@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { PatientsService } from 'src/app/components/patients/services/patients.service';
 import { IPatient } from 'src/app/entities/IPatient';
+import { SessionService } from 'src/app/utils/session/session.service';
 
 @Component({
     selector: 'app-new-patient',
@@ -22,16 +23,28 @@ export class NewPatientComponent {
     dob: new Date(),
     gender: '',
     emergencyContact: '',
-    clinic: {
-      id: 0,
-      name: '',
-      location: '',
-      contactInfo: ''
-    },
-    clinicId: null
+    clinicId: this.getClinicId(),
   };
 
-  constructor(private patientsService: PatientsService) { }
+  constructor(private patientsService: PatientsService, private session: SessionService) { }
+
+  ngOnInit(): void {
+
+  }
+
+    getClinicId(): number | null {
+    let clinicId: number | null = null;
+    this.session.getClinicId().subscribe({
+      next: (id) => {
+        console.log('Clinic ID:', id);
+        clinicId = id;
+      },
+      error: (err) => {
+        console.error('Error fetching clinic ID:', err);
+      }
+    });
+    return clinicId;
+  }
 
   onSubmit(event: Event): void {
     event.preventDefault(); // Prevent the default form submission behavior

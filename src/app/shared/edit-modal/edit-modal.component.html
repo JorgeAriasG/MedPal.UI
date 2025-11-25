@@ -1,11 +1,58 @@
 <mat-dialog-content>
-  <form [formGroup]="form" (submit)="onSubmit($event)">
-    <mat-form-field *ngFor="let input of formInputs">
-      <mat-label>{{ input }}</mat-label>
-      <input [formControlName]="input" matInput />
-    </mat-form-field>
-    <mat-dialog-actions>
-      <button mat-raised-button color="primary" type="submit">Submit</button>
-    </mat-dialog-actions>
+  <h2 mat-dialog-title>{{ inputData["title"] || "Edit" }}</h2>
+  <form class="edit-form" [formGroup]="form" (ngSubmit)="onSubmit($event)">
+    <ng-container *ngIf="inputData?.['fields']?.length">
+      <ng-container *ngFor="let field of inputData?.['fields']">
+        <mat-form-field *ngIf="field.type === 'text'">
+          <mat-label>{{ field.label }}</mat-label>
+          <input
+            [disabled]="field.disabled"
+            matInput
+            [formControlName]="field.key"
+          />
+        </mat-form-field>
+        <mat-form-field *ngIf="field.type === 'date'">
+          <mat-label>{{ field.label }}</mat-label>
+          <input
+            matInput
+            [formControlName]="field.key"
+            [matDatepicker]="picker"
+            [disabled]="field.disabled === 'disabled'"
+          />
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="picker"
+          ></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field *ngIf="field.type === 'time'">
+          <mat-label>{{ field.label }}</mat-label>
+          <input
+            [disabled]="field.disabled === 'disabled'"
+            matInput
+            [formControlName]="field.key"
+            type="time"
+          />
+        </mat-form-field>
+        <mat-form-field *ngIf="field.type === 'textarea'">
+          <mat-label>{{ field.label }}</mat-label>
+          <textarea
+            [disabled]="field.disabled === 'disabled'"
+            matInput
+            [formControlName]="field.key"
+          ></textarea>
+        </mat-form-field>
+        <!-- Do NOT render mat-form-field for unsupported types -->
+      </ng-container>
+    </ng-container>
+    <button
+      style="margin-bottom: 1em"
+      mat-raised-button
+      color="primary"
+      type="submit"
+    >
+      Save
+    </button>
+    <button mat-raised-button color="warn" type="button">Cancel</button>
   </form>
 </mat-dialog-content>
