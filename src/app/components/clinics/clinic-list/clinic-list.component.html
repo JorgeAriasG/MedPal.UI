@@ -1,7 +1,8 @@
 <button (click)="addClinicToggle()" mat-button>Add Clinic</button>
 <mat-form-field>
   <mat-label>Selected Clinic</mat-label>
-  <mat-select>
+  <!-- TODO: Fix dropdown has to be clicked twice to select the clinic -->
+  <mat-select [(ngModel)]="selectedClinicName">
     @for (clinic of clinics; track clinic) {
       <mat-option (onSelectionChange)="selectClinic($event)" [value]="clinic.name">{{clinic.name}}</mat-option>
     }
@@ -24,6 +25,12 @@
     <th mat-header-cell *matHeaderCellDef> Contact Info </th>
     <td mat-cell *matCellDef="let clinic">
       {{ clinic.contactInfo }}
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="hours">
+    <th mat-header-cell *matHeaderCellDef> Hours </th>
+    <td mat-cell *matCellDef="let clinic">
+      {{ clinic.open }} - {{ clinic.close }}
     </td>
   </ng-container>
 

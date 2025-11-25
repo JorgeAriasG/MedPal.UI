@@ -1,23 +1,39 @@
 import { createReducer, on } from '@ngrx/store';
-import { loginSuccess, loginFailure, rehydrateAuthState, logout, setClinic } from '../actions/auth.actions';
+import {
+  loginSuccess,
+  loginFailure,
+  rehydrateAuthState,
+  setClinic,
+  logout,
+} from '../actions/auth.actions';
 
 export interface AuthState {
-  userId: string | null;
+  userId: number | null;
+  userToken: string | null;
   error: string | null;
-  defaultClinicId: string | null;
+  clinicId: number | null;
 }
 
 export const initialState: AuthState = {
   userId: null,
+  userToken: null,
   error: null,
-  defaultClinicId: null
+  clinicId: null,
 };
 
 export const authReducer = createReducer(
   initialState,
-  on(loginSuccess, (state, { userId, defaultClinicId }) => ({ ...state, userId, defaultClinicId, error: null })),
+  on(loginSuccess, (state, { userId, userToken, clinicId }) => ({
+    ...state,
+    userId,
+    userToken,
+    clinicId,
+    error: null,
+  })),
   on(loginFailure, (state, { error }) => ({ ...state, error })),
+  on(logout, (state) => ({
+    ...initialState, // Reset state immediately when logout action is dispatched
+  })),
   on(rehydrateAuthState, (state, { userId }) => ({ ...state, userId })),
-  on(logout, state => ({ ...state, userId: null, error: null })), // Clear the state on logout
   on(setClinic, (state, { clinicId }) => ({ ...state, clinicId, error: null }))
 );

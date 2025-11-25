@@ -2,12 +2,18 @@
   <div>
     <form class="form" [formGroup]="patientForm">
       <mat-form-field class="input">
-        <mat-label>Name</mat-label>
-        <input formControlName="name" matInput [matAutocomplete]="auto">
-        <mat-autocomplete #auto="matAutocomplete" requireSelection (optionSelected)="selectPatient($event)">
-          @for (option of filteredPatients | async; track option) {
-            <mat-option [value]="option.name + ' ' + option.lastname">{{ option.name + ' ' + option.lastname }}</mat-option>
-          }
+        <mat-label>Patient Name</mat-label>
+        <input
+          type="text"
+          matInput
+          formControlName="name"
+          [matAutocomplete]="auto"
+          autocomplete="off"
+        />
+        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selectPatient($event)">
+          <mat-option *ngFor="let option of filteredPatients | async" [value]="option.name + ' ' + option.lastname">
+            {{ option.name }} {{ option.lastname }}
+          </mat-option>
         </mat-autocomplete>
       </mat-form-field>
 
