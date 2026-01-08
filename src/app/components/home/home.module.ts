@@ -34,6 +34,9 @@ import { MatTimepickerModule } from '@angular/material/timepicker';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { CalendarModule, DateAdapter } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
+import { ListComponent } from '../user/list/list/list.component';
+import { RolesListComponent } from '../user/roles/roles-list/roles-list.component';
+import { NewRoleComponent } from '../user/roles/new-role/new-role.component';
 
 @NgModule({
   declarations: [
@@ -45,6 +48,9 @@ import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
     AddClinicComponent,
     QuickactionMenuComponent,
     AppointmentComponent,
+    ListComponent,
+    RolesListComponent,
+    NewRoleComponent,
   ],
   exports: [
     HomeComponent,
@@ -55,6 +61,9 @@ import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
     AddClinicComponent,
     QuickactionMenuComponent,
     AppointmentComponent,
+    ListComponent,
+    RolesListComponent,
+    NewRoleComponent,
   ],
   imports: [
     CommonModule,
@@ -90,6 +99,8 @@ import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
       },
       { path: 'patients/list', component: PatientsComponent },
       { path: 'clinics/list', component: ClinicListComponent },
+      { path: 'users/list', component: ListComponent },
+      { path: 'roles/list', component: RolesListComponent },
     ]),
   ],
   providers: [MatNativeDateModule, provideHttpClient(withInterceptorsFromDi())],

@@ -21,9 +21,23 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { authReducer } from './store/reducers/auth.reducer';
 import { AuthEffects } from './store/effects/auth.effects';
 import { AngularMaterialModule } from './angular-material.module';
-import { CalendarModule } from 'angular-calendar';
-import { DateAdapter } from '@angular/material/core';
 import { AuthInterceptor } from './interceptors/authInterceptor';
+import { localStorageSync } from 'ngrx-store-localstorage';
+import { ActionReducer, MetaReducer } from '@ngrx/store';
+
+// Meta-reducer para persistencia automática del state
+export function localStorageSyncReducer(
+  reducer: ActionReducer<any>
+): ActionReducer<any> {
+  return localStorageSync({
+    keys: ['auth'], // Solo persiste el state de auth
+    rehydrate: true, // Rehidrata automáticamente al cargar la app
+    storage: sessionStorage, // Usa sessionStorage en lugar de localStorage
+    storageKeySerializer: (key) => `ngrx_${key}`, // Prefijo para las keys
+  })(reducer);
+}
+
+export const metaReducers: MetaReducer<any>[] = [localStorageSyncReducer];
 
 @NgModule({
   declarations: [AppComponent, LoginComponent, SignupComponent],
@@ -37,12 +51,19 @@ import { AuthInterceptor } from './interceptors/authInterceptor';
     FormsModule,
     AngularMaterialModule,
     SharedModule,
-    StoreModule.forRoot({ auth: authReducer }),
+    StoreModule.forRoot({ auth: authReducer }, { metaReducers }),
     EffectsModule.forRoot([AuthEffects]),
 
-    StoreDevtoolsModule.instrument({ maxAge: 25, connectInZone: true }),
+    StoreDevtoolsModule.instrument({
+      maxAge: 25,
+      connectInZone: true,
+      trace: true,
+    }),
   ],
-  providers: [provideHttpClient(withInterceptorsFromDi()), { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }],
+  providers: [
+    provideHttpClient(withInterceptorsFromDi()),
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+  ],
   schemas: [],
 })
 export class AppModule {}

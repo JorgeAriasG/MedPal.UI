@@ -23,8 +23,7 @@ export const selectIsLoggedIn = createSelector(
   (userId: number | null) => !!userId
 );
 
-
-export const selectDefaultClinicId = createSelector(
+export const selectClinicId = createSelector(
   selectAuthState,
   (state: AuthState) => state.clinicId
 );

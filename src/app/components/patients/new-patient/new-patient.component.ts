@@ -1,15 +1,24 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  OnDestroy,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { PatientsService } from 'src/app/components/patients/services/patients.service';
 import { IPatient } from 'src/app/entities/IPatient';
-import { SessionService } from 'src/app/utils/session/session.service';
+import { Store } from '@ngrx/store';
+import { selectClinicId } from 'src/app/store/selectors/auth.selectors';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
-    selector: 'app-new-patient',
-    templateUrl: './new-patient.component.html',
-    styleUrls: ['./new-patient.component.css'],
-    standalone: false
+  selector: 'app-new-patient',
+  templateUrl: './new-patient.component.html',
+  styleUrls: ['./new-patient.component.css'],
+  standalone: false,
 })
-export class NewPatientComponent {
+export class NewPatientComponent implements OnInit, OnDestroy {
   @Output() patientAdded = new EventEmitter<void>();
 
   newPatient: IPatient = {
@@ -23,27 +32,32 @@ export class NewPatientComponent {
     dob: new Date(),
     gender: '',
     emergencyContact: '',
-    clinicId: this.getClinicId(),
+    clinicId: null,
   };
 
-  constructor(private patientsService: PatientsService, private session: SessionService) { }
+  private destroy$ = new Subject<void>();
+
+  constructor(private patientsService: PatientsService, private store: Store) {}
 
   ngOnInit(): void {
-
+    // Obtener clinicId del store
+    this.store
+      .select(selectClinicId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (clinicId) => {
+          console.log('Clinic ID from store:', clinicId);
+          this.newPatient.clinicId = clinicId;
+        },
+        error: (err) => {
+          console.error('Error getting clinic ID from store:', err);
+        },
+      });
   }
 
-    getClinicId(): number | null {
-    let clinicId: number | null = null;
-    this.session.getClinicId().subscribe({
-      next: (id) => {
-        console.log('Clinic ID:', id);
-        clinicId = id;
-      },
-      error: (err) => {
-        console.error('Error fetching clinic ID:', err);
-      }
-    });
-    return clinicId;
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   onSubmit(event: Event): void {
@@ -54,10 +68,13 @@ export class NewPatientComponent {
 
   async savePatient(): Promise<void> {
     try {
-      await this.patientsService.savePatient(this.newPatient).subscribe((response: any) => {
-        console.log('Patient:', response);
-        this.patientAdded.emit(); // Emit the event after saving the patient
-      });
+      this.patientsService
+        .savePatient(this.newPatient)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((response: any) => {
+          console.log('Patient:', response);
+          this.patientAdded.emit(); // Emit the event after saving the patient
+        });
     } catch (error) {
       console.error('Error fetching appointments:', error);
     }
@@ -75,13 +92,7 @@ export class NewPatientComponent {
       dob: new Date(),
       gender: '',
       emergencyContact: '',
-      clinic: {
-        id: 0,
-        name: '',
-        location: '',
-        contactInfo: ''
-      },
-      clinicId: null
+      clinicId: null,
     };
   }
 }
