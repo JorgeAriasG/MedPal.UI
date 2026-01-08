@@ -4,39 +4,43 @@ import {
   HttpHandler,
   HttpEvent,
   HttpInterceptor,
-  HttpErrorResponse
+  HttpErrorResponse,
 } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, switchMap, take } from 'rxjs/operators';
 import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
-import { SessionService } from '../utils/session/session.service';
+import { Store } from '@ngrx/store';
+import { userToken } from '../store/selectors/auth.selectors';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
   constructor(
-    private sessionService: SessionService,
+    private store: Store,
     private authService: AuthService,
     private router: Router
   ) {}
 
-  intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    // Get token from storage and attach to request
-    return this.sessionService.getUserToken().pipe(
+  intercept(
+    request: HttpRequest<unknown>,
+    next: HttpHandler
+  ): Observable<HttpEvent<unknown>> {
+    // Obtener token del store y adjuntarlo al request
+    return this.store.select(userToken).pipe(
       take(1),
-      switchMap((userToken: string | null) => {
-        if (userToken) {
+      switchMap((token: string | null) => {
+        if (token) {
           request = request.clone({
             setHeaders: {
-              Authorization: `Bearer ${userToken}`
-            }
+              Authorization: `Bearer ${token}`,
+            },
           });
         }
         return next.handle(request);
       }),
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
-          // Token expired or invalid
+          // Token expirado o inválido
           this.authService.logout();
           // this.router.navigate(['/login']);
         }

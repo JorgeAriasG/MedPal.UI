@@ -6,29 +6,32 @@ import { IClinic } from 'src/app/entities/IClinic';
 import { AuthState } from 'src/app/store/reducers/auth.reducer';
 import { selectUserId } from 'src/app/store/selectors/auth.selectors';
 import { switchMap } from 'rxjs/operators';
-import { SessionService } from 'src/app/utils/session/session.service';
+import { ApiService } from 'src/app/services/api.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ClinicService {
-  private baseUrl = 'http://localhost:5126/api/clinic';
+  private endpoint = 'clinic';
 
-  constructor(private http: HttpClient, private session: SessionService) { }
+  constructor(private store: Store, private apiService: ApiService) {}
 
   addClinic(clinic: IClinic): Observable<any> {
-    return this.session.getStoreUserId().pipe(
-      switchMap((userId: number | null) => this.http.post(`${this.baseUrl}?userId=${userId}`, clinic))
-    );
+    // Usar selector de NgRx en lugar de SessionService
+    return this.store
+      .select(selectUserId)
+      .pipe(
+        switchMap((userId: number | null) =>
+          this.apiService.post(`${this.endpoint}?userId=${userId}`, clinic)
+        )
+      );
   }
 
   editClinic(clinic: IClinic): Observable<any> {
-    return this.http.put(`${this.baseUrl}`, clinic);
+    return this.apiService.put(`${this.endpoint}`, clinic);
   }
 
   getClinics(): Observable<any> {
-    return this.session.getStoreUserId().pipe(
-      switchMap((userId: number | null) => this.http.get<IClinic[]>(`${this.baseUrl}?Id=${userId}`))
-    );
+    return this.apiService.get(`${this.endpoint}`);
   }
 }

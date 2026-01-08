@@ -1,27 +1,60 @@
 import { IClinic } from 'src/app/entities/IClinic';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { PatientsService } from 'src/app/components/patients/services/patients.service';
 import { IPatient } from 'src/app/entities/IPatient';
 import { EditModalComponent } from '../../../shared/edit-modal/edit-modal.component';
 import { MatDialog } from '@angular/material/dialog';
+import { Store } from '@ngrx/store';
+import { selectClinicId } from 'src/app/store/selectors/auth.selectors';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
-    selector: 'app-patients',
-    templateUrl: './patients.component.html',
-    styleUrls: ['./patients.component.css'],
-    standalone: false
+  selector: 'app-patients',
+  templateUrl: './patients.component.html',
+  styleUrls: ['./patients.component.css'],
+  standalone: false,
 })
-export class PatientsComponent implements OnInit {
+export class PatientsComponent implements OnInit, OnDestroy {
   patients: IPatient[] = [];
   addPatient: boolean = false;
-  displayedColumns: string[] = ['name', 'middlename', 'lastname', 'email', 'phone', 'clinicName', 'actions'];
+  displayedColumns: string[] = [
+    'name',
+    'middlename',
+    'lastname',
+    'email',
+    'phone',
+    'clinicName',
+    'actions',
+  ];
   editPatientId: any = null;
   editPatientData: Partial<IPatient> = {};
+  clinicId: number | null | undefined;
 
-  constructor(private patientsService: PatientsService, private dialog: MatDialog) { }
+  private destroy$ = new Subject<void>();
+
+  constructor(
+    private patientsService: PatientsService,
+    private dialog: MatDialog,
+    private store: Store
+  ) {}
 
   ngOnInit(): void {
-    this.getPatients();
+    this.store
+      .select(selectClinicId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (clinicId) => {
+          this.clinicId = clinicId;
+          console.log('Clinic ID in PatientsComponent from store:', clinicId);
+          this.getPatients();
+        },
+      });
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   addPatientToggle(): void {
@@ -36,27 +69,23 @@ export class PatientsComponent implements OnInit {
   }
 
   getPatients(): void {
-    this.patientsService.getPatients().subscribe(patients => {
-      this.patients = patients;
-      // this.patients.forEach(patient => {
-      //   if (patient.clinic == null || patient.clinic == undefined) {
-      //     patient.clinic = {
-      //       id: 0,
-      //       name: 'No clinic',
-      //       location: '',
-      //       contactInfo: ''
-      //     }
-      //   }
-      // });
-      console.log('Patients loaded:', this.patients);
-    });
+    this.patientsService
+      .getPatients(this.clinicId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((patients) => {
+        this.patients = patients;
+        console.log('Patients loaded:', this.patients);
+      });
   }
 
   deletePatient(id: number): void {
-    this.patientsService.deletePatient(id).subscribe(res => {
-      this.getPatients();
-      console.log(res);
-    })
+    this.patientsService
+      .deletePatient(id)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((res) => {
+        this.getPatients();
+        console.log(res);
+      });
   }
 
   // editPatient(patient: IPatient): void {
@@ -66,15 +95,31 @@ export class PatientsComponent implements OnInit {
   // }
 
   editPatient(patient: IPatient): void {
-    this.dialog.open(EditModalComponent, {width: '400px', data: {...patient}});
+    this.dialog
+      .open(EditModalComponent, {
+        data: {
+          entityType: 'patient',
+          data: patient,
+          title: 'Edit Patient',
+        },
+      })
+      .afterClosed()
+      .subscribe((result) => {
+        if (result) {
+          this.saveEdit(result);
+        }
+      });
   }
 
   saveEdit(patient: Partial<IPatient>): void {
-    this.patientsService.editPatient(patient).subscribe(res => {
-      this.cancelEdit();
-      this.getPatients();
-      console.log(res);
-    });
+    this.patientsService
+      .editPatient(patient)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((res) => {
+        this.cancelEdit();
+        this.getPatients();
+        console.log(res);
+      });
   }
 
   cancelEdit(): void {

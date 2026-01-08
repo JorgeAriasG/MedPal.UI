@@ -1,7 +1,9 @@
-.edit-form {
+.form-container {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  padding: 16px;
+  max-width: 500px;
 }
 
 .full-width {
@@ -10,15 +12,7 @@
 
 .button-group {
   display: flex;
-  gap: 12px;
-  margin-top: 24px;
+  gap: 8px;
   justify-content: flex-end;
-}
-
-button {
-  min-width: 100px;
-}
-
-mat-dialog-content {
-  padding: 20px;
+  margin-top: 16px;
 }

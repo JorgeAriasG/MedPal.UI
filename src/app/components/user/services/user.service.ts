@@ -8,17 +8,29 @@ import * as CryptoJS from 'crypto-js';
   providedIn: 'root'
 })
 export class UserService {
-  private apiUrl = 'http://localhost:5126/api/User'; // Update with your API URL
+  private apiUrl = 'http://localhost:5126/api/User';
 
   constructor(private http: HttpClient) {}
 
   register(user: IUser): Observable<any> {
-    // Encrypt the password before sending it to the API
     const encryptedPassword = CryptoJS.SHA256(user.password).toString();
     const userToRegister = {
       ...user,
-      passwordHash: encryptedPassword // Assuming the API will hash the password
+      passwordHash: encryptedPassword
     };
     return this.http.post(this.apiUrl, userToRegister);
+  }
+
+  getUsers(clinicId?: number | null): Observable<IUser[]> {
+    const url = clinicId ? `${this.apiUrl}?clinicId=${clinicId}` : this.apiUrl;
+    return this.http.get<IUser[]>(url);
+  }
+
+  deleteUser(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${id}`);
+  }
+
+  editUser(user: Partial<IUser>): Observable<any> {
+    return this.http.put(this.apiUrl, user);
   }
 }

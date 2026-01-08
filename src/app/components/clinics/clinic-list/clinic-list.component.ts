@@ -1,84 +1,120 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AddClinicComponent } from '../add-clinic/add-clinic.component';
 import { ClinicService } from '../services/clinic.service';
 import { IClinic } from 'src/app/entities/IClinic';
 import { MatOptionSelectionChange } from '@angular/material/core';
-import { SessionService } from 'src/app/utils/session/session.service';
-import { props, Store } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { AuthState } from 'src/app/store/reducers/auth.reducer';
-import { Observable } from 'rxjs';
-import { selectDefaultClinicId } from 'src/app/store/selectors/auth.selectors';
+import { selectClinicId } from 'src/app/store/selectors/auth.selectors';
 import { setClinic } from 'src/app/store/actions/auth.actions';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
-    selector: 'app-clinic-list',
-    templateUrl: './clinic-list.component.html',
-    styleUrls: ['./clinic-list.component.css'],
-    standalone: false
+  selector: 'app-clinic-list',
+  templateUrl: './clinic-list.component.html',
+  styleUrls: ['./clinic-list.component.css'],
+  standalone: false,
 })
-export class ClinicListComponent {
-  displayedColumns: string[] = ['clinicName', 'location', 'contactInfo', 'hours', 'actions'];
+export class ClinicListComponent implements OnInit, OnDestroy {
+  displayedColumns: string[] = [
+    'clinicName',
+    'location',
+    'contactInfo',
+    'hours',
+    'actions',
+  ];
   clinics: IClinic[] = [];
   isEdit: boolean = false;
   clinicId: number | null | undefined;
   selectedClinicName: string | null = null;
-  // selectClinic$: Observable<number | null>;
 
-  constructor(private dialog: MatDialog, private clinicService: ClinicService, private store: Store<{ auth: AuthState }>, private session: SessionService) {
-    // this.selectClinic$ = this.store.select(selectDefaultClinicId);
-  }
+  // Subject para cancelar suscripciones
+  private destroy$ = new Subject<void>();
+
+  constructor(
+    private dialog: MatDialog,
+    private clinicService: ClinicService,
+    private store: Store<{ auth: AuthState }>
+  ) {}
 
   ngOnInit() {
     this.getClinics();
-    this.getClinicId();
+
+    // Usar takeUntil para cancelar la suscripción cuando el componente se destruya
+    this.store
+      .select(selectClinicId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (clinicId) => {
+          console.log('Clinic ID from store:', clinicId);
+          this.clinicId = clinicId;
+          // Actualizar el nombre de la clínica seleccionada
+          this.selectedClinicName =
+            this.clinics.find((clinic) => clinic.id === this.clinicId)?.name ??
+            null;
+        },
+        error: (err) => {
+          console.error('Error getting clinic ID from store:', err);
+        },
+      });
   }
 
-  getClinicId(): void {
-    this.session.getClinicId().subscribe({
-      next: clinicId => {
-        console.log('Clinic ID:', clinicId);
-        this.clinicId = clinicId;
-      },
-      error: err => {
-        console.error('Error fetching clinic ID:', err);
-      }});
+  ngOnDestroy() {
+    // Cancelar todas las suscripciones
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   selectClinic($event: MatOptionSelectionChange): void {
-    const selectedClinidId = this.clinics.find(clinic => clinic.name === $event.source.value)?.id ?? null;
-    this.store.dispatch(setClinic({ clinicId: selectedClinidId }));
-      console.log('Selected Clinic ID:', selectedClinidId);
+    this.clinicId =
+      this.clinics.find((clinic) => clinic.name === $event.source.value)?.id ??
+      null;
+    this.store.dispatch(setClinic({ clinicId: this.clinicId }));
+    console.log('Selected Clinic ID:', this.clinicId);
     console.log($event);
   }
 
   addClinicToggle(): void {
-    this.dialog.open(AddClinicComponent, {width: '400px'});
-    this.dialog.afterAllClosed.subscribe(res => {
-      console.log(res);
-      this.getClinics();
-    });
+    const dialogRef = this.dialog.open(AddClinicComponent, { width: '400px' });
+
+    // Usar takeUntil para cancelar esta suscripción también
+    dialogRef
+      .afterClosed()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((res) => {
+        console.log(res);
+        if (res) {
+          this.getClinics();
+        }
+      });
   }
 
   async getClinics(): Promise<void> {
     try {
-      await this.clinicService.getClinics().subscribe(clinics => {
-        console.log('Clinics', clinics);
-        this.clinics = clinics;
-        this.selectedClinicName = this.clinics.find(clinic => clinic.id === this.clinicId)?.name ?? null;
-      });
-    } catch(error) {
+      this.clinicService
+        .getClinics()
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((clinics) => {
+          console.log('Clinics', clinics);
+          this.clinics = clinics;
+          this.selectedClinicName =
+            this.clinics.find((clinic) => clinic.id === this.clinicId)?.name ??
+            null;
+        });
+    } catch (error) {
       console.error(error);
     }
   }
 
   editClinic(clinic: IClinic): void {
     this.isEdit = true;
-    this.dialog.open(AddClinicComponent, {width: '400px', data: [clinic, this.isEdit]})
+    this.dialog.open(AddClinicComponent, {
+      width: '400px',
+      data: [clinic, this.isEdit],
+    });
   }
 
-  deleteClinic(id: number):void {
-
-  }
-
+  deleteClinic(id: number): void {}
 }

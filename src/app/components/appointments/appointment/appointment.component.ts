@@ -1,18 +1,19 @@
-import { on } from '@ngrx/store';
 import { IAppointment } from './../../../entities/IAppointment';
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { faPencil } from '@fortawesome/free-solid-svg-icons';
 import { AppointmensService } from '../services/appointmens.service';
 import { MatDialog } from '@angular/material/dialog';
 import { NewAppointmentComponent } from '../new-appointment/new-appointment.component';
 import { EditModalComponent } from 'src/app/shared/edit-modal/edit-modal.component';
 import { IInputData } from 'src/app/entities/IInputData';
-import { AppointmentModel } from 'src/app/entities/AppointmentModel';
-import { IPatient } from 'src/app/entities/IPatient';
-import { SessionService } from 'src/app/utils/session/session.service';
 import { CalendarEvent } from 'calendar-utils';
-import { Validators } from '@angular/forms';
 import { icon } from '@fortawesome/fontawesome-svg-core';
+import { ClinicService } from '../../clinics/services/clinic.service';
+import { Store } from '@ngrx/store';
+import { selectClinicId } from 'src/app/store/selectors/auth.selectors';
+import { setClinic } from 'src/app/store/actions/auth.actions';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-appointment',
@@ -20,9 +21,9 @@ import { icon } from '@fortawesome/fontawesome-svg-core';
   styleUrls: ['./appointment.component.css'],
   standalone: false,
 })
-export class AppointmentComponent {
+export class AppointmentComponent implements OnInit, OnDestroy {
   faPencil = faPencil;
-  appointments: any;
+  appointments: any[] = [];
   clinicId: number | null | undefined;
   inputData: IInputData = {
     isEditable: false,
@@ -32,49 +33,89 @@ export class AppointmentComponent {
   events: CalendarEvent[] = [];
   currentAppointmentId: number | null = null;
 
+  private destroy$ = new Subject<void>();
+
   constructor(
     private appointmentService: AppointmensService,
     private dialog: MatDialog,
-    private session: SessionService
+    private clinicService: ClinicService,
+    private store: Store
   ) {}
 
   ngOnInit() {
-    this.getClinicId();
+    this.store
+      .select(selectClinicId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (clinicId) => {
+          console.log('Clinic ID from store in appointments:', clinicId);
+          if (clinicId) {
+            this.clinicId = clinicId;
+            this.getAllAppointmentsById();
+          } else {
+            this.clinicService
+              .getClinics()
+              .pipe(takeUntil(this.destroy$))
+              .subscribe({
+                next: (clinics) => {
+                  if (clinics && clinics.length > 0) {
+                    console.log(
+                      'Setting default clinic from appointment component:',
+                      clinics[0].id
+                    );
+                    this.store.dispatch(setClinic({ clinicId: clinics[0].id }));
+                  }
+                },
+                error: (err) => {
+                  console.error('Error fetching clinics:', err);
+                },
+              });
+          }
+        },
+        error: (err) => {
+          console.error('Error getting clinic ID from store:', err);
+        },
+      });
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   addAppointmentToggle(): void {
-    this.dialog.open(NewAppointmentComponent, {
+    const dialogRef = this.dialog.open(NewAppointmentComponent, {
       width: '800px',
       data: this.inputData,
     });
-    this.dialog.afterAllClosed.subscribe((res) => {
-      console.log(res);
-      // this.getClinics();
-    });
+
+    dialogRef
+      .afterClosed()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((res) => {
+        console.log(res);
+        if (res) {
+          this.getAllAppointmentsById();
+        }
+      });
   }
 
-  getClinicId(): void {
-    this.session.getClinicId().subscribe({
-      next: (clinicId) => {
-        console.log('Clinic ID:', clinicId);
-        this.clinicId = clinicId;
-        this.getAllAppointmentsById();
-      },
-      error: (err) => {
-        console.error('Error fetching clinic ID:', err);
-      },
-    });
-  }
+  getAllAppointmentsById(): void {
+    if (!this.clinicId) {
+      console.warn('Clinic ID is not set');
+      return;
+    }
 
-  async getAllAppointmentsById() {
-    try {
-      await this.appointmentService
-        .getAppointments(Number(this.clinicId))
-        .subscribe((response: any) => {
+    this.appointmentService
+      .getAppointments(Number(this.clinicId))
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response: any[]) => {
           this.appointments = response;
           this.events = this.appointments.map((appointment: any) => {
             const [year, month, day] = appointment.date.split('-').map(Number);
             const [hour, minute] = appointment.time.split(':').map(Number);
+
             return {
               start: new Date(year, month - 1, day, hour, minute),
               end: new Date(year, month - 1, day, hour, minute),
@@ -85,84 +126,88 @@ export class AppointmentComponent {
                   label: 'Edit',
                   icon: icon(faPencil),
                   onClick: ({ event }: { event: CalendarEvent }) => {
-                    this.currentAppointmentId = appointment.id;
-                    this.inputData.isEditable = true;
-                    this.inputData.data = {
-                      name: appointment.patient.name,
-                      lastname: appointment.patient.lastname,
-                      date: appointment.date,
-                      time: appointment.time,
-                    };
-                    console.log('Input Data:', this.inputData);
-                    const editConfig = {
-                      title: 'Edit Appointment',
-                      fields: [
-                        {
-                          key: 'name',
-                          label: 'Name',
-                          type: 'text',
-                          value: appointment.patient.name,
-                          validators: [Validators.required],
-                          disabled: true,
-                        },
-                        {
-                          key: 'lastname',
-                          label: 'Lastname',
-                          type: 'text',
-                          value: appointment.patient.lastname,
-                          disabled: true,
-                        },
-                        {
-                          key: 'date',
-                          label: 'Date',
-                          type: 'date',
-                          value: appointment.date,
-                        },
-                        {
-                          key: 'time',
-                          label: 'Time',
-                          type: 'time',
-                          value: appointment.time,
-                        },
-                        {
-                          key: 'notes',
-                          label: 'Notes',
-                          type: 'textarea',
-                          value: appointment.notes,
-                        },
-                      ],
-                    };
-                    const dialogRef = this.dialog.open(EditModalComponent, {
-                      data: editConfig,
-                    });
-                    dialogRef.componentInstance.formSubmitted.subscribe(
-                      (formData) => {
-                        this.onFormSubmitted(formData);
-                      }
-                    );
+                    this.openEditModal(appointment);
                   },
                 },
               ],
             };
           });
           console.log('Appointments:', this.appointments);
-        });
-    } catch (error) {
-      console.error('Error fetching appointments:', error);
-    }
+        },
+        error: (error) => {
+          console.error('Error fetching appointments:', error);
+        },
+      });
   }
+
+  /**
+   * Abre el modal de edición con la configuración del formulario
+   */
+  private openEditModal(appointment: any): void {
+    this.currentAppointmentId = appointment.id;
+
+    const dialogRef = this.dialog.open(EditModalComponent, {
+      width: '600px',
+      data: {
+        entityType: 'appointment',
+        data: {
+          date: appointment.date,
+          time: appointment.time,
+          notes: appointment.notes,
+          status: appointment.status,
+          patientName: appointment.patient.name,
+          patientLastname: appointment.patient.lastname,
+        },
+        title: 'Edit Appointment',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.onFormSubmitted(result);
+      }
+      this.currentAppointmentId = null;
+    });
+  }
+
+  /**
+   * Procesa los datos del formulario y actualiza la cita
+   */
   onFormSubmitted(data: any): void {
     console.log('Form Data:', data);
 
+    // Convertir datos al formato esperado por la API
+    const dateStr =
+      data.date instanceof Date
+        ? data.date.toISOString().split('T')[0]
+        : data.date;
+
+    const timeStr =
+      data.time instanceof Date
+        ? data.time.toTimeString().substring(0, 5)
+        : data.time;
+
+    const [year, month, day] = dateStr.split('-').map(Number);
+    const [hour, minute] = timeStr.split(':').map(Number);
+
     const updatedAppointment: IAppointment = {
-      date: data.date ? data.date.toISOString().split('T')[0] : '',
-      // TODO: FIX time and date format before stored to backend (should be HH:mm) and local timezone
-      time: data.time ? data.time.split('T')[1].substring(0, 5) : '',
+      date: {
+        year,
+        month,
+        day,
+      },
+      time: {
+        hour,
+        minute,
+      },
       notes: data.notes || '',
-      status: 'Scheduled',
+      status: data.status || 'Scheduled',
+      clinicId: this.clinicId || undefined,
     };
+
     this.appointmentService
       .updateAppointment(updatedAppointment, this.currentAppointmentId!)
+      .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
           console.log('Appointment updated successfully:', response);
@@ -172,6 +217,5 @@ export class AppointmentComponent {
           console.error('Error updating appointment:', error);
         },
       });
-    this.currentAppointmentId = null;
   }
 }

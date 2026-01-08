@@ -13,6 +13,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatInputModule } from '@angular/material/input';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
 
 @NgModule({
   declarations: [MenuComponent, EditModalComponent],
@@ -27,6 +29,8 @@ import { MatInputModule } from '@angular/material/input';
     MatFormFieldModule,
     MatDatepickerModule,
     MatInputModule,
+    MatOptionModule,
+    MatSelectModule,
     FormsModule,
     ReactiveFormsModule,
     RouterModule,

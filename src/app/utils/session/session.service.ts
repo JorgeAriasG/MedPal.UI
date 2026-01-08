@@ -1,9 +1,8 @@
-import { selectDefaultClinicId } from 'src/app/store/selectors/auth.selectors';
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable, switchMap } from 'rxjs';
 import { AuthState } from 'src/app/store/reducers/auth.reducer';
-import { selectUserId, userToken } from 'src/app/store/selectors/auth.selectors';
+import { selectUserId, userToken, selectClinicId } from 'src/app/store/selectors/auth.selectors';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +17,7 @@ export class SessionService {
 
   // TODO: Clinic is returning as 0
   getClinicId(): Observable<number | null> {
-    return this.store.select(selectDefaultClinicId);
+    return this.store.select(selectClinicId);
   }
 
   getUserToken(): Observable<string | null> {

@@ -34,6 +34,11 @@ export const authReducer = createReducer(
   on(logout, (state) => ({
     ...initialState, // Reset state immediately when logout action is dispatched
   })),
-  on(rehydrateAuthState, (state, { userId }) => ({ ...state, userId })),
+  on(rehydrateAuthState, (state, { userId, userToken, clinicId }) => ({
+    ...state,
+    userId,
+    userToken,
+    clinicId,
+  })),
   on(setClinic, (state, { clinicId }) => ({ ...state, clinicId, error: null }))
 );
