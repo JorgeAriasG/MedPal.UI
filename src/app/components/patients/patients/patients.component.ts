@@ -1,4 +1,4 @@
-import { IClinic } from 'src/app/entities/IClinic';
+﻿import { IClinic } from 'src/app/entities/IClinic';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { PatientsService } from 'src/app/components/patients/services/patients.service';
 import { IPatient } from 'src/app/entities/IPatient';
@@ -126,4 +126,9 @@ export class PatientsComponent implements OnInit, OnDestroy {
     this.editPatientId = null;
     this.editPatientData = {};
   }
+
+  trackByPatient(index: number, patient: IPatient): string {
+    return patient.email;
+  }
 }
+

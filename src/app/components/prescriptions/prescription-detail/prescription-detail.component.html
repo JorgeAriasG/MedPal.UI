@@ -1,0 +1,88 @@
+<div class="container mt-4" *ngIf="prescription; else loadingOrError">
+  <div class="d-flex justify-content-between align-items-center mb-3 no-print">
+    <h2>Prescription Details</h2>
+    <button mat-raised-button color="primary" (click)="print()">
+      <mat-icon>print</mat-icon> Print
+    </button>
+  </div>
+
+  <mat-card id="printable-area">
+    <mat-card-header>
+      <div class="d-flex w-100 justify-content-between align-items-start">
+        <div>
+          <mat-card-title>Medical Prescription</mat-card-title>
+          <mat-card-subtitle
+            >Date:
+            {{ prescription.createdAt | date : "medium" }}</mat-card-subtitle
+          >
+        </div>
+        <div *ngIf="qrCodeUrl">
+          <img [src]="qrCodeUrl" alt="QR Code" class="qr-code" />
+          <p class="text-center small mt-1">Scan to Verify</p>
+        </div>
+      </div>
+    </mat-card-header>
+
+    <mat-card-content class="mt-3">
+      <div class="row mb-4">
+        <div class="col-md-6">
+          <h4>Patient</h4>
+          <p class="lead">
+            {{ prescription.patientName || "Unknown Patient" }}
+          </p>
+          <!-- Additional patient details if available in IPrescription -->
+        </div>
+        <div class="col-md-6 text-end">
+          <h4>Doctor</h4>
+          <p class="lead">{{ prescription.doctorName || "Dr. Assigned" }}</p>
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <h4>Diagnosis</h4>
+        <p>{{ prescription.diagnosis }}</p>
+      </div>
+
+      <h4>Medications</h4>
+      <table class="table table-bordered mt-2">
+        <thead>
+          <tr>
+            <th>Medication</th>
+            <th>Dose</th>
+            <th>Frequency</th>
+            <th>Duration</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of prescription.items">
+            <td>{{ item.medicationName }}</td>
+            <td>{{ item.dosage }}</td>
+            <td>{{ item.frequency }}</td>
+            <td>{{ item.duration }}</td>
+            <td>{{ item.instructions }}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="mt-5 pt-3 border-top">
+        <p class="small text-muted">
+          Unique Validation Code: {{ prescription.uniqueCode }}
+        </p>
+        <p class="small text-muted">
+          Expires: {{ prescription.expiresAt | date : "mediumDate" }}
+        </p>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+<ng-template #loadingOrError>
+  <div class="container mt-4" *ngIf="loading">
+    <mat-spinner></mat-spinner>
+    <p>Loading prescription...</p>
+  </div>
+  <div class="container mt-4" *ngIf="error && !loading">
+    <div class="alert alert-danger">{{ error }}</div>
+  </div>
+</ng-template>

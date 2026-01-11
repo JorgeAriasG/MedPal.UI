@@ -117,4 +117,8 @@ export class ClinicListComponent implements OnInit, OnDestroy {
   }
 
   deleteClinic(id: number): void {}
+
+  trackByClinic(index: number, clinic: IClinic): number | null {
+    return clinic.id;
+  }
 }

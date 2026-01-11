@@ -1,0 +1,19 @@
+.validate-card {
+    max-width: 500px;
+    width: 100%;
+    margin: 20px;
+}
+
+.status-icon {
+    font-size: 64px;
+    height: 64px;
+    width: 64px;
+}
+
+.min-vh-100 {
+    min-height: 100vh;
+}
+
+.bg-light {
+    background-color: #f8f9fa;
+}

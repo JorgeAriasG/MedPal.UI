@@ -11,6 +11,9 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -25,7 +28,9 @@ import {
   withInterceptorsFromDi,
 } from '@angular/common/http';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { NewPatientComponent } from '../patients/new-patient/new-patient.component';
+import { PatientDetailComponent } from '../patients/patient-detail/patient-detail.component';
 import { AddClinicComponent } from '../clinics/add-clinic/add-clinic.component';
 import { QuickactionMenuComponent } from '../quickaction-menu/quickaction-menu.component';
 import { AppointmentComponent } from '../appointments/appointment/appointment.component';
@@ -37,6 +42,9 @@ import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { ListComponent } from '../user/list/list/list.component';
 import { RolesListComponent } from '../user/roles/roles-list/roles-list.component';
 import { NewRoleComponent } from '../user/roles/new-role/new-role.component';
+import { CreatePrescriptionComponent } from '../prescriptions/create-prescription/create-prescription.component';
+import { PrescriptionDetailComponent } from '../prescriptions/prescription-detail/prescription-detail.component';
+import { MedicalHistoryModule } from '../medical-history/medical-history.module';
 
 @NgModule({
   declarations: [
@@ -45,12 +53,15 @@ import { NewRoleComponent } from '../user/roles/new-role/new-role.component';
     PatientsComponent,
     ClinicListComponent,
     NewPatientComponent,
+    PatientDetailComponent,
     AddClinicComponent,
     QuickactionMenuComponent,
     AppointmentComponent,
     ListComponent,
     RolesListComponent,
     NewRoleComponent,
+    CreatePrescriptionComponent,
+    PrescriptionDetailComponent,
   ],
   exports: [
     HomeComponent,
@@ -74,6 +85,9 @@ import { NewRoleComponent } from '../user/roles/new-role/new-role.component';
     MatListModule,
     MatIconModule,
     MatToolbarModule,
+    MatTabsModule,
+    MatChipsModule,
+    MatTooltipModule,
     FontAwesomeModule,
     MatFormFieldModule,
     MatInputModule,
@@ -87,6 +101,8 @@ import { NewRoleComponent } from '../user/roles/new-role/new-role.component';
     ReactiveFormsModule,
     FormsModule,
     MatDialogModule,
+    MatProgressSpinnerModule,
+    MedicalHistoryModule,
     CalendarModule.forRoot({
       provide: DateAdapter,
       useFactory: adapterFactory,
@@ -97,10 +113,16 @@ import { NewRoleComponent } from '../user/roles/new-role/new-role.component';
         path: 'appointments/new-appointment',
         component: NewAppointmentComponent,
       },
-      { path: 'patients/list', component: PatientsComponent },
-      { path: 'clinics/list', component: ClinicListComponent },
-      { path: 'users/list', component: ListComponent },
-      { path: 'roles/list', component: RolesListComponent },
+      { path: 'patients', component: PatientsComponent },
+      { path: 'patients/detail/:id', component: PatientDetailComponent },
+      { path: 'clinics', component: ClinicListComponent },
+      { path: 'users', component: ListComponent },
+      { path: 'roles', component: RolesListComponent },
+      { path: 'prescriptions/new', component: CreatePrescriptionComponent },
+      {
+        path: 'prescriptions/detail/:id',
+        component: PrescriptionDetailComponent,
+      },
     ]),
   ],
   providers: [MatNativeDateModule, provideHttpClient(withInterceptorsFromDi())],

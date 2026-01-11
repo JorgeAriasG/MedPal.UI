@@ -7,8 +7,11 @@ import {
   loginFailure,
   logout,
   setClinic,
+  loadUserProfile,
+  loadUserProfileSuccess,
+  loadUserProfileFailure,
 } from '../actions/auth.actions';
-import { catchError, map, mergeMap, tap } from 'rxjs/operators';
+import { catchError, map, mergeMap, tap, switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -36,6 +39,7 @@ export class AuthEffects {
               userId: response.id,
               userToken: response.token,
               clinicId: response.clinicId ?? null,
+              specialty: response.specialty || undefined,
             });
           }),
           catchError((error) => {
@@ -47,8 +51,44 @@ export class AuthEffects {
     )
   );
 
-  // Después de login exitoso, si no hay clinicId, obtener la primera clínica
-  loginSuccess$ = createEffect(
+  // After successful login, fetch user profile to get specialty and other data
+  loginSuccessLoadProfile$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(loginSuccess),
+      switchMap(() => {
+        console.log('Login successful - loading user profile');
+        return of(loadUserProfile());
+      })
+    )
+  );
+
+  // Load user profile from User/me endpoint
+  loadUserProfile$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(loadUserProfile),
+      switchMap(() => {
+        return this.authService.getCurrentUser().pipe(
+          map((response) => {
+            console.log('User profile loaded:', response);
+            return loadUserProfileSuccess({
+              specialty: response.specialty || 'General',
+            });
+          }),
+          catchError((error) => {
+            console.error('Error loading user profile:', error);
+            return of(
+              loadUserProfileFailure({
+                error: 'Failed to load user profile',
+              })
+            );
+          })
+        );
+      })
+    )
+  );
+
+  // After clinic selection, navigate to home
+  loginSuccessClinic$ = createEffect(
     () =>
       this.actions$.pipe(
         ofType(loginSuccess),
@@ -70,6 +110,19 @@ export class AuthEffects {
               },
             });
           }
+        })
+      ),
+    { dispatch: false }
+  );
+
+  // Navigate to home after user profile is loaded
+  loadUserProfileSuccess$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(loadUserProfileSuccess),
+        tap(({ specialty }) => {
+          console.log('User profile updated with specialty:', specialty);
+          this.router.navigate(['']);
         })
       ),
     { dispatch: false }

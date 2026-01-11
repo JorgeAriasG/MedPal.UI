@@ -1,13 +1,178 @@
-<div>
-  <div class="content">
-    <app-quickaction-menu></app-quickaction-menu>
-    <div class="calendar">
-      <div class="month">
-        <h2 class="mat-h2">Next appointmens</h2>
-            <div class="tasks">
-              <app-appointment></app-appointment>
+<div class="dashboard-container">
+  <!-- Header -->
+  <div class="dashboard-header">
+    <h1 class="dashboard-title">Dashboard</h1>
+    <p class="dashboard-subtitle">Welcome back, Doctor. Here's your clinic overview.</p>
+  </div>
+
+  <!-- KPI Cards Row -->
+  <div class="kpi-grid">
+    <!-- Appointments Today Card -->
+    <mat-card class="kpi-card">
+      <mat-card-content>
+        <div class="kpi-icon">
+          <mat-icon>event</mat-icon>
+        </div>
+        <h3 class="kpi-label">Appointments Today</h3>
+        <p class="kpi-value">{{ appointmentsTodayCount }}</p>
+        <p class="kpi-subtitle">This Week: {{ appointmentsThisWeekCount }}</p>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Total Patients Card -->
+    <mat-card class="kpi-card">
+      <mat-card-content>
+        <div class="kpi-icon">
+          <mat-icon>people</mat-icon>
+        </div>
+        <h3 class="kpi-label">Patients</h3>
+        <p class="kpi-value">{{ totalPatientsThisMonth }}</p>
+        <p class="kpi-subtitle">New: {{ newPatientsThisMonth }}</p>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Completion Rate Card -->
+    <mat-card class="kpi-card">
+      <mat-card-content>
+        <div class="kpi-icon">
+          <mat-icon>check_circle</mat-icon>
+        </div>
+        <h3 class="kpi-label">Completion Rate</h3>
+        <p class="kpi-value">{{ completionRatePercentage }}%</p>
+        <p class="kpi-subtitle">This Month</p>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Next Appointment Card -->
+    <mat-card class="kpi-card" *ngIf="nextAppointment">
+      <mat-card-content>
+        <div class="kpi-icon">
+          <mat-icon>schedule</mat-icon>
+        </div>
+        <h3 class="kpi-label">Next Appointment</h3>
+        <p class="kpi-value">{{ nextAppointment.time }}</p>
+        <p class="kpi-subtitle">{{ (patientMap.get(nextAppointment.patientId))?.name || 'Patient' }}</p>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="quick-actions">
+    <button mat-raised-button color="primary" (click)="openNewAppointmentDialog()" class="action-btn">
+      <mat-icon>add_circle</mat-icon>
+      <span>New Appointment</span>
+    </button>
+    <button mat-raised-button color="accent" (click)="navigateToCalendar()" class="action-btn">
+      <mat-icon>calendar_month</mat-icon>
+      <span>View Calendar</span>
+    </button>
+    <button mat-raised-button (click)="navigateToPatients()" class="action-btn">
+      <mat-icon>person_add</mat-icon>
+      <span>New Patient</span>
+    </button>
+  </div>
+
+  <!-- Main Content Grid -->
+  <div class="content-grid">
+    <!-- Upcoming Appointments Section -->
+    <div class="content-section upcoming-section">
+      <h2 class="section-title">
+        <mat-icon>event_note</mat-icon>
+        <span>Upcoming Appointments</span>
+      </h2>
+
+      <div *ngIf="upcomingAppointments.length > 0" class="appointments-list">
+        <div
+          *ngFor="let appointment of upcomingAppointments"
+          class="appointment-item"
+          [ngClass]="appointment.status | lowercase"
+        >
+          <div class="appointment-info">
+            <div class="appointment-time">
+              <p class="time">{{ appointment.time }}</p>
+              <p class="date">{{ appointment.date }}</p>
             </div>
+            <div class="appointment-details">
+              <h4 class="patient-name">{{ (patientMap.get(appointment.patientId))?.name }} {{ (patientMap.get(appointment.patientId))?.lastname }}</h4>
+              <p class="appointment-status" [ngClass]="'status-' + (appointment.status | lowercase)">
+                {{ appointment.status }}
+              </p>
+            </div>
+          </div>
+          <div class="appointment-actions">
+            <button mat-icon-button matTooltip="Edit" (click)="openEditAppointmentModal(appointment)">
+              <mat-icon>edit</mat-icon>
+            </button>
+          </div>
+        </div>
       </div>
+
+      <div *ngIf="upcomingAppointments.length === 0" class="empty-state">
+        <mat-icon>event_available</mat-icon>
+        <p>No upcoming appointments</p>
+      </div>
+    </div>
+
+    <!-- Recent Patients Section -->
+    <div class="content-section recent-section">
+      <h2 class="section-title">
+        <mat-icon>people</mat-icon>
+        <span>Recent Patients</span>
+      </h2>
+
+      <div *ngIf="recentPatients.length > 0" class="patients-list">
+        <div *ngFor="let patient of recentPatients" class="patient-item">
+          <div class="patient-avatar">
+            <mat-icon>account_circle</mat-icon>
+          </div>
+          <div class="patient-info">
+            <h4 class="patient-name">{{ patient.name }} {{ patient.lastname }}</h4>
+            <p class="patient-email">{{ patient.email }}</p>
+            <p class="patient-phone">{{ patient.phone }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="recentPatients.length === 0" class="empty-state">
+        <mat-icon>person_add</mat-icon>
+        <p>No recent patients</p>
+      </div>
+
+      <button mat-button class="view-all-btn" (click)="navigateToPatients()">
+        View All Patients →
+      </button>
+    </div>
+  </div>
+
+  <!-- Navigation Cards -->
+  <div class="nav-cards">
+    <h2 class="section-title">Quick Links</h2>
+
+    <div class="cards-grid">
+      <mat-card class="nav-card" (click)="navigateToPatients()">
+        <mat-card-content>
+          <mat-icon class="nav-icon">people</mat-icon>
+          <h3>Patients</h3>
+          <p>Manage patient information</p>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="nav-card" (click)="navigateToClinics()">
+        <mat-card-content>
+          <mat-icon class="nav-icon">local_hospital</mat-icon>
+          <h3>Clinics</h3>
+          <p>Manage medical centers</p>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="nav-card" (click)="navigateToPrescriptions()">
+        <mat-card-content>
+          <mat-icon class="nav-icon">prescription</mat-icon>
+          <h3>Prescriptions</h3>
+          <p>Create & manage prescriptions</p>
+        </mat-card-content>
+      </mat-card>
     </div>
   </div>
 </div>
+

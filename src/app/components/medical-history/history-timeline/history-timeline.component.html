@@ -1,0 +1,146 @@
+<div class="timeline-container">
+  <div *ngIf="historyEntries.length === 0" class="empty-state">
+    <mat-icon>event_note</mat-icon>
+    <p>No hay consultas registradas</p>
+  </div>
+
+  <div class="timeline">
+    <div
+      *ngFor="let entry of historyEntries; let i = index"
+      class="timeline-entry"
+    >
+      <div class="timeline-marker">
+        <div class="timeline-dot"></div>
+        <div class="timeline-line" *ngIf="i < historyEntries.length - 1"></div>
+      </div>
+
+      <mat-card class="timeline-card">
+        <mat-card-header>
+          <div class="entry-header">
+            <div>
+              <mat-card-title>{{ entry.specialtyType }}</mat-card-title>
+              <mat-card-subtitle>
+                {{ entry.createdAt | date : "medium" }} • Dr.
+                {{ entry.doctorName }}
+              </mat-card-subtitle>
+            </div>
+            <mat-chip
+              [style.background-color]="'#3f51b5'"
+              [style.color]="'white'"
+            >
+              {{ entry.specialtyType }}
+            </mat-chip>
+          </div>
+        </mat-card-header>
+
+        <mat-card-content>
+          <!-- Common Fields -->
+          <div class="common-info">
+            <div class="info-section">
+              <h4><mat-icon>assignment</mat-icon> Diagnóstico</h4>
+              <p>{{ entry.diagnosis }}</p>
+            </div>
+
+            <div class="info-section">
+              <h4><mat-icon>description</mat-icon> Notas Clínicas</h4>
+              <p class="clinical-notes">{{ entry.clinicalNotes }}</p>
+            </div>
+
+            <div class="info-section" *ngIf="entry.treatmentPlan">
+              <h4><mat-icon>healing</mat-icon> Plan de Tratamiento</h4>
+              <p>{{ entry.treatmentPlan }}</p>
+            </div>
+          </div>
+
+          <!-- Specialty-Specific Data -->
+          <div class="specialty-data" [ngSwitch]="entry.specialtyType">
+            <!-- Dental Data -->
+            <div *ngSwitchCase="'Dental'" class="dental-data">
+              <h4><mat-icon>medical_services</mat-icon> Odontograma</h4>
+              <div
+                class="teeth-summary"
+                *ngIf="getDentalData(entry) as dentalData"
+              >
+                <div class="teeth-grid">
+                  <div
+                    *ngFor="let toothNum of dentalData.teeth | keyvalue"
+                    class="tooth-summary"
+                    [style.background-color]="
+                      getToothStatusColor(toothNum.value.status)
+                    "
+                  >
+                    <span class="tooth-num">{{ toothNum.key }}</span>
+                    <span class="tooth-status">{{
+                      toothNum.value.status
+                    }}</span>
+                  </div>
+                </div>
+                <p *ngIf="dentalData.observations" class="observations">
+                  <strong>Observaciones:</strong> {{ dentalData.observations }}
+                </p>
+              </div>
+            </div>
+
+            <!-- Nutrition Data -->
+            <div *ngSwitchCase="'Nutrición'" class="nutrition-data">
+              <h4><mat-icon>restaurant</mat-icon> Evaluación Nutricional</h4>
+              <div
+                *ngIf="getNutritionData(entry) as nutritionData"
+                class="nutrition-summary"
+              >
+                <div class="nutrition-metrics">
+                  <div class="metric">
+                    <span class="metric-label">Peso:</span>
+                    <span class="metric-value"
+                      >{{ nutritionData.peso }} kg</span
+                    >
+                  </div>
+                  <div class="metric">
+                    <span class="metric-label">Altura:</span>
+                    <span class="metric-value"
+                      >{{ nutritionData.altura }} m</span
+                    >
+                  </div>
+                  <div class="metric">
+                    <span class="metric-label">IMC:</span>
+                    <span
+                      class="metric-value"
+                      [style.color]="getIMCColor(nutritionData.imc)"
+                    >
+                      {{ nutritionData.imc }}
+                    </span>
+                  </div>
+                  <div class="metric">
+                    <span class="metric-label">Calorías/día:</span>
+                    <span class="metric-value">{{
+                      nutritionData.caloriasDiarias
+                    }}</span>
+                  </div>
+                </div>
+                <p *ngIf="nutritionData.objetivo">
+                  <strong>Objetivo:</strong> {{ nutritionData.objetivo }}
+                </p>
+                <div *ngIf="nutritionData.restricciones.length > 0">
+                  <strong>Restricciones:</strong>
+                  <mat-chip-set>
+                    <mat-chip *ngFor="let r of nutritionData.restricciones">{{
+                      r
+                    }}</mat-chip>
+                  </mat-chip-set>
+                </div>
+              </div>
+            </div>
+
+            <!-- Generic Data -->
+            <div *ngSwitchDefault class="generic-data">
+              <h4><mat-icon>notes</mat-icon> Datos Adicionales</h4>
+              <div *ngIf="getGenericData(entry) as genericData">
+                <pre class="custom-data">{{ genericData.customData }}</pre>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div>

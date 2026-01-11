@@ -1,69 +1,104 @@
-<button (click)="addUserToggle()" mat-button>Add User</button>
-<div *ngIf="addUser">
-  <!-- <app-new-user (userAdded)="onUserAdded()"></app-new-user> -->
-</div>
+<div class="users-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="header-content">
+      <div class="page-title">
+        <mat-icon class="title-icon">people</mat-icon>
+        <span>Users</span>
+      </div>
+      <p class="page-subtitle">Manage system users and their clinic assignments</p>
+    </div>
+    <button mat-raised-button color="primary" (click)="addUserToggle()" class="add-button">
+      <mat-icon>add</mat-icon>
+      Add New User
+    </button>
+  </div>
 
-<table *ngIf="users.length > 0" mat-table [dataSource]="users">
-  <ng-container matColumnDef="name">
-    <th mat-header-cell *matHeaderCellDef> Name </th>
-    <td mat-cell *matCellDef="let user">
-      <ng-container *ngIf="editUserId === user.id; else viewModeName">
-        <mat-form-field>
-          <input matInput [(ngModel)]="editUserData.name" placeholder="Name" />
-        </mat-form-field>
+  <!-- Add User Form -->
+  <div *ngIf="addUser" class="add-user-section" [@slideDown]>
+    <!-- <app-new-user (userAdded)="onUserAdded()"></app-new-user> -->
+  </div>
+
+  <!-- Users Table -->
+  <div *ngIf="users.length > 0" class="table-wrapper" [@fadeIn]>
+    <table mat-table [dataSource]="users" class="users-table">
+      <!-- Name Column -->
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef class="name-column">
+          <div class="header-label">
+            <mat-icon>person</mat-icon>
+            Name
+          </div>
+        </th>
+        <td mat-cell *matCellDef="let user" class="name-cell">
+          {{ user.name }}
+        </td>
       </ng-container>
-      <ng-template #viewModeName>
-        {{ user.name }}
-      </ng-template>
-    </td>
-  </ng-container>
 
-  <ng-container matColumnDef="email">
-    <th mat-header-cell *matHeaderCellDef> Email </th>
-    <td mat-cell *matCellDef="let user">
-      <ng-container *ngIf="editUserId === user.id; else viewModeEmail">
-        <mat-form-field>
-          <input matInput [(ngModel)]="editUserData.email" placeholder="Email" />
-        </mat-form-field>
+      <!-- Email Column -->
+      <ng-container matColumnDef="email">
+        <th mat-header-cell *matHeaderCellDef class="email-column">
+          <div class="header-label">
+            <mat-icon>email</mat-icon>
+            Email
+          </div>
+        </th>
+        <td mat-cell *matCellDef="let user" class="email-cell">
+          {{ user.email }}
+        </td>
       </ng-container>
-      <ng-template #viewModeEmail>
-        {{ user.email }}
-      </ng-template>
-    </td>
-  </ng-container>
 
-  <ng-container matColumnDef="defaultClinicId">
-    <th mat-header-cell *matHeaderCellDef> Default Clinic </th>
-    <td mat-cell *matCellDef="let user">
-      <ng-container *ngIf="editUserId === user.id; else viewModeClinic">
-        <mat-form-field>
-          <input matInput [(ngModel)]="editUserData.defaultClinicId" placeholder="Clinic ID" />
-        </mat-form-field>
+      <!-- Default Clinic Column -->
+      <ng-container matColumnDef="defaultClinicId">
+        <th mat-header-cell *matHeaderCellDef class="clinic-column">
+          <div class="header-label">
+            <mat-icon>local_hospital</mat-icon>
+            Default Clinic
+          </div>
+        </th>
+        <td mat-cell *matCellDef="let user" class="clinic-cell">
+          <span *ngIf="user.defaultClinicId; else noClinic" class="clinic-badge">
+            {{ user.defaultClinicId }}
+          </span>
+          <ng-template #noClinic>
+            <span class="empty-badge">Not assigned</span>
+          </ng-template>
+        </td>
       </ng-container>
-      <ng-template #viewModeClinic>
-        {{ user.defaultClinicId ? user.defaultClinicId : 'No clinic assigned' }}
-      </ng-template>
-    </td>
-  </ng-container>
 
-  <ng-container matColumnDef="actions">
-    <th mat-header-cell *matHeaderCellDef> Actions </th>
-    <td mat-cell *matCellDef="let user">
-      <ng-container *ngIf="editUserId === user.id; else viewModeActions">
-        <button mat-button (click)="saveEdit(editUserData)">Save</button>
-        <button mat-button (click)="cancelEdit()">Cancel</button>
+      <!-- Actions Column -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef class="actions-column">
+          <div class="header-label">
+            <mat-icon>settings</mat-icon>
+            Actions
+          </div>
+        </th>
+        <td mat-cell *matCellDef="let user" class="actions-cell">
+          <button mat-icon-button color="primary" (click)="editUser(user)" matTooltip="Edit user">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="deleteUser(user.id)" matTooltip="Delete user">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
       </ng-container>
-      <ng-template #viewModeActions>
-        <button mat-button (click)="editUser(user)">Edit</button>
-        <button mat-button (click)="deleteUser(user.id)">Delete</button>
-      </ng-template>
-    </td>
-  </ng-container>
 
-  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-</table>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns" class="header-row"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns; trackBy: trackByUser" class="data-row"></tr>
+    </table>
+  </div>
 
-<div *ngIf="users.length === 0">
-  <p>No users found</p>
+  <!-- Empty State -->
+  <div *ngIf="users.length === 0" class="empty-state" [@fadeIn]>
+    <div class="empty-icon">
+      <mat-icon>groups_off</mat-icon>
+    </div>
+    <h3 class="empty-title">No Users Found</h3>
+    <p class="empty-subtitle">Get started by adding your first user to the system</p>
+    <button mat-raised-button color="primary" (click)="addUserToggle()" class="empty-cta">
+      <mat-icon>add</mat-icon>
+      Create User
+    </button>
+  </div>
 </div>

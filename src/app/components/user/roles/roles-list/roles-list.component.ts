@@ -110,4 +110,8 @@ export class RolesListComponent implements OnInit, OnDestroy {
     this.editRoleId = null;
     this.editRoleData = {};
   }
+
+  trackByRole(index: number, role: IRole): string | undefined {
+    return role.name;
+  }
 }

@@ -1,0 +1,44 @@
+<div
+  class="container d-flex justify-content-center align-items-center min-vh-100 bg-light"
+>
+  <mat-card class="validate-card text-center p-4">
+    <div *ngIf="loading">
+      <mat-spinner diameter="50" class="mx-auto mb-3"></mat-spinner>
+      <p>Verifying Prescription...</p>
+    </div>
+
+    <div *ngIf="!loading">
+      <div *ngIf="isValid" class="text-success">
+        <mat-icon class="status-icon">check_circle</mat-icon>
+        <h2 class="mt-2">Valid Prescription</h2>
+        <div class="mt-4 text-start">
+          <p><strong>Patient:</strong> {{ prescriptionData?.patientName }}</p>
+          <p><strong>Doctor:</strong> {{ prescriptionData?.doctorName }}</p>
+          <p>
+            <strong>Date:</strong>
+            {{ prescriptionData?.createdAt | date : "medium" }}
+          </p>
+          <p>
+            <strong>Expires:</strong>
+            {{ prescriptionData?.expiresAt | date : "mediumDate" }}
+          </p>
+          <hr />
+          <h5>Medications:</h5>
+          <ul>
+            <li *ngFor="let item of prescriptionData?.items">
+              {{ item.medicationName }} - {{ item.dosage }} ({{
+                item.frequency
+              }})
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div *ngIf="isValid === false" class="text-danger">
+        <mat-icon class="status-icon">error</mat-icon>
+        <h2 class="mt-2">Invalid Prescription</h2>
+        <p class="mt-3">{{ errorMessage }}</p>
+      </div>
+    </div>
+  </mat-card>
+</div>

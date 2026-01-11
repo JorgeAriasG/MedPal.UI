@@ -1,3 +1,60 @@
-<mat-list>
-  <!-- <mat-list-item (click)="openDialog()">New Appointment</mat-list-item> -->
-</mat-list>
+<div class="quickaction-container">
+  <h2 class="quickaction-title">Quick Actions</h2>
+
+  <div class="actions-grid">
+    <!-- New Appointment Action -->
+    <mat-card class="action-card" (click)="openNewAppointmentDialog()">
+      <mat-card-content>
+        <div class="action-icon">
+          <mat-icon>add_circle</mat-icon>
+        </div>
+        <h3 class="action-label">New Appointment</h3>
+        <p class="action-description">Schedule a new appointment</p>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- View Calendar Action -->
+    <mat-card class="action-card" (click)="navigateToCalendar()">
+      <mat-card-content>
+        <div class="action-icon">
+          <mat-icon>calendar_month</mat-icon>
+        </div>
+        <h3 class="action-label">View Calendar</h3>
+        <p class="action-description">See all appointments</p>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- New Patient Action -->
+    <mat-card class="action-card" (click)="navigateToPatients()">
+      <mat-card-content>
+        <div class="action-icon">
+          <mat-icon>person_add</mat-icon>
+        </div>
+        <h3 class="action-label">New Patient</h3>
+        <p class="action-description">Add a new patient</p>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Manage Clinics Action -->
+    <mat-card class="action-card" (click)="navigateToClinics()">
+      <mat-card-content>
+        <div class="action-icon">
+          <mat-icon>local_hospital</mat-icon>
+        </div>
+        <h3 class="action-label">Manage Clinics</h3>
+        <p class="action-description">View your clinics</p>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Prescriptions Action -->
+    <mat-card class="action-card" (click)="navigateToPrescriptions()">
+      <mat-card-content>
+        <div class="action-icon">
+          <mat-icon>description</mat-icon>
+        </div>
+        <h3 class="action-label">Prescriptions</h3>
+        <p class="action-description">Manage prescriptions</p>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

@@ -1,20 +1,218 @@
 <div class="signup-container">
-  <form (ngSubmit)="onSubmit(signupForm)" #signupForm="ngForm">
-    <mat-form-field appearance="fill">
-      <mat-label>Name</mat-label>
-      <input matInput type="text" name="name" ngModel required>
-    </mat-form-field>
+  <!-- Background Decorativo -->
+  <div class="signup-background"></div>
 
-    <mat-form-field appearance="fill">
-      <mat-label>Email</mat-label>
-      <input matInput type="email" name="email" ngModel required>
-    </mat-form-field>
+  <!-- Card Principal -->
+  <div class="signup-card">
 
-    <mat-form-field appearance="fill">
-      <mat-label>Password</mat-label>
-      <input matInput type="password" name="password" ngModel required>
-    </mat-form-field>
+    <!-- Header -->
+    <div class="signup-header">
+      <h1 class="signup-title">Create Account</h1>
+      <p class="signup-subtitle">Join Medical Scheduling System</p>
+    </div>
 
-    <button mat-raised-button color="primary" type="submit" [disabled]="!signupForm.valid">Sign Up</button>
-  </form>
+    <!-- Form con Tabs -->
+    <form [formGroup]="form" (ngSubmit)="submit()" class="signup-form">
+
+      <!-- Tabs -->
+      <mat-tab-group class="signup-tabs">
+
+        <!-- Tab 1: Personal Information -->
+        <mat-tab label="Personal">
+          <div class="tab-content">
+            <!-- First Name -->
+            <mat-form-field class="full-width">
+              <mat-label>First Name</mat-label>
+              <input matInput formControlName="firstName" placeholder="John">
+              <mat-error *ngIf="form.get('firstName')?.hasError('required')">
+                First name is required
+              </mat-error>
+            </mat-form-field>
+
+            <!-- Last Name -->
+            <mat-form-field class="full-width">
+              <mat-label>Last Name</mat-label>
+              <input matInput formControlName="lastName" placeholder="Doe">
+              <mat-error *ngIf="form.get('lastName')?.hasError('required')">
+                Last name is required
+              </mat-error>
+            </mat-form-field>
+
+            <!-- Email -->
+            <mat-form-field class="full-width">
+              <mat-label>Email Address</mat-label>
+              <input matInput type="email" formControlName="email" placeholder="doctor@example.com">
+              <mat-icon matPrefix>email</mat-icon>
+              <mat-error *ngIf="form.get('email')?.hasError('required')">
+                Email is required
+              </mat-error>
+              <mat-error *ngIf="form.get('email')?.hasError('email')">
+                Invalid email format
+              </mat-error>
+            </mat-form-field>
+
+            <!-- Phone (Optional) -->
+            <mat-form-field class="full-width">
+              <mat-label>Phone (Optional)</mat-label>
+              <input matInput type="tel" formControlName="phone" placeholder="+1 (555) 000-0000">
+              <mat-icon matPrefix>phone</mat-icon>
+            </mat-form-field>
+          </div>
+        </mat-tab>
+
+        <!-- Tab 2: Professional Information -->
+        <mat-tab label="Professional">
+          <div class="tab-content">
+            <!-- License Number -->
+            <mat-form-field class="full-width">
+              <mat-label>License Number</mat-label>
+              <input matInput formControlName="licenseNumber" placeholder="LIC-12345678">
+              <mat-icon matPrefix>badge</mat-icon>
+              <mat-error *ngIf="form.get('licenseNumber')?.hasError('required')">
+                License number is required
+              </mat-error>
+            </mat-form-field>
+
+            <!-- Specialty Dropdown -->
+            <mat-form-field class="full-width">
+              <mat-label>Specialty</mat-label>
+              <mat-select formControlName="specialty">
+                <mat-option *ngFor="let spec of specialties" [value]="spec.value">
+                  {{ spec.label }}
+                </mat-option>
+              </mat-select>
+              <mat-icon matPrefix>medical_services</mat-icon>
+              <mat-error *ngIf="form.get('specialty')?.hasError('required')">
+                Specialty is required
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </mat-tab>
+
+        <!-- Tab 3: Account Information -->
+        <mat-tab label="Account">
+          <div class="tab-content">
+            <!-- Password -->
+            <mat-form-field class="full-width">
+              <mat-label>Password</mat-label>
+              <input matInput
+                     [type]="showPassword ? 'text' : 'password'"
+                     formControlName="password"
+                     placeholder="••••••••"
+                     (input)="updatePasswordStrength()">
+              <mat-icon matPrefix>lock</mat-icon>
+              <button
+                mat-icon-button
+                matSuffix
+                (click)="togglePassword()"
+                type="button"
+                class="eye-button">
+                <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+              </button>
+              <mat-error *ngIf="form.get('password')?.hasError('required')">
+                Password is required
+              </mat-error>
+              <mat-error *ngIf="form.get('password')?.hasError('minlength')">
+                Minimum 8 characters
+              </mat-error>
+            </mat-form-field>
+
+            <!-- Password Strength Indicator -->
+            <div class="password-strength" *ngIf="form.get('password')?.value">
+              <div class="strength-bar">
+                <div class="strength-fill" [ngClass]="'strength-' + passwordStrength" [style.width.%]="passwordStrengthPercent"></div>
+              </div>
+              <p class="strength-text" [ngClass]="'strength-' + passwordStrength">
+                {{ passwordStrengthText }}
+              </p>
+            </div>
+
+            <!-- Confirm Password -->
+            <mat-form-field class="full-width">
+              <mat-label>Confirm Password</mat-label>
+              <input matInput
+                     [type]="showPassword ? 'text' : 'password'"
+                     formControlName="confirmPassword"
+                     placeholder="••••••••">
+              <mat-icon matPrefix>lock</mat-icon>
+              <mat-error *ngIf="form.get('confirmPassword')?.hasError('required')">
+                Please confirm password
+              </mat-error>
+              <mat-error *ngIf="form.hasError('passwordMismatch')">
+                Passwords do not match
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </mat-tab>
+
+        <!-- Tab 4: Agreements -->
+        <mat-tab label="Agreements">
+          <div class="tab-content">
+            <!-- Terms Checkbox -->
+            <div class="checkbox-group">
+              <mat-checkbox formControlName="acceptTerms" class="agreement-checkbox">
+                <span>I agree to the <a href="javascript:void(0)" class="link">Terms of Service</a> and <a href="javascript:void(0)" class="link">Privacy Policy</a></span>
+              </mat-checkbox>
+              <mat-error *ngIf="form.get('acceptTerms')?.hasError('required')" class="checkbox-error">
+                You must accept the terms
+              </mat-error>
+            </div>
+
+            <!-- Data Processing Checkbox -->
+            <div class="checkbox-group">
+              <mat-checkbox formControlName="acceptDataProcessing" class="agreement-checkbox">
+                <span>I consent to the processing of personal data as outlined in our <a href="javascript:void(0)" class="link">Privacy Policy</a></span>
+              </mat-checkbox>
+            </div>
+
+            <!-- Marketing Checkbox -->
+            <div class="checkbox-group">
+              <mat-checkbox formControlName="acceptMarketing" class="agreement-checkbox">
+                <span>I would like to receive emails about new features and updates (Optional)</span>
+              </mat-checkbox>
+            </div>
+          </div>
+        </mat-tab>
+
+      </mat-tab-group>
+
+      <!-- Error Alert (Global) -->
+      <div class="error-alert" *ngIf="error$ | async as error">
+        <mat-icon>error_outline</mat-icon>
+        <span>{{ error }}</span>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="signup-actions">
+        <button
+          mat-stroked-button
+          routerLink="/login"
+          type="button"
+          class="back-button">
+          Back to Login
+        </button>
+
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          [disabled]="(isLoading$ | async) || form.invalid"
+          class="submit-button">
+          <span *ngIf="!(isLoading$ | async)">Create Account</span>
+          <mat-spinner *ngIf="isLoading$ | async" diameter="20" class="inline-spinner"></mat-spinner>
+        </button>
+      </div>
+
+      <!-- Footer -->
+      <div class="signup-footer">
+        <p class="login-link">
+          Already have an account?
+          <a routerLink="/login" class="link-primary">Sign In</a>
+        </p>
+      </div>
+
+    </form>
+
+  </div>
+
 </div>

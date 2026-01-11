@@ -1,0 +1,203 @@
+.timeline-container {
+  padding: 20px 0;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: #999;
+}
+
+.empty-state mat-icon {
+  font-size: 64px;
+  width: 64px;
+  height: 64px;
+  margin-bottom: 16px;
+}
+
+.timeline {
+  position: relative;
+}
+
+.timeline-entry {
+  display: flex;
+  margin-bottom: 30px;
+  position: relative;
+}
+
+.timeline-marker {
+  position: relative;
+  margin-right: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.timeline-dot {
+  width: 16px;
+  height: 16px;
+  background: #3f51b5;
+  border-radius: 50%;
+  border: 3px solid white;
+  box-shadow: 0 0 0 2px #3f51b5;
+  z-index: 1;
+}
+
+.timeline-line {
+  width: 2px;
+  flex: 1;
+  background: #e0e0e0;
+  margin-top: 4px;
+}
+
+.timeline-card {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+.entry-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.common-info {
+  margin-bottom: 20px;
+}
+
+.info-section {
+  margin-bottom: 16px;
+}
+
+.info-section h4 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 8px 0;
+  color: #666;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.info-section h4 mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+.info-section p {
+  margin: 0;
+  padding-left: 26px;
+}
+
+.clinical-notes {
+  white-space: pre-wrap;
+  background: #f5f5f5;
+  padding: 12px;
+  border-radius: 4px;
+}
+
+.specialty-data {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.specialty-data h4 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  color: #333;
+}
+
+/* Dental Data Styles */
+.teeth-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.tooth-summary {
+  padding: 8px;
+  border-radius: 4px;
+  text-align: center;
+  color: white;
+  font-size: 12px;
+}
+
+.tooth-num {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.tooth-status {
+  display: block;
+  font-size: 10px;
+  text-transform: capitalize;
+}
+
+.observations {
+  background: #f5f5f5;
+  padding: 12px;
+  border-radius: 4px;
+  margin-top: 12px;
+}
+
+/* Nutrition Data Styles */
+.nutrition-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.metric {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.metric-label {
+  font-size: 12px;
+  color: #666;
+  text-transform: uppercase;
+}
+
+.metric-value {
+  font-size: 20px;
+  font-weight: 500;
+  color: #333;
+}
+
+/* Generic Data Styles */
+.custom-data {
+  background: #f5f5f5;
+  padding: 12px;
+  border-radius: 4px;
+  white-space: pre-wrap;
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .timeline-entry {
+    margin-bottom: 20px;
+  }
+
+  .timeline-marker {
+    margin-right: 12px;
+  }
+
+  .teeth-grid {
+    grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+  }
+
+  .nutrition-metrics {
+    grid-template-columns: 1fr;
+  }
+}

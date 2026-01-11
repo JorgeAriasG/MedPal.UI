@@ -1,0 +1,252 @@
+<div class="patient-detail-container">
+  <!-- Loading State -->
+  <div class="loading-overlay" *ngIf="loading">
+    <mat-spinner diameter="48"></mat-spinner>
+    <p class="mt-md text-muted">Loading patient details...</p>
+  </div>
+
+  <!-- Main Content -->
+  <div class="patient-detail-content" *ngIf="!loading && patient">
+    <!-- Header Section with Patient Info & Actions -->
+    <div class="patient-header">
+      <div class="header-content">
+        <div class="patient-info">
+          <div class="avatar-container">
+            <mat-icon class="avatar-icon">account_circle</mat-icon>
+          </div>
+          <div class="patient-details">
+            <h1 class="patient-name">{{ patient.name }} {{ patient.middlename }} {{ patient.lastname }}</h1>
+            <p class="patient-contact">
+              <mat-icon class="icon-small">email</mat-icon>
+              {{ patient.email }}
+              <span class="divider-dot">•</span>
+              <mat-icon class="icon-small">phone</mat-icon>
+              {{ patient.phone }}
+            </p>
+            <p class="patient-meta text-small">
+              <mat-icon class="icon-small">calendar_today</mat-icon>
+              DOB: {{ patient.dob | date: 'MMM dd, yyyy' }}
+            </p>
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <button
+            mat-raised-button
+            color="primary"
+            (click)="openNewConsultation()"
+            class="action-button"
+          >
+            <mat-icon>add_circle</mat-icon>
+            <span>New Consultation</span>
+          </button>
+          <button
+            mat-raised-button
+            color="accent"
+            routerLink="/prescriptions/new"
+            [queryParams]="{ patientId: patient.id }"
+            class="action-button"
+          >
+            <mat-icon>post_add</mat-icon>
+            <span>New Prescription</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Critical Alerts: Allergies Banner -->
+    <div class="alerts-section" *ngIf="allergies.length > 0">
+      <div class="allergy-banner">
+        <div class="alert-icon">
+          <mat-icon>warning</mat-icon>
+        </div>
+        <div class="alert-content">
+          <h3>Known Allergies</h3>
+          <div class="allergy-chips">
+            <mat-chip-set>
+              <mat-chip
+                *ngFor="let allergy of allergies"
+                class="allergy-chip"
+              >
+                <mat-icon>priority_high</mat-icon>
+                {{ allergy }}
+              </mat-chip>
+            </mat-chip-set>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab Navigation -->
+    <mat-tab-group class="patient-tabs" animationDuration="300">
+      <!-- Overview Tab -->
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon class="tab-icon">person</mat-icon>
+          <span>Overview</span>
+        </ng-template>
+
+        <div class="tab-content">
+          <div class="overview-grid">
+            <!-- Demographics Card -->
+            <div class="card card-demographics">
+              <div class="card-header">
+                <h3 class="card-title">
+                  <mat-icon>info</mat-icon>
+                  Demographics
+                </h3>
+              </div>
+              <div class="card-body">
+                <div class="info-row">
+                  <span class="label">Date of Birth</span>
+                  <span class="value">{{ patient.dob | date: 'MMM dd, yyyy' }}</span>
+                </div>
+                <div class="info-row">
+                  <span class="label">Gender</span>
+                  <span class="value">{{ patient.gender }}</span>
+                </div>
+                <div class="info-row">
+                  <span class="label">Address</span>
+                  <span class="value">{{ patient.address }}</span>
+                </div>
+                <div class="info-row">
+                  <span class="label">Emergency Contact</span>
+                  <span class="value">{{ patient.emergencyContact }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quick Stats Card -->
+            <div class="card card-stats">
+              <div class="card-header">
+                <h3 class="card-title">
+                  <mat-icon>assessment</mat-icon>
+                  Quick Stats
+                </h3>
+              </div>
+              <div class="card-body stats-layout">
+                <div class="stat">
+                  <span class="stat-value">{{ medicalHistory.length }}</span>
+                  <span class="stat-label">Consultations</span>
+                </div>
+                <div class="divider"></div>
+                <div class="stat">
+                  <span class="stat-value">{{ prescriptions.length }}</span>
+                  <span class="stat-label">Prescriptions</span>
+                </div>
+                <div class="divider"></div>
+                <div class="stat">
+                  <span class="stat-value">{{ allergies.length }}</span>
+                  <span class="stat-label">Allergies</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </mat-tab>
+
+      <!-- Medical History Tab -->
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon class="tab-icon">history</mat-icon>
+          <span>Medical History</span>
+        </ng-template>
+
+        <div class="tab-content">
+          <app-history-timeline
+            [patientId]="patient.id!"
+            [historyEntries]="medicalHistory"
+          >
+          </app-history-timeline>
+        </div>
+      </mat-tab>
+
+      <!-- Prescriptions Tab -->
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon class="tab-icon">medication</mat-icon>
+          <span>Prescriptions</span>
+        </ng-template>
+
+        <div class="tab-content">
+          <div class="prescriptions-container">
+            <div class="prescriptions-header" *ngIf="prescriptions.length > 0">
+              <h3>Active Prescriptions</h3>
+              <p class="text-small text-muted">{{ prescriptions.length }} prescriptions on file</p>
+            </div>
+
+            <div class="prescriptions-list" *ngIf="prescriptions.length > 0; else noPrescriptions">
+              <div class="prescription-card" *ngFor="let p of prescriptions">
+                <div class="prescription-header">
+                  <div class="prescription-info">
+                    <h4 class="prescription-date">{{ p.createdAt | date: 'MMM dd, yyyy' }}</h4>
+                    <p class="prescription-doctor">
+                      <mat-icon>person_white</mat-icon>
+                      {{ p.doctorName }}
+                    </p>
+                  </div>
+                  <div class="prescription-actions">
+                    <button
+                      mat-icon-button
+                      matTooltip="View Details"
+                      [routerLink]="['/prescriptions/detail', p.id]"
+                    >
+                      <mat-icon>visibility</mat-icon>
+                    </button>
+                    <button
+                      mat-icon-button
+                      matTooltip="Print"
+                    >
+                      <mat-icon>print</mat-icon>
+                    </button>
+                  </div>
+                </div>
+                <div class="prescription-body">
+                  <div class="diagnosis">
+                    <span class="label">Diagnosis</span>
+                    <p class="diagnosis-text">{{ p.diagnosis }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <ng-template #noPrescriptions>
+              <div class="empty-state">
+                <div class="empty-icon">
+                  <mat-icon>prescription</mat-icon>
+                </div>
+                <h3>No Prescriptions</h3>
+                <p>No prescriptions found for this patient</p>
+                <button
+                  mat-raised-button
+                  color="primary"
+                  routerLink="/prescriptions/new"
+                  [queryParams]="{ patientId: patient.id }"
+                  class="mt-lg"
+                >
+                  <mat-icon>add</mat-icon>
+                  Create First Prescription
+                </button>
+              </div>
+            </ng-template>
+          </div>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+
+  <!-- Error State -->
+  <div class="error-container" *ngIf="error && !loading">
+    <mat-card class="error-card">
+      <div class="error-content">
+        <mat-icon class="error-icon">error_outline</mat-icon>
+        <h3>Error Loading Patient</h3>
+        <p>{{ error }}</p>
+        <button mat-raised-button color="primary" routerLink="/patients">
+          <mat-icon>arrow_back</mat-icon>
+          Back to Patients
+        </button>
+      </div>
+    </mat-card>
+  </div>
+</div>

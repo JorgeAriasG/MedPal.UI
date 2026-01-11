@@ -1,22 +1,46 @@
 /* app.component.css */
-.app-container {
+
+.sidenav-container {
+  height: 100vh;
+  display: flex;
+}
+
+.sidenav {
+  width: 260px;
+  flex-shrink: 0;
+  background: var(--color-bg-surface);
+}
+
+.sidenav-content {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  height: 100%;
-  padding: 20px;
+  overflow: hidden;
 }
 
-/* Ensure the sidenav container takes full height */
-mat-sidenav-container {
-  height: 100%;
+.app-toolbar {
+  background: white;
+  border-bottom: 1px solid var(--color-border-light);
+  flex-shrink: 0;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  padding: 0 var(--spacing-lg);
+  height: 64px;
+  line-height: 64px;
+  z-index: 99;
 }
 
-mat-sidenav {
-  width: 250px;
+.app-toolbar button {
+  margin-right: var(--spacing-md);
 }
 
-.content {
+mat-toolbar {
+  z-index: 99;
+}
+
+router-outlet ~ * {
   flex: 1;
-  margin-top: 64px; /* Adjust this value based on the height of your menu */
-  padding: 16px;
+  overflow: auto;
+  background: var(--color-bg-page);
 }

@@ -1,108 +1,120 @@
-<button (click)="addPatientToggle()" mat-button>Add Patient</button>
-<div *ngIf="addPatient">
-  <app-new-patient (patientAdded)="onPatientAdded()"></app-new-patient>
+<div class="patients-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="header-content">
+      <div class="page-title">
+        <mat-icon class="title-icon">people</mat-icon>
+        <span>Patients</span>
+      </div>
+      <p class="page-subtitle">Manage and view all patient information</p>
+    </div>
+    <button mat-raised-button color="primary" (click)="addPatientToggle()" class="add-button">
+      <mat-icon>add</mat-icon>
+      Add New Patient
+    </button>
+  </div>
+
+  <!-- Add Patient Form -->
+  <div *ngIf="addPatient" class="add-patient-section" [@slideDown]>
+    <app-new-patient (patientAdded)="onPatientAdded()"></app-new-patient>
+  </div>
+
+  <!-- Patients Table -->
+  <div *ngIf="patients.length > 0" class="table-wrapper" [@fadeIn]>
+    <table mat-table [dataSource]="patients" class="patients-table">
+      <!-- Name Column -->
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef class="name-column">
+          <div class="header-label">
+            <mat-icon>person</mat-icon>
+            Name
+          </div>
+        </th>
+        <td mat-cell *matCellDef="let patient" class="name-cell">
+          {{ patient.name }} {{ patient.lastname }}
+        </td>
+      </ng-container>
+
+      <!-- Email Column -->
+      <ng-container matColumnDef="email">
+        <th mat-header-cell *matHeaderCellDef class="email-column">
+          <div class="header-label">
+            <mat-icon>email</mat-icon>
+            Email
+          </div>
+        </th>
+        <td mat-cell *matCellDef="let patient" class="email-cell">
+          {{ patient.email }}
+        </td>
+      </ng-container>
+
+      <!-- Phone Column -->
+      <ng-container matColumnDef="phone">
+        <th mat-header-cell *matHeaderCellDef class="phone-column">
+          <div class="header-label">
+            <mat-icon>phone</mat-icon>
+            Phone
+          </div>
+        </th>
+        <td mat-cell *matCellDef="let patient" class="phone-cell">
+          {{ patient.phone || 'N/A' }}
+        </td>
+      </ng-container>
+
+      <!-- Clinic Column -->
+      <ng-container matColumnDef="clinicName">
+        <th mat-header-cell *matHeaderCellDef class="clinic-column">
+          <div class="header-label">
+            <mat-icon>local_hospital</mat-icon>
+            Clinic
+          </div>
+        </th>
+        <td mat-cell *matCellDef="let patient" class="clinic-cell">
+          <span *ngIf="patient.clinic?.name; else noClinic" class="clinic-badge">
+            {{ patient.clinic.name }}
+          </span>
+          <ng-template #noClinic>
+            <span class="empty-badge">Unassigned</span>
+          </ng-template>
+        </td>
+      </ng-container>
+
+      <!-- Actions Column -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef class="actions-column">
+          <div class="header-label">
+            <mat-icon>settings</mat-icon>
+            Actions
+          </div>
+        </th>
+        <td mat-cell *matCellDef="let patient" class="actions-cell">
+          <button mat-icon-button [routerLink]="['/patients/detail', patient.id]" matTooltip="View patient">
+            <mat-icon>visibility</mat-icon>
+          </button>
+          <button mat-icon-button color="primary" (click)="editPatient(patient)" matTooltip="Edit patient">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="deletePatient(patient.id)" matTooltip="Delete patient">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns" class="header-row"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns; trackBy: trackByPatient" class="data-row"></tr>
+    </table>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="patients.length === 0" class="empty-state" [@fadeIn]>
+    <div class="empty-icon">
+      <mat-icon>person_add</mat-icon>
+    </div>
+    <h3 class="empty-title">No Patients Found</h3>
+    <p class="empty-subtitle">Get started by adding your first patient to the system</p>
+    <button mat-raised-button color="primary" (click)="addPatientToggle()" class="empty-cta">
+      <mat-icon>add</mat-icon>
+      Create Patient
+    </button>
+  </div>
 </div>
-
-<table *ngIf="patients.length > 0" mat-table [dataSource]="patients">
-  <ng-container matColumnDef="name">
-    <th mat-header-cell *matHeaderCellDef> Name </th>
-    <td mat-cell *matCellDef="let patient">
-      <ng-container *ngIf="editPatientId === patient.id; else viewModeName">
-        <mat-form-field>
-          <input matInput [(ngModel)]="editPatientData.name" placeholder="Name" />
-        </mat-form-field>
-      </ng-container>
-      <ng-template #viewModeName>
-        {{ patient.name }}
-      </ng-template>
-    </td>
-  </ng-container>
-
-  <ng-container matColumnDef="middlename">
-    <th mat-header-cell *matHeaderCellDef> Middlename </th>
-    <td mat-cell *matCellDef="let patient">
-      <ng-container *ngIf="editPatientId === patient.id; else viewModeMiddlename">
-        <mat-form-field>
-          <input matInput [(ngModel)]="editPatientData.middlename" placeholder="middlename" />
-        </mat-form-field>
-      </ng-container>
-      <ng-template #viewModeMiddlename>
-        {{patient.middlename}}
-      </ng-template>
-    </td>
-  </ng-container>
-
-  <ng-container matColumnDef="lastname">
-    <th mat-header-cell *matHeaderCellDef> Lastname </th>
-    <td mat-cell *matCellDef="let patient">
-      <ng-container *ngIf="editPatientId === patient.id; else viewModeLastname">
-        <mat-form-field>
-          <input matInput [(ngModel)]="editPatientData.lastname" placeholder="Lastname" />
-        </mat-form-field>
-      </ng-container>
-      <ng-template #viewModeLastname>
-        {{ patient.lastname }}
-      </ng-template>
-    </td>
-  </ng-container>
-
-  <ng-container matColumnDef="email">
-    <th mat-header-cell *matHeaderCellDef> Email </th>
-    <td mat-cell *matCellDef="let patient">
-      <ng-container *ngIf="editPatientId === patient.id; else viewModeEmail">
-        <mat-form-field>
-          <input matInput [(ngModel)]="editPatientData.email" placeholder="Email" />
-        </mat-form-field>
-      </ng-container>
-      <ng-template #viewModeEmail>
-        {{ patient.email }}
-      </ng-template>
-    </td>
-  </ng-container>
-
-  <ng-container matColumnDef="phone">
-    <th mat-header-cell *matHeaderCellDef> Phone </th>
-    <td mat-cell *matCellDef="let patient">
-      <ng-container *ngIf="editPatientId === patient.id; else viewModePhone">
-        <mat-form-field>
-          <input matInput [(ngModel)]="editPatientData.phone" placeholder="Phone" />
-        </mat-form-field>
-      </ng-container>
-      <ng-template #viewModePhone>
-        {{ patient.phone }}
-      </ng-template>
-    </td>
-  </ng-container>
-
-  <ng-container matColumnDef="clinicName">
-    <th mat-header-cell *matHeaderCellDef> Clinic </th>
-    <td mat-cell *matCellDef="let patient">
-      <ng-container *ngIf="editPatientId === patient.id; else viewModeClinic">
-        <mat-form-field>
-          <input matInput [ngModel]="editPatientData.clinic ? editPatientData.clinic : 'no clinic'" placeholder="clinicName" />
-        </mat-form-field>
-      </ng-container>
-      <ng-template #viewModeClinic>
-        {{ patient.clinic.name ? patient.clinic.name : 'no clinic' }}
-      </ng-template>
-    </td>
-  </ng-container>
-
-  <ng-container matColumnDef="actions">
-    <th mat-header-cell *matHeaderCellDef> Actions </th>
-    <td mat-cell *matCellDef="let patient">
-      <ng-container *ngIf="editPatientId === patient.id; else viewModeActions">
-        <!-- <button mat-button (click)="savePatient()">Save</button> -->
-        <button mat-button (click)="saveEdit(editPatientData)">Save</button>
-        <button mat-button (click)="cancelEdit()">Cancel</button>
-      </ng-container>
-      <ng-template #viewModeActions>
-        <button mat-button (click)="editPatient(patient)">Edit</button>
-        <button mat-button (click)="deletePatient(patient.id)">Delete</button>
-      </ng-template>
-    </td>
-  </ng-container>
-
-  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-</table>

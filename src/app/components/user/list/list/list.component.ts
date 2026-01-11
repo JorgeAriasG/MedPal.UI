@@ -115,4 +115,8 @@ export class ListComponent implements OnInit, OnDestroy {
     this.editUserId = null;
     this.editUserData = {};
   }
+
+  trackByUser(index: number, user: IUser): string {
+    return user.email;
+  }
 }

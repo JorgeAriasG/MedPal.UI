@@ -1,64 +1,108 @@
-<mat-dialog-content>
-  <div>
-    <form class="form" [formGroup]="patientForm">
-      <mat-form-field class="input">
-        <mat-label>Patient Name</mat-label>
-        <input
-          type="text"
-          matInput
-          formControlName="name"
-          [matAutocomplete]="auto"
-          autocomplete="off"
-        />
-        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selectPatient($event)">
-          <mat-option *ngFor="let option of filteredPatients | async" [value]="option.name + ' ' + option.lastname">
-            {{ option.name }} {{ option.lastname }}
-          </mat-option>
-        </mat-autocomplete>
-      </mat-form-field>
-
-      <mat-form-field class="input">
-        <mat-label>Lastname</mat-label>
-        <input formControlName="lastname" matInput>
-      </mat-form-field>
-
-      <mat-form-field class="input">
-        <mat-label>Email</mat-label>
-        <input formControlName="email" matInput>
-      </mat-form-field>
-
-      <mat-form-field class="input">
-        <mat-label>Phone</mat-label>
-        <input formControlName="phone" matInput>
-      </mat-form-field>
-    </form>
-    <form [formGroup]="appointmentForm">
-      <mat-form-field class="input">
-        <mat-label>Date</mat-label>
-        <input formControlName="date" matInput [matDatepicker]="datepicker">
-        <mat-datepicker-toggle matSuffix [for]="datepicker"></mat-datepicker-toggle>
-        <mat-datepicker #datepicker></mat-datepicker>
-      </mat-form-field>
-
-      <mat-form-field>
-        <mat-label>Meeting time</mat-label>
-        <input matInput [matTimepicker]="timepicker" formControlName="time">
-        <mat-timepicker #timepicker/>
-        <mat-timepicker-toggle [for]="timepicker" matSuffix/>
-      </mat-form-field>
-
-      <mat-form-field class="input">
-        <mat-label>Notes</mat-label>
-        <input formControlName="notes" matInput>
-      </mat-form-field>
-      <mat-form-field class="input">
-        <mat-label>Status</mat-label>
-        <input formControlName="status" matInput>
-      </mat-form-field>
-    </form>
+<div class="appointment-dialog">
+  <!-- Header -->
+  <div class="dialog-header">
+    <h2 class="dialog-title">New Appointment</h2>
   </div>
-  <mat-dialog-actions>
-    <button mat-button (click)="saveAppointment()">Save</button>
-    <button mat-button (click)="closeDialog()">Cancel</button>
-  </mat-dialog-actions>
-</mat-dialog-content>
+
+  <!-- Content -->
+  <div class="dialog-content">
+    <div class="appointment-form-wrapper">
+      <!-- Patient Section -->
+      <div class="form-section">
+        <h3 class="section-title">Select Patient</h3>
+
+        <form [formGroup]="patientForm" class="patient-form">
+          <mat-form-field class="full-width" appearance="outline">
+            <mat-label>Search Patient</mat-label>
+            <input
+              matInput
+              formControlName="name"
+              [matAutocomplete]="auto"
+              autocomplete="off"
+              placeholder="Enter patient name"
+            />
+            <mat-icon matPrefix>person_search</mat-icon>
+            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selectPatient($event)">
+              <mat-option *ngFor="let option of filteredPatients | async" [value]="option.name + ' ' + option.lastname">
+                {{ option.name }} {{ option.lastname }}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+
+          <div class="form-row">
+            <mat-form-field class="form-col" appearance="outline">
+              <mat-label>Last Name</mat-label>
+              <input matInput formControlName="lastname" readonly />
+            </mat-form-field>
+
+            <mat-form-field class="form-col" appearance="outline">
+              <mat-label>Email</mat-label>
+              <input matInput formControlName="email" readonly />
+              <mat-icon matPrefix>email</mat-icon>
+            </mat-form-field>
+          </div>
+
+          <mat-form-field class="full-width" appearance="outline">
+            <mat-label>Phone</mat-label>
+            <input matInput formControlName="phone" readonly />
+            <mat-icon matPrefix>phone</mat-icon>
+          </mat-form-field>
+        </form>
+      </div>
+
+      <!-- Appointment Details Section -->
+      <div class="form-section">
+        <h3 class="section-title">Appointment Details</h3>
+
+        <form [formGroup]="appointmentForm" class="appointment-details-form">
+          <div class="form-row">
+            <mat-form-field class="form-col" appearance="outline">
+              <mat-label>Date</mat-label>
+              <input matInput [matDatepicker]="datepicker" formControlName="date" />
+              <mat-datepicker-toggle matSuffix [for]="datepicker"></mat-datepicker-toggle>
+              <mat-datepicker #datepicker></mat-datepicker>
+              <mat-icon matPrefix>event</mat-icon>
+            </mat-form-field>
+
+            <mat-form-field class="form-col" appearance="outline">
+              <mat-label>Time</mat-label>
+              <input matInput [matTimepicker]="timepicker" formControlName="time" />
+              <mat-timepicker-toggle [for]="timepicker" matSuffix></mat-timepicker-toggle>
+              <mat-timepicker #timepicker></mat-timepicker>
+              <mat-icon matPrefix>schedule</mat-icon>
+            </mat-form-field>
+          </div>
+
+          <mat-form-field class="full-width" appearance="outline">
+            <mat-label>Status</mat-label>
+            <mat-select formControlName="status">
+              <mat-option value="Pending">Pending</mat-option>
+              <mat-option value="Scheduled">Scheduled</mat-option>
+              <mat-option value="Completed">Completed</mat-option>
+              <mat-option value="Cancelled">Cancelled</mat-option>
+              <mat-option value="No-show">No-show</mat-option>
+            </mat-select>
+            <mat-icon matPrefix>flag</mat-icon>
+          </mat-form-field>
+
+          <mat-form-field class="full-width" appearance="outline">
+            <mat-label>Notes</mat-label>
+            <textarea matInput formControlName="notes" rows="4" placeholder="Add any additional notes..."></textarea>
+            <mat-icon matPrefix>note</mat-icon>
+          </mat-form-field>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="dialog-actions">
+    <button mat-button (click)="closeDialog()" class="cancel-btn">Cancel</button>
+    <button mat-raised-button color="primary" (click)="saveAppointment()" class="save-btn">
+      <mat-icon>add_circle</mat-icon>
+      <span>Create Appointment</span>
+    </button>
+  </div>
+</div>
+
+

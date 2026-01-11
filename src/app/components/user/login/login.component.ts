@@ -1,11 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { login } from '../../../store/actions/auth.actions';
 import { AuthState } from '../../../store/reducers/auth.reducer';
-import { Observable } from 'rxjs';
-import { selectAuthError, selectIsLoggedIn } from '../../../store/selectors/auth.selectors';
+import { Observable, Subject } from 'rxjs';
+import { selectAuthError, selectIsLoggedIn, selectIsLoading } from '../../../store/selectors/auth.selectors';
 import { Router } from '@angular/router';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-login',
@@ -13,32 +14,49 @@ import { Router } from '@angular/router';
   styleUrls: ['./login.component.css'],
   standalone: false
 })
-export class LoginComponent implements OnInit {
-  errorMessage$: Observable<string | null>;
+export class LoginComponent implements OnInit, OnDestroy {
+  form: FormGroup;
+  error$: Observable<string | null>;
+  isLoading$: Observable<boolean>;
   isLoggedIn$: Observable<boolean>;
+  showPassword = false;
+  private destroy$ = new Subject<void>();
 
   constructor(
+    private fb: FormBuilder,
     private store: Store<{ auth: AuthState }>,
     private router: Router
   ) {
-    this.errorMessage$ = this.store.select(selectAuthError);
+    this.form = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      rememberMe: [false]
+    });
+
+    this.error$ = this.store.select(selectAuthError);
     this.isLoggedIn$ = this.store.select(selectIsLoggedIn);
+    this.isLoading$ = this.store.select(selectIsLoading);
   }
 
   ngOnInit(): void {
-    // Solo una suscripción para redirigir después de login
-    this.isLoggedIn$.subscribe(isLoggedIn => {
-      if (isLoggedIn) {
-        this.router.navigate(['/']);
-      }
-    });
+    // No navigation needed here - effects handle it
   }
 
-  onSubmit(form: NgForm) {
-    if (form.valid) {
-      const { email, password } = form.value;
-      this.store.dispatch(login({ email, password }));
-      // No hagas más subscripciones aquí — déjalo al ngOnInit
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  togglePassword(): void {
+    this.showPassword = !this.showPassword;
+  }
+
+  submit(): void {
+    if (this.form.invalid) {
+      return;
     }
+
+    const { email, password } = this.form.value;
+    this.store.dispatch(login({ email, password }));
   }
 }
