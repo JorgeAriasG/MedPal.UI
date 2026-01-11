@@ -10,16 +10,31 @@ import { selectClinicId } from 'src/app/store/selectors/auth.selectors';
 import { setClinic } from 'src/app/store/actions/auth.actions';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 @Component({
   selector: 'app-clinic-list',
   templateUrl: './clinic-list.component.html',
   styleUrls: ['./clinic-list.component.css'],
   standalone: false,
+  animations: [
+    trigger('slideDown', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(-12px)' }),
+        animate('300ms cubic-bezier(0.4, 0, 0.2, 1)', style({ opacity: 1, transform: 'translateY(0)' }))
+      ])
+    ]),
+    trigger('fadeIn', [
+      transition(':enter', [
+        style({ opacity: 0 }),
+        animate('400ms cubic-bezier(0.4, 0, 0.2, 1)', style({ opacity: 1 }))
+      ])
+    ])
+  ]
 })
 export class ClinicListComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = [
-    'clinicName',
+    'name',
     'location',
     'contactInfo',
     'hours',

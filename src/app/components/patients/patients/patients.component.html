@@ -21,82 +21,84 @@
 
   <!-- Patients Table -->
   <div *ngIf="patients.length > 0" class="table-wrapper" [@fadeIn]>
-    <table mat-table [dataSource]="patients" class="patients-table">
+    <table mat-table [dataSource]="patients" class="data-table">
       <!-- Name Column -->
       <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef class="name-column">
+        <th mat-header-cell *matHeaderCellDef class="column-md">
           <div class="header-label">
             <mat-icon>person</mat-icon>
             Name
           </div>
         </th>
-        <td mat-cell *matCellDef="let patient" class="name-cell">
+        <td mat-cell *matCellDef="let patient" class="column-md">
           {{ patient.name }} {{ patient.lastname }}
         </td>
       </ng-container>
 
       <!-- Email Column -->
       <ng-container matColumnDef="email">
-        <th mat-header-cell *matHeaderCellDef class="email-column">
+        <th mat-header-cell *matHeaderCellDef class="column-lg">
           <div class="header-label">
             <mat-icon>email</mat-icon>
             Email
           </div>
         </th>
-        <td mat-cell *matCellDef="let patient" class="email-cell">
+        <td mat-cell *matCellDef="let patient" class="column-lg">
           {{ patient.email }}
         </td>
       </ng-container>
 
       <!-- Phone Column -->
       <ng-container matColumnDef="phone">
-        <th mat-header-cell *matHeaderCellDef class="phone-column">
+        <th mat-header-cell *matHeaderCellDef class="column-md column-hide-1200">
           <div class="header-label">
             <mat-icon>phone</mat-icon>
             Phone
           </div>
         </th>
-        <td mat-cell *matCellDef="let patient" class="phone-cell">
+        <td mat-cell *matCellDef="let patient" class="column-md column-hide-1200">
           {{ patient.phone || 'N/A' }}
         </td>
       </ng-container>
 
       <!-- Clinic Column -->
       <ng-container matColumnDef="clinicName">
-        <th mat-header-cell *matHeaderCellDef class="clinic-column">
+        <th mat-header-cell *matHeaderCellDef class="column-md">
           <div class="header-label">
             <mat-icon>local_hospital</mat-icon>
             Clinic
           </div>
         </th>
-        <td mat-cell *matCellDef="let patient" class="clinic-cell">
-          <span *ngIf="patient.clinic?.name; else noClinic" class="clinic-badge">
+        <td mat-cell *matCellDef="let patient" class="column-md">
+          <span *ngIf="patient.clinic?.name; else noClinic" class="badge info">
             {{ patient.clinic.name }}
           </span>
           <ng-template #noClinic>
-            <span class="empty-badge">Unassigned</span>
+            <span class="badge empty">Unassigned</span>
           </ng-template>
         </td>
       </ng-container>
 
       <!-- Actions Column -->
       <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef class="actions-column">
+        <th mat-header-cell *matHeaderCellDef class="column-actions">
           <div class="header-label">
             <mat-icon>settings</mat-icon>
             Actions
           </div>
         </th>
-        <td mat-cell *matCellDef="let patient" class="actions-cell">
-          <button mat-icon-button [routerLink]="['/patients/detail', patient.id]" matTooltip="View patient">
-            <mat-icon>visibility</mat-icon>
-          </button>
-          <button mat-icon-button color="primary" (click)="editPatient(patient)" matTooltip="Edit patient">
-            <mat-icon>edit</mat-icon>
-          </button>
-          <button mat-icon-button color="warn" (click)="deletePatient(patient.id)" matTooltip="Delete patient">
-            <mat-icon>delete</mat-icon>
-          </button>
+        <td mat-cell *matCellDef="let patient" class="column-actions">
+          <div class="action-buttons">
+            <button mat-icon-button class="action-btn view-btn" [routerLink]="['/patients/detail', patient.id]" matTooltip="View patient">
+              <mat-icon>visibility</mat-icon>
+            </button>
+            <button mat-icon-button class="action-btn edit-btn" (click)="editPatient(patient)" matTooltip="Edit patient">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button class="action-btn delete-btn" (click)="deletePatient(patient.id)" matTooltip="Delete patient">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
         </td>
       </ng-container>
 
@@ -107,12 +109,12 @@
 
   <!-- Empty State -->
   <div *ngIf="patients.length === 0" class="empty-state" [@fadeIn]>
-    <div class="empty-icon">
+    <div class="empty-state-icon">
       <mat-icon>person_add</mat-icon>
     </div>
-    <h3 class="empty-title">No Patients Found</h3>
-    <p class="empty-subtitle">Get started by adding your first patient to the system</p>
-    <button mat-raised-button color="primary" (click)="addPatientToggle()" class="empty-cta">
+    <h3 class="empty-state-title">No Patients Found</h3>
+    <p class="empty-state-message">Get started by adding your first patient to the system</p>
+    <button mat-raised-button color="primary" (click)="addPatientToggle()">
       <mat-icon>add</mat-icon>
       Create Patient
     </button>

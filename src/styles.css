@@ -3,6 +3,7 @@
    ======================================== */
 
 @import "../node_modules/angular-calendar/css/angular-calendar.css";
+@import "app/shared/styles/tables.css";
 
 /* ========== CSS CUSTOM PROPERTIES / DESIGN TOKENS ========== */
 
