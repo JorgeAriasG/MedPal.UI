@@ -1,0 +1,110 @@
+<h2 mat-dialog-title>Nueva Consulta Médica</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="historyForm">
+    <!-- Common Fields -->
+    <div class="common-fields">
+      <h3>Información General</h3>
+
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Diagnóstico</mat-label>
+        <input
+          matInput
+          formControlName="diagnosis"
+          placeholder="Diagnóstico principal"
+        />
+        <mat-error *ngIf="historyForm.get('diagnosis')?.hasError('required')">
+          El diagnóstico es requerido
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Fecha del Diagnóstico</mat-label>
+        <input
+          matInput
+          type="date"
+          formControlName="diagnosisDate"
+        />
+        <mat-error *ngIf="historyForm.get('diagnosisDate')?.hasError('required')">
+          La fecha del diagnóstico es requerida
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Notas Clínicas</mat-label>
+        <textarea
+          matInput
+          formControlName="clinicalNotes"
+          rows="4"
+          placeholder="Observaciones y notas de la consulta"
+        ></textarea>
+        <mat-error
+          *ngIf="historyForm.get('clinicalNotes')?.hasError('required')"
+        >
+          Las notas clínicas son requeridas
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Fecha de Seguimiento</mat-label>
+        <input
+          matInput
+          type="date"
+          formControlName="followUpDate"
+        />
+      </mat-form-field>
+    </div>
+
+    <!-- Dynamic Specialty Template -->
+    <div class="specialty-section">
+      <h3>Datos Específicos - {{ specialtyType }}</h3>
+
+      <div [ngSwitch]="specialtyType">
+        <app-dental-template
+          *ngSwitchCase="'Dental'"
+          formControlName="specialtyData"
+        >
+        </app-dental-template>
+
+        <app-nutrition-template
+          *ngSwitchCase="'Nutrición'"
+          formControlName="specialtyData"
+        >
+        </app-nutrition-template>
+
+        <app-generic-template *ngSwitchDefault formControlName="specialtyData">
+        </app-generic-template>
+      </div>
+    </div>
+
+    <!-- Confidentiality -->
+    <div class="confidentiality-section">
+      <mat-checkbox formControlName="isConfidential">
+        <mat-icon>lock</mat-icon>
+        Marcar como confidencial
+      </mat-checkbox>
+    </div>
+
+    <!-- Error Message -->
+    <div *ngIf="errorMessage" class="alert alert-danger mt-3">
+      {{ errorMessage }}
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()" [disabled]="loading">Cancelar</button>
+  <button
+    mat-raised-button
+    color="primary"
+    (click)="onSubmit()"
+    [disabled]="loading || historyForm.invalid"
+  >
+    <mat-spinner
+      *ngIf="loading"
+      diameter="20"
+      class="inline-spinner"
+    ></mat-spinner>
+    <span *ngIf="!loading">Guardar Consulta</span>
+  </button>
+</mat-dialog-actions>

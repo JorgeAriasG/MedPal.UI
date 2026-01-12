@@ -27,3 +27,13 @@ export const selectClinicId = createSelector(
   selectAuthState,
   (state: AuthState) => state.clinicId
 );
+
+export const selectIsLoading = createSelector(
+  selectAuthState,
+  (state: AuthState) => state.loading
+);
+
+export const selectUserSpecialty = createSelector(
+  selectAuthState,
+  (state: AuthState) => state.specialty || 'General'
+);

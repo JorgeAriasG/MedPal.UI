@@ -2,23 +2,27 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { IUser } from '../../../entities/IUser';
-import * as CryptoJS from 'crypto-js';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
-  private apiUrl = 'http://localhost:5126/api/User';
+  private apiUrl = 'http://localhost:5126/api/user';
 
   constructor(private http: HttpClient) {}
 
   register(user: IUser): Observable<any> {
-    const encryptedPassword = CryptoJS.SHA256(user.password).toString();
-    const userToRegister = {
-      ...user,
-      passwordHash: encryptedPassword
+    // Send registration to /api/user/register endpoint
+    const registerData = {
+      name: user.name,
+      email: user.email,
+      password: user.password,
+      confirmPassword: user.confirmPassword,
+      specialty: user.specialty,
+      professionalLicenseNumber: user.professionalLicenseNumber,
+      acceptPrivacyTerms: user.acceptPrivacyTerms,
     };
-    return this.http.post(this.apiUrl, userToRegister);
+    return this.http.post(`${this.apiUrl}/register`, registerData);
   }
 
   getUsers(clinicId?: number | null): Observable<IUser[]> {

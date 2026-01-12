@@ -1,20 +1,265 @@
-.task {
+/* ========================================
+   APPOINTMENT COMPONENT - CALENDAR VIEW
+   ======================================== */
+
+.appointments-container {
   display: flex;
-  margin-bottom: 20px;
-  background-color: #97E7E1;
-  border-radius: 1em;
-  padding: 20px;
+  flex-direction: column;
+  height: 100%;
+  padding: var(--spacing-xl);
+  background: var(--color-bg-page);
+  gap: var(--spacing-xl);
 }
 
-.task p {
-  padding: 0;
+/* Header */
+.appointments-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.appointments-title {
   margin: 0;
+  font-size: var(--font-size-headline);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  letter-spacing: -0.5px;
 }
 
-.set-alarm {
-  background-color: #007bff;
-  color: #ffffff;
-  border: none;
-  padding: 5px 10px;
-  cursor: pointer;
+.appointments-subtitle {
+  margin: 0;
+  font-size: var(--font-size-small);
+  color: var(--color-text-secondary);
+  letter-spacing: 0.3px;
+}
+
+/* Action Bar */
+.appointments-actions {
+  display: flex;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+}
+
+.add-appointment-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  height: 44px;
+  padding: 0 var(--spacing-lg);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: 0.5px;
+  transition: all var(--transition-normal);
+}
+
+.add-appointment-btn:not([disabled]):hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.add-appointment-btn mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+/* Calendar Section */
+.calendar-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-bg-surface);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.calendar-wrapper {
+  flex: 1;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.calendar-view {
+  flex: 1;
+  padding: var(--spacing-lg);
+}
+
+/* Angular Calendar Overrides */
+.calendar-view ::ng-deep {
+  /* Calendar container */
+  .mwl-calendar-container {
+    background: transparent;
+  }
+
+  /* Calendar header (days) */
+  .cal-header {
+    background: var(--color-bg-secondary);
+    border-bottom: 1px solid var(--color-divider);
+    padding: var(--spacing-md);
+  }
+
+  .cal-header-row {
+    display: flex;
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-primary);
+  }
+
+  .cal-header-cell {
+    flex: 1;
+    text-align: center;
+    padding: var(--spacing-md);
+    border-right: 1px solid var(--color-divider);
+    font-size: var(--font-size-small);
+  }
+
+  .cal-header-cell:last-child {
+    border-right: none;
+  }
+
+  /* Calendar events */
+  .cal-event {
+    background: var(--color-primary);
+    border-left: 4px solid var(--color-primary-dark);
+    border-radius: var(--border-radius-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
+    margin: var(--spacing-sm) 0;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .cal-event:hover {
+    transform: translateX(4px);
+    box-shadow: var(--shadow-md);
+  }
+
+  .cal-event-title {
+    font-size: var(--font-size-small);
+    font-weight: var(--font-weight-medium);
+    color: white;
+  }
+
+  /* Calendar cell */
+  .cal-cell {
+    background: var(--color-bg-surface);
+    border: 1px solid var(--color-divider);
+    padding: var(--spacing-md);
+    min-height: 80px;
+  }
+
+  /* Current time indicator */
+  .cal-current-time-marker {
+    background: var(--color-success);
+    height: 2px;
+  }
+
+  /* Selection */
+  .cal-selected-cell {
+    background: rgba(25, 118, 210, 0.05);
+  }
+}
+
+/* Empty State */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-3xl);
+  text-align: center;
+  background: var(--color-bg-surface);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-sm);
+  min-height: 300px;
+}
+
+.empty-state-icon {
+  font-size: 64px;
+  width: 64px;
+  height: 64px;
+  color: var(--color-text-secondary);
+  opacity: 0.5;
+}
+
+.empty-state h3 {
+  margin: 0;
+  font-size: var(--font-size-title);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+}
+
+.empty-state p {
+  margin: 0;
+  font-size: var(--font-size-body);
+  color: var(--color-text-secondary);
+  max-width: 300px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .appointments-container {
+    padding: var(--spacing-lg);
+    gap: var(--spacing-lg);
+  }
+
+  .appointments-title {
+    font-size: var(--font-size-title);
+  }
+
+  .appointments-actions {
+    flex-direction: column;
+  }
+
+  .add-appointment-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .calendar-view ::ng-deep {
+    .cal-header-cell {
+      font-size: var(--font-size-caption);
+      padding: var(--spacing-sm);
+    }
+
+    .cal-cell {
+      min-height: 60px;
+      padding: var(--spacing-sm);
+    }
+
+    .cal-event {
+      padding: 2px var(--spacing-sm);
+      margin: 2px 0;
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  .appointments-container {
+    padding: var(--spacing-md);
+  }
+
+  .empty-state {
+    padding: var(--spacing-2xl);
+    min-height: 250px;
+  }
+
+  .empty-state-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+  }
+
+  .calendar-view ::ng-deep {
+    .cal-header-cell {
+      font-size: 10px;
+      padding: 4px;
+    }
+
+    .cal-cell {
+      min-height: 50px;
+      padding: 4px;
+    }
+  }
 }

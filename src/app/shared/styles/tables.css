@@ -1,0 +1,290 @@
+/* ============ GLOBAL TABLE STYLES ============ */
+/* Shared styles for all data tables across the application */
+
+/* ============ TABLE WRAPPER ============ */
+.table-wrapper {
+  flex: 1;
+  overflow-x: auto;
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--color-border-light);
+  background-color: var(--color-bg-surface);
+  box-shadow: 0 2px 4px var(--color-shadow-light);
+  animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Custom scrollbar styling */
+.table-wrapper::-webkit-scrollbar {
+  height: 8px;
+}
+
+.table-wrapper::-webkit-scrollbar-track {
+  background: var(--color-bg-hover);
+  border-radius: var(--border-radius-md);
+}
+
+.table-wrapper::-webkit-scrollbar-thumb {
+  background: var(--color-primary);
+  border-radius: var(--border-radius-md);
+  opacity: 0.6;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb:hover {
+  opacity: 0.8;
+}
+
+/* ============ TABLE BASE STYLES ============ */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: var(--color-bg-surface);
+}
+
+/* ============ TABLE HEADER ============ */
+.header-row {
+  background-color: var(--color-primary-light);
+  border-bottom: 2px solid var(--color-primary);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+th[mat-header-cell] {
+  padding: var(--spacing-lg);
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-primary);
+  text-align: left;
+  border: none;
+  background-color: transparent;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.header-label {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  color: var(--color-primary-dark);
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-xs);
+  letter-spacing: 0.5px;
+}
+
+.header-label mat-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+}
+
+/* ============ TABLE ROWS ============ */
+.data-row {
+  border-bottom: 1px solid var(--color-border-light);
+  transition: var(--transition-normal);
+}
+
+.data-row:hover {
+  background-color: var(--color-primary-light);
+  transition: var(--transition-fast);
+}
+
+/* ============ TABLE CELLS ============ */
+td[mat-cell] {
+  padding: var(--spacing-lg);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
+  border: none;
+}
+
+/* ============ COLUMN WIDTH UTILITIES ============ */
+.column-xs {
+  min-width: 80px;
+}
+
+.column-sm {
+  min-width: 120px;
+}
+
+.column-md {
+  min-width: 150px;
+}
+
+.column-lg {
+  min-width: 200px;
+}
+
+.column-actions {
+  min-width: 120px;
+  width: 120px;
+  text-align: center;
+}
+
+/* ============ ACTION BUTTONS ============ */
+.action-buttons {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  justify-content: center;
+}
+
+.action-btn {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--border-radius-sm);
+  transition: all var(--transition-fast);
+  cursor: pointer;
+}
+
+.action-btn:hover {
+  transform: translateY(-2px);
+}
+
+.action-btn.view-btn:hover {
+  background-color: var(--color-info-light);
+  color: var(--color-info);
+}
+
+.action-btn.edit-btn:hover {
+  background-color: var(--color-warning-light);
+  color: var(--color-warning);
+}
+
+.action-btn.delete-btn:hover {
+  background-color: var(--color-danger-light);
+  color: var(--color-danger);
+}
+
+/* ============ BADGES ============ */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: 4px 12px;
+  border-radius: var(--border-radius-sm);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  white-space: nowrap;
+}
+
+.badge.info {
+  background-color: var(--color-info-light);
+  color: var(--color-info);
+}
+
+.badge.success {
+  background-color: var(--color-success-light);
+  color: var(--color-success);
+}
+
+.badge.warning {
+  background-color: var(--color-warning-light);
+  color: var(--color-warning);
+}
+
+.badge.danger {
+  background-color: var(--color-danger-light);
+  color: var(--color-danger);
+}
+
+.badge.empty {
+  background-color: var(--color-warning-light);
+  color: var(--color-warning);
+}
+
+/* ============ EMPTY STATE ============ */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  padding: var(--spacing-3xl);
+  border: 2px dashed var(--color-border-light);
+  border-radius: var(--border-radius-md);
+  background-color: var(--color-bg-hover);
+  animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.empty-state-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: var(--color-primary-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--spacing-lg);
+  font-size: 40px;
+  color: var(--color-primary);
+}
+
+.empty-state-title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  margin: 0 0 var(--spacing-sm) 0;
+}
+
+.empty-state-message {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-lg);
+}
+
+/* ============ RESPONSIVE TABLE UTILITIES ============ */
+@media (max-width: 1200px) {
+  .column-hide-1200 {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .column-hide-768 {
+    display: none;
+  }
+
+  th[mat-header-cell],
+  td[mat-cell] {
+    padding: var(--spacing-md);
+    font-size: var(--font-size-xs);
+  }
+}
+
+@media (max-width: 600px) {
+  .column-hide-600 {
+    display: none;
+  }
+
+  .action-btn {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    font-size: var(--font-size-xs);
+  }
+
+  th[mat-header-cell],
+  td[mat-cell] {
+    padding: var(--spacing-sm);
+    font-size: var(--font-size-xs);
+  }
+
+  .empty-state {
+    min-height: 300px;
+    padding: var(--spacing-xl);
+  }
+}
+
+/* ============ PRINT STYLES ============ */
+@media print {
+  .table-wrapper {
+    border: 1px solid var(--color-border);
+    box-shadow: none;
+  }
+
+  .data-row:hover {
+    background-color: transparent;
+  }
+}

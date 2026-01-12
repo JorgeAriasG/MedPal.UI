@@ -1,9 +1,261 @@
-form {
-  min-width: 150px;
-  max-width: 500px;
+/* ========================================
+   NEW APPOINTMENT DIALOG - FORM
+   ======================================== */
+
+.appointment-dialog {
+  min-width: 500px;
+  display: flex;
+  flex-direction: column;
+}
+
+.dialog-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  margin: 0;
+  padding: var(--spacing-lg);
+  border-bottom: 1px solid var(--color-divider);
+  background: var(--color-bg-secondary);
+}
+
+.dialog-title {
+  margin: 0;
+  font-size: var(--font-size-title);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+}
+
+.dialog-content {
+  flex: 1;
+  padding: var(--spacing-xl);
+  overflow-y: auto;
+  background: var(--color-bg-surface);
+}
+
+.appointment-form-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2xl);
+}
+
+/* Form Sections */
+.form-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.section-title {
+  margin: 0;
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  padding-bottom: var(--spacing-md);
+  border-bottom: 2px solid var(--color-primary);
+}
+
+/* Patient Form */
+.patient-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+/* Appointment Details Form */
+.appointment-details-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+/* Form Layout */
+.full-width {
   width: 100%;
 }
 
-.input {
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-lg);
+}
+
+.form-col {
   width: 100%;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+/* Material Form Field Overrides */
+mat-form-field ::ng-deep {
+  .mat-mdc-form-field-focus-overlay {
+    background-color: rgba(25, 118, 210, 0.04);
+  }
+
+  .mat-mdc-text-field-wrapper {
+    padding-bottom: 0.5em;
+  }
+
+  .mdc-text-field {
+    background-color: var(--color-bg-page);
+    border-radius: var(--border-radius-sm);
+  }
+
+  .mdc-text-field--filled {
+    background-color: var(--color-bg-secondary);
+  }
+
+  .mdc-text-field__input {
+    color: var(--color-text-primary);
+    font-size: var(--font-size-body);
+  }
+
+  .mdc-floating-label {
+    color: var(--color-text-secondary);
+  }
+
+  .mat-mdc-form-field-focus-overlay {
+    opacity: 0.04;
+  }
+}
+
+/* Material Icon in Form Fields */
+mat-icon[matPrefix],
+mat-icon[matSuffix] {
+  color: var(--color-text-secondary);
+  margin-right: var(--spacing-md);
+}
+
+/* Material Autocomplete */
+mat-autocomplete ::ng-deep {
+  .mat-mdc-autocomplete-panel {
+    max-height: 300px;
+  }
+
+  .mat-mdc-option {
+    font-size: var(--font-size-body);
+  }
+
+  .mat-mdc-option:hover {
+    background-color: var(--color-bg-secondary);
+  }
+}
+
+/* Material Select */
+mat-select ::ng-deep {
+  .mat-mdc-select-value {
+    color: var(--color-text-primary);
+  }
+
+  .mdc-select__dropdown-icon {
+    color: var(--color-text-secondary);
+  }
+}
+
+/* Dialog Actions */
+.dialog-actions {
+  display: flex;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+  border-top: 1px solid var(--color-divider);
+  background: var(--color-bg-secondary);
+}
+
+.cancel-btn {
+  color: var(--color-text-secondary);
+  transition: all var(--transition-normal);
+}
+
+.cancel-btn:hover {
+  color: var(--color-text-primary);
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+.save-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  height: 40px;
+  padding: 0 var(--spacing-lg);
+  font-weight: var(--font-weight-medium);
+  transition: all var(--transition-normal);
+}
+
+.save-btn:not([disabled]):hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.save-btn mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .appointment-dialog {
+    min-width: auto;
+    width: 90vw;
+    max-height: 90vh;
+  }
+
+  .dialog-content {
+    padding: var(--spacing-lg);
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .dialog-actions {
+    flex-wrap: wrap;
+  }
+
+  .save-btn {
+    flex: 1;
+    justify-content: center;
+  }
+
+  .cancel-btn {
+    flex: 1;
+  }
+}
+
+@media (max-width: 600px) {
+  .appointment-dialog {
+    min-width: 100%;
+    width: 100%;
+    max-height: 100vh;
+    border-radius: 16px 16px 0 0;
+  }
+
+  .dialog-header {
+    padding: var(--spacing-md);
+  }
+
+  .dialog-title {
+    font-size: var(--font-size-body);
+  }
+
+  .dialog-content {
+    padding: var(--spacing-md);
+  }
+
+  .appointment-form-wrapper {
+    gap: var(--spacing-lg);
+  }
+
+  .form-section {
+    gap: var(--spacing-md);
+  }
+
+  .form-row {
+    gap: var(--spacing-md);
+  }
+
+  mat-form-field {
+    margin-bottom: var(--spacing-sm);
+  }
 }

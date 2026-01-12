@@ -1,0 +1,16 @@
+<div class="generic-template">
+  <h3>Datos Específicos de la Especialidad</h3>
+
+  <mat-form-field appearance="outline" class="w-100">
+    <mat-label>Información Adicional</mat-label>
+    <textarea
+      matInput
+      rows="8"
+      [value]="genericData.customData"
+      (input)="updateData($any($event.target).value)"
+      [disabled]="disabled"
+      placeholder="Ingrese datos específicos de la especialidad en formato libre..."
+    ></textarea>
+    <mat-hint>Puede ingresar texto libre o datos en formato JSON</mat-hint>
+  </mat-form-field>
+</div>

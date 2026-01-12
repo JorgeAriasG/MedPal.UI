@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import * as CryptoJS from 'crypto-js';
 import { Store } from '@ngrx/store';
 import { logout } from '../store/actions/auth.actions';
 import { ApiService } from './api.service';
@@ -11,7 +10,8 @@ import { ApiService } from './api.service';
   providedIn: 'root'
 })
 export class AuthService {
-  private endpoint = 'User/login'; // Update with your API URL
+  private loginEndpoint = 'User/login';
+  private currentUserEndpoint = 'User/me';
 
   constructor(
     private router: Router,
@@ -21,10 +21,18 @@ export class AuthService {
   ) {}
 
   login(email: string, password: string): Observable<any> {
-    const encryptedPassword = CryptoJS.SHA256(password).toString();
-    const loginData = { email, passwordHash: encryptedPassword };
+    // Send password in plain text - backend handles hashing
+    const loginData = { email, password };
+    return this.apiService.post(this.loginEndpoint, loginData);
+  }
 
-    return this.apiService.post(this.endpoint, loginData);
+  signup(data: any): Observable<any> {
+    return this.apiService.post('User/register', data);
+  }
+
+  // Get current user profile data including specialty
+  getCurrentUser(): Observable<any> {
+    return this.apiService.get(this.currentUserEndpoint);
   }
 
   logout(): void {

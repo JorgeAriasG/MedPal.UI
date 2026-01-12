@@ -1,4 +1,4 @@
-import { IClinic } from 'src/app/entities/IClinic';
+﻿import { IClinic } from 'src/app/entities/IClinic';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { PatientsService } from 'src/app/components/patients/services/patients.service';
 import { IPatient } from 'src/app/entities/IPatient';
@@ -8,20 +8,32 @@ import { Store } from '@ngrx/store';
 import { selectClinicId } from 'src/app/store/selectors/auth.selectors';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 @Component({
   selector: 'app-patients',
   templateUrl: './patients.component.html',
   styleUrls: ['./patients.component.css'],
   standalone: false,
+  animations: [
+    trigger('slideDown', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(-12px)' }),
+        animate('300ms cubic-bezier(0.4, 0, 0.2, 1)', style({ opacity: 1, transform: 'translateY(0)' }))
+      ])
+    ]),
+    trigger('fadeIn', [
+      transition(':enter', [
+        style({ opacity: 0 }),
+        animate('400ms cubic-bezier(0.4, 0, 0.2, 1)', style({ opacity: 1 }))
+      ])
+    ])
+  ]
 })
 export class PatientsComponent implements OnInit, OnDestroy {
   patients: IPatient[] = [];
-  addPatient: boolean = false;
   displayedColumns: string[] = [
     'name',
-    'middlename',
-    'lastname',
     'email',
     'phone',
     'clinicName',
@@ -57,15 +69,24 @@ export class PatientsComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  addPatientToggle(): void {
-    this.addPatient = !this.addPatient;
-  }
+  openAddDialog(): void {
+    const dialogRef = this.dialog.open(EditModalComponent, {
+      width: '500px',
+      disableClose: false,
+      panelClass: 'custom-dialog',
+      data: {
+        entityType: 'patient',
+        data: {},
+        title: 'Create New Patient',
+        isCreate: true
+      }
+    });
 
-  onPatientAdded(): void {
-    console.log('Patient added event received'); // Debug log
-    this.addPatientToggle();
-    this.getPatients();
-    // No need to call loadPatients as the subscription will handle updates
+    dialogRef.afterClosed().pipe(takeUntil(this.destroy$)).subscribe((result) => {
+      if (result) {
+        this.saveNewPatient(result);
+      }
+    });
   }
 
   getPatients(): void {
@@ -111,6 +132,16 @@ export class PatientsComponent implements OnInit, OnDestroy {
       });
   }
 
+  saveNewPatient(patient: IPatient): void {
+    this.patientsService
+      .addPatient(patient)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((res) => {
+        this.getPatients();
+        console.log(res);
+      });
+    }
+
   saveEdit(patient: Partial<IPatient>): void {
     this.patientsService
       .editPatient(patient)
@@ -126,4 +157,9 @@ export class PatientsComponent implements OnInit, OnDestroy {
     this.editPatientId = null;
     this.editPatientData = {};
   }
+
+  trackByPatient(index: number, patient: IPatient): string {
+    return patient.email;
+  }
 }
+

@@ -1,19 +1,37 @@
-<!-- <button (click)="addAppointmentToggle()" mat-button>Add Appointment</button>
-<div class="task" *ngFor="let appointment of appointments" style="margin-bottom: 1em;">
-  <div class="date">
-    <h1>{{ appointment.date | slice:8:10 }}</h1>
+<div class="appointments-container">
+  <!-- Header -->
+  <div class="appointments-header">
+    <h1 class="appointments-title">Appointments Schedule</h1>
+    <p class="appointments-subtitle">View and manage your clinic appointments</p>
   </div>
-  <div class="task-info">
-    <h3 class="mat-h3">Time: {{ appointment.time }}</h3>
-    <p class="mat-body">Patient: {{ appointment.patient.name }}</p>
-    <p class="mat-body">Status: {{ appointment.status }}</p>
-    <p class="mat-body">Notes: {{ appointment.notes }}</p>
+
+  <!-- Action Bar -->
+  <div class="appointments-actions">
+    <button mat-raised-button color="primary" (click)="addAppointmentToggle()" class="add-appointment-btn">
+      <mat-icon>add_circle</mat-icon>
+      <span>New Appointment</span>
+    </button>
   </div>
-  <div class="task-actions">
-    <button class="set-alarm">Set Alarm</button>
-    <button class="mat-button"><fa-icon [icon]="faPencil"></fa-icon>Edit</button>
+
+  <!-- Calendar View -->
+  <div class="calendar-section">
+    <div class="calendar-wrapper">
+      <mwl-calendar-week-view
+        [viewDate]="viewDate"
+        [events]="events"
+        class="calendar-view">
+      </mwl-calendar-week-view>
+    </div>
   </div>
-</div> -->
-<button (click)="addAppointmentToggle()" mat-button>Add Appointment</button>
-<mwl-calendar-week-view [viewDate]="viewDate" [events]="events">
-</mwl-calendar-week-view>
+
+  <!-- Fallback Message -->
+  <div *ngIf="appointments.length === 0" class="empty-state">
+    <mat-icon class="empty-state-icon">event_available</mat-icon>
+    <h3>No Appointments</h3>
+    <p>You don't have any appointments scheduled yet. Create one to get started.</p>
+    <button mat-raised-button color="primary" (click)="addAppointmentToggle()">
+      Create First Appointment
+    </button>
+  </div>
+</div>
+

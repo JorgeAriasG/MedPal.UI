@@ -7,16 +7,30 @@ import { Store } from '@ngrx/store';
 import { selectClinicId } from 'src/app/store/selectors/auth.selectors';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 @Component({
   selector: 'app-roles-list',
   templateUrl: './roles-list.component.html',
   styleUrls: ['./roles-list.component.css'],
   standalone: false,
+  animations: [
+    trigger('slideDown', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(-12px)' }),
+        animate('300ms cubic-bezier(0.4, 0, 0.2, 1)', style({ opacity: 1, transform: 'translateY(0)' }))
+      ])
+    ]),
+    trigger('fadeIn', [
+      transition(':enter', [
+        style({ opacity: 0 }),
+        animate('400ms cubic-bezier(0.4, 0, 0.2, 1)', style({ opacity: 1 }))
+      ])
+    ])
+  ]
 })
 export class RolesListComponent implements OnInit, OnDestroy {
   roles: IRole[] = [];
-  addRole: boolean = false;
   displayedColumns: string[] = ['name', 'description', 'actions'];
   editRoleId: any = null;
   editRoleData: Partial<IRole> = {};
@@ -48,14 +62,24 @@ export class RolesListComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  addRoleToggle(): void {
-    this.addRole = !this.addRole;
-  }
+  openAddDialog(): void {
+    const dialogRef = this.dialog.open(EditModalComponent, {
+      width: '500px',
+      disableClose: false,
+      panelClass: 'custom-dialog',
+      data: {
+        entityType: 'role',
+        data: {},
+        title: 'Create New Role',
+        isCreate: true
+      }
+    });
 
-  onRoleAdded(): void {
-    console.log('Role added event received');
-    this.addRoleToggle();
-    this.getRoles();
+    dialogRef.afterClosed().pipe(takeUntil(this.destroy$)).subscribe((result) => {
+      if (result) {
+        this.saveEdit(result);
+      }
+    });
   }
 
   getRoles(): void {
@@ -109,5 +133,9 @@ export class RolesListComponent implements OnInit, OnDestroy {
   cancelEdit(): void {
     this.editRoleId = null;
     this.editRoleData = {};
+  }
+
+  trackByRole(index: number, role: IRole): string | undefined {
+    return role.name;
   }
 }

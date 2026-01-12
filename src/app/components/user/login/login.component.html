@@ -1,16 +1,101 @@
 <div class="login-container">
-  <form (ngSubmit)="onSubmit(loginForm)" #loginForm="ngForm">
-    <mat-form-field appearance="fill">
-      <mat-label>Email</mat-label>
-      <input matInput type="email" name="email" ngModel required>
-    </mat-form-field>
+  <!-- Background Decorativo -->
+  <div class="login-background"></div>
 
-    <mat-form-field appearance="fill">
-      <mat-label>Password</mat-label>
-      <input matInput type="password" name="password" ngModel required>
-    </mat-form-field>
+  <!-- Card Principal -->
+  <div class="login-card">
 
-    <button mat-raised-button color="primary" type="submit" [disabled]="!loginForm.valid">Login</button>
-  </form>
-  <button mat-raised-button color="accent" routerLink="/signup">Sign Up</button>
+    <!-- Header -->
+    <div class="login-header">
+      <h1 class="login-title">
+        <mat-icon class="logo-icon">local_hospital</mat-icon>
+        Medical Scheduling
+      </h1>
+      <p class="login-subtitle">Healthcare Management System</p>
+    </div>
+
+    <!-- Form -->
+    <form [formGroup]="form" (ngSubmit)="submit()" class="login-form">
+
+      <!-- Email Field -->
+      <mat-form-field class="full-width">
+        <mat-label>Email Address</mat-label>
+        <input matInput
+               type="email"
+               formControlName="email"
+               placeholder="doctor@example.com">
+        <mat-icon matPrefix>email</mat-icon>
+        <mat-error *ngIf="form.get('email')?.hasError('required')">
+          Email is required
+        </mat-error>
+        <mat-error *ngIf="form.get('email')?.hasError('email')">
+          Invalid email format
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Password Field -->
+      <mat-form-field class="full-width">
+        <mat-label>Password</mat-label>
+        <input matInput
+               [type]="showPassword ? 'text' : 'password'"
+               formControlName="password"
+               placeholder="••••••••">
+        <mat-icon matPrefix>lock</mat-icon>
+        <button
+          mat-icon-button
+          matSuffix
+          (click)="togglePassword()"
+          type="button"
+          class="eye-button">
+          <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+        </button>
+        <mat-error *ngIf="form.get('password')?.hasError('required')">
+          Password is required
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Remember Me -->
+      <div class="remember-me">
+        <mat-checkbox formControlName="rememberMe">
+          Remember me
+        </mat-checkbox>
+      </div>
+
+      <!-- Error Alert -->
+      <div class="error-alert" *ngIf="error$ | async as error">
+        <mat-icon>error_outline</mat-icon>
+        <span>{{ error }}</span>
+      </div>
+
+      <!-- Submit Button -->
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="(isLoading$ | async) || form.invalid"
+        class="submit-button">
+        <span *ngIf="!(isLoading$ | async)">Sign In</span>
+        <mat-spinner *ngIf="isLoading$ | async" diameter="20" class="inline-spinner"></mat-spinner>
+      </button>
+
+    </form>
+
+    <!-- Footer -->
+    <div class="login-footer">
+      <p class="forgot-password">
+        <a href="javascript:void(0)">Forgot Password?</a>
+      </p>
+      <p class="signup-link">
+        Don't have an account?
+        <a routerLink="/signup" class="signup-text">Sign Up</a>
+      </p>
+    </div>
+
+  </div>
+
+  <!-- Footer Copyright -->
+  <div class="login-copyright">
+    <p>&copy; 2026 Medical Scheduling System. All rights reserved.</p>
+  </div>
+
 </div>

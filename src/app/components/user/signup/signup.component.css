@@ -1,0 +1,340 @@
+/* ========================================
+   SIGNUP COMPONENT - MULTI-SECTION FORM
+   ======================================== */
+
+.signup-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--color-bg-page) 0%, #F0F4F8 100%);
+  padding: var(--spacing-lg);
+  position: relative;
+}
+
+.signup-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.5;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 20% 50%, rgba(25, 118, 210, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(79, 195, 247, 0.1) 0%, transparent 50%);
+}
+
+.signup-card {
+  background: var(--color-bg-surface);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-lg);
+  width: 100%;
+  max-width: 500px;
+  padding: var(--spacing-2xl);
+  z-index: 10;
+  animation: slideUp 500ms ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Header */
+.signup-header {
+  text-align: center;
+  margin-bottom: var(--spacing-xl);
+}
+
+.signup-title {
+  margin: 0 0 var(--spacing-sm) 0;
+  font-size: var(--font-size-headline);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+}
+
+.signup-subtitle {
+  margin: 0;
+  font-size: var(--font-size-small);
+  color: var(--color-text-secondary);
+  letter-spacing: 0.5px;
+}
+
+/* Signup Form */
+.signup-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+/* Tabs */
+.signup-tabs {
+  margin: var(--spacing-lg) 0;
+}
+
+.signup-tabs ::ng-deep .mat-mdc-tab-labels {
+  border-bottom: 1px solid var(--color-divider);
+}
+
+.signup-tabs ::ng-deep .mat-mdc-tab {
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-medium);
+}
+
+.tab-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-lg) 0;
+  min-height: 300px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.eye-button {
+  color: var(--color-text-secondary);
+  transition: color var(--transition-fast);
+}
+
+.eye-button:hover {
+  color: var(--color-text-primary);
+}
+
+/* Password Strength */
+.password-strength {
+  margin: var(--spacing-md) 0;
+}
+
+.strength-bar {
+  height: 4px;
+  background: var(--color-divider);
+  border-radius: var(--border-radius-sm);
+  overflow: hidden;
+  margin-bottom: var(--spacing-sm);
+}
+
+.strength-fill {
+  height: 100%;
+  transition: width var(--transition-normal), background-color var(--transition-normal);
+}
+
+.strength-weak {
+  background-color: var(--color-danger);
+  width: 33%;
+}
+
+.strength-medium {
+  background-color: var(--color-warning);
+  width: 66%;
+}
+
+.strength-strong {
+  background-color: var(--color-success);
+  width: 100%;
+}
+
+.strength-text {
+  margin: 0;
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.strength-text.strength-weak {
+  color: var(--color-danger);
+}
+
+.strength-text.strength-medium {
+  color: var(--color-warning);
+}
+
+.strength-text.strength-strong {
+  color: var(--color-success);
+}
+
+/* Checkbox Groups */
+.checkbox-group {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+  padding: var(--spacing-md);
+  background: var(--color-bg-secondary);
+  border-radius: var(--border-radius-sm);
+}
+
+.agreement-checkbox {
+  font-size: var(--font-size-small);
+  line-height: 1.5;
+}
+
+.agreement-checkbox ::ng-deep .mat-mdc-checkbox-label {
+  word-break: break-word;
+}
+
+.agreement-checkbox a.link {
+  color: var(--color-primary);
+  text-decoration: none;
+  font-weight: var(--font-weight-medium);
+  transition: color var(--transition-fast);
+}
+
+.agreement-checkbox a.link:hover {
+  text-decoration: underline;
+  color: var(--color-primary-dark);
+}
+
+.checkbox-error {
+  font-size: var(--font-size-caption);
+  color: var(--color-danger);
+  margin-top: var(--spacing-sm);
+  display: block;
+}
+
+/* Error Alert */
+.error-alert {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  background-color: rgba(244, 67, 54, 0.1);
+  border: 1px solid var(--color-danger);
+  border-radius: var(--border-radius-sm);
+  color: var(--color-danger);
+  font-size: var(--font-size-small);
+  animation: slideIn 300ms ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.error-alert mat-icon {
+  flex-shrink: 0;
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+/* Action Buttons */
+.signup-actions {
+  display: flex;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-xl);
+}
+
+.back-button {
+  flex: 1;
+  border-color: var(--color-divider);
+  color: var(--color-text-primary);
+  transition: all var(--transition-normal);
+}
+
+.back-button:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background-color: rgba(25, 118, 210, 0.05);
+}
+
+.submit-button {
+  flex: 2;
+  height: 44px;
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: 0.5px;
+  transition: all var(--transition-normal);
+}
+
+.submit-button:not([disabled]):hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.submit-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.inline-spinner {
+  margin: 0 var(--spacing-sm);
+}
+
+/* Footer */
+.signup-footer {
+  text-align: center;
+  margin-top: var(--spacing-xl);
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid var(--color-divider);
+}
+
+.login-link {
+  margin: 0;
+  font-size: var(--font-size-small);
+  color: var(--color-text-secondary);
+}
+
+.login-link a.link-primary {
+  color: var(--color-primary);
+  text-decoration: none;
+  font-weight: var(--font-weight-medium);
+  transition: color var(--transition-fast);
+}
+
+.login-link a.link-primary:hover {
+  text-decoration: underline;
+  color: var(--color-primary-dark);
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .signup-container {
+    padding: var(--spacing-md);
+  }
+
+  .signup-card {
+    max-width: 100%;
+    padding: var(--spacing-lg);
+  }
+
+  .signup-title {
+    font-size: var(--font-size-title);
+  }
+
+  .tab-content {
+    min-height: 250px;
+    padding: var(--spacing-md) 0;
+  }
+
+  .signup-actions {
+    flex-direction: column;
+  }
+
+  .submit-button,
+  .back-button {
+    flex: 1;
+    height: 40px;
+  }
+}
+
+@media (max-width: 768px) {
+  .signup-card {
+    max-width: 450px;
+  }
+}

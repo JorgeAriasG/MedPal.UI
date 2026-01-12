@@ -1,0 +1,119 @@
+<div class="nutrition-template">
+  <h3>Evaluación Nutricional</h3>
+
+  <div class="row">
+    <!-- Peso -->
+    <div class="col-md-6">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Peso (kg)</mat-label>
+        <input
+          matInput
+          type="number"
+          [value]="nutritionData.peso"
+          (input)="updateField('peso', +$any($event.target).value)"
+          [disabled]="disabled"
+          min="0"
+          step="0.1"
+        />
+      </mat-form-field>
+    </div>
+
+    <!-- Altura -->
+    <div class="col-md-6">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Altura (m)</mat-label>
+        <input
+          matInput
+          type="number"
+          [value]="nutritionData.altura"
+          (input)="updateField('altura', +$any($event.target).value)"
+          [disabled]="disabled"
+          min="0"
+          step="0.01"
+        />
+      </mat-form-field>
+    </div>
+  </div>
+
+  <!-- IMC Display -->
+  <mat-card class="imc-card" [style.border-left-color]="getIMCColor()">
+    <mat-card-content>
+      <div class="imc-display">
+        <div class="imc-value">
+          <span class="imc-number">{{ nutritionData.imc || "0.00" }}</span>
+          <span class="imc-label">IMC</span>
+        </div>
+        <div class="imc-category" [style.color]="getIMCColor()">
+          {{ getIMCCategory() }}
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Objetivo -->
+  <mat-form-field appearance="outline" class="w-100 mt-3">
+    <mat-label>Objetivo</mat-label>
+    <input
+      matInput
+      [value]="nutritionData.objetivo"
+      (input)="updateField('objetivo', $any($event.target).value)"
+      [disabled]="disabled"
+      placeholder="Ej: Bajar 10kg en 3 meses"
+    />
+  </mat-form-field>
+
+  <!-- Calorías Diarias -->
+  <mat-form-field appearance="outline" class="w-100">
+    <mat-label>Calorías Diarias Recomendadas</mat-label>
+    <input
+      matInput
+      type="number"
+      [value]="nutritionData.caloriasDiarias"
+      (input)="updateField('caloriasDiarias', +$any($event.target).value)"
+      [disabled]="disabled"
+      min="0"
+    />
+  </mat-form-field>
+
+  <!-- Restricciones Alimenticias -->
+  <div class="restrictions-section">
+    <h4>Restricciones Alimenticias</h4>
+
+    <div class="add-restriction">
+      <mat-form-field appearance="outline" class="restriction-input">
+        <mat-label>Agregar restricción</mat-label>
+        <input
+          matInput
+          [(ngModel)]="newRestriction"
+          (keyup.enter)="addRestriction()"
+          [disabled]="disabled"
+          placeholder="Ej: Lactosa, Gluten"
+        />
+      </mat-form-field>
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="addRestriction()"
+        [disabled]="disabled || !newRestriction.trim()"
+      >
+        <mat-icon>add</mat-icon>
+        Agregar
+      </button>
+    </div>
+
+    <mat-chip-set class="restrictions-chips">
+      <mat-chip
+        *ngFor="let restriction of nutritionData.restricciones"
+        [removable]="!disabled"
+        (removed)="removeRestriction(restriction)"
+      >
+        {{ restriction }}
+        <mat-icon matChipRemove *ngIf="!disabled">cancel</mat-icon>
+      </mat-chip>
+    </mat-chip-set>
+
+    <p *ngIf="nutritionData.restricciones.length === 0" class="text-muted">
+      No hay restricciones alimenticias registradas
+    </p>
+  </div>
+</div>

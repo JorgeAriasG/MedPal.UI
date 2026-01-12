@@ -69,7 +69,7 @@ export class NewPatientComponent implements OnInit, OnDestroy {
   async savePatient(): Promise<void> {
     try {
       this.patientsService
-        .savePatient(this.newPatient)
+        .addPatient(this.newPatient)
         .pipe(takeUntil(this.destroy$))
         .subscribe((response: any) => {
           console.log('Patient:', response);

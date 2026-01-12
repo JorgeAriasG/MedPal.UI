@@ -6,27 +6,27 @@ import { IRole } from 'src/app/entities/IRole';
   providedIn: 'root',
 })
 export class RolesService {
+  private readonly endpoint: string = 'role';
   constructor(private apiService: ApiService) {}
 
   getRoles(clinicId?: number | null) {
-    const url = clinicId ? `/roles?clinicId=${clinicId}` : '/roles';
-    return this.apiService.get<IRole[]>(url);
+    return this.apiService.get<IRole[]>(this.endpoint);
   }
 
   getRoleById(id: number) {
-    return this.apiService.get<IRole>(`/roles/${id}`);
+    return this.apiService.get<IRole>(`${this.endpoint}/${id}`);
   }
 
   createRole(role: IRole) {
-    return this.apiService.post<IRole>('/roles', role);
+    return this.apiService.post<IRole>(this.endpoint, role);
   }
 
   updateRole(role: Partial<IRole>) {
-    return this.apiService.put<IRole>(`/roles/${role.id}`, role);
+    return this.apiService.put<IRole>(`${this.endpoint}/${role.id}`, role);
   }
 
   deleteRole(id: number) {
-    return this.apiService.delete<void>(`/roles/${id}`);
+    return this.apiService.delete<void>(`${this.endpoint}/${id}`);
   }
 
   editRole(role: Partial<IRole>) {
