@@ -8,15 +8,10 @@
       </div>
       <p class="page-subtitle">Manage and view all patient information</p>
     </div>
-    <button mat-raised-button color="primary" (click)="addPatientToggle()" class="add-button">
+    <button mat-raised-button color="primary" (click)="openAddDialog()" class="add-button">
       <mat-icon>add</mat-icon>
       Add New Patient
     </button>
-  </div>
-
-  <!-- Add Patient Form -->
-  <div *ngIf="addPatient" class="add-patient-section" [@slideDown]>
-    <app-new-patient (patientAdded)="onPatientAdded()"></app-new-patient>
   </div>
 
   <!-- Patients Table -->
@@ -114,7 +109,7 @@
     </div>
     <h3 class="empty-state-title">No Patients Found</h3>
     <p class="empty-state-message">Get started by adding your first patient to the system</p>
-    <button mat-raised-button color="primary" (click)="addPatientToggle()">
+    <button mat-raised-button color="primary" (click)="openAddDialog()">
       <mat-icon>add</mat-icon>
       Create Patient
     </button>

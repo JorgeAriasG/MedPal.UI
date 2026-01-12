@@ -8,15 +8,10 @@
       </div>
       <p class="page-subtitle">Manage system users and their clinic assignments</p>
     </div>
-    <button mat-raised-button color="primary" (click)="addUserToggle()" class="add-button">
+    <button mat-raised-button color="primary" (click)="openAddDialog()" class="add-button">
       <mat-icon>add</mat-icon>
       Add New User
     </button>
-  </div>
-
-  <!-- Add User Form -->
-  <div *ngIf="addUser" class="add-user-section" [@slideDown]>
-    <!-- <app-new-user (userAdded)="onUserAdded()"></app-new-user> -->
   </div>
 
   <!-- Users Table -->
@@ -98,7 +93,7 @@
     </div>
     <h3 class="empty-state-title">No Users Found</h3>
     <p class="empty-state-message">Get started by adding your first user to the system</p>
-    <button mat-raised-button color="primary" (click)="addUserToggle()">
+    <button mat-raised-button color="primary" (click)="openAddDialog()">
       <mat-icon>add</mat-icon>
       Create User
     </button>

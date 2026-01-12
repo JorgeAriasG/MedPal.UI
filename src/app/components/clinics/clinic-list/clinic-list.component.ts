@@ -91,19 +91,18 @@ export class ClinicListComponent implements OnInit, OnDestroy {
     console.log($event);
   }
 
-  addClinicToggle(): void {
-    const dialogRef = this.dialog.open(AddClinicComponent, { width: '400px' });
+  openAddDialog(): void {
+    const dialogRef = this.dialog.open(AddClinicComponent, {
+      width: '500px',
+      disableClose: false,
+      panelClass: 'custom-dialog'
+    });
 
-    // Usar takeUntil para cancelar esta suscripción también
-    dialogRef
-      .afterClosed()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((res) => {
-        console.log(res);
-        if (res) {
-          this.getClinics();
-        }
-      });
+    dialogRef.afterClosed().pipe(takeUntil(this.destroy$)).subscribe((res) => {
+      if (res) {
+        this.getClinics();
+      }
+    });
   }
 
   async getClinics(): Promise<void> {

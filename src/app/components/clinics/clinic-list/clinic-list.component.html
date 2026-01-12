@@ -8,7 +8,7 @@
       </div>
       <p class="page-subtitle">Manage your medical centers and locations</p>
     </div>
-    <button mat-raised-button color="primary" (click)="addClinicToggle()" class="add-button">
+    <button mat-raised-button color="primary" (click)="openAddDialog()" class="add-button">
       <mat-icon>add</mat-icon>
       Add New Clinic
     </button>
@@ -101,7 +101,7 @@
     </div>
     <h3 class="empty-state-title">No Clinics Found</h3>
     <p class="empty-state-message">Create your first clinic to get started managing your medical centers</p>
-    <button mat-raised-button color="primary" (click)="addClinicToggle()">
+    <button mat-raised-button color="primary" (click)="openAddDialog()">
       <mat-icon>add</mat-icon>
       Create Clinic
     </button>

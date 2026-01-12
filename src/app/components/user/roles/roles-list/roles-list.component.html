@@ -8,15 +8,10 @@
       </div>
       <p class="page-subtitle">Manage system roles and permissions</p>
     </div>
-    <button mat-raised-button color="primary" (click)="addRoleToggle()" class="add-button">
+    <button mat-raised-button color="primary" (click)="openAddDialog()" class="add-button">
       <mat-icon>add</mat-icon>
       Add New Role
     </button>
-  </div>
-
-  <!-- Add Role Form -->
-  <div *ngIf="addRole" class="add-role-section" [@slideDown]>
-    <app-new-role (roleAdded)="onRoleAdded()"></app-new-role>
   </div>
 
   <!-- Roles Table -->
@@ -85,7 +80,7 @@
     </div>
     <h3 class="empty-state-title">No Roles Found</h3>
     <p class="empty-state-message">Create your first role to organize permissions and access control</p>
-    <button mat-raised-button color="primary" (click)="addRoleToggle()">
+    <button mat-raised-button color="primary" (click)="openAddDialog()">
       <mat-icon>add</mat-icon>
       Create Role
     </button>

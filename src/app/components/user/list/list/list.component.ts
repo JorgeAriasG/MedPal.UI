@@ -31,7 +31,6 @@ import { trigger, transition, style, animate } from '@angular/animations';
 })
 export class ListComponent implements OnInit, OnDestroy {
   users: IUser[] = [];
-  addUser: boolean = false;
   displayedColumns: string[] = [
     'name',
     'email',
@@ -68,14 +67,24 @@ export class ListComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  addUserToggle(): void {
-    this.addUser = !this.addUser;
-  }
+  openAddDialog(): void {
+    const dialogRef = this.dialog.open(EditModalComponent, {
+      width: '500px',
+      disableClose: false,
+      panelClass: 'custom-dialog',
+      data: {
+        entityType: 'user',
+        data: {},
+        title: 'Create New User',
+        isCreate: true
+      }
+    });
 
-  onUserAdded(): void {
-    console.log('User added event received');
-    this.addUserToggle();
-    this.getUsers();
+    dialogRef.afterClosed().pipe(takeUntil(this.destroy$)).subscribe((result) => {
+      if (result) {
+        this.saveEdit(result);
+      }
+    });
   }
 
   getUsers(): void {

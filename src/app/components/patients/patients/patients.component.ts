@@ -32,7 +32,6 @@ import { trigger, transition, style, animate } from '@angular/animations';
 })
 export class PatientsComponent implements OnInit, OnDestroy {
   patients: IPatient[] = [];
-  addPatient: boolean = false;
   displayedColumns: string[] = [
     'name',
     'email',
@@ -70,15 +69,24 @@ export class PatientsComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  addPatientToggle(): void {
-    this.addPatient = !this.addPatient;
-  }
+  openAddDialog(): void {
+    const dialogRef = this.dialog.open(EditModalComponent, {
+      width: '500px',
+      disableClose: false,
+      panelClass: 'custom-dialog',
+      data: {
+        entityType: 'patient',
+        data: {},
+        title: 'Create New Patient',
+        isCreate: true
+      }
+    });
 
-  onPatientAdded(): void {
-    console.log('Patient added event received'); // Debug log
-    this.addPatientToggle();
-    this.getPatients();
-    // No need to call loadPatients as the subscription will handle updates
+    dialogRef.afterClosed().pipe(takeUntil(this.destroy$)).subscribe((result) => {
+      if (result) {
+        this.saveNewPatient(result);
+      }
+    });
   }
 
   getPatients(): void {
@@ -123,6 +131,16 @@ export class PatientsComponent implements OnInit, OnDestroy {
         }
       });
   }
+
+  saveNewPatient(patient: IPatient): void {
+    this.patientsService
+      .addPatient(patient)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((res) => {
+        this.getPatients();
+        console.log(res);
+      });
+    }
 
   saveEdit(patient: Partial<IPatient>): void {
     this.patientsService

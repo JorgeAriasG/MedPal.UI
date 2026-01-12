@@ -31,7 +31,6 @@ import { trigger, transition, style, animate } from '@angular/animations';
 })
 export class RolesListComponent implements OnInit, OnDestroy {
   roles: IRole[] = [];
-  addRole: boolean = false;
   displayedColumns: string[] = ['name', 'description', 'actions'];
   editRoleId: any = null;
   editRoleData: Partial<IRole> = {};
@@ -63,14 +62,24 @@ export class RolesListComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  addRoleToggle(): void {
-    this.addRole = !this.addRole;
-  }
+  openAddDialog(): void {
+    const dialogRef = this.dialog.open(EditModalComponent, {
+      width: '500px',
+      disableClose: false,
+      panelClass: 'custom-dialog',
+      data: {
+        entityType: 'role',
+        data: {},
+        title: 'Create New Role',
+        isCreate: true
+      }
+    });
 
-  onRoleAdded(): void {
-    console.log('Role added event received');
-    this.addRoleToggle();
-    this.getRoles();
+    dialogRef.afterClosed().pipe(takeUntil(this.destroy$)).subscribe((result) => {
+      if (result) {
+        this.saveEdit(result);
+      }
+    });
   }
 
   getRoles(): void {

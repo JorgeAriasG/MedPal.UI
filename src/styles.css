@@ -4,6 +4,7 @@
 
 @import "../node_modules/angular-calendar/css/angular-calendar.css";
 @import "app/shared/styles/tables.css";
+@import "app/shared/styles/dialogs.css";
 
 /* ========== CSS CUSTOM PROPERTIES / DESIGN TOKENS ========== */
 

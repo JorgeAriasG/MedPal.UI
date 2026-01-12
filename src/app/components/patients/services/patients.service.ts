@@ -17,7 +17,7 @@ export class PatientsService {
     return this.apiService.get(url);
   }
 
-  savePatient(patient: IPatient): Observable<any> {
+  addPatient(patient: IPatient): Observable<any> {
     const url = `${this.endpoint}`;
     return this.apiService.post(url, patient);
   }
