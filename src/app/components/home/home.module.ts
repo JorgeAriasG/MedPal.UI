@@ -45,6 +45,9 @@ import { NewRoleComponent } from '../user/roles/new-role/new-role.component';
 import { CreatePrescriptionComponent } from '../prescriptions/create-prescription/create-prescription.component';
 import { PrescriptionDetailComponent } from '../prescriptions/prescription-detail/prescription-detail.component';
 import { MedicalHistoryModule } from '../medical-history/medical-history.module';
+import { AuditAccessGuard } from 'src/app/guards/audit-access.guard';
+import { AuditAdminGuard } from 'src/app/guards/audit-admin.guard';
+import { ConsentAccessGuard } from 'src/app/guards/consent-access.guard';
 
 @NgModule({
   declarations: [
@@ -123,6 +126,50 @@ import { MedicalHistoryModule } from '../medical-history/medical-history.module'
         path: 'prescriptions/detail/:id',
         component: PrescriptionDetailComponent,
       },
+      // Audit routes (protected with guards)
+      {
+        path: 'audit-logs',
+        canActivate: [AuditAccessGuard],
+        children: [
+          {
+            path: '',
+            loadChildren: () =>
+              import('../audit-logs/audit-logs.module').then(
+                (m) => m.AuditLogsModule
+              ),
+          },
+        ],
+      },
+      // Audit Reports Route - Phase 3b
+      // @note Uncomment when audit-reports module is fully implemented
+      // {
+      //   path: 'audit-reports',
+      //   canActivate: [AuditAdminGuard],
+      //   children: [
+      //     {
+      //       path: '',
+      //       loadChildren: () =>
+      //         import('../audit-logs/audit-reports.module').then(
+      //           (m) => m.AuditReportsModule
+      //         ),
+      //     },
+      //   ],
+      // },
+      // Consent routes (protected with guards)
+      // @note Phase 3a: Consent modules not yet created
+      // {
+      //   path: 'consent',
+      //   canActivate: [ConsentAccessGuard],
+      //   children: [
+      //     {
+      //       path: '',
+      //       loadChildren: () =>
+      //         import('../consent/consent.module').then(
+      //           (m) => m.ConsentModule
+      //         ),
+      //     },
+      //   ],
+      // },
     ]),
   ],
   providers: [MatNativeDateModule, provideHttpClient(withInterceptorsFromDi())],

@@ -21,8 +21,13 @@ import { EffectsModule } from '@ngrx/effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { authReducer } from './store/reducers/auth.reducer';
 import { AuthEffects } from './store/effects/auth.effects';
+import { auditReducer } from './store/audit/audit.reducer';
+import { AuditEffects } from './store/audit/audit.effects';
+import { consentReducer } from './store/consent/consent.reducer';
+import { ConsentEffects } from './store/consent/consent.effects';
 import { AngularMaterialModule } from './angular-material.module';
 import { AuthInterceptor } from './interceptors/authInterceptor';
+import { AuditContextInterceptor } from './interceptors/audit-context.interceptor';
 import { localStorageSync } from 'ngrx-store-localstorage';
 import { ActionReducer, MetaReducer } from '@ngrx/store';
 
@@ -53,8 +58,8 @@ export const metaReducers: MetaReducer<any>[] = [localStorageSyncReducer];
     FormsModule,
     AngularMaterialModule,
     SharedModule,
-    StoreModule.forRoot({ auth: authReducer }, { metaReducers }),
-    EffectsModule.forRoot([AuthEffects]),
+    StoreModule.forRoot({ auth: authReducer, audit: auditReducer, consent: consentReducer }, { metaReducers }),
+    EffectsModule.forRoot([AuthEffects, AuditEffects, ConsentEffects]),
 
     StoreDevtoolsModule.instrument({
       maxAge: 25,
@@ -65,6 +70,7 @@ export const metaReducers: MetaReducer<any>[] = [localStorageSyncReducer];
   providers: [
     provideHttpClient(withInterceptorsFromDi()),
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: AuditContextInterceptor, multi: true },
   ],
   schemas: [],
 })

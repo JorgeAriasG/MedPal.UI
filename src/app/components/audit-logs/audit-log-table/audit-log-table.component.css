@@ -1,0 +1,184 @@
+.table-card {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+}
+
+.audit-logs-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.audit-logs-table th {
+  background-color: #f5f5f5;
+  font-weight: 600;
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 2px solid #e0e0e0;
+  color: #333;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.audit-logs-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #e0e0e0;
+  color: #666;
+}
+
+.audit-log-row {
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.audit-log-row:hover {
+  background-color: #f9f9f9;
+}
+
+.audit-log-row:active {
+  background-color: #f0f0f0;
+}
+
+/* Empty State */
+.empty-table-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1.5rem;
+  color: #999;
+  flex: 1;
+}
+
+.empty-table-state mat-icon {
+  font-size: 3rem;
+  width: 3rem;
+  height: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.empty-table-state p {
+  margin: 0;
+  font-size: 1rem;
+}
+
+/* Material Chips */
+mat-chip {
+  min-height: 24px !important;
+  padding: 0 12px !important;
+  border-radius: 12px !important;
+}
+
+mat-chip[color='accent'] {
+  background-color: #4caf50 !important;
+  color: white !important;
+}
+
+mat-chip[color='warn'] {
+  background-color: #f44336 !important;
+  color: white !important;
+}
+
+/* Pagination */
+mat-paginator {
+  border-top: 1px solid #e0e0e0;
+  background-color: #fafafa;
+}
+
+/* Icon Buttons in Table */
+button[mat-icon-button] {
+  color: #1976d2;
+}
+
+button[mat-icon-button]:hover {
+  background-color: rgba(25, 118, 210, 0.08);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .audit-logs-table th,
+  .audit-logs-table td {
+    padding: 0.75rem 0.5rem;
+    font-size: 0.875rem;
+  }
+
+  .audit-logs-table th {
+    font-size: 0.75rem;
+  }
+
+  /* Hide non-essential columns on mobile */
+  .audit-logs-table td:nth-child(3),
+  .audit-logs-table td:nth-child(4),
+  .audit-logs-table th:nth-child(3),
+  .audit-logs-table th:nth-child(4) {
+    display: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .table-wrapper {
+    min-height: 250px;
+  }
+
+  .audit-logs-table th,
+  .audit-logs-table td {
+    padding: 0.5rem 0.25rem;
+  }
+
+  .empty-table-state {
+    padding: 2rem 1rem;
+  }
+
+  .empty-table-state mat-icon {
+    font-size: 2rem;
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .empty-table-state p {
+    font-size: 0.875rem;
+  }
+
+  /* Show only essential columns on very small screens */
+  .audit-logs-table td:nth-child(5),
+  .audit-logs-table td:nth-child(6),
+  .audit-logs-table th:nth-child(5),
+  .audit-logs-table th:nth-child(6) {
+    display: none;
+  }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  .audit-logs-table th {
+    background-color: #424242;
+    color: #f5f5f5;
+    border-bottom-color: #616161;
+  }
+
+  .audit-logs-table td {
+    border-bottom-color: #616161;
+    color: #bdbdbd;
+  }
+
+  .audit-log-row:hover {
+    background-color: #333;
+  }
+
+  mat-paginator {
+    background-color: #2a2a2a;
+    border-top-color: #616161;
+  }
+
+  .empty-table-state {
+    color: #666;
+  }
+}
