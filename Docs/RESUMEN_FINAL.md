@@ -9,7 +9,7 @@ He creado **8 documentos completos** con toda la documentación necesaria para i
 ## 📚 ARCHIVOS CREADOS
 
 ```
-f:\PersonalProjects\SchedulingApp\Backend\Services\MedPalApi\MedPal.API\
+F:\PersonalProjects\SchedulingApp\UI\SchedulingAppUI\scheduling.ui\Docs
 
 1. ⭐ START_HERE_ANGULAR.md                      (10.2 KB) ← COMIENZA AQUÍ
    └─ Resumen ejecutivo y próximos pasos

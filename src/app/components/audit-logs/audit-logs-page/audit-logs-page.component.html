@@ -1,0 +1,74 @@
+<div class="audit-logs-container">
+  <!-- Error Message Display -->
+  <div *ngIf="error$ | async as error" class="error-banner">
+    <mat-card class="error-card">
+      <mat-card-content>
+        <div class="error-content">
+          <mat-icon class="error-icon">error</mat-icon>
+          <span class="error-message">{{ error }}</span>
+          <button mat-icon-button (click)="closeError()" class="close-btn">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Main Content -->
+  <div class="audit-logs-content">
+    <!-- Page Header -->
+    <mat-card class="page-header">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon class="title-icon">security_audit</mat-icon>
+          Audit Logs
+        </mat-card-title>
+        <mat-card-subtitle
+          >Monitor access to medical records and patient data</mat-card-subtitle
+        >
+      </mat-card-header>
+    </mat-card>
+
+    <!-- Filters Component -->
+    <app-audit-log-filters
+      [isLoading]="(loading$ | async) ?? false"
+      (filterApply)="onFilterApply($event)"
+      (filterReset)="onFilterReset()"
+    ></app-audit-log-filters>
+
+    <!-- Loading State -->
+    <div *ngIf="loading$ | async" class="loading-container">
+      <mat-spinner diameter="50"></mat-spinner>
+      <p class="loading-text">Loading audit logs...</p>
+    </div>
+
+    <!-- Empty State -->
+    <div
+      *ngIf="
+        !(loading$ | async) && (logs$ | async)?.length === 0;
+        let logs
+      "
+      class="empty-state"
+    >
+      <mat-card>
+        <mat-card-content>
+          <mat-icon class="empty-icon">info</mat-icon>
+          <p class="empty-text">No audit logs found</p>
+          <p class="empty-subtext">
+            Try adjusting your filters or date range
+          </p>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Audit Logs Table -->
+    <app-audit-log-table
+      *ngIf="(loading$ | async) === false && (logs$ | async)?.length"
+      [logs]="(logs$ | async) ?? []"
+      [loading]="(loading$ | async) ?? false"
+      [pagination]="pagination$ | async"
+      (pageChange)="onPageChange($event)"
+      (rowSelect)="onRowSelect($event)"
+    ></app-audit-log-table>
+  </div>
+</div>

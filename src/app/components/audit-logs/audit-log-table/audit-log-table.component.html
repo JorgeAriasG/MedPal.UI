@@ -1,0 +1,107 @@
+<mat-card class="table-card">
+  <div class="table-wrapper">
+    <table
+      mat-table
+      [dataSource]="logs"
+      class="audit-logs-table"
+      *ngIf="logs && logs.length > 0"
+    >
+      <!-- Access Time Column -->
+      <ng-container matColumnDef="accessTime">
+        <th mat-header-cell *matHeaderCellDef>Access Time</th>
+        <td mat-cell *matCellDef="let element">
+          {{ formatDate(element.accessTime) }}
+        </td>
+      </ng-container>
+
+      <!-- User ID Column -->
+      <ng-container matColumnDef="userId">
+        <th mat-header-cell *matHeaderCellDef>User ID</th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.userId }}
+        </td>
+      </ng-container>
+
+      <!-- Clinic ID Column -->
+      <ng-container matColumnDef="clinicId">
+        <th mat-header-cell *matHeaderCellDef>Clinic</th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.accessingClinicId }}
+        </td>
+      </ng-container>
+
+      <!-- Patient ID Column -->
+      <ng-container matColumnDef="patientId">
+        <th mat-header-cell *matHeaderCellDef>Patient ID</th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.patientDetailsId }}
+        </td>
+      </ng-container>
+
+      <!-- Purpose Column -->
+      <ng-container matColumnDef="purpose">
+        <th mat-header-cell *matHeaderCellDef>Purpose</th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.purpose }}
+        </td>
+      </ng-container>
+
+      <!-- Consent Column -->
+      <ng-container matColumnDef="hadValidConsent">
+        <th mat-header-cell *matHeaderCellDef>Valid Consent</th>
+        <td mat-cell *matCellDef="let element">
+          <mat-chip
+            [color]="getConsentColor(element.hadValidConsent)"
+            selected
+          >
+            {{ getConsentText(element.hadValidConsent) }}
+          </mat-chip>
+        </td>
+      </ng-container>
+
+      <!-- Actions Column -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let element">
+          <button
+            mat-icon-button
+            matTooltip="View Details"
+            (click)="onRowSelect(element)"
+          >
+            <mat-icon>visibility</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <!-- Header Row -->
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+
+      <!-- Data Rows -->
+      <tr
+        mat-row
+        *matRowDef="let row; columns: displayedColumns"
+        class="audit-log-row"
+        (click)="onRowSelect(row)"
+      ></tr>
+    </table>
+
+    <!-- Empty State for Table -->
+    <div
+      *ngIf="!loading && (!logs || logs.length === 0)"
+      class="empty-table-state"
+    >
+      <mat-icon>inbox</mat-icon>
+      <p>No audit logs to display</p>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <mat-paginator
+    *ngIf="pagination && logs && logs.length > 0"
+    [length]="pagination.totalItems"
+    [pageSize]="pagination.pageSize"
+    [pageSizeOptions]="[10, 25, 50]"
+    (page)="onPageChange($event)"
+    showFirstLastButtons
+  ></mat-paginator>
+</mat-card>
