@@ -22,3 +22,14 @@ button {
 mat-dialog-content {
   padding: 20px;
 }
+.checkbox-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.error-text {
+  color: #f44336;
+  font-size: 12px;
+  margin-left: 12px;
+}

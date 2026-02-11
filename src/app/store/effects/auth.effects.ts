@@ -38,8 +38,8 @@ export class AuthEffects {
             return loginSuccess({
               userId: response.id,
               userToken: response.token,
+              userRole: response.role,
               clinicId: response.clinicId ?? null,
-              specialty: response.specialty || undefined,
             });
           }),
           catchError((error) => {
@@ -63,6 +63,7 @@ export class AuthEffects {
   );
 
   // Load user profile from User/me endpoint
+  // Handle gracefully if endpoint is not available (404) or user lacks permission (403)
   loadUserProfile$ = createEffect(() =>
     this.actions$.pipe(
       ofType(loadUserProfile),
@@ -75,6 +76,14 @@ export class AuthEffects {
             });
           }),
           catchError((error) => {
+            // 404 = endpoint doesn't exist, 403 = insufficient permissions
+            // These are not blocking errors for some roles (SuperAdmin, AccountAdmin)
+            if (error.status === 404 || error.status === 403) {
+              console.warn('User profile endpoint not available or insufficient permissions:', error.status);
+              // Complete successfully without specialty - user can still log in
+              return of(loadUserProfileSuccess({ specialty: 'General' }));
+            }
+            // For other errors, fail the profile load
             console.error('Error loading user profile:', error);
             return of(
               loadUserProfileFailure({
@@ -87,15 +96,22 @@ export class AuthEffects {
     )
   );
 
-  // After clinic selection, navigate to home
+  // After clinic selection, handle clinic assignment intelligently
+  // Only fetch clinics if user has a role that should have access to them
   loginSuccessClinic$ = createEffect(
     () =>
       this.actions$.pipe(
         ofType(loginSuccess),
-        tap(({ clinicId }) => {
-          console.log('Login success - clinicId:', clinicId);
-          // Si no hay clinicId, obtener las clínicas y seleccionar la primera
-          if (clinicId === null || clinicId === undefined || clinicId === 0) {
+        tap(({ clinicId, userRole }) => {
+          console.log('Login success - clinicId:', clinicId, 'userRole:', userRole);
+
+          // Roles that are clinic-based and may need clinic assignment
+          const CLINIC_REQUIRING_ROLES = ['Doctor', 'HealthProfessional', 'Receptionist', 'Patient', 'ClinicAdmin'];
+
+          // Only attempt to fetch clinics if:
+          // 1. User role requires a clinic AND
+          // 2. clinicId is not already set
+          if (CLINIC_REQUIRING_ROLES.includes(userRole) && (clinicId === null || clinicId === undefined || clinicId === 0)) {
             this.clinicService.getClinics().subscribe({
               next: (clinics) => {
                 if (clinics && clinics.length > 0) {
@@ -106,7 +122,9 @@ export class AuthEffects {
                 }
               },
               error: (err) => {
-                console.error('Error fetching clinics:', err);
+                console.warn('Could not automatically assign clinic:', err);
+                // Don't block login flow - user may have different permissions
+                // SuperAdmin and AccountAdmin don't need clinics
               },
             });
           }

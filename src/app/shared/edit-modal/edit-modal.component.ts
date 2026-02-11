@@ -14,6 +14,10 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { formConfigMap, FormFieldConfig } from 'src/app/conf/form-config';
+import { ClinicService } from 'src/app/components/clinics/services/clinic.service';
+import { IClinic } from 'src/app/entities/IClinic';
+import { RolesService } from 'src/app/components/user/roles/services/roles.service';
+import { IRole } from 'src/app/entities/IRole';
 
 @Component({
   selector: 'app-edit-modal',
@@ -29,7 +33,9 @@ export class EditModalComponent implements OnInit, OnDestroy {
 
   constructor(
     private fb: FormBuilder,
-    public dialogRef: MatDialogRef<EditModalComponent>
+    public dialogRef: MatDialogRef<EditModalComponent>,
+    private clinicService: ClinicService,
+    private rolesService: RolesService
   ) {
     this.form = this.fb.group({});
   }
@@ -44,7 +50,12 @@ export class EditModalComponent implements OnInit, OnDestroy {
           formConfigMap[
             this.inputData.entityType as keyof typeof formConfigMap
           ];
-        this.buildFormFromConfig(config, this.inputData.data || this.inputData);
+        // Load clinics for user and patient forms before building
+        if (this.inputData.entityType === 'user' || this.inputData.entityType === 'patient') {
+          this.loadClinicsForForm(config, this.inputData.data || this.inputData);
+        } else {
+          this.buildFormFromConfig(config, this.inputData.data || this.inputData);
+        }
       } else if (this.inputData?.fields) {
         this.buildFormFromFields(this.inputData.fields);
       } else {
@@ -53,6 +64,83 @@ export class EditModalComponent implements OnInit, OnDestroy {
     } catch (error) {
       console.error('Error initializing form:', error);
     }
+  }
+
+  /**
+   * Carga las clínicas disponibles para el formulario (user o patient)
+   */
+  private loadClinicsForForm(config: Record<string, FormFieldConfig>, data: any): void {
+    // Check if this is creating a new user (isCreate = true)
+    const isCreatingUser = this.inputData?.isCreate === true && this.inputData?.entityType === 'user';
+
+    this.clinicService
+      .getClinics()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (clinics: IClinic[]) => {
+          // Mapear clínicas a opciones para el dropdown
+          const clinicOptions = clinics.map((clinic: IClinic) => ({
+            label: clinic.name,
+            value: clinic.id,
+          }));
+
+          // Actualizar la configuración del campo defaultClinicId (para users) o clinicId (para patients)
+          const clinicFieldKey = this.inputData?.entityType === 'user' ? 'defaultClinicId' : 'clinicId';
+          config[clinicFieldKey] = {
+            ...config[clinicFieldKey],
+            options: clinicOptions,
+          };
+
+          // If creating a new user, also load roles
+          if (isCreatingUser) {
+            this.loadRolesForUserForm(config, data);
+          } else {
+            this.buildFormFromConfig(config, data);
+          }
+        },
+        error: (err) => {
+          console.error('Error loading clinics:', err);
+          // Si hay error, construir el formulario sin opciones
+          if (isCreatingUser) {
+            this.loadRolesForUserForm(config, data);
+          } else {
+            this.buildFormFromConfig(config, data);
+          }
+        },
+      });
+  }
+
+  /**
+   * Carga los roles disponibles para el formulario de usuario (solo cuando isCreate = true)
+   */
+  private loadRolesForUserForm(config: Record<string, FormFieldConfig>, data: any): void {
+    this.rolesService
+      .getRoles()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (roles: IRole[]) => {
+          // Mapear roles a opciones para el dropdown
+          const roleOptions = roles.map((role: IRole) => ({
+            label: role.name,
+            value: role.id,
+          }));
+
+          // Actualizar la configuración del campo roleId
+          config['roleId'] = {
+            ...config['roleId'],
+            options: roleOptions,
+            validators: Validators.required, // Make role required when creating
+          };
+
+          // Construir el formulario con la configuración actualizada
+          this.buildFormFromConfig(config, data);
+        },
+        error: (err) => {
+          console.error('Error loading roles:', err);
+          // Si hay error, construir el formulario sin opciones de rol
+          this.buildFormFromConfig(config, data);
+        },
+      });
   }
 
   ngOnDestroy(): void {
@@ -65,9 +153,15 @@ export class EditModalComponent implements OnInit, OnDestroy {
    */
   private buildFormFromConfig(config: Record<string, FormFieldConfig>, data: any): void {
     const group: any = {};
+    const isCreatingUser = this.inputData?.isCreate === true && this.inputData?.entityType === 'user';
 
     for (const [key, fieldConfig] of Object.entries(config)) {
       try {
+        // Skip roleId field if not creating a new user
+        if (key === 'roleId' && !isCreatingUser) {
+          continue;
+        }
+
         const initialValue = fieldConfig.value || '';
         const validators = fieldConfig.validators
           ? Array.isArray(fieldConfig.validators)
@@ -88,7 +182,7 @@ export class EditModalComponent implements OnInit, OnDestroy {
         // Usar la metadata de la configuración directamente
         const field: any = {
           key,
-          label: this.formatLabel(key),
+          label: fieldConfig.label || this.formatLabel(key),
           ...fieldConfig,
           value: fieldValue,
           disabled: isDisabled,
@@ -199,6 +293,7 @@ export class EditModalComponent implements OnInit, OnDestroy {
     const lowerKey = key.toLowerCase();
 
     if (lowerKey.includes('email')) return 'email';
+    if (lowerKey.includes('password')) return 'password';
     if (
       lowerKey.includes('date') ||
       lowerKey.includes('dob') ||
@@ -234,6 +329,11 @@ export class EditModalComponent implements OnInit, OnDestroy {
         { label: 'Cancelled', value: 'cancelled' },
         { label: 'Completed', value: 'completed' },
       ];
+    }
+
+    if (lowerKey.includes('clinic')) {
+      // For clinic dropdowns, return empty array (will be populated dynamically)
+      return [];
     }
 
     return [

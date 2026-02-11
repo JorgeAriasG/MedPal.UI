@@ -5,13 +5,13 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { AppointmensService } from '../appointments/services/appointmens.service';
 import { PatientsService } from '../patients/services/patients.service';
-import { ClinicService } from '../clinics/services/clinic.service';
 import { MatDialog } from '@angular/material/dialog';
 import { NewAppointmentComponent } from '../appointments/new-appointment/new-appointment.component';
 import { EditModalComponent } from 'src/app/shared/edit-modal/edit-modal.component';
 import { IAppointment } from 'src/app/entities/IAppointment';
 import { IPatient } from 'src/app/entities/IPatient';
-import { selectClinicId, selectUserId } from 'src/app/store/selectors/auth.selectors';
+import { selectUserId } from 'src/app/store/selectors/auth.selectors';
+import { ClinicContextService } from 'src/app/services/clinic-context.service';
 
 @Component({
   selector: 'app-home',
@@ -43,15 +43,19 @@ export class HomeComponent implements OnInit, OnDestroy {
   constructor(
     private appointmentService: AppointmensService,
     private patientService: PatientsService,
-    private clinicService: ClinicService,
+    private clinicContextService: ClinicContextService,
     private store: Store,
     private router: Router,
     private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
-    this.store
-      .select(selectClinicId)
+    // Use ClinicContextService to intelligently determine clinic context
+    // This handles all role-based logic automatically:
+    // - SuperAdmin/AccountAdmin: returns null (no clinic required)
+    // - Clinical roles: returns assigned clinic or first available
+    this.clinicContextService
+      .getClinicContext()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (clinicId) => {
@@ -59,21 +63,12 @@ export class HomeComponent implements OnInit, OnDestroy {
             this.clinicId = clinicId;
             this.loadDashboardData();
           } else {
-            this.clinicService
-              .getClinics()
-              .pipe(takeUntil(this.destroy$))
-              .subscribe({
-                next: (clinics) => {
-                  if (clinics && clinics.length > 0) {
-                    this.clinicId = clinics[0].id;
-                    this.loadDashboardData();
-                  }
-                },
-                error: (err) => console.error('Error fetching clinics:', err),
-              });
+            // No clinic context available for this user
+            // This is expected for admin roles
+            console.log('No clinic context available for this user');
           }
         },
-        error: (err) => console.error('Error getting clinic ID from store:', err),
+        error: (err) => console.error('Error getting clinic context:', err),
       });
 
     this.store
