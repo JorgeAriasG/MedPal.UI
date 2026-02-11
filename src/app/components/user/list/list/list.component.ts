@@ -82,14 +82,14 @@ export class ListComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().pipe(takeUntil(this.destroy$)).subscribe((result) => {
       if (result) {
-        this.saveEdit(result);
+        this.addUser(result);
       }
     });
   }
 
   getUsers(): void {
     this.userService
-      .getUsers(this.clinicId)
+      .getUsers()
       .pipe(takeUntil(this.destroy$))
       .subscribe((users) => {
         this.users = users;
@@ -121,6 +121,17 @@ export class ListComponent implements OnInit, OnDestroy {
         if (result) {
           this.saveEdit(result);
         }
+      });
+  }
+
+  addUser(user: IUser): void {
+    this.userService
+      .addUser(user)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((res) => {
+        this.cancelEdit();
+        this.getUsers();
+        console.log(res);
       });
   }
 

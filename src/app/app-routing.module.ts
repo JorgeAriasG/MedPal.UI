@@ -4,10 +4,12 @@ import { LoginComponent } from './components/user/login/login.component';
 import { SignupComponent } from './components/user/signup/signup.component';
 import { AuthGuard } from './guards/auth.guard';
 import { ValidatePrescriptionComponent } from './components/public/validate-prescription/validate-prescription.component';
+import { UnauthorizedComponent } from './components/public/unauthorized/unauthorized.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'signup', component: SignupComponent },
+  { path: 'unauthorized', component: UnauthorizedComponent },
   {
     path: '',
     loadChildren: () =>

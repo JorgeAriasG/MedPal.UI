@@ -2,6 +2,9 @@
  * Central export point for all entity/model interfaces
  */
 
+// Authentication & Authorization
+export * from './auth.models';
+
 // Audit & Consent
 export * from './IMedicalRecordAccessLog';
 export * from './IPatientConsent';

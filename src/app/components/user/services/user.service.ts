@@ -25,8 +25,23 @@ export class UserService {
     return this.http.post(`${this.apiUrl}/register`, registerData);
   }
 
-  getUsers(clinicId?: number | null): Observable<IUser[]> {
-    const url = clinicId ? `${this.apiUrl}?clinicId=${clinicId}` : this.apiUrl;
+  addUser(user: IUser): Observable<any> {
+    const registerData = {
+      name: user.name,
+      email: user.email,
+      password: user.password,
+      confirmPassword: user.confirmPassword,
+      specialty: user.specialty,
+      professionalLicenseNumber: user.professionalLicenseNumber,
+      acceptPrivacyTerms: user.acceptPrivacyTerms,
+      ...(user.roleId && { roleId: user.roleId }), // Include roleId if provided (admin creating user)
+      ...(user.defaultClinicId && { defaultClinicId: user.defaultClinicId }), // Include clinic if provided
+    };
+    return this.http.post(`${this.apiUrl}`, registerData);
+  }
+
+  getUsers(): Observable<IUser[]> {
+    const url = `${this.apiUrl}/account`;
     return this.http.get<IUser[]>(url);
   }
 

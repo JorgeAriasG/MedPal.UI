@@ -3,9 +3,10 @@ import { Validators } from "@angular/forms";
 export interface FormFieldConfig {
   value?: any;
   validators?: any;
-  type: 'text' | 'email' | 'tel' | 'date' | 'time' | 'select' | 'textarea';
+  type: 'text' | 'email' | 'tel' | 'date' | 'time' | 'select' | 'textarea' | 'password' | 'checkbox';
   options?: Array<{ label: string; value: any }>;
   disabled?: boolean;
+  label?: string; // Custom label for better UX (if not provided, will be auto-generated from key)
 }
 
 export const patientFormConfig: Record<string, FormFieldConfig> = {
@@ -58,6 +59,13 @@ export const patientFormConfig: Record<string, FormFieldConfig> = {
     validators: Validators.required,
     type: 'text',
   },
+  clinicId: {
+    value: '',
+    validators: Validators.required,
+    type: 'select',
+    options: [], // Will be populated dynamically by EditModalComponent
+    label: 'Clinic',
+  }
 };
 
 export const appointmentFormConfig: Record<string, FormFieldConfig> = {
@@ -100,9 +108,40 @@ export const userFormConfig: Record<string, FormFieldConfig> = {
     validators: [Validators.required, Validators.email],
     type: 'email',
   },
-  defaultClinicId: {
+  password: {
+    value: '',
+    validators: [Validators.required, Validators.minLength(8)],
+    type: 'password',
+  },
+  confirmPassword: {
+    value: '',
+    validators: [Validators.required, Validators.minLength(8)],
+    type: 'password',
+  },
+  specialty: {
     value: '',
     type: 'text',
+  },
+  professionalLicenseNumber: {
+    value: '',
+    type: 'text',
+  },
+  defaultClinicId: {
+    value: '',
+    type: 'select',
+    options: [], // Will be populated dynamically by EditModalComponent
+    label: 'Default Clinic',
+  },
+  roleId: {
+    value: '',
+    type: 'select',
+    options: [], // Will be populated dynamically by EditModalComponent (admin only)
+    label: 'Role',
+  },
+  acceptPrivacyTerms: {
+    value: false,
+    validators: Validators.requiredTrue,
+    type: 'checkbox',
   },
 };
 

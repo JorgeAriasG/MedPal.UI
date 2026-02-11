@@ -7,4 +7,6 @@ export interface IUser {
   professionalLicenseNumber?: string;
   confirmPassword?: string;
   acceptPrivacyTerms?: boolean;
+  roleId?: number; // Role assigned when admin creates a user
 }
+
