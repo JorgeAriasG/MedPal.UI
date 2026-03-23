@@ -1,12 +1,11 @@
 ---
 description: 'Agente especializado en desarrollo frontend Angular del Scheduling App - Arquitectura completa, formularios dinámicos, NgRx, seguridad multi-tenant'
 tools:
-  - read_file
-  - replace_string_in_file
-  - get_errors
   - file_search
   - grep_search
   - semantic_search
+  - list_code_usages
+  - search_workspace_symbols
 ---
 
 # ArchAgent - Especialista Frontend Angular Scheduling App

@@ -18,25 +18,23 @@ import { trigger, transition, style, animate } from '@angular/animations';
     trigger('slideDown', [
       transition(':enter', [
         style({ opacity: 0, transform: 'translateY(-12px)' }),
-        animate('300ms cubic-bezier(0.4, 0, 0.2, 1)', style({ opacity: 1, transform: 'translateY(0)' }))
-      ])
+        animate(
+          '300ms cubic-bezier(0.4, 0, 0.2, 1)',
+          style({ opacity: 1, transform: 'translateY(0)' }),
+        ),
+      ]),
     ]),
     trigger('fadeIn', [
       transition(':enter', [
         style({ opacity: 0 }),
-        animate('400ms cubic-bezier(0.4, 0, 0.2, 1)', style({ opacity: 1 }))
-      ])
-    ])
-  ]
+        animate('400ms cubic-bezier(0.4, 0, 0.2, 1)', style({ opacity: 1 })),
+      ]),
+    ]),
+  ],
 })
 export class ListComponent implements OnInit, OnDestroy {
   users: IUser[] = [];
-  displayedColumns: string[] = [
-    'name',
-    'email',
-    'defaultClinicId',
-    'actions',
-  ];
+  displayedColumns: string[] = ['name', 'email', 'defaultClinicId', 'actions'];
   editUserId: any = null;
   editUserData: Partial<IUser> = {};
   clinicId: number | null | undefined;
@@ -46,7 +44,7 @@ export class ListComponent implements OnInit, OnDestroy {
   constructor(
     private userService: UserService,
     private dialog: MatDialog,
-    private store: Store
+    private store: Store,
   ) {}
 
   ngOnInit(): void {
@@ -76,15 +74,18 @@ export class ListComponent implements OnInit, OnDestroy {
         entityType: 'user',
         data: {},
         title: 'Create New User',
-        isCreate: true
-      }
+        isCreate: true,
+      },
     });
 
-    dialogRef.afterClosed().pipe(takeUntil(this.destroy$)).subscribe((result) => {
-      if (result) {
-        this.addUser(result);
-      }
-    });
+    dialogRef
+      .afterClosed()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((result) => {
+        if (result) {
+          this.addUser(result);
+        }
+      });
   }
 
   getUsers(): void {
@@ -111,7 +112,7 @@ export class ListComponent implements OnInit, OnDestroy {
     this.dialog
       .open(EditModalComponent, {
         data: {
-          entityType: 'user',
+          entityType: 'userEdit',
           data: user,
           title: 'Edit User',
         },
