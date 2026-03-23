@@ -1,0 +1,44 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "type": "command",
+        "command": "node .github/hooks/session-start.js",
+        "description": "Initialize orchestration context when agent session starts",
+        "timeout": 10
+      }
+    ],
+    "PreToolUse": [
+      {
+        "type": "command",
+        "command": "node .github/hooks/pre-tool-use.js",
+        "description": "Validate tool permissions before execution",
+        "timeout": 5
+      }
+    ],
+    "SubagentStart": [
+      {
+        "type": "command",
+        "command": "node .github/hooks/subagent-start.js",
+        "description": "Log subagent invocation and inject context",
+        "timeout": 5
+      }
+    ],
+    "SubagentStop": [
+      {
+        "type": "command",
+        "command": "node .github/hooks/subagent-stop.js",
+        "description": "Validate subagent output and trigger handoff if needed",
+        "timeout": 10
+      }
+    ],
+    "Stop": [
+      {
+        "type": "command",
+        "command": "node .github/hooks/session-stop.js",
+        "description": "Generate session summary and next actions",
+        "timeout": 5
+      }
+    ]
+  }
+}

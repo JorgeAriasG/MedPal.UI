@@ -6,6 +6,23 @@
 
 ## 📋 Available Agents
 
+### 0. **@orchestrationagent** - Workflow Coordinator (AUTOMATED) ⭐ NEW
+**Location**: `.github/agents/orchestrationagent.agent.md`  
+**Workspace**: `scheduling.ui` (Shared)
+
+**When to use:**
+- Create features end-to-end (planning → backend → frontend → testing → security)
+- Coordinate multiple agents automatically without manual intervention
+- Manage dependencies between frontend and backend tasks
+- Generate consolidation reports and handoffs
+
+**How it works**: Uses Hooks to automate transitions between phases  
+**Example**: `@orchestrationagent coordinar appointment scheduling feature completa`
+
+📖 See [AUTOMATION_GUIDE.md](.github/AUTOMATION_GUIDE.md) for detailed workflow automation details.
+
+---
+
 ### 1. **@archagent** - Frontend Angular Specialist
 **Location**: `.github/agents/archagent.agent.md`  
 **Workspace**: `scheduling.ui` (Frontend)
