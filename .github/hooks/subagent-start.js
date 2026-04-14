@@ -13,10 +13,10 @@ process.stdin.on('end', () => {
   try {
     const data = JSON.parse(input);
     const stateFile = `.github/hooks/.orchestration-state.json`;
-    
+
     if (fs.existsSync(stateFile)) {
       const state = JSON.parse(fs.readFileSync(stateFile, 'utf8'));
-      
+
       process.stdout.write(JSON.stringify({
         continue: true,
         systemMessage: `[ORCHᴐ] → Delegating to @${data.name}...`

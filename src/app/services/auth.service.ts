@@ -43,14 +43,16 @@ export class AuthService {
   private readonly USER_KEY = 'user_data';
 
   // Observable auth state
-  private currentUserSubject = new BehaviorSubject<User | null>(this.getUserFromStorage());
+  private currentUserSubject = new BehaviorSubject<User | null>(
+    this.getUserFromStorage(),
+  );
   public currentUser$ = this.currentUserSubject.asObservable();
 
   constructor(
     private router: Router,
     private http: HttpClient,
     private store: Store,
-    private apiService: ApiService
+    private apiService: ApiService,
   ) {}
 
   /**
@@ -63,33 +65,38 @@ export class AuthService {
    */
   login(email: string, password: string): Observable<LoginResponse> {
     const loginData = { email, password };
-    return this.apiService.post<LoginResponse>(this.loginEndpoint, loginData).pipe(
-      tap((response: LoginResponse) => {
-        // Store token
-        localStorage.setItem(this.TOKEN_KEY, response.token);
+    return this.apiService
+      .post<LoginResponse>(this.loginEndpoint, loginData)
+      .pipe(
+        tap((response: LoginResponse) => {
+          // Store token
+          localStorage.setItem(this.TOKEN_KEY, response.token);
 
-        // Store role
-        localStorage.setItem(this.ROLE_KEY, response.role);
+          // Store role
+          localStorage.setItem(this.ROLE_KEY, response.role);
 
-        // Store permissions as JSON array
-        const permissions = response.permissions || [];
-        localStorage.setItem(this.PERMISSIONS_KEY, JSON.stringify(permissions));
+          // Store permissions as JSON array
+          const permissions = response.permissions || [];
+          localStorage.setItem(
+            this.PERMISSIONS_KEY,
+            JSON.stringify(permissions),
+          );
 
-        // Store user data
-        const user: User = {
-          id: response.id,
-          name: response.name,
-          email: response.email,
-          role: response.role,
-          accountId: response.accountId,
-          clinicId: response.clinicId,
-        };
-        localStorage.setItem(this.USER_KEY, JSON.stringify(user));
+          // Store user data
+          const user: User = {
+            id: response.id,
+            name: response.name,
+            email: response.email,
+            role: response.role,
+            accountId: response.accountId,
+            principalClinicId: response.principalClinicId,
+          };
+          localStorage.setItem(this.USER_KEY, JSON.stringify(user));
 
-        // Update observable
-        this.currentUserSubject.next(user);
-      })
-    );
+          // Update observable
+          this.currentUserSubject.next(user);
+        }),
+      );
   }
 
   /**
@@ -107,7 +114,10 @@ export class AuthService {
           localStorage.setItem(this.TOKEN_KEY, response.token);
           localStorage.setItem(this.ROLE_KEY, response.role);
           const permissions = response.permissions || [];
-          localStorage.setItem(this.PERMISSIONS_KEY, JSON.stringify(permissions));
+          localStorage.setItem(
+            this.PERMISSIONS_KEY,
+            JSON.stringify(permissions),
+          );
 
           const user: User = {
             id: response.id,
@@ -115,11 +125,11 @@ export class AuthService {
             email: response.email,
             role: response.role,
             accountId: response.accountId,
-            clinicId: response.clinicId,
+            principalClinicId: response.principalClinicId,
           };
           localStorage.setItem(this.USER_KEY, JSON.stringify(user));
           this.currentUserSubject.next(user);
-        })
+        }),
       );
   }
 
@@ -322,7 +332,7 @@ export class AuthService {
    */
   getClinicId(): number | null {
     const user = this.getUserFromStorage();
-    return user?.clinicId ?? null;
+    return user?.principalClinicId ?? null;
   }
 
   /**

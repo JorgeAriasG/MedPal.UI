@@ -14,6 +14,7 @@ import { selectClinicId } from 'src/app/store/selectors/auth.selectors';
 import { setClinic } from 'src/app/store/actions/auth.actions';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { CalendarView } from 'angular-calendar';
 
 @Component({
   selector: 'app-appointment',
@@ -30,8 +31,12 @@ export class AppointmentComponent implements OnInit, OnDestroy {
     data: {},
   };
   viewDate: Date = new Date();
+  view: CalendarView = CalendarView.Week;
+  CalendarView = CalendarView;
+  displayMode: 'calendar' | 'list' = 'calendar';
   events: CalendarEvent[] = [];
   currentAppointmentId: number | null = null;
+  activeDayIsOpen: boolean = false;
 
   private destroy$ = new Subject<void>();
 
@@ -39,7 +44,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
     private appointmentService: AppointmensService,
     private dialog: MatDialog,
     private clinicService: ClinicService,
-    private store: Store
+    private store: Store,
   ) {}
 
   ngOnInit() {
@@ -61,9 +66,11 @@ export class AppointmentComponent implements OnInit, OnDestroy {
                   if (clinics && clinics.length > 0) {
                     console.log(
                       'Setting default clinic from appointment component:',
-                      clinics[0].id
+                      clinics[0].id,
                     );
-                    this.store.dispatch(setClinic({ clinicId: clinics[0].id }));
+                    this.store.dispatch(
+                      setClinic({ principalClinicId: clinics[0].id }),
+                    );
                   }
                 },
                 error: (err) => {
@@ -143,7 +150,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
   /**
    * Abre el modal de edición con la configuración del formulario
    */
-  private openEditModal(appointment: any): void {
+  public openEditModal(appointment: any): void {
     this.currentAppointmentId = appointment.id;
 
     const dialogRef = this.dialog.open(EditModalComponent, {
@@ -217,5 +224,17 @@ export class AppointmentComponent implements OnInit, OnDestroy {
           console.error('Error updating appointment:', error);
         },
       });
+  }
+
+  setView(view: CalendarView) {
+    this.view = view;
+  }
+
+  closeOpenMonthViewDay() {
+    this.activeDayIsOpen = false;
+  }
+
+  setDisplayMode(mode: 'calendar' | 'list') {
+    this.displayMode = mode;
   }
 }

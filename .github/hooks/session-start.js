@@ -49,7 +49,7 @@ process.stdin.on('end', () => {
         },
         currentPhase: 'planning'
       };
-      
+
       if (!fs.existsSync(path.dirname(stateFile))) {
         fs.mkdirSync(path.dirname(stateFile), { recursive: true });
       }

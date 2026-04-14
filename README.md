@@ -1,27 +1,100 @@
-# SchedulingUi
+# 🏥 Medical Scheduling App - Frontend (Angular 19)
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.0.1.
+> Advanced patient scheduling system with role-based access control, multi-tenancy, and comprehensive medical records management.
 
-## Development server
+## 📚 Documentation
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+**Toda la documentación está en la carpeta [`Docs/`](./Docs/)**
 
-## Code scaffolding
+### Quick Links
+- 📖 [Design System](./Docs/DESIGN_SYSTEM.md) - Colors, typography, components
+- 🏗️ [Implementation Standards](./Docs/IMPLEMENTATION_STANDARDS.md) - Code patterns & best practices
+- 📋 [Component Library](./Docs/COMPONENT_LIBRARY.md) - Available components
+- 🎯 [Implementation Roadmap](./Docs/IMPLEMENTATION_ROADMAP.md) - Feature roadmap
+- ✅ [Project Analysis](./Docs/PROJECT_ANALYSIS_REPORT.md) - Current status
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+---
 
-## Build
+## 🚀 Quick Start
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+```bash
+# Install dependencies
+npm install
 
-## Running unit tests
+# Development server
+npm start
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+# Run tests
+npm test
 
-## Running end-to-end tests
+# Build for production
+npm run build
+```
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+Frontend runs at: **http://localhost:4200**  
+Backend API: **http://localhost:5126**
 
-## Further help
+---
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+## 📂 Project Structure
+
+```
+src/
+├── app/
+│   ├── components/          ← Smart & dumb components
+│   ├── services/            ← HTTP & business logic
+│   ├── store/               ← NgRx state management
+│   ├── guards/              ← Route guards
+│   ├── interceptors/        ← HTTP interceptors
+│   ├── entities/            ← TypeScript interfaces
+│   └── shared/              ← Reusable components
+├── assets/                  ← Images, icons
+├── styles.css               ← Global styles (CSS variables)
+└── index.html
+```
+
+---
+
+## 🎨 Tech Stack
+
+- **Angular:** 19.2.3
+- **State:** NgRx 18.1.1
+- **UI:** Angular Material 3
+- **HTTP:** RxJS 7.8.0
+- **Forms:** Reactive Forms
+- **Build:** TypeScript 5.6, Webpack
+
+---
+
+## 🔐 Features
+
+✅ JWT Authentication  
+✅ Role-Based Access Control (RBAC)  
+✅ Multi-tenancy Support  
+✅ Responsive Design (Mobile + Desktop)  
+✅ Real-time Notifications  
+✅ Patient Management  
+✅ Appointment Scheduling  
+✅ Medical Records  
+✅ Prescription Management  
+✅ Audit Logging  
+
+---
+
+## 📖 All Documentation
+
+See [`Docs/`](./Docs/) folder for complete documentation index.
+
+---
+
+## 🔗 Related Resources
+
+- **Backend API:** [`MedPal.API`](../../Backend/Services/MedPalApi/MedPal.API/)
+- **Backend Docs:** [`MedPal.API/Docs/`](../../Backend/Services/MedPalApi/MedPal.API/Docs/)
+- **Copilot Instructions:** [`.github/copilot-instructions.md`](./.github/copilot-instructions.md)
+
+---
+
+**Version:** 1.0  
+**Last Updated:** March 25, 2026  
+**Status:** Sprint 1 - Testing & Integration

@@ -13,10 +13,10 @@ process.stdin.on('end', () => {
   try {
     const stateFile = `.github/hooks/.orchestration-state.json`;
     let summary = '[ORCHᴐ] Session Summary:\n';
-    
+
     if (fs.existsSync(stateFile)) {
       const state = JSON.parse(fs.readFileSync(stateFile, 'utf8'));
-      
+
       summary += `├─ Current Phase: ${state.currentPhase}\n`;
       summary += `├─ Active Agents: ${Object.keys(state.agents).length}\n`;
       summary += `└─ Status: ${state.status || 'in-progress'}`;

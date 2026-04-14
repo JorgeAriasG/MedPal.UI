@@ -38,7 +38,7 @@ process.stdin.on('end', () => {
 
     // Determine next phase based on current agent
     const nextPhase = getNextPhase(agentName, state);
-    
+
     let systemMessage = `[ORCHᴐ] ${agentName} completed ✓`;
     let decision = 'continue';
 
@@ -46,7 +46,7 @@ process.stdin.on('end', () => {
       // Auto-trigger next phase
       state.currentPhase = nextPhase;
       state.progression[nextPhase] = 'in-progress';
-      
+
       systemMessage += `\n[ORCHᴐ] → Auto-advancing to next phase: ${nextPhase}`;
       systemMessage += `\n[ORCHᴐ] Suggested next command: @${getAgentForPhase(nextPhase)} [continue with your work]`;
     } else if (nextPhase === 'done') {
@@ -98,7 +98,7 @@ function getNextPhase(currentAgent, state) {
   if (phaseInfo.next === 'testing') {
     const backendDone = state.agents?.backendagent?.status === 'completed';
     const frontendDone = state.agents?.archagent?.status === 'completed';
-    
+
     if (!backendDone || !frontendDone) {
       return null; // Wait for both to complete
     }

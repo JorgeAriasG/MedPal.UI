@@ -5,23 +5,137 @@
     <p class="appointments-subtitle">View and manage your clinic appointments</p>
   </div>
 
-  <!-- Action Bar -->
+  <!-- Action Bar & Header -->
   <div class="appointments-actions">
+    <div class="calendar-navigation">
+      <button
+        mat-icon-button
+        mwlCalendarPreviousView
+        [view]="view"
+        [(viewDate)]="viewDate"
+        (viewDateChange)="closeOpenMonthViewDay()">
+        <mat-icon>chevron_left</mat-icon>
+      </button>
+      <button
+        mat-button
+        mwlCalendarToday
+        [(viewDate)]="viewDate">
+        Today
+      </button>
+      <button
+        mat-icon-button
+        mwlCalendarNextView
+        [view]="view"
+        [(viewDate)]="viewDate"
+        (viewDateChange)="closeOpenMonthViewDay()">
+        <mat-icon>chevron_right</mat-icon>
+      </button>
+      <h2 class="current-date-label">{{ viewDate | calendarDate:(view + 'ViewTitle'):'en' }}</h2>
+    </div>
+
+    <div class="calendar-view-toggle">
+      <mat-button-toggle-group [value]="view" (change)="setView($any($event).value)">
+        <mat-button-toggle [value]="CalendarView.Month">Month</mat-button-toggle>
+        <mat-button-toggle [value]="CalendarView.Week">Week</mat-button-toggle>
+        <mat-button-toggle [value]="CalendarView.Day">Day</mat-button-toggle>
+      </mat-button-toggle-group>
+    </div>
+
+    <div class="display-mode-toggle">
+      <mat-button-toggle-group [value]="displayMode" (change)="setDisplayMode($any($event).value)">
+        <mat-button-toggle value="calendar">
+          <mat-icon>calendar_view_month</mat-icon>
+        </mat-button-toggle>
+        <mat-button-toggle value="list">
+          <mat-icon>view_list</mat-icon>
+        </mat-button-toggle>
+      </mat-button-toggle-group>
+    </div>
+
     <button mat-raised-button color="primary" (click)="addAppointmentToggle()" class="add-appointment-btn">
       <mat-icon>add_circle</mat-icon>
       <span>New Appointment</span>
     </button>
   </div>
 
-  <!-- Calendar View -->
-  <div class="calendar-section">
-    <div class="calendar-wrapper">
-      <mwl-calendar-week-view
-        [viewDate]="viewDate"
-        [events]="events"
-        class="calendar-view">
-      </mwl-calendar-week-view>
+  <!-- Main Content Area -->
+  <div class="main-content-area" [ngSwitch]="displayMode">
+    
+    <!-- Calendar Display -->
+    <div *ngSwitchCase="'calendar'" class="calendar-section">
+      <div class="calendar-wrapper" [ngSwitch]="view">
+        <mwl-calendar-month-view
+          *ngSwitchCase="CalendarView.Month"
+          [viewDate]="viewDate"
+          [events]="events"
+          [activeDayIsOpen]="activeDayIsOpen"
+          (dayClicked)="viewDate = $event.day.date; activeDayIsOpen = true"
+          class="calendar-view">
+        </mwl-calendar-month-view>
+        <mwl-calendar-week-view
+          *ngSwitchCase="CalendarView.Week"
+          [viewDate]="viewDate"
+          [events]="events"
+          class="calendar-view">
+        </mwl-calendar-week-view>
+        <mwl-calendar-day-view
+          *ngSwitchCase="CalendarView.Day"
+          [viewDate]="viewDate"
+          [events]="events"
+          class="calendar-view">
+        </mwl-calendar-day-view>
+      </div>
     </div>
+
+    <!-- List Display -->
+    <div *ngSwitchCase="'list'" class="list-section">
+      <table mat-table [dataSource]="appointments" class="appointments-table mat-elevation-z1">
+        
+        <!-- Patient Column -->
+        <ng-container matColumnDef="patient">
+          <th mat-header-cell *matHeaderCellDef> Patient </th>
+          <td mat-cell *matCellDef="let appointment"> 
+            {{ appointment.patient?.name }} {{ appointment.patient?.lastname }}
+          </td>
+        </ng-container>
+
+        <!-- Date Column -->
+        <ng-container matColumnDef="date">
+          <th mat-header-cell *matHeaderCellDef> Date </th>
+          <td mat-cell *matCellDef="let appointment"> {{ appointment.date }} </td>
+        </ng-container>
+
+        <!-- Time Column -->
+        <ng-container matColumnDef="time">
+          <th mat-header-cell *matHeaderCellDef> Time </th>
+          <td mat-cell *matCellDef="let appointment"> {{ appointment.time }} </td>
+        </ng-container>
+
+        <!-- Status Column -->
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef> Status </th>
+          <td mat-cell *matCellDef="let appointment">
+            <span class="status-chip" [attr.data-status]="appointment.status">
+              {{ appointment.status }}
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Actions Column -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef> Actions </th>
+          <td mat-cell *matCellDef="let appointment">
+            <button mat-icon-button color="primary" (click)="openEditModal(appointment)">
+              <mat-icon>edit</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="['patient', 'date', 'time', 'status', 'actions']"></tr>
+        <tr mat-row *matRowDef="let row; columns: ['patient', 'date', 'time', 'status', 'actions'];"></tr>
+      </table>
+    </div>
+
   </div>
 
   <!-- Fallback Message -->

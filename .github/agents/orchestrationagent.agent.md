@@ -1,10 +1,6 @@
 ---
 description: "Orquestador central del proyecto - coordina flujo de trabajo de todos los agentes. Use when: necesitas que los agentes trabajen juntos automáticamente, pipeline de desarrollo completo, workflow sinérgico sin intervención manual."
-tools:
-  - file_search
-  - grep_search
-  - semantic_search
-  - read
+tools: [execute/getTerminalOutput, execute/awaitTerminal, execute/killTerminal, execute/runTask, execute/createAndRunTask, execute/runInTerminal, execute/runTests, execute/runNotebookCell, execute/testFailure, read/terminalSelection, read/terminalLastCommand, read/getTaskOutput, read/getNotebookSummary, read/problems, read/readFile, read/viewImage, agent/runSubagent, edit/createDirectory, edit/createFile, edit/createJupyterNotebook, edit/editFiles, edit/editNotebook, edit/rename, web/fetch, web/githubRepo]
 user-invocable: true
 disable-model-invocation: false
 agents: [archagent, backendagent, qaagent, secopsagent, scrummaster]

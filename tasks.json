@@ -1,0 +1,65 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "🎨 Frontend: Dev Server (Angular)",
+      "type": "shell",
+      "command": "npm",
+      "args": ["start"],
+      "cwd": "${workspaceFolder}",
+      "isBackground": true,
+      "problemMatcher": {
+        "pattern": {
+          "regexp": "^(.*?):(\\d+):(\\d+) - (error|warning) (TS\\d+): (.*)$",
+          "file": 1,
+          "line": 2,
+          "column": 3,
+          "severity": 4,
+          "code": 5,
+          "message": 6
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "^.*Angular Live Development Server.*",
+          "endsPattern": "^.*compiled successfully.*"
+        }
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "clear": true
+      }
+    },
+    {
+      "label": "✅ Frontend: Run Tests (Watch)",
+      "type": "shell",
+      "command": "npm",
+      "args": ["test"],
+      "cwd": "${workspaceFolder}",
+      "isBackground": true,
+      "problemMatcher": {
+        "pattern": {
+          "regexp": "^(.*?):(\\d+):(\\d+) - (error|warning) (TS\\d+): (.*)$",
+          "file": 1,
+          "line": 2,
+          "column": 3,
+          "severity": 4,
+          "code": 5,
+          "message": 6
+        }
+      },
+      "group": {
+        "kind": "test"
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": false
+      }
+    }
+  ]
+}
