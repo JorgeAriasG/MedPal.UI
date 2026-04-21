@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, debounceTime } from 'rxjs/operators';
 import { PatientsService } from 'src/app/components/patients/services/patients.service';
 import { IPatient } from 'src/app/entities/IPatient';
 import {
@@ -14,12 +14,14 @@ import {
   selectClinicId,
   selectUserId,
 } from 'src/app/store/selectors/auth.selectors';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { fadeIn } from 'src/app/shared/animations';
 
 @Component({
   selector: 'app-create-prescription',
   templateUrl: './create-prescription.component.html',
   styleUrls: ['./create-prescription.component.css'],
+  animations: [fadeIn],
   standalone: false,
 })
 export class CreatePrescriptionComponent implements OnInit, OnDestroy {
@@ -30,8 +32,11 @@ export class CreatePrescriptionComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<void>();
   infoMessage: string = '';
   errorMessage: string = '';
+  matchingAllergies: string[] = [];
+  isCheckingAllergies: boolean = false;
 
   constructor(
+    private route: ActivatedRoute,
     private fb: FormBuilder,
     private patientsService: PatientsService,
     private prescriptionService: PrescriptionService,
@@ -46,7 +51,6 @@ export class CreatePrescriptionComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // Get Clinic ID to filter patients
     this.store
       .select(selectClinicId)
       .pipe(takeUntil(this.destroy$))
@@ -59,10 +63,20 @@ export class CreatePrescriptionComponent implements OnInit, OnDestroy {
       .select(selectUserId)
       .pipe(takeUntil(this.destroy$))
       .subscribe((id) => {
-        this.userId = id; // Ideally passed to backend implicitly, or used here
+        this.userId = id;
       });
 
-    // Add one initial item row
+    // Handle pre-selection of patient from query params
+    this.route.queryParams
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(params => {
+        const patientId = params['patientId'];
+        if (patientId) {
+          this.prescriptionForm.get('patientId')?.setValue(+patientId);
+          this.verifyAllergies(); // Check allergies if we already have items (unlikely on init, but good practice)
+        }
+      });
+
     this.addItem();
   }
 
@@ -77,6 +91,11 @@ export class CreatePrescriptionComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe((patients) => {
         this.patients = patients;
+        // Re-check pre-selection in case patients loaded after query params
+        const qParamId = this.route.snapshot.queryParamMap.get('patientId');
+        if (qParamId && !this.prescriptionForm.get('patientId')?.value) {
+           this.prescriptionForm.get('patientId')?.setValue(+qParamId);
+        }
       });
   }
 
@@ -92,7 +111,44 @@ export class CreatePrescriptionComponent implements OnInit, OnDestroy {
       duration: ['', Validators.required],
       notes: [''],
     });
+
+    itemGroup.get('medication')?.valueChanges
+      .pipe(
+        takeUntil(this.destroy$),
+        debounceTime(500)
+      )
+      .subscribe(() => {
+        this.verifyAllergies();
+      });
+
     this.items.push(itemGroup);
+  }
+
+  verifyAllergies() {
+    const patientId = this.prescriptionForm.get('patientId')?.value;
+    if (!patientId) return;
+
+    const medicationNames = this.items.controls
+      .map(c => c.get('medication')?.value)
+      .filter(m => m && m.length > 2);
+
+    if (medicationNames.length === 0) {
+      this.matchingAllergies = [];
+      return;
+    }
+
+    this.isCheckingAllergies = true;
+    this.prescriptionService.checkAllergies(patientId, medicationNames)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (res) => {
+          this.matchingAllergies = res.matchingAllergies;
+          this.isCheckingAllergies = false;
+        },
+        error: () => {
+          this.isCheckingAllergies = false;
+        }
+      });
   }
 
   removeItem(index: number) {
@@ -100,13 +156,14 @@ export class CreatePrescriptionComponent implements OnInit, OnDestroy {
   }
 
   savePrescription() {
-    if (this.prescriptionForm.invalid) {
+    if (this.prescriptionForm.invalid || this.matchingAllergies.length > 0) {
+      if (this.matchingAllergies.length > 0) {
+        this.errorMessage = 'Cannot save: Patient is allergic to one or more medications.';
+      }
       return;
     }
 
     const formValue = this.prescriptionForm.value;
-
-    // Map form items to API fields
     const items: IPrescriptionItem[] = formValue.items.map((item: any) => ({
       medicationName: item.medication,
       dosage: item.dose,
@@ -115,7 +172,6 @@ export class CreatePrescriptionComponent implements OnInit, OnDestroy {
       instructions: item.notes,
     }));
 
-    // Calculate default expiration (e.g., 7 days from now)
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + 7);
 
@@ -123,19 +179,13 @@ export class CreatePrescriptionComponent implements OnInit, OnDestroy {
       patientId: formValue.patientId,
       items: items,
       diagnosis: formValue.diagnosis,
-      notes: formValue.diagnosis, // User's example showed 'notes', mapping diagnosis to it or just sending empty if separate. Assuming diagnosis is primary.
+      notes: formValue.diagnosis,
       expiresAt: expiresAt,
     };
-
-    if (this.clinicId) {
-      // If backend needs clinicId associated with prescription, add it if interface allows.
-      // We will trust the backend to handle context.
-    }
 
     this.prescriptionService.createPrescription(payload).subscribe({
       next: (res) => {
         this.infoMessage = 'Prescription created successfully!';
-        // Navigate to detail or reset
         setTimeout(() => {
           if (res.id) {
             this.router.navigate(['/prescriptions/detail', res.id]);

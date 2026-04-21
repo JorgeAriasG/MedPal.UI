@@ -55,6 +55,7 @@ export class PrescriptionDetailComponent implements OnInit {
       },
       error: (err) => {
         console.error('Failed to load QR code', err);
+        this.error = 'Failed to load QR code. Please ensure the backend is available.';
         this.loading = false;
       },
     });

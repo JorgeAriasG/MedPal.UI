@@ -21,11 +21,7 @@ export class PrescriptionService {
   }
 
   getPrescriptionQr(id: number): Observable<Blob> {
-    // Assuming QR returns an image blob, or a base64 string.
-    // If it returns a strong URL or base64 wrapper, adjust accordingly.
-    // Based on requirements, it's GET /api/Prescription/{id}/qr
-    // Often these endpoints return the image directly.
-    return this.apiService.get(`${this.endpoint}/${id}/qr`);
+    return this.apiService.getBlob(`${this.endpoint}/${id}/qr`);
   }
 
   validatePrescription(uniqueCode: string): Observable<any> {
@@ -35,6 +31,13 @@ export class PrescriptionService {
   getPrescriptionsByPatient(patientId: number): Observable<IPrescription[]> {
     return this.apiService.get<IPrescription[]>(
       `${this.endpoint}/patient/${patientId}`
+    );
+  }
+
+  checkAllergies(patientId: number, medications: string[]): Observable<{ hasAllergies: boolean, matchingAllergies: string[] }> {
+    return this.apiService.post<{ hasAllergies: boolean, matchingAllergies: string[] }>(
+      `${this.endpoint}/check-allergies`, 
+      { patientId, medicationNames: medications }
     );
   }
 }

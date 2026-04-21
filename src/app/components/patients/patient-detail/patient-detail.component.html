@@ -8,7 +8,7 @@
   <!-- Main Content -->
   <div class="patient-detail-content" *ngIf="!loading && patient">
     <!-- Header Section with Patient Info & Actions -->
-    <div class="patient-header">
+    <div class="patient-header" [@slideDown]>
       <div class="header-content">
         <div class="patient-info">
           <div class="avatar-container">
@@ -55,7 +55,7 @@
     </div>
 
     <!-- Critical Alerts: Allergies Banner -->
-    <div class="alerts-section" *ngIf="allergies.length > 0">
+    <div class="alerts-section" *ngIf="allergies.length > 0" [@fadeIn]>
       <div class="allergy-banner">
         <div class="alert-icon">
           <mat-icon>warning</mat-icon>
@@ -69,7 +69,7 @@
                 class="allergy-chip"
               >
                 <mat-icon>priority_high</mat-icon>
-                {{ allergy }}
+                {{ allergy.allergyName || allergy }}
               </mat-chip>
             </mat-chip-set>
           </div>
@@ -86,7 +86,7 @@
           <span>Overview</span>
         </ng-template>
 
-        <div class="tab-content">
+        <div class="tab-content" [@fadeIn]>
           <div class="overview-grid">
             <!-- Demographics Card -->
             <div class="card card-demographics">
@@ -181,7 +181,7 @@
                   <div class="prescription-info">
                     <h4 class="prescription-date">{{ p.createdAt | date: 'MMM dd, yyyy' }}</h4>
                     <p class="prescription-doctor">
-                      <mat-icon>person_white</mat-icon>
+                      <mat-icon>person</mat-icon>
                       {{ p.doctorName }}
                     </p>
                   </div>
@@ -213,7 +213,7 @@
             <ng-template #noPrescriptions>
               <div class="empty-state">
                 <div class="empty-icon">
-                  <mat-icon>prescription</mat-icon>
+                  <mat-icon>medication</mat-icon>
                 </div>
                 <h3>No Prescriptions</h3>
                 <p>No prescriptions found for this patient</p>

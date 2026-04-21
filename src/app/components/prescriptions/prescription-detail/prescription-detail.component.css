@@ -1,30 +1,290 @@
-.qr-code {
-    width: 120px;
-    height: 120px;
-    object-fit: contain;
+.prescription-detail-container {
+  padding: 24px;
+  max-width: 1000px;
+  margin: 0 auto;
 }
 
+.detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.title-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.title-section h1 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+/* Prescription Card Styling */
+.prescription-card {
+  position: relative;
+  border-radius: 0;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  background: #fff;
+  padding: 40px;
+  border: 1px solid #e0e0e0;
+  overflow: hidden;
+}
+
+.prescription-watermark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-45deg);
+  font-size: 80px;
+  color: rgba(0, 0, 0, 0.03);
+  font-weight: 900;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.clinic-branding {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 40px;
+  border-bottom: 2px solid #1976d2;
+  padding-bottom: 20px;
+}
+
+.logo-area {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #1976d2;
+}
+
+.logo-area mat-icon {
+  font-size: 32px;
+  width: 32px;
+  height: 32px;
+}
+
+.brand-name {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.qr-container {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.qr-code {
+  width: 90px;
+  height: 90px;
+  border: 1px solid #eee;
+  padding: 4px;
+  background: white;
+}
+
+.qr-hint {
+  font-size: 10px;
+  color: #888;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+/* Info Grid */
+.info-grid {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 30px;
+}
+
+.info-group label {
+  display: block;
+  font-size: 11px;
+  text-transform: uppercase;
+  color: #888;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.name-display {
+  font-size: 20px;
+  font-weight: 700;
+  color: #222;
+  margin: 0;
+}
+
+.meta-display {
+  font-size: 13px;
+  color: #666;
+  margin: 2px 0 0 0;
+}
+
+/* Dates & Status */
+.dates-row {
+  display: flex;
+  gap: 40px;
+  background: #f8f9fa;
+  padding: 16px 24px;
+  border-radius: 8px;
+  margin-bottom: 30px;
+}
+
+.date-item label {
+  display: block;
+  font-size: 10px;
+  text-transform: uppercase;
+  color: #888;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.date-item span {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.status-badge {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 700;
+  background: #eee;
+}
+
+.status-badge.success {
+  background: #e6ffed;
+  color: #28a745;
+}
+
+/* Sections */
+.diagnosis-section {
+  margin-bottom: 30px;
+}
+
+.diagnosis-section label {
+  display: block;
+  font-size: 11px;
+  text-transform: uppercase;
+  color: #888;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.diagnosis-section p {
+  font-size: 16px;
+  line-height: 1.5;
+  color: #333;
+}
+
+.medications-section h3 {
+  font-size: 18px;
+  font-weight: 700;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+  margin-bottom: 15px;
+}
+
+/* Table Style */
+.med-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.med-table th {
+  text-align: left;
+  font-size: 11px;
+  text-transform: uppercase;
+  color: #888;
+  padding: 12px 8px;
+  border-bottom: 2px solid #eee;
+}
+
+.med-table td {
+  padding: 16px 8px;
+  border-bottom: 1px solid #f0f0f0;
+  vertical-align: top;
+}
+
+.bold-cell {
+  font-weight: 700;
+  font-size: 15px;
+  display: flex;
+  flex-direction: column;
+}
+
+.instruction-text {
+  font-weight: 400;
+  font-size: 12px;
+  color: #666;
+  margin-top: 4px;
+  font-style: italic;
+}
+
+/* Footer & Signature */
+.prescription-footer {
+  margin-top: 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.footer-note {
+  max-width: 60%;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  color: #888;
+  font-size: 11px;
+}
+
+.footer-note mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  color: #52c41a;
+}
+
+.signature-line {
+  width: 200px;
+  text-align: center;
+}
+
+.signature-line .line {
+  border-bottom: 1px solid #333;
+  margin-bottom: 8px;
+}
+
+.doctor-caption {
+  font-size: 12px;
+  color: #666;
+  font-weight: 600;
+}
+
+/* Print Overrides */
 @media print {
   .no-print {
     display: none !important;
   }
 
-  body * {
-    visibility: hidden;
-  }
-
-  /* Target the card specifically */
-  #printable-area, #printable-area * {
-    visibility: visible;
-  }
-
-  #printable-area {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    margin: 0;
+  .prescription-detail-container {
     padding: 0;
-    box-shadow: none !important;
+    max-width: 100%;
+  }
+
+  .prescription-card {
+    box-shadow: none;
+    border: none;
+    padding: 0;
+  }
+
+  .prescription-watermark {
+    color: rgba(0, 0, 0, 0.05);
   }
 }

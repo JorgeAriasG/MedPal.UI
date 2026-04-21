@@ -3,6 +3,7 @@
    ======================================== */
 
 @import "../node_modules/angular-calendar/css/angular-calendar.css";
+@import "@angular/material/prebuilt-themes/indigo-pink.css";
 @import "app/shared/styles/tables.css";
 @import "app/shared/styles/dialogs.css";
 

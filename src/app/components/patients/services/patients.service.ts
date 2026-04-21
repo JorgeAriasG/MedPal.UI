@@ -12,8 +12,10 @@ export class PatientsService {
 
   constructor(private apiService: ApiService) {}
 
-  getPatients(clinicId: number | null | undefined): Observable<any> {
+  getPatients(clinicId: number | null | undefined, search?: string, sortBy?: string, descending: boolean = false): Observable<any> {
     let url = `${this.endpoint}?clinicId=${clinicId}`;
+    if (search) url += `&search=${encodeURIComponent(search)}`;
+    if (sortBy) url += `&sortBy=${sortBy}&descending=${descending}`;
     return this.apiService.get(url);
   }
 
@@ -38,14 +40,11 @@ export class PatientsService {
   }
 
   updateMedicalHistory(history: any): Observable<any> {
-    // Based on requirement: "Agregar Nota Médica/Diagnóstico: Formulario para insertar en MedicalHistory"
-    // Usually this is a POST to sub-resource or PUT to patient history
-    // Assuming: POST /api/patient/history or PUT /api/patient/{id}/history
-    // Let's assume a dedicated endpoint or updating the patient object.
-    // Prompt said: "Consumir el endpoint que devuelve PatientDetails + MedicalHistory"
-    // And "Agregar Nota... Backend ya cifra".
-    // Let's try POST to 'medical-history' or similar.
-    // To be safe and standard: POST to `patient/history`
+    // ... code ...
     return this.apiService.post(`patient/history`, history);
+  }
+
+  checkEmail(email: string): Observable<boolean> {
+    return this.apiService.get<boolean>(`${this.endpoint}/check-email?email=${encodeURIComponent(email)}`);
   }
 }

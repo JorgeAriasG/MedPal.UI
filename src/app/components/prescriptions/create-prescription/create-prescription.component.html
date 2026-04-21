@@ -1,134 +1,127 @@
-<div class="container mt-4">
-  <mat-card>
+<div class="create-prescription-container">
+  <mat-card class="main-card">
     <mat-card-header>
-      <mat-card-title>New Prescription</mat-card-title>
+      <div mat-card-avatar class="header-avatar">
+        <mat-icon>medication</mat-icon>
+      </div>
+      <mat-card-title>New Digital Prescription</mat-card-title>
+      <mat-card-subtitle>Create a verifiable prescription for your patient</mat-card-subtitle>
     </mat-card-header>
+
     <mat-card-content>
-      <form
-        [formGroup]="prescriptionForm"
-        (ngSubmit)="savePrescription()"
-        class="d-flex flex-column gap-3 mt-3"
-      >
-        <!-- Patient Selection -->
-        <mat-form-field appearance="outline">
-          <mat-label>Patient</mat-label>
-          <mat-select formControlName="patientId">
-            <mat-option *ngFor="let patient of patients" [value]="patient.id">
-              {{ patient.name }} {{ patient.middlename }} {{ patient.lastname }}
-            </mat-option>
-          </mat-select>
-          <mat-error
-            *ngIf="prescriptionForm.get('patientId')?.hasError('required')"
-          >
-            Patient is required
-          </mat-error>
-        </mat-form-field>
+      <!-- Allergy Warning Banner -->
+      <div class="allergy-alert-banner" *ngIf="matchingAllergies.length > 0" [@slideDown]>
+        <mat-icon>report_problem</mat-icon>
+        <div class="alert-content">
+          <strong>CRITICAL SAFETY ALERT</strong>
+          <p>The patient has a documented allergy to: 
+            <span class="allergy-name" *ngFor="let allergy of matchingAllergies">{{ allergy }}</span>
+            . Prescription is blocked.</p>
+        </div>
+      </div>
 
-        <!-- Diagnosis -->
-        <mat-form-field appearance="outline">
-          <mat-label>Diagnosis</mat-label>
-          <textarea
-            matInput
-            formControlName="diagnosis"
-            rows="3"
-            placeholder="e.g., Acute Bronchitis"
-          ></textarea>
-          <mat-error
-            *ngIf="prescriptionForm.get('diagnosis')?.hasError('required')"
-          >
-            Diagnosis is required
-          </mat-error>
-        </mat-form-field>
+      <form [formGroup]="prescriptionForm" (ngSubmit)="savePrescription()" class="prescription-form">
+        <!-- Patient & Context -->
+        <div class="form-section">
+          <div class="section-header">
+            <mat-icon>person</mat-icon>
+            <h3>Patient Information</h3>
+          </div>
+          
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="flex-2">
+              <mat-label>Select Patient</mat-label>
+              <mat-select formControlName="patientId" (selectionChange)="verifyAllergies()">
+                <mat-option *ngFor="let patient of patients" [value]="patient.id">
+                  {{ patient.name }} {{ patient.lastname }}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="prescriptionForm.get('patientId')?.hasError('required')">
+                Please select a patient
+              </mat-error>
+            </mat-form-field>
 
-        <!-- Items Table/List -->
-        <h3>Medications</h3>
-        <div formArrayName="items">
-          <div
-            *ngFor="let item of items.controls; let i = index"
-            [formGroupName]="i"
-            class="item-row"
-          >
-            <div class="row">
-              <div class="col-md-3">
-                <mat-form-field appearance="outline" class="w-100">
-                  <mat-label>Medication</mat-label>
-                  <input
-                    matInput
-                    formControlName="medication"
-                    placeholder="e.g. Amoxicillin"
-                  />
+            <mat-form-field appearance="outline" class="flex-3">
+              <mat-label>Clinical Diagnosis</mat-label>
+              <input matInput formControlName="diagnosis" placeholder="Primary diagnosis for this prescription">
+              <mat-error *ngIf="prescriptionForm.get('diagnosis')?.hasError('required')">
+                Diagnosis is required for the medical record
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Medications List -->
+        <div class="form-section">
+          <div class="section-header">
+            <mat-icon>list</mat-icon>
+            <h3>Medications & Dosages</h3>
+            <button mat-button color="primary" type="button" (click)="addItem()">
+              <mat-icon>add</mat-icon>
+              Add Item
+            </button>
+          </div>
+
+          <div formArrayName="items" class="items-list">
+            <div *ngFor="let item of items.controls; let i = index" [formGroupName]="i" class="item-row-card" [@fadeIn]>
+              <div class="item-index">{{ i + 1 }}</div>
+              
+              <div class="row-inputs">
+                <div class="input-group">
+                  <mat-form-field appearance="outline" class="med-name">
+                    <mat-label>Medication Name</mat-label>
+                    <input matInput formControlName="medication" placeholder="e.g. Ibuprofen">
+                    <mat-spinner matSuffix *ngIf="isCheckingAllergies" diameter="20"></mat-spinner>
+                  </mat-form-field>
+                  
+                  <mat-form-field appearance="outline" class="med-dose">
+                    <mat-label>Dose</mat-label>
+                    <input matInput formControlName="dose" placeholder="500mg">
+                  </mat-form-field>
+                </div>
+
+                <div class="input-group">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Frequency</mat-label>
+                    <input matInput formControlName="frequency" placeholder="Every 8h">
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Duration</mat-label>
+                    <input matInput formControlName="duration" placeholder="5 days">
+                  </mat-form-field>
+                </div>
+
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Special Instructions</mat-label>
+                  <input matInput formControlName="notes" placeholder="e.g. Administer after meals">
                 </mat-form-field>
               </div>
-              <div class="col-md-2">
-                <mat-form-field appearance="outline" class="w-100">
-                  <mat-label>Dose</mat-label>
-                  <input matInput formControlName="dose" placeholder="500mg" />
-                </mat-form-field>
-              </div>
-              <div class="col-md-2">
-                <mat-form-field appearance="outline" class="w-100">
-                  <mat-label>Frequency</mat-label>
-                  <input
-                    matInput
-                    formControlName="frequency"
-                    placeholder="Every 8h"
-                  />
-                </mat-form-field>
-              </div>
-              <div class="col-md-2">
-                <mat-form-field appearance="outline" class="w-100">
-                  <mat-label>Duration</mat-label>
-                  <input
-                    matInput
-                    formControlName="duration"
-                    placeholder="7 days"
-                  />
-                </mat-form-field>
-              </div>
-              <div class="col-md-2">
-                <mat-form-field appearance="outline" class="w-100">
-                  <mat-label>Notes</mat-label>
-                  <input
-                    matInput
-                    formControlName="notes"
-                    placeholder="After meals"
-                  />
-                </mat-form-field>
-              </div>
-              <div class="col-md-1 d-flex align-items-center">
-                <button
-                  mat-icon-button
-                  color="warn"
-                  type="button"
-                  (click)="removeItem(i)"
-                  *ngIf="items.length > 1"
-                >
-                  <mat-icon>delete</mat-icon>
+
+              <div class="item-actions">
+                <button mat-icon-button color="warn" type="button" (click)="removeItem(i)" *ngIf="items.length > 1" matTooltip="Remove this medication">
+                  <mat-icon>delete_outline</mat-icon>
                 </button>
               </div>
             </div>
           </div>
         </div>
 
-        <button mat-button type="button" (click)="addItem()">
-          <mat-icon>add</mat-icon> Add Medication
-        </button>
-
-        <div *ngIf="errorMessage" class="alert alert-danger">
-          {{ errorMessage }}
+        <div class="form-messages">
+          <div *ngIf="errorMessage" class="error-msg" [@fadeIn]>
+            <mat-icon>error</mat-icon>
+            {{ errorMessage }}
+          </div>
+          <div *ngIf="infoMessage" class="info-msg" [@fadeIn]>
+            <mat-icon>check_circle</mat-icon>
+            {{ infoMessage }}
+          </div>
         </div>
-        <div *ngIf="infoMessage" class="alert alert-success">
-          {{ infoMessage }}
-        </div>
 
-        <div class="d-flex justify-content-end mt-3">
-          <button
-            mat-raised-button
-            color="primary"
-            type="submit"
-            [disabled]="prescriptionForm.invalid"
-          >
-            Create Prescription
+        <div class="form-actions">
+          <button mat-flat-button color="primary" type="submit" [disabled]="prescriptionForm.invalid || matchingAllergies.length > 0">
+            <mat-icon>save</mat-icon>
+            <span>Issue & Generate QR</span>
           </button>
         </div>
       </form>
