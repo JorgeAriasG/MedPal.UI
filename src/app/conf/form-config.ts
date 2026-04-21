@@ -89,11 +89,19 @@ export const appointmentFormConfig: Record<string, FormFieldConfig> = {
     validators: Validators.required,
     type: 'select',
     options: [
-      { label: 'Pending', value: 'pending' },
-      { label: 'Confirmed', value: 'confirmed' },
-      { label: 'Cancelled', value: 'cancelled' },
-      { label: 'Completed', value: 'completed' },
+      { label: 'Scheduled', value: 'Scheduled' },
+      { label: 'In Progress', value: 'InProgress' },
+      { label: 'Completed', value: 'Completed' },
+      { label: 'Cancelled', value: 'Cancelled' },
+      { label: 'No-show', value: 'NoShow' },
+      { label: 'Rescheduled', value: 'Rescheduled' },
     ],
+  },
+  durationMinutes: {
+    value: 30,
+    validators: [Validators.required, Validators.min(15), Validators.max(120)],
+    type: 'text', // Changed from 'number' to 'text' as 'number' is not in our FormFieldConfig type yet, but we'll use input type='number' in HTML
+    label: 'Duration (min)',
   },
 };
 

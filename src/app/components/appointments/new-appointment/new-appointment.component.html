@@ -1,15 +1,15 @@
 <div class="appointment-dialog">
   <!-- Header -->
   <div class="dialog-header">
-    <h2 class="dialog-title">New Appointment</h2>
+    <h2 class="dialog-title">{{ isEditMode ? 'Edit Appointment' : 'New Appointment' }}</h2>
   </div>
 
   <!-- Content -->
   <div class="dialog-content">
-    <div class="appointment-form-wrapper">
+    <div class="appointment-form-wrapper" [class.loading-overlay]="isLoading">
       <!-- Patient Section -->
       <div class="form-section">
-        <h3 class="section-title">Select Patient</h3>
+        <h3 class="section-title">Patient Selection</h3>
 
         <form [formGroup]="patientForm" class="patient-form">
           <mat-form-field class="full-width" appearance="outline">
@@ -19,14 +19,15 @@
               formControlName="name"
               [matAutocomplete]="auto"
               autocomplete="off"
-              placeholder="Enter patient name"
+              placeholder="Search by name..."
             />
             <mat-icon matPrefix>person_search</mat-icon>
-            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selectPatient($event)">
-              <mat-option *ngFor="let option of filteredPatients | async" [value]="option.name + ' ' + option.lastname">
+            <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="selectPatient($event)">
+              <mat-option *ngFor="let option of filteredPatients | async" [value]="option">
                 {{ option.name }} {{ option.lastname }}
               </mat-option>
             </mat-autocomplete>
+            <mat-hint *ngIf="isEditMode">Patient cannot be changed when editing an existing appointment.</mat-hint>
           </mat-form-field>
 
           <div class="form-row">
@@ -41,12 +42,6 @@
               <mat-icon matPrefix>email</mat-icon>
             </mat-form-field>
           </div>
-
-          <mat-form-field class="full-width" appearance="outline">
-            <mat-label>Phone</mat-label>
-            <input matInput formControlName="phone" readonly />
-            <mat-icon matPrefix>phone</mat-icon>
-          </mat-form-field>
         </form>
       </div>
 
@@ -62,6 +57,7 @@
               <mat-datepicker-toggle matSuffix [for]="datepicker"></mat-datepicker-toggle>
               <mat-datepicker #datepicker></mat-datepicker>
               <mat-icon matPrefix>event</mat-icon>
+              <mat-error *ngIf="appointmentForm.get('date')?.hasError('required')">Date is required</mat-error>
             </mat-form-field>
 
             <mat-form-field class="form-col" appearance="outline">
@@ -70,37 +66,55 @@
               <mat-timepicker-toggle [for]="timepicker" matSuffix></mat-timepicker-toggle>
               <mat-timepicker #timepicker></mat-timepicker>
               <mat-icon matPrefix>schedule</mat-icon>
+              <mat-error *ngIf="appointmentForm.get('time')?.hasError('required')">Time is required</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field class="form-col" appearance="outline">
+              <mat-label>Status</mat-label>
+              <mat-select formControlName="status">
+                <mat-option *ngFor="let option of statusOptions" [value]="option.value">
+                  {{ option.label }}
+                </mat-option>
+              </mat-select>
+              <mat-icon matPrefix>flag</mat-icon>
+            </mat-form-field>
+
+            <mat-form-field class="form-col" appearance="outline">
+              <mat-label>Duration (minutes)</mat-label>
+              <input matInput type="number" formControlName="durationMinutes" min="15" max="120" />
+              <mat-icon matPrefix>hourglass_empty</mat-icon>
+              <mat-hint>15 - 120 minutes</mat-hint>
+              <mat-error *ngIf="appointmentForm.get('durationMinutes')?.hasError('min')">Min 15 min</mat-error>
+              <mat-error *ngIf="appointmentForm.get('durationMinutes')?.hasError('max')">Max 120 min</mat-error>
             </mat-form-field>
           </div>
 
           <mat-form-field class="full-width" appearance="outline">
-            <mat-label>Status</mat-label>
-            <mat-select formControlName="status">
-              <mat-option value="Pending">Pending</mat-option>
-              <mat-option value="Scheduled">Scheduled</mat-option>
-              <mat-option value="Completed">Completed</mat-option>
-              <mat-option value="Cancelled">Cancelled</mat-option>
-              <mat-option value="No-show">No-show</mat-option>
-            </mat-select>
-            <mat-icon matPrefix>flag</mat-icon>
-          </mat-form-field>
-
-          <mat-form-field class="full-width" appearance="outline">
             <mat-label>Notes</mat-label>
-            <textarea matInput formControlName="notes" rows="4" placeholder="Add any additional notes..."></textarea>
+            <textarea matInput formControlName="notes" rows="3" placeholder="Add any additional notes..."></textarea>
             <mat-icon matPrefix>note</mat-icon>
           </mat-form-field>
         </form>
       </div>
     </div>
+    
+    <!-- Loading Spinner Overlay -->
+    <div class="spinner-overlay" *ngIf="isLoading">
+      <mat-spinner diameter="50"></mat-spinner>
+    </div>
   </div>
 
   <!-- Actions -->
   <div class="dialog-actions">
-    <button mat-button (click)="closeDialog()" class="cancel-btn">Cancel</button>
-    <button mat-raised-button color="primary" (click)="saveAppointment()" class="save-btn">
-      <mat-icon>add_circle</mat-icon>
-      <span>Create Appointment</span>
+    <button mat-button (click)="closeDialog()" class="cancel-btn" [disabled]="isLoading">Cancel</button>
+    <button mat-raised-button color="primary" 
+            (click)="saveAppointment()" 
+            class="save-btn" 
+            [disabled]="isLoading || appointmentForm.invalid">
+      <mat-icon>{{ isEditMode ? 'save' : 'add_circle' }}</mat-icon>
+      <span>{{ isEditMode ? 'Update Appointment' : 'Create Appointment' }}</span>
     </button>
   </div>
 </div>

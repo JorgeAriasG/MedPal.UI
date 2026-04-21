@@ -193,69 +193,65 @@ mat-select ::ng-deep {
   height: 18px;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .appointment-dialog {
-    min-width: auto;
-    width: 90vw;
-    max-height: 90vh;
-  }
-
-  .dialog-content {
-    padding: var(--spacing-lg);
-  }
-
-  .form-row {
-    grid-template-columns: 1fr;
-  }
-
-  .dialog-actions {
-    flex-wrap: wrap;
-  }
-
-  .save-btn {
-    flex: 1;
-    justify-content: center;
-  }
-
-  .cancel-btn {
-    flex: 1;
-  }
+/* Loading States */
+.loading-overlay {
+  filter: grayscale(0.5);
+  pointer-events: none;
+  opacity: 0.6;
+  transition: all var(--transition-normal);
 }
 
-@media (max-width: 600px) {
+.spinner-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(2px);
+  z-index: 10;
+}
+
+/* Form Styles */
+.dialog-content {
+  position: relative; /* For the spinner overlay */
+  flex: 1;
+  padding: var(--spacing-xl);
+  overflow-y: auto;
+  background: var(--color-bg-surface);
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+  padding-bottom: var(--spacing-sm);
+  border-bottom: 2px solid var(--color-bg-secondary);
+}
+
+.section-title::after {
+  content: '';
+  flex: 1;
+  height: 2px;
+  background: var(--color-bg-secondary);
+  margin-left: var(--spacing-md);
+}
+
+mat-hint {
+  font-size: var(--font-size-sm);
+}
+
+/* Responsive Customizations */
+@media (max-width: 768px) {
   .appointment-dialog {
-    min-width: 100%;
-    width: 100%;
-    max-height: 100vh;
-    border-radius: 16px 16px 0 0;
-  }
-
-  .dialog-header {
-    padding: var(--spacing-md);
-  }
-
-  .dialog-title {
-    font-size: var(--font-size-body);
-  }
-
-  .dialog-content {
-    padding: var(--spacing-md);
-  }
-
-  .appointment-form-wrapper {
-    gap: var(--spacing-lg);
-  }
-
-  .form-section {
-    gap: var(--spacing-md);
-  }
-
-  .form-row {
-    gap: var(--spacing-md);
-  }
-
-  mat-form-field {
-    margin-bottom: var(--spacing-sm);
+    min-width: unset;
+    width: 95vw;
+    max-height: 95vh;
   }
 }

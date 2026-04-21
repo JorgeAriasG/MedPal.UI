@@ -35,7 +35,6 @@ export class AppointmentComponent implements OnInit, OnDestroy {
   CalendarView = CalendarView;
   displayMode: 'calendar' | 'list' = 'calendar';
   events: CalendarEvent[] = [];
-  currentAppointmentId: number | null = null;
   activeDayIsOpen: boolean = false;
 
   private destroy$ = new Subject<void>();
@@ -93,15 +92,15 @@ export class AppointmentComponent implements OnInit, OnDestroy {
   addAppointmentToggle(): void {
     const dialogRef = this.dialog.open(NewAppointmentComponent, {
       width: '800px',
-      data: this.inputData,
+      panelClass: 'appointment-dialog-container',
+      data: {} // Empty data for new mode
     });
 
     dialogRef
       .afterClosed()
       .pipe(takeUntil(this.destroy$))
-      .subscribe((res) => {
-        console.log(res);
-        if (res) {
+      .subscribe((refresh) => {
+        if (refresh) {
           this.getAllAppointmentsById();
         }
       });
@@ -148,83 +147,24 @@ export class AppointmentComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Abre el modal de edición con la configuración del formulario
+   * Abre el modal de edición usando el componente especializado de Citas
    */
   public openEditModal(appointment: any): void {
-    this.currentAppointmentId = appointment.id;
-
-    const dialogRef = this.dialog.open(EditModalComponent, {
-      width: '600px',
+    const dialogRef = this.dialog.open(NewAppointmentComponent, {
+      width: '800px',
+      panelClass: 'appointment-dialog-container',
       data: {
-        entityType: 'appointment',
-        data: {
-          date: appointment.date,
-          time: appointment.time,
-          notes: appointment.notes,
-          status: appointment.status,
-          patientName: appointment.patient.name,
-          patientLastname: appointment.patient.lastname,
-        },
-        title: 'Edit Appointment',
-      },
-    });
-
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        this.onFormSubmitted(result);
+        appointment: appointment
       }
-      this.currentAppointmentId = null;
+    });
+
+    dialogRef.afterClosed().subscribe((refresh) => {
+      if (refresh) {
+        this.getAllAppointmentsById();
+      }
     });
   }
 
-  /**
-   * Procesa los datos del formulario y actualiza la cita
-   */
-  onFormSubmitted(data: any): void {
-    console.log('Form Data:', data);
-
-    // Convertir datos al formato esperado por la API
-    const dateStr =
-      data.date instanceof Date
-        ? data.date.toISOString().split('T')[0]
-        : data.date;
-
-    const timeStr =
-      data.time instanceof Date
-        ? data.time.toTimeString().substring(0, 5)
-        : data.time;
-
-    const [year, month, day] = dateStr.split('-').map(Number);
-    const [hour, minute] = timeStr.split(':').map(Number);
-
-    const updatedAppointment: IAppointment = {
-      date: {
-        year,
-        month,
-        day,
-      },
-      time: {
-        hour,
-        minute,
-      },
-      notes: data.notes || '',
-      status: data.status || 'Scheduled',
-      clinicId: this.clinicId || undefined,
-    };
-
-    this.appointmentService
-      .updateAppointment(updatedAppointment, this.currentAppointmentId!)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (response) => {
-          console.log('Appointment updated successfully:', response);
-          this.getAllAppointmentsById();
-        },
-        error: (error) => {
-          console.error('Error updating appointment:', error);
-        },
-      });
-  }
 
   setView(view: CalendarView) {
     this.view = view;
