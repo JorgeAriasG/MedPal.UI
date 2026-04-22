@@ -19,18 +19,79 @@ export class HistoryTimelineComponent implements OnChanges {
 
   loading = false;
   error = '';
+ 
+  // Filtering properties
+  selectedSpecialty: string = 'Todas';
+  startDate: Date | null = null;
+  endDate: Date | null = null;
+  searchTerm: string = '';
+  filteredEntries: MedicalHistoryReadDTO[] = [];
+ 
+  specialties: string[] = ['Todas', 'Dental', 'Nutrición', 'General'];
 
   constructor(private medicalHistoryService: MedicalHistoryService) {}
 
+  ngOnInit(): void {
+    if (this.historyEntries) {
+      this.sortEntries();
+      this.applyFilters();
+    }
+  }
+
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['historyEntries'] && this.historyEntries) {
-      // Sort entries by date (newest first)
-      this.historyEntries.sort((a, b) => {
-        const dateA = new Date(a.createdAt).getTime();
-        const dateB = new Date(b.createdAt).getTime();
-        return dateB - dateA;
-      });
+      this.sortEntries();
+      this.applyFilters();
     }
+  }
+ 
+  sortEntries(): void {
+    this.historyEntries.sort((a, b) => {
+      const dateA = new Date(a.createdAt).getTime();
+      const dateB = new Date(b.createdAt).getTime();
+      return dateB - dateA;
+    });
+  }
+ 
+  applyFilters(): void {
+    this.filteredEntries = this.historyEntries.filter((entry) => {
+      // 1. Specialty Filter
+      const matchesSpecialty =
+        this.selectedSpecialty === 'Todas' ||
+        entry.specialtyType === this.selectedSpecialty;
+ 
+      // 2. Date Filter
+      const entryDate = new Date(entry.createdAt);
+      // Set hours to 0 to compare full days
+      entryDate.setHours(0, 0, 0, 0);
+ 
+      const start = this.startDate ? new Date(this.startDate) : null;
+      if (start) start.setHours(0, 0, 0, 0);
+ 
+      const end = this.endDate ? new Date(this.endDate) : null;
+      if (end) end.setHours(0, 0, 0, 0);
+ 
+      const matchesDate =
+        (!start || entryDate >= start) && (!end || entryDate <= end);
+ 
+      // 3. Search Filter
+      const search = this.searchTerm.toLowerCase();
+      const matchesSearch =
+        !search ||
+        (entry.diagnosis?.toLowerCase().includes(search) ?? false) ||
+        (entry.doctorName?.toLowerCase().includes(search) ?? false) ||
+        (entry.clinicalNotes?.toLowerCase().includes(search) ?? false);
+ 
+      return matchesSpecialty && matchesDate && matchesSearch;
+    });
+  }
+ 
+  resetFilters(): void {
+    this.selectedSpecialty = 'Todas';
+    this.startDate = null;
+    this.endDate = null;
+    this.searchTerm = '';
+    this.applyFilters();
   }
 
   parseSpecialtyData(entry: MedicalHistoryReadDTO): any {

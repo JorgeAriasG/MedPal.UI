@@ -1,5 +1,53 @@
 .timeline-container {
-  padding: 20px 0;
+  padding: 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Filters Header Styles */
+.filters-header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  background: white;
+  padding: 1.25rem;
+  border-radius: 12px;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  border: 1px solid #eef0f2;
+}
+
+.filter-group {
+  flex: 1;
+  min-width: 200px;
+}
+
+.filter-group.main-search {
+  flex: 2;
+  min-width: 300px;
+}
+
+.filters-header mat-form-field {
+  width: 100%;
+}
+
+::ng-deep .filters-header .mat-mdc-form-field-subscript-wrapper {
+  display: none; /* Remove hint/error space to save vertical height */
+}
+
+.clear-btn {
+  height: 56px; /* Match Material outline height */
+  padding: 0 1.5rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 4px;
+}
+
+.clear-btn:hover {
+  background-color: rgba(244, 67, 54, 0.04);
 }
 
 .empty-state {

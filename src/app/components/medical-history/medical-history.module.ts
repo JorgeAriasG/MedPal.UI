@@ -11,6 +11,9 @@ import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSelectModule } from '@angular/material/select';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 
 // Components
 import { DentalTemplateComponent } from './specialty-templates/dental-template/dental-template.component';
@@ -39,6 +42,9 @@ import { HistoryTimelineComponent } from './history-timeline/history-timeline.co
     MatChipsModule,
     MatDialogModule,
     MatProgressSpinnerModule,
+    MatSelectModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
   ],
   exports: [HistoryFormComponent, HistoryTimelineComponent],
 })
