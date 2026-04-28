@@ -3,8 +3,8 @@ name: Deploy Frontend to Staging
 on:
   push:
     branches:
+      - dev
       - master
-      - main
     paths:
       - 'UI/SchedulingAppUI/scheduling.ui/**'
       - '.github/workflows/deploy-frontend-stg.yml'
