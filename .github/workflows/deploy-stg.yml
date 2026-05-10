@@ -53,14 +53,14 @@ jobs:
     steps:
       - name: Deploy to Local Homelab Server
         run: |
-          # Navigate to the DevOps infrastructure folder
-          cd /opt/medpal/infrastructure
+          # Navigate to the new DMZ infrastructure folder
+          cd /home/runner/dmz-infra
           
-          # Pull the latest staging image from GHCR
-          docker compose -f docker-compose.stg.yml pull frontend-stg
+          # Force pull the latest staging image from GHCR (using your PAT for private repos)
+          docker compose -f docker-compose.dmz.yml pull medpal-ui
           
           # Recreate the container with the new image
-          docker compose -f docker-compose.stg.yml up -d --no-deps frontend-stg
+          docker compose -f docker-compose.dmz.yml up -d --no-deps medpal-ui
           
           # Clean up old dangling images to save space
           docker image prune -f

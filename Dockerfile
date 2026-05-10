@@ -1,12 +1,12 @@
 # Stage 1: Build the Angular application
-FROM node:18-alpine AS build
+FROM node:20-alpine AS build
 WORKDIR /app
 
 # Copy package.json and package-lock.json
 COPY package*.json ./
 
 # Install dependencies (using npm ci for reliable builds)
-RUN npm ci
+RUN npm ci --legacy-peer-deps
 
 # Copy the rest of the application source code
 COPY . .
