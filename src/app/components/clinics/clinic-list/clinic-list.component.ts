@@ -21,16 +21,19 @@ import { trigger, transition, style, animate } from '@angular/animations';
     trigger('slideDown', [
       transition(':enter', [
         style({ opacity: 0, transform: 'translateY(-12px)' }),
-        animate('300ms cubic-bezier(0.4, 0, 0.2, 1)', style({ opacity: 1, transform: 'translateY(0)' }))
-      ])
+        animate(
+          '300ms cubic-bezier(0.4, 0, 0.2, 1)',
+          style({ opacity: 1, transform: 'translateY(0)' }),
+        ),
+      ]),
     ]),
     trigger('fadeIn', [
       transition(':enter', [
         style({ opacity: 0 }),
-        animate('400ms cubic-bezier(0.4, 0, 0.2, 1)', style({ opacity: 1 }))
-      ])
-    ])
-  ]
+        animate('400ms cubic-bezier(0.4, 0, 0.2, 1)', style({ opacity: 1 })),
+      ]),
+    ]),
+  ],
 })
 export class ClinicListComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = [
@@ -51,7 +54,7 @@ export class ClinicListComponent implements OnInit, OnDestroy {
   constructor(
     private dialog: MatDialog,
     private clinicService: ClinicService,
-    private store: Store<{ auth: AuthState }>
+    private store: Store<{ auth: AuthState }>,
   ) {}
 
   ngOnInit() {
@@ -86,7 +89,7 @@ export class ClinicListComponent implements OnInit, OnDestroy {
     this.clinicId =
       this.clinics.find((clinic) => clinic.name === $event.source.value)?.id ??
       null;
-    this.store.dispatch(setClinic({ clinicId: this.clinicId }));
+    this.store.dispatch(setClinic({ principalClinicId: this.clinicId }));
     console.log('Selected Clinic ID:', this.clinicId);
     console.log($event);
   }
@@ -95,14 +98,17 @@ export class ClinicListComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(AddClinicComponent, {
       width: '500px',
       disableClose: false,
-      panelClass: 'custom-dialog'
+      panelClass: 'custom-dialog',
     });
 
-    dialogRef.afterClosed().pipe(takeUntil(this.destroy$)).subscribe((res) => {
-      if (res) {
-        this.getClinics();
-      }
-    });
+    dialogRef
+      .afterClosed()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((res) => {
+        if (res) {
+          this.getClinics();
+        }
+      });
   }
 
   async getClinics(): Promise<void> {

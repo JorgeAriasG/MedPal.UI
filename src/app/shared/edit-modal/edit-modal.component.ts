@@ -51,7 +51,7 @@ export class EditModalComponent implements OnInit, OnDestroy {
             this.inputData.entityType as keyof typeof formConfigMap
           ];
         // Load clinics for user and patient forms before building
-        if (this.inputData.entityType === 'user' || this.inputData.entityType === 'patient') {
+        if (this.inputData.entityType === 'user' || this.inputData.entityType === 'patient' || this.inputData.entityType === 'userEdit') {
           this.loadClinicsForForm(config, this.inputData.data || this.inputData);
         } else {
           this.buildFormFromConfig(config, this.inputData.data || this.inputData);
@@ -84,8 +84,8 @@ export class EditModalComponent implements OnInit, OnDestroy {
             value: clinic.id,
           }));
 
-          // Actualizar la configuración del campo defaultClinicId (para users) o clinicId (para patients)
-          const clinicFieldKey = this.inputData?.entityType === 'user' ? 'defaultClinicId' : 'clinicId';
+          // Actualizar la configuración del campo principalClinicId (para users) o clinicId (para patients)
+          const clinicFieldKey = this.inputData?.entityType === 'user' || 'userEdit' ? 'principalClinicId' : 'clinicId';
           config[clinicFieldKey] = {
             ...config[clinicFieldKey],
             options: clinicOptions,

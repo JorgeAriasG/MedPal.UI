@@ -36,8 +36,39 @@
 /* Action Bar */
 .appointments-actions {
   display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: var(--spacing-md);
   flex-wrap: wrap;
+  background: var(--color-bg-surface);
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.calendar-navigation {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.current-date-label {
+  margin: 0 0 0 var(--spacing-md);
+  font-size: var(--font-size-title);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+  min-width: 200px;
+}
+
+.calendar-view-toggle {
+  display: flex;
+  align-items: center;
+}
+
+.display-mode-toggle {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
 }
 
 .add-appointment-btn {
@@ -63,28 +94,50 @@
   height: 20px;
 }
 
-/* Calendar Section */
-.calendar-section {
+.main-content-area {
   flex: 1;
   display: flex;
   flex-direction: column;
   background: var(--color-bg-surface);
   border-radius: var(--border-radius-lg);
   box-shadow: var(--shadow-sm);
-  overflow: hidden;
+  overflow: visible;
 }
 
-.calendar-wrapper {
+.calendar-section, .list-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.calendar-wrapper, .list-wrapper {
   flex: 1;
   overflow: auto;
   display: flex;
   flex-direction: column;
 }
 
-.calendar-view {
+.calendar-view, .appointments-table {
   flex: 1;
   padding: var(--spacing-lg);
 }
+
+.appointments-table {
+  width: 100%;
+}
+
+.status-chip {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.status-chip[data-status="Scheduled"] { background: #e3f2fd; color: #1976d2; }
+.status-chip[data-status="Confirmed"] { background: #e8f5e9; color: #2e7d32; }
+.status-chip[data-status="Cancelled"] { background: #ffebee; color: #c62828; }
+.status-chip[data-status="Completed"] { background: #f3e5f5; color: #7b1fa2; }
 
 /* Angular Calendar Overrides */
 .calendar-view ::ng-deep {
@@ -214,6 +267,29 @@
 
   .add-appointment-btn {
     width: 100%;
+    justify-content: center;
+    order: -1;
+  }
+
+  .appointments-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--spacing-lg);
+  }
+
+  .calendar-navigation {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .current-date-label {
+    text-align: center;
+    margin: var(--spacing-xs) 0;
+    width: 100%;
+  }
+
+  .display-mode-toggle {
+    margin-left: 0;
     justify-content: center;
   }
 

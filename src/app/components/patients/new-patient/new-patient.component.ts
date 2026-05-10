@@ -35,6 +35,10 @@ export class NewPatientComponent implements OnInit, OnDestroy {
     clinicId: null,
   };
 
+  emailError: string | null = null;
+  ageError: string | null = null;
+  isSubmitting: boolean = false;
+
   private destroy$ = new Subject<void>();
 
   constructor(private patientsService: PatientsService, private store: Store) {}
@@ -60,24 +64,61 @@ export class NewPatientComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  onSubmit(event: Event): void {
-    event.preventDefault(); // Prevent the default form submission behavior
-    this.savePatient();
-    this.resetForm();
+  async onSubmit(event: Event): Promise<void> {
+    event.preventDefault();
+    this.emailError = null;
+    this.ageError = null;
+
+    if (!this.validateAge()) {
+      this.ageError = 'Patient must be at least 18 years old.';
+      return;
+    }
+
+    this.isSubmitting = true;
+    this.patientsService.checkEmail(this.newPatient.email).subscribe({
+      next: (exists) => {
+        if (exists) {
+          this.emailError = 'This email is already registered.';
+          this.isSubmitting = false;
+        } else {
+          this.savePatient();
+        }
+      },
+      error: (err) => {
+        console.error('Error checking email', err);
+        this.isSubmitting = false;
+      }
+    });
+  }
+
+  validateAge(): boolean {
+    if (!this.newPatient.dob) return false;
+    const birthDate = new Date(this.newPatient.dob);
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return age >= 18;
   }
 
   async savePatient(): Promise<void> {
-    try {
-      this.patientsService
-        .addPatient(this.newPatient)
-        .pipe(takeUntil(this.destroy$))
-        .subscribe((response: any) => {
-          console.log('Patient:', response);
-          this.patientAdded.emit(); // Emit the event after saving the patient
-        });
-    } catch (error) {
-      console.error('Error fetching appointments:', error);
-    }
+    this.patientsService
+      .addPatient(this.newPatient)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response: any) => {
+          console.log('Patient added successfully:', response);
+          this.isSubmitting = false;
+          this.patientAdded.emit();
+          this.resetForm();
+        },
+        error: (err) => {
+          console.error('Error saving patient:', err);
+          this.isSubmitting = false;
+        }
+      });
   }
 
   resetForm(): void {

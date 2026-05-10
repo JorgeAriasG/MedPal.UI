@@ -1,17 +1,57 @@
 <div class="timeline-container">
-  <div *ngIf="historyEntries.length === 0" class="empty-state">
-    <mat-icon>event_note</mat-icon>
-    <p>No hay consultas registradas</p>
+  <!-- Filters Bar -->
+  <div class="filters-header">
+    <div class="filter-group main-search">
+      <mat-form-field appearance="outline">
+        <mat-label>Buscar en historial</mat-label>
+        <input matInput [(ngModel)]="searchTerm" (ngModelChange)="applyFilters()" placeholder="Diagnóstico, notas o doctor...">
+        <mat-icon matPrefix>search</mat-icon>
+      </mat-form-field>
+    </div>
+
+    <div class="filter-group">
+      <mat-form-field appearance="outline">
+        <mat-label>Especialidad</mat-label>
+        <mat-select [(ngModel)]="selectedSpecialty" (selectionChange)="applyFilters()">
+          <mat-option *ngFor="let spec of specialties" [value]="spec">
+            {{ spec }}
+          </mat-option>
+        </mat-select>
+        <mat-icon matPrefix>category</mat-icon>
+      </mat-form-field>
+    </div>
+
+    <div class="filter-group">
+      <mat-form-field appearance="outline">
+        <mat-label>Rango de fechas</mat-label>
+        <mat-date-range-input [rangePicker]="picker">
+          <input matStartDate [(ngModel)]="startDate" (ngModelChange)="applyFilters()" placeholder="Inicio">
+          <input matEndDate [(ngModel)]="endDate" (ngModelChange)="applyFilters()" placeholder="Fin">
+        </mat-date-range-input>
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-date-range-picker #picker></mat-date-range-picker>
+      </mat-form-field>
+    </div>
+
+    <button mat-stroked-button color="warn" class="clear-btn" (click)='resetFilters()'>
+      <mat-icon>filter_list_off</mat-icon>
+      Limpiar
+    </button>
   </div>
 
-  <div class="timeline">
+  <div *ngIf="filteredEntries.length === 0" class="empty-state">
+    <mat-icon>event_note</mat-icon>
+    <p>No se encontraron consultas con los filtros aplicados</p>
+  </div>
+
+  <div class="timeline" *ngIf="filteredEntries.length > 0">
     <div
-      *ngFor="let entry of historyEntries; let i = index"
+      *ngFor="let entry of filteredEntries; let i = index"
       class="timeline-entry"
     >
       <div class="timeline-marker">
         <div class="timeline-dot"></div>
-        <div class="timeline-line" *ngIf="i < historyEntries.length - 1"></div>
+        <div class="timeline-line" *ngIf="i < filteredEntries.length - 1"></div>
       </div>
 
       <mat-card class="timeline-card">

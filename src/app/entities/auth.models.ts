@@ -29,7 +29,7 @@ export interface LoginResponse {
   accountId?: number;
 
   /** Clinic ID - clinic-specific scope */
-  clinicId?: number;
+  principalClinicId?: number;
 
   /** Array of permission strings (e.g., 'Users.Create', 'Patients.View') */
   permissions?: string[];
@@ -74,7 +74,7 @@ export interface User {
   accountId?: number;
 
   /** Clinic ID - null if not clinic-scoped */
-  clinicId?: number;
+  principalClinicId?: number;
 }
 
 /**

@@ -48,6 +48,7 @@ import { MedicalHistoryModule } from '../medical-history/medical-history.module'
 import { AuditAccessGuard } from 'src/app/guards/audit-access.guard';
 import { AuditAdminGuard } from 'src/app/guards/audit-admin.guard';
 import { ConsentAccessGuard } from 'src/app/guards/consent-access.guard';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
 @NgModule({
   declarations: [
@@ -105,6 +106,7 @@ import { ConsentAccessGuard } from 'src/app/guards/consent-access.guard';
     FormsModule,
     MatDialogModule,
     MatProgressSpinnerModule,
+    MatButtonToggleModule,
     MedicalHistoryModule,
     CalendarModule.forRoot({
       provide: DateAdapter,
@@ -112,11 +114,12 @@ import { ConsentAccessGuard } from 'src/app/guards/consent-access.guard';
     }),
     RouterModule.forChild([
       { path: '', component: HomeComponent },
+      { path: 'patients', component: PatientsComponent },
+      { path: 'appointments', component: AppointmentComponent },
       {
         path: 'appointments/new-appointment',
         component: NewAppointmentComponent,
       },
-      { path: 'patients', component: PatientsComponent },
       { path: 'patients/detail/:id', component: PatientDetailComponent },
       { path: 'clinics', component: ClinicListComponent },
       { path: 'users', component: ListComponent },

@@ -1,51 +1,69 @@
-<form (submit)="onSubmit($event)">
-  <mat-form-field appearance="fill">
-    <mat-label>Name</mat-label>
-    <input matInput [(ngModel)]="newPatient.name" name="name" required />
+<form (submit)="onSubmit($event)" class="new-patient-form">
+  <div class="form-row">
+    <mat-form-field appearance="outline">
+      <mat-label>Name</mat-label>
+      <input matInput [(ngModel)]="newPatient.name" name="name" required />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Middlename</mat-label>
+      <input matInput [(ngModel)]="newPatient.middlename" name="middlename" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Lastname</mat-label>
+      <input matInput [(ngModel)]="newPatient.lastname" name="lastname" required />
+    </mat-form-field>
+  </div>
+
+  <div class="form-row">
+    <mat-form-field appearance="outline">
+      <mat-label>Email</mat-label>
+      <input matInput [(ngModel)]="newPatient.email" name="email" type="email" required />
+      <mat-error *ngIf="emailError">{{ emailError }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Phone</mat-label>
+      <input matInput [(ngModel)]="newPatient.phone" name="phone" required />
+    </mat-form-field>
+  </div>
+
+  <div class="form-row">
+    <mat-form-field appearance="outline">
+      <mat-label>Date of Birth</mat-label>
+      <input matInput [matDatepicker]="picker" [(ngModel)]="newPatient.dob" name="dob" required>
+      <mat-hint>Patient must be 18+</mat-hint>
+      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+      <mat-error *ngIf="ageError">{{ ageError }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Gender</mat-label>
+      <mat-select [(ngModel)]="newPatient.gender" name="gender" required>
+        <mat-option value="Male">Male</mat-option>
+        <mat-option value="Female">Female</mat-option>
+        <mat-option value="Other">Other</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Address</mat-label>
+    <textarea matInput [(ngModel)]="newPatient.address" name="address" required rows="2"></textarea>
   </mat-form-field>
 
-  <mat-form-field appearance="fill">
-    <mat-label>Middlename</mat-label>
-    <input matInput [(ngModel)]="newPatient.middlename" name="middlename" required />
-  </mat-form-field>
-
-  <mat-form-field appearance="fill">
-    <mat-label>Lastname</mat-label>
-    <input matInput [(ngModel)]="newPatient.lastname" name="lastname" required />
-  </mat-form-field>
-
-  <mat-form-field appearance="fill">
-    <mat-label>Phone</mat-label>
-    <input matInput [(ngModel)]="newPatient.phone" name="phone" required />
-  </mat-form-field>
-
-  <mat-form-field appearance="fill">
-    <mat-label>Email</mat-label>
-    <input matInput [(ngModel)]="newPatient.email" name="email" required />
-  </mat-form-field>
-
-  <mat-form-field appearance="fill">
-    <mat-label>Adress</mat-label>
-    <input matInput [(ngModel)]="newPatient.address" name="address" required />
-  </mat-form-field>
-
-  <mat-form-field>
-    <mat-label>Date of Birth</mat-label>
-    <input [value]="newPatient.dob" matInput [matDatepicker]="picker">
-    <mat-hint>MM/DD/YYYY</mat-hint>
-    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-    <mat-datepicker #picker></mat-datepicker>
-  </mat-form-field>
-
-  <mat-form-field appearance="fill">
-    <mat-label>Gender</mat-label>
-    <input matInput [(ngModel)]="newPatient.gender" name="gender" required />
-  </mat-form-field>
-
-  <mat-form-field appearance="fill">
+  <mat-form-field appearance="outline" class="full-width">
     <mat-label>Emergency Contact</mat-label>
     <input matInput [(ngModel)]="newPatient.emergencyContact" name="emergencyContact" required />
   </mat-form-field>
 
-  <button mat-raised-button color="primary" type="submit">Submit</button>
+  <div class="form-actions">
+    <button mat-flat-button color="primary" type="submit" [disabled]="isSubmitting">
+      <mat-icon *ngIf="!isSubmitting">person_add</mat-icon>
+      <mat-spinner *ngIf="isSubmitting" diameter="20"></mat-spinner>
+      <span class="ml-sm">{{ isSubmitting ? 'Saving...' : 'Register Patient' }}</span>
+    </button>
+  </div>
 </form>

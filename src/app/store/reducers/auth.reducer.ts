@@ -15,7 +15,7 @@ export interface AuthState {
   userId: number | null;
   userToken: string | null;
   error: string | null;
-  clinicId: number | null;
+  principalClinicId: number | null;
   specialty: string | null;
   loading: boolean;
 }
@@ -24,7 +24,7 @@ export const initialState: AuthState = {
   userId: null,
   userToken: null,
   error: null,
-  clinicId: null,
+  principalClinicId: null,
   specialty: null,
   loading: false,
 };
@@ -32,15 +32,18 @@ export const initialState: AuthState = {
 export const authReducer = createReducer(
   initialState,
   on(login, (state) => ({ ...state, loading: true, error: null })),
-  on(loginSuccess, (state, { userId, userToken, clinicId, specialty }) => ({
-    ...state,
-    userId,
-    userToken,
-    clinicId,
-    specialty: specialty || null,
-    error: null,
-    loading: false,
-  })),
+  on(
+    loginSuccess,
+    (state, { userId, userToken, principalClinicId, specialty }) => ({
+      ...state,
+      userId,
+      userToken,
+      principalClinicId,
+      specialty: specialty || null,
+      error: null,
+      loading: false,
+    }),
+  ),
   on(loginFailure, (state, { error }) => ({ ...state, error, loading: false })),
   on(loadUserProfileSuccess, (state, { specialty }) => ({
     ...state,
@@ -57,13 +60,20 @@ export const authReducer = createReducer(
   on(logout, (state) => ({
     ...initialState, // Reset state immediately when logout action is dispatched
   })),
-  on(rehydrateAuthState, (state, { userId, userToken, clinicId, specialty }) => ({
+  on(
+    rehydrateAuthState,
+    (state, { userId, userToken, principalClinicId, specialty }) => ({
+      ...state,
+      userId,
+      userToken,
+      principalClinicId,
+      specialty: specialty || null,
+    }),
+  ),
+  on(setClinic, (state, { principalClinicId }) => ({
     ...state,
-    userId,
-    userToken,
-    clinicId,
-    specialty: specialty || null,
+    principalClinicId,
+    error: null,
   })),
-  on(setClinic, (state, { clinicId }) => ({ ...state, clinicId, error: null })),
-  on(setLoading, (state, { loading }) => ({ ...state, loading }))
+  on(setLoading, (state, { loading }) => ({ ...state, loading })),
 );

@@ -24,7 +24,7 @@ export class AuthEffects {
     private authService: AuthService,
     private router: Router,
     private store: Store,
-    private clinicService: ClinicService
+    private clinicService: ClinicService,
   ) {}
 
   login$ = createEffect(() =>
@@ -39,16 +39,16 @@ export class AuthEffects {
               userId: response.id,
               userToken: response.token,
               userRole: response.role,
-              clinicId: response.clinicId ?? null,
+              principalClinicId: response.principalClinicId ?? null,
             });
           }),
           catchError((error) => {
             console.error('Login failed:', error);
             return of(loginFailure({ error: 'Invalid email or password' }));
-          })
+          }),
         );
-      })
-    )
+      }),
+    ),
   );
 
   // After successful login, fetch user profile to get specialty and other data
@@ -58,8 +58,8 @@ export class AuthEffects {
       switchMap(() => {
         console.log('Login successful - loading user profile');
         return of(loadUserProfile());
-      })
-    )
+      }),
+    ),
   );
 
   // Load user profile from User/me endpoint
@@ -79,7 +79,10 @@ export class AuthEffects {
             // 404 = endpoint doesn't exist, 403 = insufficient permissions
             // These are not blocking errors for some roles (SuperAdmin, AccountAdmin)
             if (error.status === 404 || error.status === 403) {
-              console.warn('User profile endpoint not available or insufficient permissions:', error.status);
+              console.warn(
+                'User profile endpoint not available or insufficient permissions:',
+                error.status,
+              );
               // Complete successfully without specialty - user can still log in
               return of(loadUserProfileSuccess({ specialty: 'General' }));
             }
@@ -88,12 +91,12 @@ export class AuthEffects {
             return of(
               loadUserProfileFailure({
                 error: 'Failed to load user profile',
-              })
+              }),
             );
-          })
+          }),
         );
-      })
-    )
+      }),
+    ),
   );
 
   // After clinic selection, handle clinic assignment intelligently
@@ -102,22 +105,38 @@ export class AuthEffects {
     () =>
       this.actions$.pipe(
         ofType(loginSuccess),
-        tap(({ clinicId, userRole }) => {
-          console.log('Login success - clinicId:', clinicId, 'userRole:', userRole);
+        tap(({ principalClinicId, userRole }) => {
+          console.log(
+            'Login success - clinicId:',
+            principalClinicId,
+            'userRole:',
+            userRole,
+          );
 
           // Roles that are clinic-based and may need clinic assignment
-          const CLINIC_REQUIRING_ROLES = ['Doctor', 'HealthProfessional', 'Receptionist', 'Patient', 'ClinicAdmin'];
+          const CLINIC_REQUIRING_ROLES = [
+            'Doctor',
+            'HealthProfessional',
+            'Receptionist',
+            'Patient',
+            'ClinicAdmin',
+          ];
 
           // Only attempt to fetch clinics if:
           // 1. User role requires a clinic AND
           // 2. clinicId is not already set
-          if (CLINIC_REQUIRING_ROLES.includes(userRole) && (clinicId === null || clinicId === undefined || clinicId === 0)) {
+          if (
+            CLINIC_REQUIRING_ROLES.includes(userRole) &&
+            (principalClinicId === null ||
+              principalClinicId === undefined ||
+              principalClinicId === 0)
+          ) {
             this.clinicService.getClinics().subscribe({
               next: (clinics) => {
                 if (clinics && clinics.length > 0) {
                   console.log('Setting default clinic:', clinics[0].id);
                   this.store.dispatch(
-                    setClinic({ clinicId: clinics[0].id ?? null })
+                    setClinic({ principalClinicId: clinics[0].id ?? null }),
                   );
                 }
               },
@@ -128,9 +147,9 @@ export class AuthEffects {
               },
             });
           }
-        })
+        }),
       ),
-    { dispatch: false }
+    { dispatch: false },
   );
 
   // Navigate to home after user profile is loaded
@@ -141,9 +160,9 @@ export class AuthEffects {
         tap(({ specialty }) => {
           console.log('User profile updated with specialty:', specialty);
           this.router.navigate(['']);
-        })
+        }),
       ),
-    { dispatch: false }
+    { dispatch: false },
   );
 
   // Simplificado: solo navegar al login
@@ -154,8 +173,8 @@ export class AuthEffects {
         tap(() => {
           console.log('Logging out - navigating to login');
           this.router.navigate(['/login']);
-        })
+        }),
       ),
-    { dispatch: false }
+    { dispatch: false },
   );
 }

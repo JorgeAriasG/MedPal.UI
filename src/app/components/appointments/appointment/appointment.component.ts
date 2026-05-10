@@ -14,6 +14,7 @@ import { selectClinicId } from 'src/app/store/selectors/auth.selectors';
 import { setClinic } from 'src/app/store/actions/auth.actions';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { CalendarView } from 'angular-calendar';
 
 @Component({
   selector: 'app-appointment',
@@ -30,8 +31,11 @@ export class AppointmentComponent implements OnInit, OnDestroy {
     data: {},
   };
   viewDate: Date = new Date();
+  view: CalendarView = CalendarView.Week;
+  CalendarView = CalendarView;
+  displayMode: 'calendar' | 'list' = 'calendar';
   events: CalendarEvent[] = [];
-  currentAppointmentId: number | null = null;
+  activeDayIsOpen: boolean = false;
 
   private destroy$ = new Subject<void>();
 
@@ -39,7 +43,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
     private appointmentService: AppointmensService,
     private dialog: MatDialog,
     private clinicService: ClinicService,
-    private store: Store
+    private store: Store,
   ) {}
 
   ngOnInit() {
@@ -61,9 +65,11 @@ export class AppointmentComponent implements OnInit, OnDestroy {
                   if (clinics && clinics.length > 0) {
                     console.log(
                       'Setting default clinic from appointment component:',
-                      clinics[0].id
+                      clinics[0].id,
                     );
-                    this.store.dispatch(setClinic({ clinicId: clinics[0].id }));
+                    this.store.dispatch(
+                      setClinic({ principalClinicId: clinics[0].id }),
+                    );
                   }
                 },
                 error: (err) => {
@@ -86,15 +92,15 @@ export class AppointmentComponent implements OnInit, OnDestroy {
   addAppointmentToggle(): void {
     const dialogRef = this.dialog.open(NewAppointmentComponent, {
       width: '800px',
-      data: this.inputData,
+      panelClass: 'appointment-dialog-container',
+      data: {} // Empty data for new mode
     });
 
     dialogRef
       .afterClosed()
       .pipe(takeUntil(this.destroy$))
-      .subscribe((res) => {
-        console.log(res);
-        if (res) {
+      .subscribe((refresh) => {
+        if (refresh) {
           this.getAllAppointmentsById();
         }
       });
@@ -141,81 +147,34 @@ export class AppointmentComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Abre el modal de edición con la configuración del formulario
+   * Abre el modal de edición usando el componente especializado de Citas
    */
-  private openEditModal(appointment: any): void {
-    this.currentAppointmentId = appointment.id;
-
-    const dialogRef = this.dialog.open(EditModalComponent, {
-      width: '600px',
+  public openEditModal(appointment: any): void {
+    const dialogRef = this.dialog.open(NewAppointmentComponent, {
+      width: '800px',
+      panelClass: 'appointment-dialog-container',
       data: {
-        entityType: 'appointment',
-        data: {
-          date: appointment.date,
-          time: appointment.time,
-          notes: appointment.notes,
-          status: appointment.status,
-          patientName: appointment.patient.name,
-          patientLastname: appointment.patient.lastname,
-        },
-        title: 'Edit Appointment',
-      },
+        appointment: appointment
+      }
     });
 
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        this.onFormSubmitted(result);
+    dialogRef.afterClosed().subscribe((refresh) => {
+      if (refresh) {
+        this.getAllAppointmentsById();
       }
-      this.currentAppointmentId = null;
     });
   }
 
-  /**
-   * Procesa los datos del formulario y actualiza la cita
-   */
-  onFormSubmitted(data: any): void {
-    console.log('Form Data:', data);
 
-    // Convertir datos al formato esperado por la API
-    const dateStr =
-      data.date instanceof Date
-        ? data.date.toISOString().split('T')[0]
-        : data.date;
+  setView(view: CalendarView) {
+    this.view = view;
+  }
 
-    const timeStr =
-      data.time instanceof Date
-        ? data.time.toTimeString().substring(0, 5)
-        : data.time;
+  closeOpenMonthViewDay() {
+    this.activeDayIsOpen = false;
+  }
 
-    const [year, month, day] = dateStr.split('-').map(Number);
-    const [hour, minute] = timeStr.split(':').map(Number);
-
-    const updatedAppointment: IAppointment = {
-      date: {
-        year,
-        month,
-        day,
-      },
-      time: {
-        hour,
-        minute,
-      },
-      notes: data.notes || '',
-      status: data.status || 'Scheduled',
-      clinicId: this.clinicId || undefined,
-    };
-
-    this.appointmentService
-      .updateAppointment(updatedAppointment, this.currentAppointmentId!)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (response) => {
-          console.log('Appointment updated successfully:', response);
-          this.getAllAppointmentsById();
-        },
-        error: (error) => {
-          console.error('Error updating appointment:', error);
-        },
-      });
+  setDisplayMode(mode: 'calendar' | 'list') {
+    this.displayMode = mode;
   }
 }

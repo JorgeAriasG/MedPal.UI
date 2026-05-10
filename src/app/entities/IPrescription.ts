@@ -19,4 +19,7 @@ export interface IPrescription {
   notes?: string;
   items: IPrescriptionItem[];
   uniqueCode?: string; // For validation
+  doctorSpecialty?: string;
+  doctorLicense?: string;
+  status?: string;
 }

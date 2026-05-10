@@ -39,8 +39,8 @@ mat-toolbar {
   z-index: 99;
 }
 
-router-outlet ~ * {
+.main-content-scrollable {
   flex: 1;
-  overflow: auto;
+  overflow-y: auto;
   background: var(--color-bg-page);
 }

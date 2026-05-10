@@ -1,6 +1,191 @@
-.item-row {
-  margin-bottom: 10px;
-  padding: 10px;
-  background-color: #f9f9f9;
+.create-prescription-container {
+  padding: 24px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.main-card {
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.header-avatar {
+  background-color: #e3f2fd;
+  color: #1976d2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.form-section {
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.section-header mat-icon {
+  color: #666;
+}
+
+.section-header h3 {
+  margin: 0;
+  font-weight: 600;
+  color: #333;
+  flex: 1;
+}
+
+.form-row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.flex-2 { flex: 2; }
+.flex-3 { flex: 3; }
+
+/* Allergy Alert Banner */
+.allergy-alert-banner {
+  background-color: #fff1f0;
+  border: 1px solid #ffa39e;
   border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 24px;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  color: #cf1322;
+}
+
+.allergy-alert-banner mat-icon {
+  font-size: 32px;
+  width: 32px;
+  height: 32px;
+}
+
+.alert-content h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.allergy-name {
+  background: #cf1322;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  margin-left: 4px;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+/* Items List */
+.items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.item-row-card {
+  display: flex;
+  gap: 16px;
+  background-color: #fafafa;
+  border-radius: 8px;
+  padding: 16px;
+  position: relative;
+  border: 1px solid #eee;
+  transition: all 0.3s ease;
+}
+
+.item-row-card:hover {
+  border-color: #1976d2;
+  background-color: #f5f9ff;
+}
+
+.item-index {
+  background: #eee;
+  color: #666;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.row-inputs {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.input-group {
+  display: flex;
+  gap: 12px;
+}
+
+.input-group mat-form-field {
+  flex: 1;
+}
+
+.med-name { flex: 3 !important; }
+.med-dose { flex: 1 !important; }
+
+.full-width {
+  width: 100%;
+}
+
+/* Actions & Messages */
+.form-messages {
+  margin: 16px 0;
+}
+
+.error-msg, .info-msg {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+.error-msg {
+  background-color: #fff1f0;
+  color: #cf1322;
+}
+
+.info-msg {
+  background-color: #f6ffed;
+  color: #52c41a;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 24px;
+}
+
+.form-actions button {
+  padding: 8px 32px;
+  height: 48px;
+  font-weight: 600;
+}
+
+@media (max-width: 600px) {
+  .form-row, .input-group {
+    flex-direction: column;
+    gap: 0;
+  }
 }

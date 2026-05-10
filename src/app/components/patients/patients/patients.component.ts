@@ -1,13 +1,15 @@
-﻿import { IClinic } from 'src/app/entities/IClinic';
+import { IClinic } from 'src/app/entities/IClinic';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { PatientsService } from 'src/app/components/patients/services/patients.service';
 import { IPatient } from 'src/app/entities/IPatient';
 import { EditModalComponent } from '../../../shared/edit-modal/edit-modal.component';
+import { NewPatientComponent } from '../new-patient/new-patient.component';
 import { MatDialog } from '@angular/material/dialog';
+import { fadeIn } from 'src/app/shared/animations';
 import { Store } from '@ngrx/store';
 import { selectClinicId } from 'src/app/store/selectors/auth.selectors';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { trigger, transition, style, animate } from '@angular/animations';
 
 @Component({
@@ -16,6 +18,7 @@ import { trigger, transition, style, animate } from '@angular/animations';
   styleUrls: ['./patients.component.css'],
   standalone: false,
   animations: [
+    fadeIn,
     trigger('slideDown', [
       transition(':enter', [
         style({ opacity: 0, transform: 'translateY(-12px)' }),
@@ -42,6 +45,13 @@ export class PatientsComponent implements OnInit, OnDestroy {
   editPatientId: any = null;
   editPatientData: Partial<IPatient> = {};
   clinicId: number | null | undefined;
+  
+  // Search & Sort State
+  searchQuery: string = '';
+  sortBy: string = 'name';
+  descending: boolean = false;
+  loading: boolean = false;
+  private searchSubject = new Subject<string>();
 
   private destroy$ = new Subject<void>();
 
@@ -62,6 +72,16 @@ export class PatientsComponent implements OnInit, OnDestroy {
           this.getPatients();
         },
       });
+
+    // Handle debounced search
+    this.searchSubject.pipe(
+      debounceTime(400),
+      distinctUntilChanged(),
+      takeUntil(this.destroy$)
+    ).subscribe(query => {
+      this.searchQuery = query;
+      this.getPatients();
+    });
   }
 
   ngOnDestroy() {
@@ -70,33 +90,52 @@ export class PatientsComponent implements OnInit, OnDestroy {
   }
 
   openAddDialog(): void {
-    const dialogRef = this.dialog.open(EditModalComponent, {
-      width: '500px',
+    const dialogRef = this.dialog.open(NewPatientComponent, {
+      width: '600px',
+      maxHeight: '90vh',
       disableClose: false,
-      panelClass: 'custom-dialog',
-      data: {
-        entityType: 'patient',
-        data: {},
-        title: 'Create New Patient',
-        isCreate: true
-      }
+      panelClass: 'custom-dialog'
     });
 
     dialogRef.afterClosed().pipe(takeUntil(this.destroy$)).subscribe((result) => {
-      if (result) {
-        this.saveNewPatient(result);
-      }
+      // NewPatientComponent handles its own saving and emits patientAdded
+      // But we can still refresh here if needed
+      this.getPatients();
     });
   }
 
   getPatients(): void {
+    if (this.clinicId === undefined) return;
+    
+    this.loading = true;
     this.patientsService
-      .getPatients(this.clinicId)
+      .getPatients(this.clinicId, this.searchQuery, this.sortBy, this.descending)
       .pipe(takeUntil(this.destroy$))
-      .subscribe((patients) => {
-        this.patients = patients;
-        console.log('Patients loaded:', this.patients);
+      .subscribe({
+        next: (patients) => {
+          this.patients = patients;
+          this.loading = false;
+        },
+        error: (err) => {
+          console.error('Error fetching patients', err);
+          this.loading = false;
+        }
       });
+  }
+
+  onSearch(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.searchSubject.next(input.value);
+  }
+
+  onSort(column: string): void {
+    if (this.sortBy === column) {
+      this.descending = !this.descending;
+    } else {
+      this.sortBy = column;
+      this.descending = false;
+    }
+    this.getPatients();
   }
 
   deletePatient(id: number): void {
