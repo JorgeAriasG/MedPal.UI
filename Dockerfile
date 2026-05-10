@@ -25,7 +25,7 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Copy the build output from Stage 1 to Nginx's web directory
 # Note: Adjust the 'scheduling.ui' part if your angular.json output path is different
-COPY --from=build /app/dist/scheduling.ui /usr/share/nginx/html
+COPY --from=build /app/dist/scheduling.ui/browser /usr/share/nginx/html
 
 EXPOSE 80
 ENTRYPOINT ["nginx", "-g", "daemon off;"]
