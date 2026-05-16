@@ -16,7 +16,7 @@ jobs:
     permissions:
       contents: read
       packages: write
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -48,20 +48,20 @@ jobs:
 
   deploy:
     needs: build-and-push
-    runs-on: self-hosted
-    
+    runs-on: [self-hosted, frontend]
+
     steps:
       - name: Deploy to Local Homelab Server
         run: |
           # Navigate to the new DMZ infrastructure folder
           cd /home/runner/dmz-infra
-          
+
           # Force pull the latest staging image from GHCR (using your PAT for private repos)
           docker compose -f docker-compose.dmz.yml pull medpal-ui
-          
+
           # Recreate the container with the new image
           docker compose -f docker-compose.dmz.yml up -d --no-deps medpal-ui
-          
+
           # Clean up old dangling images to save space
           docker image prune -f
 

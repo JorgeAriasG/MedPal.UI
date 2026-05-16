@@ -1,6 +1,8 @@
 export interface IAppointment {
   id?: number | null;
   patientId?: number;
+  patientName?: string; // Nuevo: Para creación fantasma
+  patientPhone?: string; // Nuevo: Para creación fantasma
   userId?: number;
   clinicId?: number;
   status: string;

@@ -10,7 +10,9 @@ export interface IPatient {
   address: string,
   dob: Date,
   gender: string,
+  curp?: string,
   emergencyContact: string,
-  clinicId?: number | null,
-  clinic?: IClinic
+  clinicIds: number[],
+  clinic?: IClinic,
+  clinics?: IClinic[]
 }

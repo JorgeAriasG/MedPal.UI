@@ -89,7 +89,7 @@ export class AuthService {
             email: response.email,
             role: response.role,
             accountId: response.accountId,
-            principalClinicId: response.principalClinicId,
+            clinicId: response.clinicId,
           };
           localStorage.setItem(this.USER_KEY, JSON.stringify(user));
 
@@ -125,7 +125,7 @@ export class AuthService {
             email: response.email,
             role: response.role,
             accountId: response.accountId,
-            principalClinicId: response.principalClinicId,
+            clinicId: response.clinicId,
           };
           localStorage.setItem(this.USER_KEY, JSON.stringify(user));
           this.currentUserSubject.next(user);
@@ -332,7 +332,7 @@ export class AuthService {
    */
   getClinicId(): number | null {
     const user = this.getUserFromStorage();
-    return user?.principalClinicId ?? null;
+    return user?.clinicId ?? null;
   }
 
   /**

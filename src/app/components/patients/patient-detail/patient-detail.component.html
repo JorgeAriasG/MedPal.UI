@@ -42,7 +42,7 @@
           </button>
           <button
             mat-raised-button
-            color="accent"
+            color="primary"
             routerLink="/prescriptions/new"
             [queryParams]="{ patientId: patient.id }"
             class="action-button"
@@ -106,6 +106,10 @@
                   <span class="value">{{ patient.gender }}</span>
                 </div>
                 <div class="info-row">
+                  <span class="label">CURP</span>
+                  <span class="value">{{ patient.curp || '—' }}</span>
+                </div>
+                <div class="info-row">
                   <span class="label">Address</span>
                   <span class="value">{{ patient.address }}</span>
                 </div>
@@ -158,6 +162,52 @@
             [historyEntries]="medicalHistory"
           >
           </app-history-timeline>
+        </div>
+      </mat-tab>
+
+      <!-- Antecedents Tab -->
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon class="tab-icon">assignment</mat-icon>
+          <span>Antecedentes</span>
+        </ng-template>
+
+        <div class="tab-content">
+          <app-patient-antecedents
+            *ngIf="patientDetailsId"
+            [patientDetailsId]="patientDetailsId">
+          </app-patient-antecedents>
+        </div>
+      </mat-tab>
+
+      <!-- Vital Signs Tab -->
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon class="tab-icon">monitor_heart</mat-icon>
+          <span>Signos Vitales</span>
+        </ng-template>
+
+        <div class="tab-content">
+          <app-patient-vital-signs
+            *ngIf="patientDetailsId"
+            [patientDetailsId]="patientDetailsId">
+          </app-patient-vital-signs>
+        </div>
+      </mat-tab>
+
+      <!-- Consentimientos Tab -->
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon class="tab-icon">verified_user</mat-icon>
+          <span>Consentimientos</span>
+        </ng-template>
+
+        <div class="tab-content">
+          <app-patient-consents
+            *ngIf="patientDetailsId"
+            [patientDetailsId]="patientDetailsId"
+            [patientName]="patient.name || ''">
+          </app-patient-consents>
         </div>
       </mat-tab>
 

@@ -24,6 +24,7 @@ export interface MedicalHistoryWriteDTO {
   clinicalNotes?: string;
   followUpDate?: string | Date;
   specialtyData?: string; // JSON string (will be encrypted by backend)
+  cie10Codes?: string; // JSON array of CIE-10 codes: '["I10","E11.9"]'
   prescriptionId?: number;
   isConfidential?: boolean;
 }

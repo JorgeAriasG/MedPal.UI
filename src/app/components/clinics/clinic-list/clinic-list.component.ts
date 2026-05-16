@@ -10,6 +10,7 @@ import { selectClinicId } from 'src/app/store/selectors/auth.selectors';
 import { setClinic } from 'src/app/store/actions/auth.actions';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { toHourMinute } from 'src/app/shared/utils/date-utils';
 import { trigger, transition, style, animate } from '@angular/animations';
 
 @Component({
@@ -47,6 +48,8 @@ export class ClinicListComponent implements OnInit, OnDestroy {
   isEdit: boolean = false;
   clinicId: number | null | undefined;
   selectedClinicName: string | null = null;
+  loading: boolean = false;
+  searchQuery: string = '';
 
   // Subject para cancelar suscripciones
   private destroy$ = new Subject<void>();
@@ -66,7 +69,6 @@ export class ClinicListComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (clinicId) => {
-          console.log('Clinic ID from store:', clinicId);
           this.clinicId = clinicId;
           // Actualizar el nombre de la clínica seleccionada
           this.selectedClinicName =
@@ -86,12 +88,14 @@ export class ClinicListComponent implements OnInit, OnDestroy {
   }
 
   selectClinic($event: MatOptionSelectionChange): void {
-    this.clinicId =
-      this.clinics.find((clinic) => clinic.name === $event.source.value)?.id ??
-      null;
-    this.store.dispatch(setClinic({ principalClinicId: this.clinicId }));
-    console.log('Selected Clinic ID:', this.clinicId);
-    console.log($event);
+    const clinic = this.clinics.find((clinic) => clinic.name === $event.source.value);
+    this.clinicId = clinic?.id ?? null;
+    this.store.dispatch(setClinic({
+      clinicId: this.clinicId,
+      open: clinic?.open ? toHourMinute(clinic.open) : null,
+      close: clinic?.close ? toHourMinute(clinic.close) : null,
+    }));
+
   }
 
   openAddDialog(): void {
@@ -111,21 +115,28 @@ export class ClinicListComponent implements OnInit, OnDestroy {
       });
   }
 
-  async getClinics(): Promise<void> {
-    try {
-      this.clinicService
-        .getClinics()
-        .pipe(takeUntil(this.destroy$))
-        .subscribe((clinics) => {
-          console.log('Clinics', clinics);
+  onSearch(event: any): void {
+    this.searchQuery = (event.target as HTMLInputElement).value;
+  }
+
+  getClinics(): void {
+    this.loading = true;
+    this.clinicService
+      .getClinics()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (clinics) => {
           this.clinics = clinics;
+          this.loading = false;
           this.selectedClinicName =
             this.clinics.find((clinic) => clinic.id === this.clinicId)?.name ??
             null;
-        });
-    } catch (error) {
-      console.error(error);
-    }
+        },
+        error: (error) => {
+          this.loading = false;
+          console.error(error);
+        },
+      });
   }
 
   editClinic(clinic: IClinic): void {

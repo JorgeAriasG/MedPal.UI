@@ -1,58 +1,57 @@
-<nav class="menu-container">
+<nav class="menu-container" [class.collapsed]="isCollapsed">
   <div class="menu-header">
     <div class="menu-logo">
       <mat-icon class="logo-icon">medical_services</mat-icon>
-      <span class="logo-text">MediSchedule</span>
+      <span class="logo-text" *ngIf="!isCollapsed">ClinicFlow</span>
     </div>
+    <button mat-icon-button class="toggle-btn" (click)="toggleSidebar()">
+      <mat-icon>{{ isCollapsed ? 'chevron_right' : 'chevron_left' }}</mat-icon>
+    </button>
   </div>
 
   <mat-list class="menu-list">
     <mat-list-item class="menu-item">
       <button mat-button routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" class="menu-link">
-        <mat-icon class="menu-icon">home</mat-icon>
-        <span class="menu-text">Home</span>
+        <mat-icon class="menu-icon">dashboard</mat-icon>
+        <span class="menu-text" *ngIf="!isCollapsed">Dashboard</span>
       </button>
     </mat-list-item>
 
     <mat-list-item class="menu-item">
       <button mat-button routerLink="/appointments" routerLinkActive="active" class="menu-link">
         <mat-icon class="menu-icon">calendar_month</mat-icon>
-        <span class="menu-text">Appointments</span>
+        <span class="menu-text" *ngIf="!isCollapsed">Agenda</span>
       </button>
     </mat-list-item>
 
     <mat-list-item class="menu-item">
       <button mat-button routerLink="/patients" routerLinkActive="active" class="menu-link">
         <mat-icon class="menu-icon">people</mat-icon>
-        <span class="menu-text">Patients</span>
-      </button>
-    </mat-list-item>
-
-    <mat-list-item class="menu-item">
-      <button mat-button routerLink="/clinics" routerLinkActive="active" class="menu-link">
-        <mat-icon class="menu-icon">local_hospital</mat-icon>
-        <span class="menu-text">Clinics</span>
-      </button>
-    </mat-list-item>
-
-    <mat-list-item class="menu-item">
-      <button mat-button routerLink="/users" routerLinkActive="active" class="menu-link">
-        <mat-icon class="menu-icon">group</mat-icon>
-        <span class="menu-text">Users</span>
-      </button>
-    </mat-list-item>
-
-    <mat-list-item class="menu-item">
-      <button mat-button routerLink="/roles" routerLinkActive="active" class="menu-link">
-        <mat-icon class="menu-icon">admin_panel_settings</mat-icon>
-        <span class="menu-text">Roles</span>
+        <span class="menu-text" *ngIf="!isCollapsed">Pacientes</span>
       </button>
     </mat-list-item>
 
     <mat-list-item class="menu-item">
       <button mat-button routerLink="/prescriptions/new" routerLinkActive="active" class="menu-link">
         <mat-icon class="menu-icon">description</mat-icon>
-        <span class="menu-text">Prescriptions</span>
+        <span class="menu-text" *ngIf="!isCollapsed">Recetas</span>
+      </button>
+    </mat-list-item>
+
+    <mat-divider *ngIf="!isCollapsed" class="section-divider"></mat-divider>
+    <p class="section-header" *ngIf="!isCollapsed">Admin</p>
+
+    <mat-list-item class="menu-item">
+      <button mat-button routerLink="/clinics" routerLinkActive="active" class="menu-link">
+        <mat-icon class="menu-icon">local_hospital</mat-icon>
+        <span class="menu-text" *ngIf="!isCollapsed">Clínicas</span>
+      </button>
+    </mat-list-item>
+
+    <mat-list-item class="menu-item">
+      <button mat-button routerLink="/users" routerLinkActive="active" class="menu-link">
+        <mat-icon class="menu-icon">group</mat-icon>
+        <span class="menu-text" *ngIf="!isCollapsed">Usuarios</span>
       </button>
     </mat-list-item>
   </mat-list>
@@ -61,7 +60,7 @@
     <mat-divider class="menu-divider"></mat-divider>
     <button mat-button class="logout-btn" (click)="logout()">
       <mat-icon class="menu-icon">logout</mat-icon>
-      <span class="menu-text">Logout</span>
+      <span class="menu-text" *ngIf="!isCollapsed">Cerrar Sesión</span>
     </button>
   </div>
 </nav>

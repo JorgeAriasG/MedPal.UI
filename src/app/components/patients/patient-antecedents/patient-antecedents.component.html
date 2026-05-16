@@ -1,0 +1,91 @@
+<div class="antecedents-container">
+  <div class="antecedents-header">
+    <h3><mat-icon>assignment</mat-icon> Antecedentes del Paciente</h3>
+    <button mat-raised-button color="primary" (click)="save()" [disabled]="saving" class="save-btn">
+      <mat-spinner *ngIf="saving" diameter="18" class="inline-spinner"></mat-spinner>
+      <span *ngIf="!saving">Guardar</span>
+    </button>
+  </div>
+
+  <div *ngIf="loading" class="loading-section">
+    <mat-spinner diameter="32"></mat-spinner>
+  </div>
+
+  <div *ngIf="error" class="error-banner">
+    <mat-icon>error_outline</mat-icon>
+    <span>{{ error }}</span>
+  </div>
+
+  <div *ngIf="!loading" class="antecedents-grid">
+    <mat-expansion-panel expanded class="antecedent-panel">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <mat-icon>people</mat-icon> Antecedentes Familiares
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <p class="field-hint">Enfermedades relevantes en familiares directos (padres, hermanos, hijos)</p>
+      <mat-form-field appearance="outline" class="w-100">
+        <textarea matInput [(ngModel)]="data.familiares" rows="3" placeholder="Diabetes, hipertensión, cáncer, cardiopatías en familiares..."></textarea>
+      </mat-form-field>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel class="antecedent-panel">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <mat-icon>personal_injury</mat-icon> Antecedentes Patológicos
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <p class="field-hint">Enfermedades previas del paciente (crónicas, agudas, hospitalizaciones)</p>
+      <mat-form-field appearance="outline" class="w-100">
+        <textarea matInput [(ngModel)]="data.patologicos" rows="3" placeholder="Diabetes tipo 2, HTA, asma, hospitalizaciones previas..."></textarea>
+      </mat-form-field>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel class="antecedent-panel">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <mat-icon>self_improvement</mat-icon> Antecedentes No Patológicos
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <p class="field-hint">Hábitos y estilo de vida (tabaquismo, alcohol, actividad física, alimentación)</p>
+      <mat-form-field appearance="outline" class="w-100">
+        <textarea matInput [(ngModel)]="data.noPatologicos" rows="3" placeholder="Tabaquismo (10 cigarrillos/día), alcohol (ocasional), sedentarismo..."></textarea>
+      </mat-form-field>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel class="antecedent-panel">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <mat-icon>local_hospital</mat-icon> Antecedentes Quirúrgicos
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <p class="field-hint">Cirugías previas, procedimientos invasivos, transfusiones</p>
+      <mat-form-field appearance="outline" class="w-100">
+        <textarea matInput [(ngModel)]="data.quirurgicos" rows="3" placeholder="Apendicectomía (2015), cesárea (2018)..."></textarea>
+      </mat-form-field>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel class="antecedent-panel">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <mat-icon>monitor_heart</mat-icon> Hábitos
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <p class="field-hint">Alimentación, sueño, ejercicio, consumo de sustancias</p>
+      <mat-form-field appearance="outline" class="w-100">
+        <textarea matInput [(ngModel)]="data.habitos" rows="3" placeholder="Dieta balanceada, duerme 7h, ejercicio 3x/semana..."></textarea>
+      </mat-form-field>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel class="antecedent-panel">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <mat-icon>note</mat-icon> Observaciones
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <mat-form-field appearance="outline" class="w-100">
+        <textarea matInput [(ngModel)]="data.observaciones" rows="3" placeholder="Notas adicionales..."></textarea>
+      </mat-form-field>
+    </mat-expansion-panel>
+  </div>
+</div>

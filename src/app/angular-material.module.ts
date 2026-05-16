@@ -17,6 +17,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatTimepickerModule } from '@angular/material/timepicker';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { SharedModule } from './shared/shared.module';
 
 
@@ -42,6 +43,7 @@ import { SharedModule } from './shared/shared.module';
     MatTimepickerModule,
     MatProgressSpinnerModule,
     MatTabsModule,
+    MatTooltipModule,
   ],
   exports: [
     MatFormFieldModule,
@@ -62,6 +64,7 @@ import { SharedModule } from './shared/shared.module';
     MatTimepickerModule,
     MatProgressSpinnerModule,
     MatTabsModule,
+    MatTooltipModule,
   ]
 })
 export class AngularMaterialModule { }

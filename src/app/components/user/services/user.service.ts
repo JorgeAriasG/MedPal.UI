@@ -61,7 +61,7 @@ export class UserService {
       professionalLicenseNumber: user.professionalLicenseNumber,
       acceptPrivacyTerms: user.acceptPrivacyTerms,
       ...(user.roleId && { roleId: user.roleId }),
-      ...(user.principalClinicId && { principalClinicId: user.principalClinicId }),
+      ...(user.clinicId && { clinicId: user.clinicId }),
     };
     return this.apiService.post<IUser>(this.endpoint, userData);
   }

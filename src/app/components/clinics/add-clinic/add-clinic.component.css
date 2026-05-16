@@ -1,0 +1,26 @@
+mat-dialog-title {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+mat-dialog-title mat-icon {
+  color: var(--color-primary);
+  font-size: 22px;
+  width: 22px;
+  height: 22px;
+}
+
+mat-dialog-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  min-width: 420px;
+}
+
+mat-dialog-actions {
+  padding: var(--spacing-md) 0 0;
+  gap: var(--spacing-sm);
+}

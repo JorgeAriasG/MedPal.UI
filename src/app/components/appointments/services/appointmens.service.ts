@@ -12,8 +12,11 @@ export class AppointmensService {
 
   constructor(private http: HttpClient, private apiService: ApiService) {}
 
-  getAppointments(clinicId: number | null | undefined): Observable<any> {
-    const url = `${this.endpoint}?clinicId=${clinicId}`;
+  getAppointments(clinicId: number | null | undefined, date?: string | null): Observable<any> {
+    let url = `${this.endpoint}?clinicId=${clinicId}`;
+    if (date) {
+      url += `&date=${date}`;
+    }
     return this.apiService.get(url);
   }
 

@@ -57,8 +57,7 @@ export class NewRoleComponent implements OnDestroy {
         .createRole(newRole)
         .pipe(takeUntil(this.destroy$))
         .subscribe({
-          next: (role) => {
-            console.log('Role created:', role);
+          next: () => {
             this.form.reset();
             this.roleAdded.emit();
           },

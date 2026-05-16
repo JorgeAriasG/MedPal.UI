@@ -19,6 +19,7 @@ export interface IPatientDetailResponse {
   patient: IPatient;
   medicalHistories: MedicalHistoryReadDTO[];
   allergies: string[];
+  antecedentsData?: string;
 }
 
 export interface IPatientDetail extends IPatient {

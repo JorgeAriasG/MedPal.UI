@@ -1,0 +1,65 @@
+<div class="soap-container">
+  <div class="soap-field">
+    <label class="field-label">
+      <span class="soap-letter">S</span>
+      Subjetivo (Síntomas del paciente)
+    </label>
+    <mat-form-field appearance="outline" class="w-100">
+      <textarea
+        matInput
+        [ngModel]="soapData.subjective"
+        (ngModelChange)="soapData.subjective = $event; update()"
+        rows="3"
+        placeholder="Motivo de consulta, síntomas actuales, evolución descrita por el paciente..."
+      ></textarea>
+    </mat-form-field>
+  </div>
+
+  <div class="soap-field">
+    <label class="field-label">
+      <span class="soap-letter">O</span>
+      Objetivo (Hallazgos físicos)
+    </label>
+    <mat-form-field appearance="outline" class="w-100">
+      <textarea
+        matInput
+        [ngModel]="soapData.objective"
+        (ngModelChange)="soapData.objective = $event; update()"
+        rows="3"
+        placeholder="Signos vitales, exploración física, hallazgos relevantes..."
+      ></textarea>
+    </mat-form-field>
+  </div>
+
+  <div class="soap-field">
+    <label class="field-label">
+      <span class="soap-letter">A</span>
+      Assessment (Evaluación / Diagnóstico)
+    </label>
+    <mat-form-field appearance="outline" class="w-100">
+      <textarea
+        matInput
+        [ngModel]="soapData.assessment"
+        (ngModelChange)="soapData.assessment = $event; update()"
+        rows="3"
+        placeholder="Impresión diagnóstica, diagnóstico diferencial, severidad..."
+      ></textarea>
+    </mat-form-field>
+  </div>
+
+  <div class="soap-field">
+    <label class="field-label">
+      <span class="soap-letter">P</span>
+      Plan (Tratamiento / Seguimiento)
+    </label>
+    <mat-form-field appearance="outline" class="w-100">
+      <textarea
+        matInput
+        [ngModel]="soapData.plan"
+        (ngModelChange)="soapData.plan = $event; update()"
+        rows="3"
+        placeholder="Tratamiento farmacológico, estudios, referencias, seguimiento..."
+      ></textarea>
+    </mat-form-field>
+  </div>
+</div>

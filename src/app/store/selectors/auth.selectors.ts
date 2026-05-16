@@ -25,7 +25,7 @@ export const selectIsLoggedIn = createSelector(
 
 export const selectClinicId = createSelector(
   selectAuthState,
-  (state: AuthState) => state.principalClinicId,
+  (state: AuthState) => state.    clinicId,
 );
 
 export const selectIsLoading = createSelector(
@@ -36,4 +36,33 @@ export const selectIsLoading = createSelector(
 export const selectUserSpecialty = createSelector(
   selectAuthState,
   (state: AuthState) => state.specialty || 'General',
+);
+
+export const selectClinicOpen = createSelector(
+  selectAuthState,
+  (state: AuthState) => state.clinicOpen,
+);
+
+export const selectClinicClose = createSelector(
+  selectAuthState,
+  (state: AuthState) => state.clinicClose,
+);
+
+export const selectClinicContext = createSelector(
+  selectAuthState,
+  (state: AuthState) => ({
+    clinicId: state.    clinicId,
+    clinicOpen: state.clinicOpen,
+    clinicClose: state.clinicClose,
+  }),
+);
+
+export const selectAuthContext = createSelector(
+  selectAuthState,
+  (state: AuthState) => ({
+    userId: state.userId,
+    clinicId: state.    clinicId,
+    clinicOpen: state.clinicOpen,
+    clinicClose: state.clinicClose,
+  }),
 );

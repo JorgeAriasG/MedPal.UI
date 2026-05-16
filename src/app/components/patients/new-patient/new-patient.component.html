@@ -55,6 +55,12 @@
   </mat-form-field>
 
   <mat-form-field appearance="outline" class="full-width">
+    <mat-label>CURP (opcional)</mat-label>
+    <input matInput [(ngModel)]="newPatient.curp" name="curp" placeholder="CURP-123456-789" maxlength="18" />
+    <mat-hint>Clave Única de Registro de Población (18 caracteres)</mat-hint>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full-width">
     <mat-label>Emergency Contact</mat-label>
     <input matInput [(ngModel)]="newPatient.emergencyContact" name="emergencyContact" required />
   </mat-form-field>

@@ -1,0 +1,42 @@
+<div class="cie10-search-container">
+  <label class="field-label">{{ label }}</label>
+
+  <div class="selected-codes" *ngIf="selectedCodes.length > 0">
+    <mat-chip-set>
+      <mat-chip *ngFor="let code of selectedCodes" (removed)="removeCode(code)">
+        <strong>{{ code.code }}</strong>
+        <span *ngIf="code.description" class="chip-desc"> — {{ code.description }}</span>
+        <button matChipRemove *ngIf="!disabled">
+          <mat-icon>cancel</mat-icon>
+        </button>
+      </mat-chip>
+    </mat-chip-set>
+  </div>
+
+  <div class="search-wrapper" *ngIf="!disabled">
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-icon matPrefix>search</mat-icon>
+      <input
+        matInput
+        [placeholder]="placeholder"
+        [(ngModel)]="searchTerm"
+        (input)="onSearchInput(searchTerm)"
+        (focus)="onSearchInput(searchTerm)"
+        (blur)="onTouched()"
+        autocomplete="off"
+      />
+    </mat-form-field>
+
+    <div class="dropdown" *ngIf="showDropdown && searchResults.length > 0">
+      <button
+        type="button"
+        class="dropdown-item"
+        *ngFor="let result of searchResults"
+        (mousedown)="selectCode(result)"
+      >
+        <span class="code-badge">{{ result.code }}</span>
+        <span class="desc">{{ result.description }}</span>
+      </button>
+    </div>
+  </div>
+</div>

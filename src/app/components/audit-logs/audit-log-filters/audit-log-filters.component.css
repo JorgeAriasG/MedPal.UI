@@ -1,5 +1,6 @@
 .filters-card {
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
+  border-radius: var(--border-radius-lg);
 }
 
 .filters-header {
@@ -7,7 +8,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 1rem;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid var(--color-border);
   margin: 0;
 }
 
@@ -15,16 +16,16 @@
   margin: 0;
   font-size: 1.125rem;
   font-weight: 500;
-  color: #333;
+  color: var(--color-text-primary);
 }
 
 .expand-btn {
   margin-right: -0.75rem;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
 }
 
 .expand-btn mat-icon {
-  transition: transform 0.3s ease;
+  transition: transform 0.2s ease;
 }
 
 .expand-btn mat-icon.expanded {
@@ -33,7 +34,7 @@
 
 .filters-content {
   padding: 1.5rem;
-  animation: slideDown 0.3s ease-out;
+  animation: slideDown 0.2s ease-out;
 }
 
 @keyframes slideDown {
@@ -66,11 +67,11 @@ form {
 .filter-legend {
   font-size: 0.875rem;
   font-weight: 600;
-  color: #666;
+  color: var(--color-text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   padding: 0 0 0.5rem 0;
-  border-bottom: 2px solid #1976d2;
+  border-bottom: 1px solid var(--color-primary);
   padding-bottom: 0.75rem;
 }
 
@@ -113,31 +114,31 @@ form {
 }
 
 .apply-btn {
-  background-color: #1976d2;
+  background-color: var(--color-primary);
   color: white;
 }
 
 .apply-btn:hover:not(:disabled) {
-  background-color: #1565c0;
+  background-color: var(--color-primary-dark);
 }
 
 .apply-btn:disabled {
-  background-color: #ccc;
-  color: #999;
+  background-color: #d1d5db;
+  color: #9ca3af;
 }
 
 .reset-btn {
-  border-color: #1976d2;
-  color: #1976d2;
+  border-color: var(--color-primary);
+  color: var(--color-primary);
 }
 
 .reset-btn:hover:not(:disabled) {
-  background-color: #f5f5f5;
+  background-color: rgba(91, 108, 255, 0.06);
 }
 
 .reset-btn:disabled {
-  border-color: #ccc;
-  color: #999;
+  border-color: #d1d5db;
+  color: #9ca3af;
 }
 
 /* Responsive Design */
@@ -194,15 +195,15 @@ form {
 /* Dark Mode Support */
 @media (prefers-color-scheme: dark) {
   .filters-header {
-    border-bottom-color: #444;
+    border-bottom-color: rgba(255,255,255,0.1);
   }
 
   .filters-header mat-card-title {
-    color: #f5f5f5;
+    color: #f1f5f9;
   }
 
   .filter-legend {
-    color: #aaa;
-    border-bottom-color: #1976d2;
+    color: #94a3b8;
+    border-bottom-color: var(--color-primary);
   }
 }

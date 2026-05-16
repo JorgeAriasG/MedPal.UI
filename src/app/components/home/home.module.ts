@@ -49,6 +49,11 @@ import { AuditAccessGuard } from 'src/app/guards/audit-access.guard';
 import { AuditAdminGuard } from 'src/app/guards/audit-admin.guard';
 import { ConsentAccessGuard } from 'src/app/guards/consent-access.guard';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { PatientAntecedentsComponent } from '../patients/patient-antecedents/patient-antecedents.component';
+import { PatientVitalSignsComponent } from '../patients/patient-vital-signs/patient-vital-signs.component';
+import { VitalSignDialogComponent } from '../patients/patient-vital-signs/vital-sign-dialog.component';
+import { PatientConsentsComponent } from '../patients/patient-consents/patient-consents.component';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 @NgModule({
   declarations: [
@@ -58,6 +63,10 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
     ClinicListComponent,
     NewPatientComponent,
     PatientDetailComponent,
+    PatientAntecedentsComponent,
+    PatientVitalSignsComponent,
+    VitalSignDialogComponent,
+    PatientConsentsComponent,
     AddClinicComponent,
     QuickactionMenuComponent,
     AppointmentComponent,
@@ -107,6 +116,7 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
     MatDialogModule,
     MatProgressSpinnerModule,
     MatButtonToggleModule,
+    MatExpansionModule,
     MedicalHistoryModule,
     CalendarModule.forRoot({
       provide: DateAdapter,

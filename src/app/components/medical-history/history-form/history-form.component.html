@@ -18,6 +18,10 @@
         </mat-error>
       </mat-form-field>
 
+      <div *ngIf="config.usesCie10">
+        <app-cie10-search formControlName="cie10Codes"></app-cie10-search>
+      </div>
+
       <mat-form-field appearance="outline" class="w-100">
         <mat-label>Fecha del Diagnóstico</mat-label>
         <input
@@ -59,18 +63,24 @@
     <div class="specialty-section">
       <h3>Datos Específicos - {{ specialtyType }}</h3>
 
-      <div [ngSwitch]="specialtyType">
+      <div [ngSwitch]="config.template">
         <app-dental-template
-          *ngSwitchCase="'Dental'"
+          *ngSwitchCase="'dental'"
           formControlName="specialtyData"
         >
         </app-dental-template>
 
         <app-nutrition-template
-          *ngSwitchCase="'Nutrición'"
+          *ngSwitchCase="'nutrition'"
           formControlName="specialtyData"
         >
         </app-nutrition-template>
+
+        <app-soap-template
+          *ngSwitchCase="'soap'"
+          formControlName="specialtyData"
+        >
+        </app-soap-template>
 
         <app-generic-template *ngSwitchDefault formControlName="specialtyData">
         </app-generic-template>

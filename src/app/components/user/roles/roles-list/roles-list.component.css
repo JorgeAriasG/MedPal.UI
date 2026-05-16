@@ -1,68 +1,12 @@
-﻿/* ============ COLORS ============ */
-:host {
-  --color-primary: #1976d2;
-  --color-primary-light: rgba(25, 118, 210, 0.08);
-  --color-primary-dark: #1565c0;
-  --color-bg-surface: #ffffff;
-  --color-bg-hover: #f5f5f5;
-  --color-border-light: #f0f0f0;
-  --color-text-primary: #212121;
-  --color-text-secondary: #757575;
-
-  /* ============ SPACING ============ */
-  --spacing-xs: 4px;
-  --spacing-sm: 8px;
-  --spacing-md: 12px;
-  --spacing-lg: 16px;
-  --spacing-xl: 24px;
-
-  /* ============ TYPOGRAPHY ============ */
-  --font-size-xs: 0.75rem;
-  --font-size-sm: 0.875rem;
-  --font-size-lg: 1.125rem;
-  --font-size-2xl: 1.5rem;
-  --font-weight-bold: 700;
-
-  /* ============ BORDERS & RADIUS ============ */
-  --border-radius-md: 8px;
-
-  /* ============ TRANSITIONS ============ */
-  --transition-normal: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* ============ ANIMATIONS ============ */
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-/* ============ MAIN CONTAINER ============ */
-.roles-container {
+﻿.roles-container {
   display: flex;
   flex-direction: column;
   height: 100%;
   padding: 0 var(--spacing-xl) var(--spacing-xl) var(--spacing-xl);
-  background-color: var(--color-bg-surface);
+  background: var(--color-bg-page);
   gap: var(--spacing-lg);
 }
 
-/* ============ PAGE HEADER ============ */
 .page-header {
   display: flex;
   justify-content: space-between;
@@ -70,7 +14,7 @@
   gap: var(--spacing-lg);
   flex-wrap: wrap;
   padding-bottom: var(--spacing-lg);
-  border-bottom: 1px solid var(--color-border-light);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .header-content {
@@ -81,12 +25,11 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-md);
-  font-size: var(--font-size-2xl);
+  font-size: var(--font-size-headline);
   font-weight: var(--font-weight-bold);
   color: var(--color-text-primary);
   margin: 0;
   padding-bottom: var(--spacing-md);
-  border-bottom: 4px solid var(--color-primary);
   width: fit-content;
 }
 
@@ -99,7 +42,7 @@
 
 .page-subtitle {
   margin: var(--spacing-sm) 0 0 0;
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-small);
   color: var(--color-text-secondary);
 }
 
@@ -117,17 +60,60 @@
   margin-right: var(--spacing-xs);
 }
 
-/* ============ ADD ROLE SECTION ============ */
-.add-role-section {
-  animation: slideDown 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-  margin: 0;
-  padding: var(--spacing-lg);
-  background-color: var(--color-bg-hover);
-  border-radius: var(--border-radius-md);
-  border: 1px solid var(--color-border-light);
+.search-filter-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-md) 0;
+  gap: var(--spacing-lg);
+  flex-wrap: wrap;
 }
 
-/* ============ RESPONSIVE DESIGN ============ */
+.search-box {
+  position: relative;
+  flex: 1;
+  min-width: 300px;
+  max-width: 500px;
+}
+
+.search-icon {
+  position: absolute;
+  left: var(--spacing-md);
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-text-secondary);
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.search-input {
+  width: 100%;
+  padding: var(--spacing-md) var(--spacing-md) var(--spacing-md) var(--spacing-3xl);
+  font-size: var(--font-size-body-large);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-lg);
+  background: var(--color-bg-hover);
+  transition: var(--transition-fast);
+  outline: none;
+}
+
+.search-input:focus {
+  border-color: var(--color-primary);
+  background: var(--color-bg-surface);
+  box-shadow: 0 0 0 4px rgba(91, 108, 255, 0.12);
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-3xl);
+  color: var(--color-text-secondary);
+  gap: var(--spacing-md);
+}
+
 @media (max-width: 1200px) {
   .page-header {
     flex-direction: column;
@@ -157,7 +143,7 @@
   }
 
   .page-title {
-    font-size: var(--font-size-lg);
+    font-size: 1.125rem;
     padding-bottom: var(--spacing-sm);
   }
 

@@ -1,0 +1,23 @@
+<div class="timeout-overlay">
+  <div class="timeout-card">
+    <div class="timeout-icon">
+      <mat-icon>timer</mat-icon>
+    </div>
+    <h2 class="timeout-title">Sesión por expirar</h2>
+    <p class="timeout-message">
+      Su sesión se cerrará automáticamente por inactividad.
+    </p>
+    <div class="timeout-countdown">
+      <span class="countdown-value">{{ displayMinutes }}:{{ displaySeconds | number:'2.0' }}</span>
+      <span class="countdown-label">segundos restantes</span>
+    </div>
+    <div class="timeout-actions">
+      <button mat-stroked-button color="primary" (click)="onLogout()">
+        Cerrar sesión
+      </button>
+      <button mat-raised-button color="primary" (click)="onContinue()">
+        Seguir conectado
+      </button>
+    </div>
+  </div>
+</div>

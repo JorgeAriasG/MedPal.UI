@@ -8,17 +8,18 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
-import { MatChipsModule } from '@angular/material/chips';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { MatChipsModule } from '@angular/material/chips';
 
 // Components
 import { DentalTemplateComponent } from './specialty-templates/dental-template/dental-template.component';
 import { NutritionTemplateComponent } from './specialty-templates/nutrition-template/nutrition-template.component';
 import { GenericTemplateComponent } from './specialty-templates/generic-template/generic-template.component';
+import { SoapTemplateComponent } from './specialty-templates/soap-template/soap-template.component';
 import { HistoryFormComponent } from './history-form/history-form.component';
 import { HistoryTimelineComponent } from './history-timeline/history-timeline.component';
 
@@ -27,6 +28,7 @@ import { HistoryTimelineComponent } from './history-timeline/history-timeline.co
     DentalTemplateComponent,
     NutritionTemplateComponent,
     GenericTemplateComponent,
+    SoapTemplateComponent,
     HistoryFormComponent,
     HistoryTimelineComponent,
   ],

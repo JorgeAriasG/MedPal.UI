@@ -84,8 +84,8 @@ export class EditModalComponent implements OnInit, OnDestroy {
             value: clinic.id,
           }));
 
-          // Actualizar la configuración del campo principalClinicId (para users) o clinicId (para patients)
-          const clinicFieldKey = this.inputData?.entityType === 'user' || 'userEdit' ? 'principalClinicId' : 'clinicId';
+          // Actualizar la configuración del campo clinicId (para users) o clinicIds (para patients)
+          const clinicFieldKey = this.inputData?.entityType === 'user' || 'userEdit' ? 'clinicId' : 'clinicIds';
           config[clinicFieldKey] = {
             ...config[clinicFieldKey],
             options: clinicOptions,
@@ -195,7 +195,6 @@ export class EditModalComponent implements OnInit, OnDestroy {
     }
 
     this.form = new FormGroup(group);
-    console.log('Form created from config:', Object.keys(this.form.controls));
   }
 
   /**
@@ -226,12 +225,10 @@ export class EditModalComponent implements OnInit, OnDestroy {
     });
 
     this.form = new FormGroup(group);
-    console.log('Form created from fields:', Object.keys(this.form.controls));
   }
 
   /**
    * Construye el formulario automáticamente desde los datos
-   * Fallback para datos no configurados
    */
   private buildFormAuto(data: any): void {
     const excludeKeys = [
@@ -276,7 +273,6 @@ export class EditModalComponent implements OnInit, OnDestroy {
     }
 
     this.form = new FormGroup(group);
-    console.log('Form created auto:', Object.keys(this.form.controls));
   }
 
   private formatLabel(key: string): string {

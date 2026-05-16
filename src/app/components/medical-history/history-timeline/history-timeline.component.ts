@@ -128,8 +128,8 @@ export class HistoryTimelineComponent implements OnChanges {
     return colors[status] || '#4caf50';
   }
 
-  getIMCColor(imc: number): string {
-    if (imc === 0) return '#9e9e9e';
+  getIMCColor(imc: number | undefined | null): string {
+    if (imc == null || imc === 0) return '#9e9e9e';
     if (imc < 18.5) return '#ff9800';
     if (imc < 25) return '#4caf50';
     if (imc < 30) return '#ff9800';

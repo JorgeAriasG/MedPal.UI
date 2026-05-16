@@ -101,7 +101,7 @@
                 class="teeth-summary"
                 *ngIf="getDentalData(entry) as dentalData"
               >
-                <div class="teeth-grid">
+                <div class="teeth-grid" *ngIf="dentalData.teeth">
                   <div
                     *ngFor="let toothNum of dentalData.teeth | keyvalue"
                     class="tooth-summary"
@@ -160,7 +160,7 @@
                 <p *ngIf="nutritionData.objetivo">
                   <strong>Objetivo:</strong> {{ nutritionData.objetivo }}
                 </p>
-                <div *ngIf="nutritionData.restricciones.length > 0">
+                <div *ngIf="nutritionData.restricciones && nutritionData.restricciones.length > 0">
                   <strong>Restricciones:</strong>
                   <mat-chip-set>
                     <mat-chip *ngFor="let r of nutritionData.restricciones">{{

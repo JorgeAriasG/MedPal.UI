@@ -30,18 +30,6 @@
             <mat-hint *ngIf="isEditMode">Patient cannot be changed when editing an existing appointment.</mat-hint>
           </mat-form-field>
 
-          <div class="form-row">
-            <mat-form-field class="form-col" appearance="outline">
-              <mat-label>Last Name</mat-label>
-              <input matInput formControlName="lastname" readonly />
-            </mat-form-field>
-
-            <mat-form-field class="form-col" appearance="outline">
-              <mat-label>Email</mat-label>
-              <input matInput formControlName="email" readonly />
-              <mat-icon matPrefix>email</mat-icon>
-            </mat-form-field>
-          </div>
         </form>
       </div>
 
@@ -62,9 +50,14 @@
 
             <mat-form-field class="form-col" appearance="outline">
               <mat-label>Time</mat-label>
-              <input matInput [matTimepicker]="timepicker" formControlName="time" />
-              <mat-timepicker-toggle [for]="timepicker" matSuffix></mat-timepicker-toggle>
-              <mat-timepicker #timepicker></mat-timepicker>
+              <mat-select formControlName="time">
+                <mat-option *ngIf="availableSlots.length === 0" [value]="null" disabled>
+                  {{ clinicOpen ? 'No available slots' : 'Loading...' }}
+                </mat-option>
+                <mat-option *ngFor="let slot of availableSlots" [value]="{ hour: slot.hour, minute: slot.minute }">
+                  {{ slot.label }}
+                </mat-option>
+              </mat-select>
               <mat-icon matPrefix>schedule</mat-icon>
               <mat-error *ngIf="appointmentForm.get('time')?.hasError('required')">Time is required</mat-error>
             </mat-form-field>
@@ -81,14 +74,7 @@
               <mat-icon matPrefix>flag</mat-icon>
             </mat-form-field>
 
-            <mat-form-field class="form-col" appearance="outline">
-              <mat-label>Duration (minutes)</mat-label>
-              <input matInput type="number" formControlName="durationMinutes" min="15" max="120" />
-              <mat-icon matPrefix>hourglass_empty</mat-icon>
-              <mat-hint>15 - 120 minutes</mat-hint>
-              <mat-error *ngIf="appointmentForm.get('durationMinutes')?.hasError('min')">Min 15 min</mat-error>
-              <mat-error *ngIf="appointmentForm.get('durationMinutes')?.hasError('max')">Max 120 min</mat-error>
-            </mat-form-field>
+
           </div>
 
           <mat-form-field class="full-width" appearance="outline">

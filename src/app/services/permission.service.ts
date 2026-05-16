@@ -58,7 +58,7 @@ export class PermissionService {
 
       // Parse auth state from JSON
       const authState = JSON.parse(token);
-      const jwtToken = authState?.token;
+      const jwtToken = authState?.userToken || localStorage.getItem('auth_token');
 
       if (!jwtToken) {
         this.cachedPermissions.clear();
@@ -350,6 +350,9 @@ export class PermissionService {
    * @returns true if token is expired or invalid
    */
   public isTokenExpired(): boolean {
+    if (this.cachedClaims.size === 0) {
+      this.loadPermissionsFromToken();
+    }
     const exp = this.cachedClaims.get('exp');
     if (!exp) {
       return true;

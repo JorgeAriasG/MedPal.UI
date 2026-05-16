@@ -56,7 +56,11 @@ export class MedicalHistoryService {
       if (!json || json.trim() === '') {
         return null;
       }
-      return JSON.parse(json) as T;
+      const parsed = JSON.parse(json);
+      if (typeof parsed === 'object' && parsed !== null && Object.keys(parsed).length === 0) {
+        return null;
+      }
+      return parsed as T;
     } catch (error) {
       console.error('Error parsing specialty data:', error);
       return null;

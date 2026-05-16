@@ -21,7 +21,7 @@
   opacity: 0.5;
   pointer-events: none;
   background:
-    radial-gradient(circle at 20% 50%, rgba(25, 118, 210, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 20% 50%, rgba(91, 108, 255, 0.1) 0%, transparent 50%),
     radial-gradient(circle at 80% 80%, rgba(79, 195, 247, 0.1) 0%, transparent 50%);
 }
 
@@ -30,7 +30,7 @@
   border-radius: var(--border-radius-lg);
   box-shadow: var(--shadow-lg);
   width: 100%;
-  max-width: 500px;
+  max-width: 440px;
   padding: var(--spacing-2xl);
   z-index: 10;
   animation: slideUp 500ms ease-out;
@@ -169,7 +169,7 @@
   gap: var(--spacing-md);
   margin-bottom: var(--spacing-md);
   padding: var(--spacing-md);
-  background: var(--color-bg-secondary);
+  background: var(--color-bg-page);
   border-radius: var(--border-radius-sm);
 }
 
@@ -250,7 +250,7 @@
 .back-button:hover {
   border-color: var(--color-primary);
   color: var(--color-primary);
-  background-color: rgba(25, 118, 210, 0.05);
+  background-color: rgba(91, 108, 255, 0.05);
 }
 
 .submit-button {
@@ -263,7 +263,6 @@
 }
 
 .submit-button:not([disabled]):hover {
-  transform: translateY(-2px);
   box-shadow: var(--shadow-lg);
 }
 

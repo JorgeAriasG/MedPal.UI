@@ -1,14 +1,16 @@
 <div class="create-prescription-container">
-  <mat-card class="main-card">
-    <mat-card-header>
-      <div mat-card-avatar class="header-avatar">
+  <div class="main-card">
+    <div class="main-card-header">
+      <div class="header-avatar">
         <mat-icon>medication</mat-icon>
       </div>
-      <mat-card-title>New Digital Prescription</mat-card-title>
-      <mat-card-subtitle>Create a verifiable prescription for your patient</mat-card-subtitle>
-    </mat-card-header>
+      <div>
+        <div class="main-card-title">New Digital Prescription</div>
+        <div class="main-card-subtitle">Create a verifiable prescription for your patient</div>
+      </div>
+    </div>
 
-    <mat-card-content>
+    <div class="main-card-body">
       <!-- Allergy Warning Banner -->
       <div class="allergy-alert-banner" *ngIf="matchingAllergies.length > 0" [@slideDown]>
         <mat-icon>report_problem</mat-icon>
@@ -125,6 +127,6 @@
           </button>
         </div>
       </form>
-    </mat-card-content>
-  </mat-card>
+    </div>
+  </div>
 </div>

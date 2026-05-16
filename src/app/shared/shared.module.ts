@@ -16,9 +16,20 @@ import { MatInputModule } from '@angular/material/input';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { OmnibarComponent } from './omnibar/omnibar.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { TimeoutWarningComponent } from './timeout-warning/timeout-warning.component';
+import { Cie10SearchComponent } from './cie10-search/cie10-search.component';
+import { MatChipsModule } from '@angular/material/chips';
 
 @NgModule({
-  declarations: [MenuComponent, EditModalComponent],
+  declarations: [
+    MenuComponent, 
+    EditModalComponent, 
+    OmnibarComponent,
+    TimeoutWarningComponent,
+    Cie10SearchComponent,
+  ],
   imports: [
     CommonModule,
     MatToolbarModule,
@@ -33,10 +44,19 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     MatOptionModule,
     MatSelectModule,
     MatCheckboxModule,
+    MatTooltipModule,
+    MatChipsModule,
     FormsModule,
     ReactiveFormsModule,
     RouterModule,
   ],
-  exports: [MenuComponent, EditModalComponent],
+  exports: [
+    MenuComponent, 
+    EditModalComponent, 
+    OmnibarComponent,
+    TimeoutWarningComponent,
+    Cie10SearchComponent,
+    MatTooltipModule
+  ],
 })
 export class SharedModule {}

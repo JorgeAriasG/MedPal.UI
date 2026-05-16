@@ -1,31 +1,36 @@
-<mat-dialog-content>
-  <form (submit)="onSubmit($event)">
-    <mat-form-field appearance="fill">
+<h2 mat-dialog-title>
+  <mat-icon>local_hospital</mat-icon>
+  Add Clinic
+</h2>
+<form (submit)="onSubmit($event)">
+  <mat-dialog-content>
+    <mat-form-field appearance="outline">
       <mat-label>Clinic name</mat-label>
       <input matInput [(ngModel)]="clinic.name" name="name" required />
     </mat-form-field>
-    <mat-form-field appearance="fill">
+    <mat-form-field appearance="outline">
       <mat-label>Location</mat-label>
       <input matInput [(ngModel)]="clinic.location" name="location" required />
     </mat-form-field>
-    <mat-form-field appearance="fill">
+    <mat-form-field appearance="outline">
       <mat-label>Contact Info</mat-label>
       <input matInput [(ngModel)]="clinic.contactInfo" name="contactInfo" required />
     </mat-form-field>
-    <mat-form-field appearance="fill">
+    <mat-form-field appearance="outline">
       <mat-label>Opening Time</mat-label>
       <input matInput [matTimepicker]="timepicker" [(ngModel)]="clinic.open" name="open" required />
       <mat-timepicker #timepicker/>
       <mat-timepicker-toggle [for]="timepicker" matSuffix/>
     </mat-form-field>
-    <mat-form-field appearance="fill">
+    <mat-form-field appearance="outline">
       <mat-label>Closing Time</mat-label>
       <input matInput [matTimepicker]="timepicker2" [(ngModel)]="clinic.close" name="close" required />
       <mat-timepicker #timepicker2/>
       <mat-timepicker-toggle [for]="timepicker2" matSuffix/>
     </mat-form-field>
-    <mat-dialog-actions>
-      <button mat-raised-button color="primary" type="submit">Submit</button>
-    </mat-dialog-actions>
-  </form>
-</mat-dialog-content>
+  </mat-dialog-content>
+  <mat-dialog-actions>
+    <button mat-button type="button" mat-dialog-close>Cancel</button>
+    <button mat-raised-button color="primary" type="submit">Save Clinic</button>
+  </mat-dialog-actions>
+</form>

@@ -18,7 +18,7 @@
     <form [formGroup]="form" (ngSubmit)="submit()" class="login-form">
 
       <!-- Email Field -->
-      <mat-form-field class="full-width">
+      <mat-form-field class="full-width" appearance="outline">
         <mat-label>Email Address</mat-label>
         <input matInput
                type="email"
@@ -34,7 +34,7 @@
       </mat-form-field>
 
       <!-- Password Field -->
-      <mat-form-field class="full-width">
+      <mat-form-field class="full-width" appearance="outline">
         <mat-label>Password</mat-label>
         <input matInput
                [type]="showPassword ? 'text' : 'password'"
@@ -83,7 +83,7 @@
     <!-- Footer -->
     <div class="login-footer">
       <p class="forgot-password">
-        <a href="javascript:void(0)">Forgot Password?</a>
+        <a routerLink="/login">Forgot Password?</a>
       </p>
       <p class="signup-link">
         Don't have an account?

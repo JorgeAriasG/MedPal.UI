@@ -38,7 +38,7 @@ export function localStorageSyncReducer(
   return localStorageSync({
     keys: ['auth'], // Solo persiste el state de auth
     rehydrate: true, // Rehidrata automáticamente al cargar la app
-    storage: sessionStorage, // Usa sessionStorage en lugar de localStorage
+    storage: localStorage, // Cambiado de sessionStorage a localStorage
     storageKeySerializer: (key) => `ngrx_${key}`, // Prefijo para las keys
   })(reducer);
 }

@@ -10,11 +10,12 @@ import { CalendarEvent } from 'calendar-utils';
 import { icon } from '@fortawesome/fontawesome-svg-core';
 import { ClinicService } from '../../clinics/services/clinic.service';
 import { Store } from '@ngrx/store';
-import { selectClinicId } from 'src/app/store/selectors/auth.selectors';
+import { selectClinicContext } from 'src/app/store/selectors/auth.selectors';
 import { setClinic } from 'src/app/store/actions/auth.actions';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { CalendarView } from 'angular-calendar';
+import { toHourMinute } from 'src/app/shared/utils/date-utils';
 
 @Component({
   selector: 'app-appointment',
@@ -30,12 +31,18 @@ export class AppointmentComponent implements OnInit, OnDestroy {
     isEditable: false,
     data: {},
   };
+  loading = false;
+  searchQuery = '';
   viewDate: Date = new Date();
   view: CalendarView = CalendarView.Week;
   CalendarView = CalendarView;
   displayMode: 'calendar' | 'list' = 'calendar';
   events: CalendarEvent[] = [];
   activeDayIsOpen: boolean = false;
+  dayStartHour = 8;
+  dayStartMinute = 0;
+  dayEndHour = 18;
+  dayEndMinute = 0;
 
   private destroy$ = new Subject<void>();
 
@@ -48,39 +55,42 @@ export class AppointmentComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.store
-      .select(selectClinicId)
+      .select(selectClinicContext)
       .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (clinicId) => {
-          console.log('Clinic ID from store in appointments:', clinicId);
-          if (clinicId) {
-            this.clinicId = clinicId;
-            this.getAllAppointmentsById();
-          } else {
-            this.clinicService
-              .getClinics()
-              .pipe(takeUntil(this.destroy$))
-              .subscribe({
-                next: (clinics) => {
-                  if (clinics && clinics.length > 0) {
-                    console.log(
-                      'Setting default clinic from appointment component:',
-                      clinics[0].id,
-                    );
-                    this.store.dispatch(
-                      setClinic({ principalClinicId: clinics[0].id }),
-                    );
-                  }
-                },
-                error: (err) => {
-                  console.error('Error fetching clinics:', err);
-                },
-              });
-          }
-        },
-        error: (err) => {
-          console.error('Error getting clinic ID from store:', err);
-        },
+      .subscribe(({ clinicId, clinicOpen, clinicClose }) => {
+        if (clinicOpen) {
+          this.dayStartHour = clinicOpen.hour;
+          this.dayStartMinute = clinicOpen.minute;
+        }
+        if (clinicClose) {
+          this.dayEndHour = clinicClose.hour;
+          this.dayEndMinute = clinicClose.minute;
+        }
+
+        if (clinicId) {
+          this.clinicId = clinicId;
+          this.getAllAppointmentsById();
+        } else {
+          this.clinicService
+            .getClinics()
+            .pipe(takeUntil(this.destroy$))
+            .subscribe({
+              next: (clinics) => {
+                if (clinics && clinics.length > 0) {
+                  this.store.dispatch(
+                    setClinic({
+                      clinicId: clinics[0].id,
+                      open: clinics[0].open ? toHourMinute(clinics[0].open) : null,
+                      close: clinics[0].close ? toHourMinute(clinics[0].close) : null,
+                    }),
+                  );
+                }
+              },
+              error: (err) => {
+                console.error('Error fetching clinics:', err);
+              },
+            });
+        }
       });
   }
 
@@ -93,7 +103,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(NewAppointmentComponent, {
       width: '800px',
       panelClass: 'appointment-dialog-container',
-      data: {} // Empty data for new mode
+      data: { clinicId: this.clinicId }
     });
 
     dialogRef
@@ -112,21 +122,31 @@ export class AppointmentComponent implements OnInit, OnDestroy {
       return;
     }
 
+    this.loading = true;
     this.appointmentService
       .getAppointments(Number(this.clinicId))
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response: any[]) => {
+          this.loading = false;
           this.appointments = response;
+          const statusColors: Record<string, { primary: string; secondary: string; secondaryText: string }> = {
+            Scheduled: { primary: '#5B6CFF', secondary: 'rgba(91,108,255,0.12)', secondaryText: '#5B6CFF' },
+            Confirmed: { primary: '#34D399', secondary: 'rgba(52,211,153,0.12)', secondaryText: '#059669' },
+            Cancelled: { primary: '#F87171', secondary: 'rgba(248,113,113,0.12)', secondaryText: '#DC2626' },
+            Completed: { primary: '#A78BFA', secondary: 'rgba(167,139,250,0.12)', secondaryText: '#7C3AED' },
+          };
+
           this.events = this.appointments.map((appointment: any) => {
             const [year, month, day] = appointment.date.split('-').map(Number);
             const [hour, minute] = appointment.time.split(':').map(Number);
+            const colors = statusColors[appointment.status] || statusColors['Scheduled'];
 
             return {
               start: new Date(year, month - 1, day, hour, minute),
               end: new Date(year, month - 1, day, hour, minute),
               title: appointment.patient.name || 'No Name',
-              color: { primary: '#ad2121', secondary: '#FAE3E3' },
+              color: colors,
               actions: [
                 {
                   label: 'Edit',
@@ -138,10 +158,10 @@ export class AppointmentComponent implements OnInit, OnDestroy {
               ],
             };
           });
-          console.log('Appointments:', this.appointments);
         },
         error: (error) => {
           console.error('Error fetching appointments:', error);
+          this.loading = false;
         },
       });
   }
@@ -154,17 +174,29 @@ export class AppointmentComponent implements OnInit, OnDestroy {
       width: '800px',
       panelClass: 'appointment-dialog-container',
       data: {
-        appointment: appointment
+        appointment: appointment,
+        clinicId: this.clinicId,
       }
     });
 
-    dialogRef.afterClosed().subscribe((refresh) => {
-      if (refresh) {
-        this.getAllAppointmentsById();
-      }
-    });
+    dialogRef.afterClosed()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((refresh) => {
+        if (refresh) {
+          this.getAllAppointmentsById();
+        }
+      });
   }
 
+
+  onSearch(event: Event): void {
+    const value = (event.target as HTMLInputElement).value;
+    this.searchQuery = value.toLowerCase();
+  }
+
+  trackByAppointment(_index: number, appointment: any): number {
+    return appointment.id;
+  }
 
   setView(view: CalendarView) {
     this.view = view;

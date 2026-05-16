@@ -38,6 +38,8 @@ export class ListComponent implements OnInit, OnDestroy {
   editUserId: any = null;
   editUserData: Partial<IUser> = {};
   clinicId: number | null | undefined;
+  loading: boolean = false;
+  searchQuery: string = '';
 
   private destroy$ = new Subject<void>();
 
@@ -54,7 +56,6 @@ export class ListComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (clinicId) => {
           this.clinicId = clinicId;
-          console.log('Clinic ID in ListComponent from store:', clinicId);
           this.getUsers();
         },
       });
@@ -88,13 +89,18 @@ export class ListComponent implements OnInit, OnDestroy {
       });
   }
 
+  onSearch(event: any): void {
+    this.searchQuery = (event.target as HTMLInputElement).value;
+  }
+
   getUsers(): void {
+    this.loading = true;
     this.userService
       .getUsers()
       .pipe(takeUntil(this.destroy$))
       .subscribe((users) => {
         this.users = users;
-        console.log('Users loaded:', this.users);
+        this.loading = false;
       });
   }
 
@@ -102,9 +108,8 @@ export class ListComponent implements OnInit, OnDestroy {
     this.userService
       .deleteUser(id)
       .pipe(takeUntil(this.destroy$))
-      .subscribe((res) => {
+      .subscribe(() => {
         this.getUsers();
-        console.log(res);
       });
   }
 
@@ -118,6 +123,7 @@ export class ListComponent implements OnInit, OnDestroy {
         },
       })
       .afterClosed()
+      .pipe(takeUntil(this.destroy$))
       .subscribe((result) => {
         if (result) {
           this.saveEdit(result);
@@ -129,10 +135,9 @@ export class ListComponent implements OnInit, OnDestroy {
     this.userService
       .addUser(user)
       .pipe(takeUntil(this.destroy$))
-      .subscribe((res) => {
+      .subscribe(() => {
         this.cancelEdit();
         this.getUsers();
-        console.log(res);
       });
   }
 
@@ -140,10 +145,9 @@ export class ListComponent implements OnInit, OnDestroy {
     this.userService
       .editUser(user)
       .pipe(takeUntil(this.destroy$))
-      .subscribe((res) => {
+      .subscribe(() => {
         this.cancelEdit();
         this.getUsers();
-        console.log(res);
       });
   }
 

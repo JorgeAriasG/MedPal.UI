@@ -21,7 +21,7 @@
         <mat-tab label="Personal">
           <div class="tab-content">
             <!-- First Name -->
-            <mat-form-field class="full-width">
+            <mat-form-field class="full-width" appearance="outline">
               <mat-label>First Name</mat-label>
               <input matInput formControlName="firstName" placeholder="John">
               <mat-error *ngIf="form.get('firstName')?.hasError('required')">
@@ -30,7 +30,7 @@
             </mat-form-field>
 
             <!-- Last Name -->
-            <mat-form-field class="full-width">
+            <mat-form-field class="full-width" appearance="outline">
               <mat-label>Last Name</mat-label>
               <input matInput formControlName="lastName" placeholder="Doe">
               <mat-error *ngIf="form.get('lastName')?.hasError('required')">
@@ -39,7 +39,7 @@
             </mat-form-field>
 
             <!-- Email -->
-            <mat-form-field class="full-width">
+            <mat-form-field class="full-width" appearance="outline">
               <mat-label>Email Address</mat-label>
               <input matInput type="email" formControlName="email" placeholder="doctor@example.com">
               <mat-icon matPrefix>email</mat-icon>
@@ -52,7 +52,7 @@
             </mat-form-field>
 
             <!-- Phone (Optional) -->
-            <mat-form-field class="full-width">
+            <mat-form-field class="full-width" appearance="outline">
               <mat-label>Phone (Optional)</mat-label>
               <input matInput type="tel" formControlName="phone" placeholder="+1 (555) 000-0000">
               <mat-icon matPrefix>phone</mat-icon>
@@ -64,7 +64,7 @@
         <mat-tab label="Professional">
           <div class="tab-content">
             <!-- License Number -->
-            <mat-form-field class="full-width">
+            <mat-form-field class="full-width" appearance="outline">
               <mat-label>License Number</mat-label>
               <input matInput formControlName="licenseNumber" placeholder="LIC-12345678">
               <mat-icon matPrefix>badge</mat-icon>
@@ -74,7 +74,7 @@
             </mat-form-field>
 
             <!-- Specialty Dropdown -->
-            <mat-form-field class="full-width">
+            <mat-form-field class="full-width" appearance="outline">
               <mat-label>Specialty</mat-label>
               <mat-select formControlName="specialty">
                 <mat-option *ngFor="let spec of specialties" [value]="spec.value">
@@ -93,7 +93,7 @@
         <mat-tab label="Account">
           <div class="tab-content">
             <!-- Password -->
-            <mat-form-field class="full-width">
+            <mat-form-field class="full-width" appearance="outline">
               <mat-label>Password</mat-label>
               <input matInput
                      [type]="showPassword ? 'text' : 'password'"
@@ -128,7 +128,7 @@
             </div>
 
             <!-- Confirm Password -->
-            <mat-form-field class="full-width">
+            <mat-form-field class="full-width" appearance="outline">
               <mat-label>Confirm Password</mat-label>
               <input matInput
                      [type]="showPassword ? 'text' : 'password'"
@@ -151,7 +151,7 @@
             <!-- Terms Checkbox -->
             <div class="checkbox-group">
               <mat-checkbox formControlName="acceptTerms" class="agreement-checkbox">
-                <span>I agree to the <a href="javascript:void(0)" class="link">Terms of Service</a> and <a href="javascript:void(0)" class="link">Privacy Policy</a></span>
+                <span>I agree to the <a routerLink="/" class="link">Terms of Service</a> and <a routerLink="/" class="link">Privacy Policy</a></span>
               </mat-checkbox>
               <mat-error *ngIf="form.get('acceptTerms')?.hasError('required')" class="checkbox-error">
                 You must accept the terms
@@ -161,7 +161,7 @@
             <!-- Data Processing Checkbox -->
             <div class="checkbox-group">
               <mat-checkbox formControlName="acceptDataProcessing" class="agreement-checkbox">
-                <span>I consent to the processing of personal data as outlined in our <a href="javascript:void(0)" class="link">Privacy Policy</a></span>
+                <span>I consent to the processing of personal data as outlined in our <a routerLink="/" class="link">Privacy Policy</a></span>
               </mat-checkbox>
             </div>
 

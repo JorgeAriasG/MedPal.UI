@@ -8,7 +8,13 @@
 .sidenav {
   width: 260px;
   flex-shrink: 0;
-  background: var(--color-bg-surface);
+  background: #1e1b4b;
+  transition: width 0.2s ease;
+  border-right: none;
+}
+
+.sidenav.collapsed {
+  width: 70px;
 }
 
 .sidenav-content {
@@ -20,15 +26,56 @@
 
 .app-toolbar {
   background: white;
-  border-bottom: 1px solid var(--color-border-light);
+  border-bottom: 1px solid var(--color-divider);
   flex-shrink: 0;
   color: var(--color-text-primary);
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-semibold);
   padding: 0 var(--spacing-lg);
   height: 64px;
-  line-height: 64px;
+  display: flex;
+  align-items: center;
   z-index: 99;
+}
+
+.header-search-container {
+  flex: 0 1 450px;
+  height: 40px;
+  background: var(--color-bg-page);
+  border-radius: var(--border-radius-sm);
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  gap: 12px;
+  cursor: pointer;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+  margin-left: 20px;
+}
+
+.header-search-container:hover {
+  background: rgba(91, 108, 255, 0.06);
+  border-color: var(--color-border);
+}
+
+.header-shortcut {
+  margin-left: auto;
+  font-size: 10px;
+  font-weight: 700;
+  background: white;
+  padding: 2px 6px;
+  border-radius: var(--border-radius-xs);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+}
+
+.spacer { flex: 1; }
+
+.user-welcome {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-primary);
 }
 
 .app-toolbar button {
@@ -43,4 +90,38 @@ mat-toolbar {
   flex: 1;
   overflow-y: auto;
   background: var(--color-bg-page);
+}
+
+@media print {
+  mat-sidenav,
+  .mat-drawer {
+    display: none !important;
+    width: 0 !important;
+    min-width: 0 !important;
+  }
+
+  .mat-drawer-backdrop,
+  .app-toolbar {
+    display: none !important;
+  }
+
+  .sidenav-container,
+  .mat-drawer-container {
+    height: auto !important;
+    display: block !important;
+    overflow: visible !important;
+  }
+
+  .sidenav-content,
+  .mat-drawer-content {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    overflow: visible !important;
+  }
+
+  .main-content-scrollable {
+    overflow: visible;
+    background: white;
+    padding: 0;
+  }
 }

@@ -31,8 +31,9 @@ export class NewPatientComponent implements OnInit, OnDestroy {
     address: '',
     dob: new Date(),
     gender: '',
+    curp: '',
     emergencyContact: '',
-    clinicId: null,
+    clinicIds: [],
   };
 
   emailError: string | null = null;
@@ -50,8 +51,7 @@ export class NewPatientComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (clinicId) => {
-          console.log('Clinic ID from store:', clinicId);
-          this.newPatient.clinicId = clinicId;
+          this.newPatient.clinicIds = clinicId ? [clinicId] : [];
         },
         error: (err) => {
           console.error('Error getting clinic ID from store:', err);
@@ -108,8 +108,7 @@ export class NewPatientComponent implements OnInit, OnDestroy {
       .addPatient(this.newPatient)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (response: any) => {
-          console.log('Patient added successfully:', response);
+        next: () => {
           this.isSubmitting = false;
           this.patientAdded.emit();
           this.resetForm();
@@ -132,8 +131,9 @@ export class NewPatientComponent implements OnInit, OnDestroy {
       address: '',
       dob: new Date(),
       gender: '',
+      curp: '',
       emergencyContact: '',
-      clinicId: null,
+      clinicIds: [],
     };
   }
 }

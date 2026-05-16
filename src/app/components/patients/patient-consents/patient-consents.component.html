@@ -1,0 +1,67 @@
+<div class="consents-container">
+  <div class="consents-header">
+    <h3><mat-icon>verified_user</mat-icon> Consentimientos</h3>
+  </div>
+
+  <div *ngIf="loading" class="loading-section">
+    <mat-spinner diameter="32"></mat-spinner>
+  </div>
+
+  <div *ngIf="error" class="error-banner">
+    <mat-icon>error_outline</mat-icon>
+    <span>{{ error }}</span>
+  </div>
+
+  <div *ngIf="!loading && consents.length === 0" class="empty-state">
+    <mat-icon class="empty-icon">verified_user</mat-icon>
+    <h3>Sin consentimientos</h3>
+    <p>No hay consentimientos registrados para este paciente</p>
+  </div>
+
+  <div *ngIf="!loading && consents.length > 0" class="consents-list">
+    <mat-card
+      *ngFor="let consent of consents"
+      class="consent-card"
+      [class.expired]="isExpired(consent)"
+      [class.revoked]="!consent.isApproved"
+    >
+      <mat-card-content>
+        <div class="consent-row">
+          <div class="consent-info">
+            <div class="consent-scope">
+              <mat-icon>gpp_good</mat-icon>
+              <span>{{ getScopeLabel(consent.consentScope) }}</span>
+            </div>
+            <div class="consent-meta">
+              <span class="meta-item">
+                <mat-icon>calendar_today</mat-icon>
+                {{ consent.consentDate | date:'dd/MM/yyyy' }}
+              </span>
+              <span class="meta-item" *ngIf="consent.expiryDate">
+                <mat-icon>event</mat-icon>
+                Expira: {{ consent.expiryDate | date:'dd/MM/yyyy' }}
+              </span>
+            </div>
+          </div>
+          <div class="consent-status">
+            <mat-chip
+              [color]="consent.isApproved ? 'primary' : 'warn'"
+              highlighted
+            >
+              {{ consent.isApproved ? 'Aprobado' : 'Revocado' }}
+            </mat-chip>
+            <button
+              *ngIf="consent.isApproved"
+              mat-stroked-button
+              color="warn"
+              (click)="revoke(consent)"
+              matTooltip="Revocar consentimiento"
+            >
+              Revocar
+            </button>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

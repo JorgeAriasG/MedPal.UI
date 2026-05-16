@@ -59,7 +59,7 @@ export const patientFormConfig: Record<string, FormFieldConfig> = {
     validators: Validators.required,
     type: 'text',
   },
-  clinicId: {
+  clinicIds: {
     value: '',
     validators: Validators.required,
     type: 'select',
@@ -134,7 +134,7 @@ export const userFormConfig: Record<string, FormFieldConfig> = {
     value: '',
     type: 'text',
   },
-  principalClinicId: {
+  clinicId: {
     value: '',
     type: 'select',
     options: [], // Will be populated dynamically by EditModalComponent
@@ -180,7 +180,7 @@ export const userEditFormConfig: Record<string, FormFieldConfig> = {
     value: '',
     type: 'text',
   },
-  principalClinicId: {
+  clinicId: {
     value: '',
     type: 'select',
     options: [], // Will be populated dynamically by EditModalComponent

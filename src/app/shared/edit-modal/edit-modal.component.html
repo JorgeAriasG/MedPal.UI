@@ -1,11 +1,14 @@
-<mat-dialog-content>
-  <h2 mat-dialog-title>{{ inputData?.['title'] || 'Edit' }}</h2>
-  <form class="edit-form" [formGroup]="form" (ngSubmit)="onSubmit($event)">
+<h2 mat-dialog-title>
+  <mat-icon>edit</mat-icon>
+  {{ inputData?.['title'] || 'Edit' }}
+</h2>
+<form class="edit-form" [formGroup]="form" (ngSubmit)="onSubmit($event)">
+  <mat-dialog-content>
     <ng-container *ngFor="let field of fields; let i = index">
       <!-- Text, Email, Password, and Tel fields -->
       <mat-form-field
         *ngIf="field.type === 'text' || field.type === 'email' || field.type === 'tel' || field.type === 'password'"
-        class="full-width"
+        appearance="outline"
       >
         <mat-label>{{ field.label }}</mat-label>
         <input
@@ -25,7 +28,7 @@
       </mat-form-field>
 
       <!-- Date fields -->
-      <mat-form-field *ngIf="field.type === 'date'" class="full-width">
+      <mat-form-field *ngIf="field.type === 'date'" appearance="outline">
         <mat-label>{{ field.label }}</mat-label>
         <input
           matInput
@@ -40,7 +43,7 @@
       </mat-form-field>
 
       <!-- Time fields -->
-      <mat-form-field *ngIf="field.type === 'time'" class="full-width">
+      <mat-form-field *ngIf="field.type === 'time'" appearance="outline">
         <mat-label>{{ field.label }}</mat-label>
         <input
           matInput
@@ -53,7 +56,7 @@
       </mat-form-field>
 
       <!-- Select fields -->
-      <mat-form-field *ngIf="field.type === 'select' && field.options && field.options.length > 0" class="full-width">
+      <mat-form-field *ngIf="field.type === 'select' && field.options && field.options.length > 0" appearance="outline">
         <mat-label>{{ field.label }}</mat-label>
         <mat-select [formControlName]="field.key">
           <mat-option
@@ -69,7 +72,7 @@
       </mat-form-field>
 
       <!-- Fallback text field for select without options -->
-      <mat-form-field *ngIf="field.type === 'select' && (!field.options || field.options.length === 0)" class="full-width">
+      <mat-form-field *ngIf="field.type === 'select' && (!field.options || field.options.length === 0)" appearance="outline">
         <mat-label>{{ field.label }}</mat-label>
         <input
           matInput
@@ -79,7 +82,7 @@
       </mat-form-field>
 
       <!-- Textarea fields -->
-      <mat-form-field *ngIf="field.type === 'textarea'" class="full-width">
+      <mat-form-field *ngIf="field.type === 'textarea'" appearance="outline">
         <mat-label>{{ field.label }}</mat-label>
         <textarea
           matInput
@@ -95,7 +98,6 @@
       <div *ngIf="field.type === 'checkbox'" class="checkbox-field">
         <mat-checkbox
           [formControlName]="field.key"
-          class="full-width"
         >
           {{ field.label }}
         </mat-checkbox>
@@ -104,19 +106,13 @@
         </mat-error>
       </div>
     </ng-container>
+  </mat-dialog-content>
 
-    <div class="button-group">
-      <button
-        mat-raised-button
-        color="primary"
-        type="submit"
-        [disabled]="!form.valid"
-      >
-        Save
-      </button>
-      <button mat-raised-button color="warn" type="button" (click)="onCancel()">
-        Cancel
-      </button>
-    </div>
-  </form>
-</mat-dialog-content>
+  <mat-dialog-actions>
+    <button mat-button type="button" (click)="onCancel()">Cancel</button>
+    <button mat-raised-button color="primary" type="submit" [disabled]="!form.valid">
+      <mat-icon>save</mat-icon>
+      Save
+    </button>
+  </mat-dialog-actions>
+</form>

@@ -1,35 +1,38 @@
-.edit-form {
+mat-dialog-title {
   display: flex;
-  flex-direction: column;
-  gap: 16px;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-size: 1.125rem;
+  font-weight: 600;
 }
 
-.full-width {
-  width: 100%;
-}
-
-.button-group {
-  display: flex;
-  gap: 12px;
-  margin-top: 24px;
-  justify-content: flex-end;
-}
-
-button {
-  min-width: 100px;
+mat-dialog-title mat-icon {
+  color: var(--color-primary);
+  font-size: 22px;
+  width: 22px;
+  height: 22px;
 }
 
 mat-dialog-content {
-  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  min-width: 420px;
 }
+
+mat-dialog-actions {
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md) 0 0;
+}
+
 .checkbox-field {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--spacing-xs);
 }
 
 .error-text {
-  color: #f44336;
-  font-size: 12px;
+  color: var(--color-danger);
+  font-size: var(--font-size-caption);
   margin-left: 12px;
 }

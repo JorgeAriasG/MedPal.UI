@@ -23,17 +23,18 @@
   opacity: 0.5;
   pointer-events: none;
   background:
-    radial-gradient(circle at 20% 50%, rgba(25, 118, 210, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 20% 50%, rgba(91, 108, 255, 0.1) 0%, transparent 50%),
     radial-gradient(circle at 80% 80%, rgba(79, 195, 247, 0.1) 0%, transparent 50%);
 }
 
 /* Main Card */
 .login-card {
+  box-sizing: border-box;
   background: var(--color-bg-surface);
   border-radius: var(--border-radius-lg);
   box-shadow: var(--shadow-lg);
   width: 100%;
-  max-width: 420px;
+  max-width: 440px;
   padding: var(--spacing-2xl);
   z-index: 10;
   animation: slideUp 500ms ease-out;
@@ -156,7 +157,6 @@
 }
 
 .submit-button:not([disabled]):hover {
-  transform: translateY(-2px);
   box-shadow: var(--shadow-lg);
 }
 
@@ -257,9 +257,3 @@
   }
 }
 
-/* Dark Mode Support (Optional Future) */
-@media (prefers-color-scheme: dark) {
-  .login-container {
-    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-  }
-}

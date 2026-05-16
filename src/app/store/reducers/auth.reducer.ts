@@ -15,7 +15,9 @@ export interface AuthState {
   userId: number | null;
   userToken: string | null;
   error: string | null;
-  principalClinicId: number | null;
+  clinicId: number | null;
+  clinicOpen: { hour: number; minute: number } | null;
+  clinicClose: { hour: number; minute: number } | null;
   specialty: string | null;
   loading: boolean;
 }
@@ -24,7 +26,9 @@ export const initialState: AuthState = {
   userId: null,
   userToken: null,
   error: null,
-  principalClinicId: null,
+  clinicId: null,
+  clinicOpen: null,
+  clinicClose: null,
   specialty: null,
   loading: false,
 };
@@ -34,12 +38,14 @@ export const authReducer = createReducer(
   on(login, (state) => ({ ...state, loading: true, error: null })),
   on(
     loginSuccess,
-    (state, { userId, userToken, principalClinicId, specialty }) => ({
+    (state, { userId, userToken, clinicId, specialty, clinicOpen, clinicClose }) => ({
       ...state,
       userId,
       userToken,
-      principalClinicId,
+      clinicId,
       specialty: specialty || null,
+      clinicOpen: clinicOpen ?? null,
+      clinicClose: clinicClose ?? null,
       error: null,
       loading: false,
     }),
@@ -62,17 +68,19 @@ export const authReducer = createReducer(
   })),
   on(
     rehydrateAuthState,
-    (state, { userId, userToken, principalClinicId, specialty }) => ({
+    (state, { userId, userToken, clinicId, specialty }) => ({
       ...state,
       userId,
       userToken,
-      principalClinicId,
+      clinicId,
       specialty: specialty || null,
     }),
   ),
-  on(setClinic, (state, { principalClinicId }) => ({
+  on(setClinic, (state, { clinicId, open, close }) => ({
     ...state,
-    principalClinicId,
+    clinicId,
+    clinicOpen: open ?? null,
+    clinicClose: close ?? null,
     error: null,
   })),
   on(setLoading, (state, { loading }) => ({ ...state, loading })),

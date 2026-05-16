@@ -108,13 +108,13 @@
         </th>
         <td mat-cell *matCellDef="let patient" class="column-actions">
           <div class="action-buttons">
-            <button mat-icon-button class="action-btn view-btn" [routerLink]="['/patients/detail', patient.id]" matTooltip="View Details">
+            <button mat-icon-button class="action-btn" [routerLink]="['/patients/detail', patient.id]" matTooltip="View Details">
               <mat-icon>visibility</mat-icon>
             </button>
-            <button mat-icon-button class="action-btn edit-btn" (click)="editPatient(patient)" matTooltip="Edit Patient">
+            <button mat-icon-button class="action-btn" (click)="editPatient(patient)" matTooltip="Edit Patient">
               <mat-icon>edit</mat-icon>
             </button>
-            <button mat-icon-button class="action-btn delete-btn" (click)="deletePatient(patient.id)" matTooltip="Delete Patient">
+            <button mat-icon-button class="action-btn" (click)="deletePatient(patient.id)" matTooltip="Delete Patient">
               <mat-icon>delete</mat-icon>
             </button>
           </div>

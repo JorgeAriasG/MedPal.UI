@@ -10,9 +10,11 @@ export const loginSuccess = createAction(
   props<{
     userId: number;
     userToken: string;
-    principalClinicId: number | null;
+    clinicId: number | null;
     userRole: string;
     specialty?: string;
+    clinicOpen?: { hour: number; minute: number } | null;
+    clinicClose?: { hour: number; minute: number } | null;
   }>(),
 );
 
@@ -40,14 +42,18 @@ export const rehydrateAuthState = createAction(
   props<{
     userId: number | null;
     userToken: string | null;
-    principalClinicId: number | null;
+    clinicId: number | null;
     specialty?: string | null;
   }>(),
 );
 
 export const setClinic = createAction(
   '[Clinic] Set Clinic',
-  props<{ principalClinicId: number | null }>(),
+  props<{
+    clinicId: number | null;
+    open?: { hour: number; minute: number } | null;
+    close?: { hour: number; minute: number } | null;
+  }>(),
 );
 
 export const setLoading = createAction(

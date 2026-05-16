@@ -1,0 +1,40 @@
+.soap-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.soap-field {
+  margin-bottom: 4px;
+}
+
+.field-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 4px;
+}
+
+.soap-letter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  color: white;
+}
+
+.soap-field:nth-child(1) .soap-letter { background: #3b82f6; }
+.soap-field:nth-child(2) .soap-letter { background: #10b981; }
+.soap-field:nth-child(3) .soap-letter { background: #f59e0b; }
+.soap-field:nth-child(4) .soap-letter { background: #ef4444; }
+
+.w-100 {
+  width: 100%;
+}

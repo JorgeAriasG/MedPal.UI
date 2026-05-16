@@ -1,5 +1,6 @@
 .table-card {
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
+  border-radius: var(--border-radius-lg);
   overflow: hidden;
 }
 
@@ -16,21 +17,21 @@
 }
 
 .audit-logs-table th {
-  background-color: #f5f5f5;
+  background-color: var(--color-bg-page);
   font-weight: 600;
   padding: 1rem;
   text-align: left;
-  border-bottom: 2px solid #e0e0e0;
-  color: #333;
+  border-bottom: 1px solid var(--color-divider);
+  color: var(--color-text-secondary);
   font-size: 0.875rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
 }
 
 .audit-logs-table td {
   padding: 1rem;
-  border-bottom: 1px solid #e0e0e0;
-  color: #666;
+  border-bottom: 1px solid var(--color-divider);
+  color: var(--color-text-primary);
+  font-size: 0.875rem;
 }
 
 .audit-log-row {
@@ -39,11 +40,11 @@
 }
 
 .audit-log-row:hover {
-  background-color: #f9f9f9;
+  background-color: rgba(91, 108, 255, 0.04);
 }
 
 .audit-log-row:active {
-  background-color: #f0f0f0;
+  background-color: rgba(91, 108, 255, 0.08);
 }
 
 /* Empty State */
@@ -53,7 +54,7 @@
   align-items: center;
   justify-content: center;
   padding: 3rem 1.5rem;
-  color: #999;
+  color: var(--color-text-disabled);
   flex: 1;
 }
 
@@ -78,28 +79,28 @@ mat-chip {
 }
 
 mat-chip[color='accent'] {
-  background-color: #4caf50 !important;
+  background-color: var(--color-success) !important;
   color: white !important;
 }
 
 mat-chip[color='warn'] {
-  background-color: #f44336 !important;
+  background-color: var(--color-danger) !important;
   color: white !important;
 }
 
 /* Pagination */
 mat-paginator {
-  border-top: 1px solid #e0e0e0;
-  background-color: #fafafa;
+  border-top: 1px solid var(--color-divider);
+  background-color: var(--color-bg-page);
 }
 
 /* Icon Buttons in Table */
 button[mat-icon-button] {
-  color: #1976d2;
+  color: var(--color-primary);
 }
 
 button[mat-icon-button]:hover {
-  background-color: rgba(25, 118, 210, 0.08);
+  background-color: rgba(91, 108, 255, 0.08);
 }
 
 /* Responsive Design */
@@ -159,26 +160,26 @@ button[mat-icon-button]:hover {
 /* Dark Mode Support */
 @media (prefers-color-scheme: dark) {
   .audit-logs-table th {
-    background-color: #424242;
-    color: #f5f5f5;
-    border-bottom-color: #616161;
+    background-color: rgba(255,255,255,0.05);
+    color: #e2e8f0;
+    border-bottom-color: rgba(255,255,255,0.1);
   }
 
   .audit-logs-table td {
-    border-bottom-color: #616161;
-    color: #bdbdbd;
+    border-bottom-color: rgba(255,255,255,0.1);
+    color: #cbd5e1;
   }
 
   .audit-log-row:hover {
-    background-color: #333;
+    background-color: rgba(255,255,255,0.03);
   }
 
   mat-paginator {
-    background-color: #2a2a2a;
-    border-top-color: #616161;
+    background-color: #1e1b2e;
+    border-top-color: rgba(255,255,255,0.1);
   }
 
   .empty-table-state {
-    color: #666;
+    color: #64748b;
   }
 }

@@ -1,126 +1,162 @@
 .create-prescription-container {
-  padding: 24px;
+  padding: var(--spacing-lg);
   max-width: 900px;
   margin: 0 auto;
 }
 
 .main-card {
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  background: var(--color-bg-surface);
+  border-radius: var(--border-radius-lg);
+  border: 1px solid var(--color-border);
   overflow: hidden;
 }
 
+.main-card-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg) var(--spacing-xl);
+  border-bottom: 1px solid var(--color-divider);
+}
+
 .header-avatar {
-  background-color: #e3f2fd;
-  color: #1976d2;
+  width: 48px;
+  height: 48px;
+  background-color: rgba(91, 108, 255, 0.1);
+  color: var(--color-primary);
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.main-card-title {
+  font-size: var(--font-size-subtitle);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+}
+
+.main-card-subtitle {
+  font-size: var(--font-size-small);
+  color: var(--color-text-secondary);
+  margin-top: 2px;
+}
+
+.main-card-body {
+  padding: var(--spacing-xl);
 }
 
 .form-section {
-  margin-bottom: 32px;
-  padding-bottom: 24px;
-  border-bottom: 1px solid #f0f0f0;
+  margin-bottom: var(--spacing-xl);
+  padding-bottom: var(--spacing-lg);
+  border-bottom: 1px solid var(--color-divider);
+}
+
+.form-section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
 }
 
 .section-header {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 20px;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-lg);
 }
 
 .section-header mat-icon {
-  color: #666;
+  color: var(--color-text-secondary);
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
 }
 
 .section-header h3 {
   margin: 0;
-  font-weight: 600;
-  color: #333;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
   flex: 1;
+  font-size: var(--font-size-body);
 }
 
 .form-row {
   display: flex;
-  gap: 16px;
+  gap: var(--spacing-md);
   flex-wrap: wrap;
 }
 
 .flex-2 { flex: 2; }
 .flex-3 { flex: 3; }
 
-/* Allergy Alert Banner */
 .allergy-alert-banner {
-  background-color: #fff1f0;
-  border: 1px solid #ffa39e;
-  border-radius: 8px;
-  padding: 16px;
-  margin-bottom: 24px;
+  background-color: rgba(248, 113, 113, 0.08);
+  border: 1px solid rgba(248, 113, 113, 0.2);
+  border-radius: var(--border-radius-sm);
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
   display: flex;
-  gap: 16px;
+  gap: var(--spacing-md);
   align-items: center;
-  color: #cf1322;
+  color: var(--color-danger);
 }
 
 .allergy-alert-banner mat-icon {
-  font-size: 32px;
-  width: 32px;
-  height: 32px;
+  font-size: 28px;
+  width: 28px;
+  height: 28px;
 }
 
 .alert-content h3 {
   margin: 0;
-  font-size: 16px;
+  font-size: var(--font-size-body);
   font-weight: 700;
 }
 
 .allergy-name {
-  background: #cf1322;
+  background: var(--color-danger);
   color: white;
   padding: 2px 8px;
   border-radius: 12px;
-  font-size: 12px;
+  font-size: var(--font-size-caption);
   margin-left: 4px;
   text-transform: uppercase;
   font-weight: bold;
 }
 
-/* Items List */
 .items-list {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--spacing-md);
 }
 
 .item-row-card {
   display: flex;
-  gap: 16px;
-  background-color: #fafafa;
-  border-radius: 8px;
-  padding: 16px;
+  gap: var(--spacing-md);
+  background-color: var(--color-bg-page);
+  border-radius: var(--border-radius-sm);
+  padding: var(--spacing-md);
   position: relative;
-  border: 1px solid #eee;
-  transition: all 0.3s ease;
+  border: 1px solid var(--color-border);
+  transition: var(--transition-fast);
 }
 
 .item-row-card:hover {
-  border-color: #1976d2;
-  background-color: #f5f9ff;
+  border-color: var(--color-primary);
+  background-color: rgba(91, 108, 255, 0.04);
 }
 
 .item-index {
-  background: #eee;
-  color: #666;
+  background: var(--color-bg-hover);
+  color: var(--color-text-secondary);
   width: 28px;
   height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  font-size: 14px;
+  font-size: var(--font-size-small);
   font-weight: 600;
 }
 
@@ -128,53 +164,53 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--spacing-sm);
 }
 
 .input-group {
   display: flex;
-  gap: 12px;
+  gap: var(--spacing-sm);
 }
 
 .input-group mat-form-field {
   flex: 1;
 }
 
-.med-name { flex: 3 !important; }
-.med-dose { flex: 1 !important; }
+.med-name { flex: 3; }
+.med-dose { flex: 1; }
 
 .full-width {
   width: 100%;
 }
 
-/* Actions & Messages */
 .form-messages {
-  margin: 16px 0;
+  margin: var(--spacing-md) 0;
 }
 
 .error-msg, .info-msg {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 12px;
-  border-radius: 6px;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--border-radius-xs);
   font-weight: 500;
+  font-size: var(--font-size-small);
 }
 
 .error-msg {
-  background-color: #fff1f0;
-  color: #cf1322;
+  background-color: rgba(248, 113, 113, 0.08);
+  color: var(--color-danger);
 }
 
 .info-msg {
-  background-color: #f6ffed;
-  color: #52c41a;
+  background-color: rgba(52, 211, 153, 0.08);
+  color: var(--color-success);
 }
 
 .form-actions {
   display: flex;
   justify-content: flex-end;
-  padding-top: 24px;
+  padding-top: var(--spacing-lg);
 }
 
 .form-actions button {

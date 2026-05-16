@@ -1,13 +1,6 @@
-/* ========================================
-   PATIENT DETAIL COMPONENT - MODERN DESIGN
-   ======================================== */
-
-/* ===== CONTAINER & LAYOUT ===== */
-
 .patient-detail-container {
   width: 100%;
   background-color: var(--color-bg-page);
-  min-height: 100vh;
 }
 
 .patient-detail-content {
@@ -16,38 +9,24 @@
   padding: var(--spacing-lg);
 }
 
-@media (max-width: 768px) {
-  .patient-detail-content {
-    padding: var(--spacing-md);
-  }
-}
-
-/* ===== LOADING STATE ===== */
-
 .loading-overlay {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
-  background-color: var(--color-bg-page);
+  padding: var(--spacing-3xl);
 }
-
-/* ===== ERROR STATE ===== */
 
 .error-container {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100vh;
-  padding: var(--spacing-lg);
-  background-color: var(--color-bg-page);
+  padding: var(--spacing-3xl);
 }
 
 .error-card {
   max-width: 500px;
   text-align: center;
-  box-shadow: var(--shadow-lg);
 }
 
 .error-content {
@@ -62,15 +41,12 @@
   margin-bottom: var(--spacing-lg);
 }
 
-/* ===== HEADER SECTION ===== */
-
 .patient-header {
   background: var(--color-bg-surface);
-  border-radius: var(--border-radius-md);
-  box-shadow: var(--shadow-md);
+  border-radius: var(--border-radius-lg);
+  border: 1px solid var(--color-border);
   padding: var(--spacing-xl);
   margin-bottom: var(--spacing-2xl);
-  border-left: 5px solid var(--color-primary);
 }
 
 .header-content {
@@ -85,10 +61,6 @@
   gap: var(--spacing-lg);
   flex: 1;
   align-items: center;
-}
-
-.avatar-container {
-  flex-shrink: 0;
 }
 
 .avatar-icon {
@@ -110,7 +82,6 @@
   font-size: var(--font-size-headline);
   font-weight: var(--font-weight-bold);
   color: var(--color-text-primary);
-  line-height: var(--line-height-tight);
 }
 
 .patient-contact {
@@ -122,7 +93,8 @@
   gap: var(--spacing-sm);
 }
 
-.patient-contact .icon-small {
+.patient-contact .icon-small,
+.patient-meta .icon-small {
   font-size: 16px;
   width: 16px;
   height: 16px;
@@ -141,12 +113,6 @@
   gap: var(--spacing-sm);
 }
 
-.patient-meta .icon-small {
-  font-size: 16px;
-  width: 16px;
-  height: 16px;
-}
-
 .header-actions {
   display: flex;
   gap: var(--spacing-md);
@@ -161,33 +127,6 @@
   font-weight: var(--font-weight-medium);
 }
 
-@media (max-width: 768px) {
-  .patient-header {
-    padding: var(--spacing-lg);
-  }
-
-  .header-content {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .header-actions {
-    width: 100%;
-    flex-direction: column;
-  }
-
-  .action-button {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .patient-name {
-    font-size: var(--font-size-title);
-  }
-}
-
-/* ===== ALERTS SECTION ===== */
-
 .alerts-section {
   margin-bottom: var(--spacing-2xl);
 }
@@ -195,7 +134,7 @@
 .allergy-banner {
   background: linear-gradient(135deg, rgba(244, 67, 54, 0.1) 0%, rgba(244, 67, 54, 0.05) 100%);
   border: 2px solid var(--color-allergy);
-  border-radius: var(--border-radius-md);
+  border-radius: var(--border-radius-lg);
   padding: var(--spacing-lg);
   display: flex;
   gap: var(--spacing-lg);
@@ -205,7 +144,6 @@
 .alert-icon {
   flex-shrink: 0;
   color: var(--color-allergy);
-  font-size: 28px;
 }
 
 .alert-icon mat-icon {
@@ -239,15 +177,6 @@
   margin-right: var(--spacing-sm);
 }
 
-@media (max-width: 768px) {
-  .allergy-banner {
-    flex-direction: column;
-    padding: var(--spacing-md);
-  }
-}
-
-/* ===== TABS ===== */
-
 .patient-tabs {
   margin-bottom: var(--spacing-2xl);
 }
@@ -259,21 +188,13 @@
 
 .tab-content {
   padding: var(--spacing-xl) 0;
-  animation: fadeIn 300ms ease-in-out;
+  animation: tabFadeIn 300ms ease-in-out;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(4px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+@keyframes tabFadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
 }
-
-/* ===== OVERVIEW TAB ===== */
 
 .overview-grid {
   display: grid;
@@ -281,25 +202,15 @@
   gap: var(--spacing-lg);
 }
 
-@media (max-width: 768px) {
-  .overview-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* ===== CARD STYLES ===== */
-
 .card {
   background: var(--color-bg-surface);
-  border-radius: var(--border-radius-md);
-  box-shadow: var(--shadow-md);
-  transition: all var(--transition-normal);
+  border-radius: var(--border-radius-lg);
+  border: 1px solid var(--color-border);
   overflow: hidden;
 }
 
 .card:hover {
-  box-shadow: var(--shadow-lg);
-  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
 .card-header {
@@ -331,8 +242,6 @@
   padding: var(--spacing-lg);
 }
 
-/* ===== DEMOGRAPHICS CARD ===== */
-
 .card-demographics .info-row {
   display: flex;
   justify-content: space-between;
@@ -358,8 +267,6 @@
   color: var(--color-text-primary);
   font-size: var(--font-size-body);
 }
-
-/* ===== STATS CARD ===== */
 
 .card-stats .stats-layout {
   display: flex;
@@ -392,18 +299,6 @@
   font-weight: var(--font-weight-medium);
 }
 
-@media (max-width: 600px) {
-  .card-stats .stats-layout {
-    flex-direction: column;
-  }
-
-  .stat {
-    width: 100%;
-  }
-}
-
-/* ===== PRESCRIPTIONS TAB ===== */
-
 .prescriptions-container {
   width: 100%;
 }
@@ -425,16 +320,13 @@
 
 .prescription-card {
   background: var(--color-bg-surface);
-  border-radius: var(--border-radius-md);
-  border-left: 4px solid var(--color-prescription);
-  box-shadow: var(--shadow-md);
-  transition: all var(--transition-normal);
+  border-radius: var(--border-radius-lg);
+  border: 1px solid var(--color-border);
   overflow: hidden;
 }
 
 .prescription-card:hover {
-  box-shadow: var(--shadow-lg);
-  transform: translateX(4px);
+  box-shadow: var(--shadow-md);
 }
 
 .prescription-header {
@@ -500,21 +392,7 @@
   margin: 0;
   font-size: var(--font-size-body);
   color: var(--color-text-primary);
-  line-height: var(--line-height-normal);
 }
-
-@media (max-width: 768px) {
-  .prescription-header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .prescription-actions {
-    align-self: flex-end;
-  }
-}
-
-/* ===== EMPTY STATE ===== */
 
 .empty-state {
   display: flex;
@@ -524,7 +402,7 @@
   padding: var(--spacing-3xl) var(--spacing-lg);
   text-align: center;
   background: var(--color-bg-surface);
-  border-radius: var(--border-radius-md);
+  border-radius: var(--border-radius-lg);
   border: 2px dashed var(--color-border);
 }
 
@@ -552,26 +430,66 @@
   color: var(--color-text-secondary);
 }
 
-/* ===== RESPONSIVE DESIGN ===== */
-
-@media (max-width: 600px) {
+@media (max-width: 768px) {
   .patient-detail-content {
     padding: var(--spacing-md);
   }
 
   .patient-header {
+    padding: var(--spacing-lg);
     margin-bottom: var(--spacing-lg);
+  }
+
+  .header-content {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .header-actions {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .action-button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .patient-name {
+    font-size: var(--font-size-title);
+  }
+
+  .allergy-banner {
+    flex-direction: column;
+    padding: var(--spacing-md);
   }
 
   .alerts-section {
     margin-bottom: var(--spacing-lg);
   }
 
-  .card-header {
+  .overview-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .prescription-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .prescription-actions {
+    align-self: flex-end;
+  }
+}
+
+@media (max-width: 600px) {
+  .patient-detail-content {
     padding: var(--spacing-md);
   }
 
-  .card-body {
+  .card-header,
+  .card-body,
+  .prescription-header {
     padding: var(--spacing-md);
   }
 
@@ -580,7 +498,11 @@
     align-items: flex-start;
   }
 
-  .prescription-header {
-    padding: var(--spacing-md);
+  .card-stats .stats-layout {
+    flex-direction: column;
+  }
+
+  .stat {
+    width: 100%;
   }
 }

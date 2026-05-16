@@ -68,7 +68,6 @@ export class PatientsComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (clinicId) => {
           this.clinicId = clinicId;
-          console.log('Clinic ID in PatientsComponent from store:', clinicId);
           this.getPatients();
         },
       });
@@ -142,9 +141,8 @@ export class PatientsComponent implements OnInit, OnDestroy {
     this.patientsService
       .deletePatient(id)
       .pipe(takeUntil(this.destroy$))
-      .subscribe((res) => {
+      .subscribe(() => {
         this.getPatients();
-        console.log(res);
       });
   }
 
@@ -155,40 +153,44 @@ export class PatientsComponent implements OnInit, OnDestroy {
   // }
 
   editPatient(patient: IPatient): void {
+    // Normalizar clinicIds para el formulario (array → scalar para dropdown single-select)
+    const modalData = {
+      ...patient,
+      clinicIds: patient.clinicIds?.length ? patient.clinicIds[0] : null,
+    };
     this.dialog
       .open(EditModalComponent, {
         data: {
           entityType: 'patient',
-          data: patient,
+          data: modalData,
           title: 'Edit Patient',
         },
       })
       .afterClosed()
       .subscribe((result) => {
         if (result) {
+          // Normalizar clinicIds de vuelta a array antes de enviar al API
+          if (result.clinicIds !== undefined && result.clinicIds !== null) {
+            result.clinicIds = Array.isArray(result.clinicIds) ? result.clinicIds : [result.clinicIds];
+          }
           this.saveEdit(result);
         }
       });
   }
 
-  saveNewPatient(patient: IPatient): void {
-    this.patientsService
-      .addPatient(patient)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((res) => {
-        this.getPatients();
-        console.log(res);
-      });
-    }
-
   saveEdit(patient: Partial<IPatient>): void {
+    // Asegurar que clinicIds sea array antes de enviar
+    if ((patient as any).clinicIds !== undefined && (patient as any).clinicIds !== null) {
+      (patient as any).clinicIds = Array.isArray((patient as any).clinicIds)
+        ? (patient as any).clinicIds
+        : [(patient as any).clinicIds];
+    }
     this.patientsService
       .editPatient(patient)
       .pipe(takeUntil(this.destroy$))
-      .subscribe((res) => {
+      .subscribe(() => {
         this.cancelEdit();
         this.getPatients();
-        console.log(res);
       });
   }
 
