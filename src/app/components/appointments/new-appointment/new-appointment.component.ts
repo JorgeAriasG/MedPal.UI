@@ -28,6 +28,7 @@ import {
   toDateOnlyObject,
   toTimeObject,
 } from 'src/app/shared/utils/date-utils';
+import { TranslateService } from '@ngx-translate/core';
 import { Store } from '@ngrx/store';
 import {
   selectAuthContext,
@@ -67,7 +68,8 @@ export class NewAppointmentComponent implements OnInit, OnDestroy {
     private patientService: PatientsService,
     private appointmentService: AppointmensService,
     private store: Store,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private translate: TranslateService
   ) {
     this.patientForm = createFormGroupFromConfig(this.fb, patientFormConfig);
     this.appointmentForm = createFormGroupFromConfig(
@@ -206,7 +208,7 @@ export class NewAppointmentComponent implements OnInit, OnDestroy {
 
   saveAppointment(): void {
     if (this.appointmentForm.invalid || (!this.selectedPatient && !this.isEditMode)) {
-      this.snackBar.open('Please fill all required fields correctly.', 'Close', { duration: 3000 });
+      this.snackBar.open(this.translate.instant('ERRORS.INVALID_FORM'), this.translate.instant('COMMON.CLOSE'), { duration: 3000 });
       return;
     }
 
@@ -246,15 +248,15 @@ export class NewAppointmentComponent implements OnInit, OnDestroy {
           message = error.error.message;
         }
 
-        this.snackBar.open(message, 'Close', { duration: 5000, panelClass: ['error-snackbar'] });
+        this.snackBar.open(message, this.translate.instant('COMMON.CLOSE'), { duration: 5000, panelClass: ['error-snackbar'] });
         return of(null);
       })
     ).subscribe((response) => {
       if (response !== null) {
         this.isLoading = false;
         this.snackBar.open(
-          this.isEditMode ? 'Appointment updated successfully!' : 'Appointment created successfully!', 
-          'Success', 
+          this.isEditMode ? this.translate.instant('APPOINTMENTS.SNACKBAR_SUCCESS_UPDATE') : this.translate.instant('APPOINTMENTS.SNACKBAR_SUCCESS_CREATE'), 
+          this.translate.instant('COMMON.ACCEPT'), 
           { duration: 3000 }
         );
         this.closeDialog(true);

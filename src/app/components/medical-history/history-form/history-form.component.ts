@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { TranslateService } from '@ngx-translate/core';
 import { MedicalHistoryService } from 'src/app/services/medical-history.service';
 import { MedicalHistoryWriteDTO } from 'src/app/entities/medical-history.model';
 import {
@@ -34,7 +35,8 @@ export class HistoryFormComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private medicalHistoryService: MedicalHistoryService,
     private dialogRef: MatDialogRef<HistoryFormComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: HistoryFormData
+    @Inject(MAT_DIALOG_DATA) public data: HistoryFormData,
+    private translate: TranslateService
   ) {
     this.specialtyType = (data.userSpecialty as SpecialtyType) || 'General';
     this.config = SPECIALTY_CONFIG[this.specialtyType] || SPECIALTY_CONFIG.General;
@@ -84,7 +86,7 @@ export class HistoryFormComponent implements OnInit, OnDestroy {
 
   onSubmit(): void {
     if (this.historyForm.invalid) {
-      this.errorMessage = 'Por favor complete todos los campos requeridos';
+      this.errorMessage = this.translate.instant('MEDICAL_HISTORY.FORM_ERROR_REQUIRED');
       return;
     }
 
@@ -117,8 +119,7 @@ export class HistoryFormComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           this.loading = false;
-          this.errorMessage =
-            'Error al guardar el historial médico. Por favor intente nuevamente.';
+          this.errorMessage = this.translate.instant('MEDICAL_HISTORY.FORM_ERROR_SAVE');
           console.error('Error creating medical history:', error);
         },
       });

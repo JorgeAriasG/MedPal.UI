@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { TranslateService } from '@ngx-translate/core';
 import { IPrescription } from 'src/app/entities/IPrescription';
 import { PrescriptionService } from 'src/app/services/prescription.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
@@ -23,7 +24,8 @@ export class PrescriptionDetailComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private prescriptionService: PrescriptionService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private translate: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -31,7 +33,7 @@ export class PrescriptionDetailComponent implements OnInit, OnDestroy {
     if (id) {
       this.loadPrescription(+id);
     } else {
-      this.error = 'Invalid ID';
+      this.error = this.translate.instant('ERRORS.INVALID_ID');
       this.loading = false;
     }
   }
@@ -53,7 +55,7 @@ export class PrescriptionDetailComponent implements OnInit, OnDestroy {
           this.loadQrCode(id);
         },
         error: (err) => {
-          this.error = 'Failed to load prescription';
+          this.error = this.translate.instant('PRESCRIPTIONS.ERROR_LOAD');
           this.loading = false;
           console.error(err);
         },
@@ -71,7 +73,7 @@ export class PrescriptionDetailComponent implements OnInit, OnDestroy {
         },
         error: (err) => {
           console.error('Failed to load QR code', err);
-          this.error = 'Failed to load QR code. Please ensure the backend is available.';
+          this.error = this.translate.instant('PRESCRIPTIONS.ERROR_QR');
           this.loading = false;
         },
       });

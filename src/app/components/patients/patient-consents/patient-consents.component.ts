@@ -1,6 +1,7 @@
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { TranslateService } from '@ngx-translate/core';
 import { ConsentService } from 'src/app/services/consent.service';
 import { IPatientConsent } from 'src/app/entities/IPatientConsent';
 
@@ -19,7 +20,10 @@ export class PatientConsentsComponent implements OnInit, OnDestroy {
   error = '';
   private destroy$ = new Subject<void>();
 
-  constructor(private consentService: ConsentService) {}
+  constructor(
+    private consentService: ConsentService,
+    private translate: TranslateService
+  ) {}
 
   ngOnInit(): void {
     this.loadData();
@@ -43,29 +47,29 @@ export class PatientConsentsComponent implements OnInit, OnDestroy {
         },
         error: () => {
           this.loading = false;
-          this.error = 'Error al cargar consentimientos';
+          this.error = this.translate.instant('PATIENTS.ERROR_LOAD_CONSENTS');
         },
       });
   }
 
   revoke(consent: IPatientConsent): void {
-    if (!confirm('¿Revocar este consentimiento?')) return;
+    if (!confirm(this.translate.instant('PATIENTS.CONFIRM_REVOKE_CONSENT'))) return;
     this.consentService
       .revokeConsent(consent.id)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: () => this.loadData(),
-        error: () => (this.error = 'Error al revocar consentimiento'),
+        error: () => (this.error = this.translate.instant('PATIENTS.ERROR_REVOKE_CONSENT')),
       });
   }
 
   getScopeLabel(scope: string): string {
-    const labels: Record<string, string> = {
-      AllRecords: 'Todos los registros',
-      LimitedAccess: 'Acceso limitado',
-      EmergencyOnly: 'Solo emergencias',
+    const map: Record<string, string> = {
+      AllRecords: 'PATIENTS.SCOPE_ALL_RECORDS',
+      LimitedAccess: 'PATIENTS.SCOPE_LIMITED',
+      EmergencyOnly: 'PATIENTS.SCOPE_EMERGENCY',
     };
-    return labels[scope] || scope;
+    return this.translate.instant(map[scope] || scope);
   }
 
   isExpired(consent: IPatientConsent): boolean {

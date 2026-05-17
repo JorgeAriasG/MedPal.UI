@@ -7,8 +7,8 @@
 
     <!-- Header -->
     <div class="signup-header">
-      <h1 class="signup-title">Create Account</h1>
-      <p class="signup-subtitle">Join Medical Scheduling System</p>
+      <h1 class="signup-title">{{ 'AUTH.SIGNUP.TITLE' | translate }}</h1>
+      <p class="signup-subtitle">{{ 'AUTH.SIGNUP.SUBTITLE' | translate }}</p>
     </div>
 
     <!-- Form con Tabs -->
@@ -18,64 +18,64 @@
       <mat-tab-group class="signup-tabs">
 
         <!-- Tab 1: Personal Information -->
-        <mat-tab label="Personal">
+        <mat-tab [label]="'AUTH.SIGNUP.TAB_PERSONAL' | translate">
           <div class="tab-content">
             <!-- First Name -->
             <mat-form-field class="full-width" appearance="outline">
-              <mat-label>First Name</mat-label>
-              <input matInput formControlName="firstName" placeholder="John">
+              <mat-label>{{ 'AUTH.SIGNUP.FIRST_NAME' | translate }}</mat-label>
+              <input matInput formControlName="firstName" [placeholder]="'AUTH.SIGNUP.FIRST_NAME_PLACEHOLDER' | translate">
               <mat-error *ngIf="form.get('firstName')?.hasError('required')">
-                First name is required
+                {{ 'VALIDATION.FIRST_NAME_REQUIRED' | translate }}
               </mat-error>
             </mat-form-field>
 
             <!-- Last Name -->
             <mat-form-field class="full-width" appearance="outline">
-              <mat-label>Last Name</mat-label>
-              <input matInput formControlName="lastName" placeholder="Doe">
+              <mat-label>{{ 'AUTH.SIGNUP.LAST_NAME' | translate }}</mat-label>
+              <input matInput formControlName="lastName" [placeholder]="'AUTH.SIGNUP.LAST_NAME_PLACEHOLDER' | translate">
               <mat-error *ngIf="form.get('lastName')?.hasError('required')">
-                Last name is required
+                {{ 'VALIDATION.LAST_NAME_REQUIRED' | translate }}
               </mat-error>
             </mat-form-field>
 
             <!-- Email -->
             <mat-form-field class="full-width" appearance="outline">
-              <mat-label>Email Address</mat-label>
-              <input matInput type="email" formControlName="email" placeholder="doctor@example.com">
+              <mat-label>{{ 'COMMON.EMAIL' | translate }}</mat-label>
+              <input matInput type="email" formControlName="email" [placeholder]="'AUTH.SIGNUP.EMAIL_PLACEHOLDER' | translate">
               <mat-icon matPrefix>email</mat-icon>
               <mat-error *ngIf="form.get('email')?.hasError('required')">
-                Email is required
+                {{ 'VALIDATION.EMAIL_REQUIRED' | translate }}
               </mat-error>
               <mat-error *ngIf="form.get('email')?.hasError('email')">
-                Invalid email format
+                {{ 'VALIDATION.EMAIL_INVALID' | translate }}
               </mat-error>
             </mat-form-field>
 
             <!-- Phone (Optional) -->
             <mat-form-field class="full-width" appearance="outline">
-              <mat-label>Phone (Optional)</mat-label>
-              <input matInput type="tel" formControlName="phone" placeholder="+1 (555) 000-0000">
+              <mat-label>{{ 'COMMON.PHONE' | translate }} ({{ 'COMMON.OPTIONAL' | translate }})</mat-label>
+              <input matInput type="tel" formControlName="phone" [placeholder]="'AUTH.SIGNUP.PHONE_PLACEHOLDER' | translate">
               <mat-icon matPrefix>phone</mat-icon>
             </mat-form-field>
           </div>
         </mat-tab>
 
         <!-- Tab 2: Professional Information -->
-        <mat-tab label="Professional">
+        <mat-tab [label]="'AUTH.SIGNUP.TAB_PROFESSIONAL' | translate">
           <div class="tab-content">
             <!-- License Number -->
             <mat-form-field class="full-width" appearance="outline">
-              <mat-label>License Number</mat-label>
-              <input matInput formControlName="licenseNumber" placeholder="LIC-12345678">
+              <mat-label>{{ 'AUTH.SIGNUP.LICENSE_NUMBER' | translate }}</mat-label>
+              <input matInput formControlName="licenseNumber" [placeholder]="'AUTH.SIGNUP.LICENSE_PLACEHOLDER' | translate">
               <mat-icon matPrefix>badge</mat-icon>
               <mat-error *ngIf="form.get('licenseNumber')?.hasError('required')">
-                License number is required
+                {{ 'VALIDATION.LICENSE_REQUIRED' | translate }}
               </mat-error>
             </mat-form-field>
 
             <!-- Specialty Dropdown -->
             <mat-form-field class="full-width" appearance="outline">
-              <mat-label>Specialty</mat-label>
+              <mat-label>{{ 'AUTH.SIGNUP.SPECIALTY' | translate }}</mat-label>
               <mat-select formControlName="specialty">
                 <mat-option *ngFor="let spec of specialties" [value]="spec.value">
                   {{ spec.label }}
@@ -83,18 +83,18 @@
               </mat-select>
               <mat-icon matPrefix>medical_services</mat-icon>
               <mat-error *ngIf="form.get('specialty')?.hasError('required')">
-                Specialty is required
+                {{ 'VALIDATION.SPECIALTY_REQUIRED' | translate }}
               </mat-error>
             </mat-form-field>
           </div>
         </mat-tab>
 
         <!-- Tab 3: Account Information -->
-        <mat-tab label="Account">
+        <mat-tab [label]="'AUTH.SIGNUP.TAB_ACCOUNT' | translate">
           <div class="tab-content">
             <!-- Password -->
             <mat-form-field class="full-width" appearance="outline">
-              <mat-label>Password</mat-label>
+              <mat-label>{{ 'COMMON.PASSWORD' | translate }}</mat-label>
               <input matInput
                      [type]="showPassword ? 'text' : 'password'"
                      formControlName="password"
@@ -110,10 +110,10 @@
                 <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
               </button>
               <mat-error *ngIf="form.get('password')?.hasError('required')">
-                Password is required
+                {{ 'VALIDATION.PASSWORD_REQUIRED' | translate }}
               </mat-error>
               <mat-error *ngIf="form.get('password')?.hasError('minlength')">
-                Minimum 8 characters
+                {{ 'VALIDATION.PASSWORD_MIN' | translate }}
               </mat-error>
             </mat-form-field>
 
@@ -129,46 +129,46 @@
 
             <!-- Confirm Password -->
             <mat-form-field class="full-width" appearance="outline">
-              <mat-label>Confirm Password</mat-label>
+              <mat-label>{{ 'COMMON.CONFIRM_PASSWORD' | translate }}</mat-label>
               <input matInput
                      [type]="showPassword ? 'text' : 'password'"
                      formControlName="confirmPassword"
                      placeholder="••••••••">
               <mat-icon matPrefix>lock</mat-icon>
               <mat-error *ngIf="form.get('confirmPassword')?.hasError('required')">
-                Please confirm password
+                {{ 'VALIDATION.CONFIRM_PASSWORD_REQUIRED' | translate }}
               </mat-error>
               <mat-error *ngIf="form.hasError('passwordMismatch')">
-                Passwords do not match
+                {{ 'VALIDATION.PASSWORDS_NOT_MATCH' | translate }}
               </mat-error>
             </mat-form-field>
           </div>
         </mat-tab>
 
         <!-- Tab 4: Agreements -->
-        <mat-tab label="Agreements">
+        <mat-tab [label]="'AUTH.SIGNUP.TAB_AGREEMENTS' | translate">
           <div class="tab-content">
             <!-- Terms Checkbox -->
             <div class="checkbox-group">
               <mat-checkbox formControlName="acceptTerms" class="agreement-checkbox">
-                <span>I agree to the <a routerLink="/" class="link">Terms of Service</a> and <a routerLink="/" class="link">Privacy Policy</a></span>
+                <span>{{ 'AUTH.SIGNUP.TERMS_AGREEMENT' | translate }}</span>
               </mat-checkbox>
               <mat-error *ngIf="form.get('acceptTerms')?.hasError('required')" class="checkbox-error">
-                You must accept the terms
+                {{ 'VALIDATION.TERMS_REQUIRED' | translate }}
               </mat-error>
             </div>
 
             <!-- Data Processing Checkbox -->
             <div class="checkbox-group">
               <mat-checkbox formControlName="acceptDataProcessing" class="agreement-checkbox">
-                <span>I consent to the processing of personal data as outlined in our <a routerLink="/" class="link">Privacy Policy</a></span>
+                <span>{{ 'AUTH.SIGNUP.DATA_CONSENT' | translate }}</span>
               </mat-checkbox>
             </div>
 
             <!-- Marketing Checkbox -->
             <div class="checkbox-group">
               <mat-checkbox formControlName="acceptMarketing" class="agreement-checkbox">
-                <span>I would like to receive emails about new features and updates (Optional)</span>
+                <span>{{ 'AUTH.SIGNUP.EMAIL_OPT_IN' | translate }}</span>
               </mat-checkbox>
             </div>
           </div>
@@ -189,7 +189,7 @@
           routerLink="/login"
           type="button"
           class="back-button">
-          Back to Login
+          {{ 'AUTH.SIGNUP.BACK_TO_LOGIN' | translate }}
         </button>
 
         <button
@@ -198,7 +198,7 @@
           type="submit"
           [disabled]="(isLoading$ | async) || form.invalid"
           class="submit-button">
-          <span *ngIf="!(isLoading$ | async)">Create Account</span>
+          <span *ngIf="!(isLoading$ | async)">{{ 'AUTH.SIGNUP.CREATE_ACCOUNT' | translate }}</span>
           <mat-spinner *ngIf="isLoading$ | async" diameter="20" class="inline-spinner"></mat-spinner>
         </button>
       </div>
@@ -206,8 +206,8 @@
       <!-- Footer -->
       <div class="signup-footer">
         <p class="login-link">
-          Already have an account?
-          <a routerLink="/login" class="link-primary">Sign In</a>
+          {{ 'AUTH.SIGNUP.HAS_ACCOUNT' | translate }}
+          <a routerLink="/login" class="link-primary">{{ 'AUTH.SIGNUP.SIGN_IN' | translate }}</a>
         </p>
       </div>
 

@@ -197,7 +197,7 @@ export class OmnibarComponent implements OnInit, OnDestroy {
       date: smartData.date,
       time: smartData.time,
       durationMinutes: 30,
-      notes: 'Creado vía Comando Central (Smart Parse)'
+      notes: 'Creado vía Comando Central'
     };
 
     this.appointmentService.saveAppointment(ghostAppointment).subscribe({

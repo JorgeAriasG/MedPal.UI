@@ -1,5 +1,5 @@
 <div class="dental-template">
-  <h3>Odontograma</h3>
+  <h3>{{ 'MEDICAL_HISTORY.TEMPLATE_DENTAL_ODONTOGRAM' | translate }}</h3>
 
   <!-- Upper Teeth -->
   <div class="teeth-row upper-teeth">
@@ -9,7 +9,7 @@
       [class.selected]="selectedTooth === tooth"
       [style.background-color]="getToothColor(tooth)"
       (click)="selectTooth(tooth)"
-      [attr.aria-label]="'Diente ' + tooth"
+      [attr.aria-label]="('MEDICAL_HISTORY.TEMPLATE_DENTAL_TOOTH_PREFIX' | translate) + ' ' + tooth"
     >
       <span class="tooth-number">{{ tooth }}</span>
       <mat-icon class="tooth-icon">{{ getToothIcon(tooth) }}</mat-icon>
@@ -24,7 +24,7 @@
       [class.selected]="selectedTooth === tooth"
       [style.background-color]="getToothColor(tooth)"
       (click)="selectTooth(tooth)"
-      [attr.aria-label]="'Diente ' + tooth"
+      [attr.aria-label]="('MEDICAL_HISTORY.TEMPLATE_DENTAL_TOOTH_PREFIX' | translate) + ' ' + tooth"
     >
       <mat-icon class="tooth-icon">{{ getToothIcon(tooth) }}</mat-icon>
       <span class="tooth-number">{{ tooth }}</span>
@@ -33,7 +33,7 @@
 
   <!-- Status Selection Menu -->
   <div class="status-menu" *ngIf="selectedTooth">
-    <h4>Diente {{ selectedTooth }}</h4>
+    <h4>{{ 'MEDICAL_HISTORY.TEMPLATE_DENTAL_TOOTH_PREFIX' | translate }} {{ selectedTooth }}</h4>
     <div class="status-buttons">
       <button
         *ngFor="let status of toothStatuses"
@@ -47,12 +47,12 @@
         {{ status.label }}
       </button>
     </div>
-    <button mat-button (click)="clearSelection()">Cancelar</button>
+    <button mat-button (click)="clearSelection()">{{ 'MEDICAL_HISTORY.TEMPLATE_DENTAL_CANCEL' | translate }}</button>
   </div>
 
   <!-- Legend -->
   <div class="legend">
-    <h4>Leyenda</h4>
+    <h4>{{ 'MEDICAL_HISTORY.TEMPLATE_DENTAL_LEGEND' | translate }}</h4>
     <div class="legend-items">
       <div *ngFor="let status of toothStatuses" class="legend-item">
         <div class="legend-color" [style.background-color]="status.color"></div>
@@ -64,14 +64,14 @@
 
   <!-- Observations -->
   <mat-form-field appearance="outline" class="w-100 mt-3">
-    <mat-label>Observaciones Generales</mat-label>
+    <mat-label>{{ 'MEDICAL_HISTORY.TEMPLATE_DENTAL_OBSERVATIONS' | translate }}</mat-label>
     <textarea
       matInput
       rows="3"
       [value]="dentalData.observations || ''"
       (input)="updateObservations($any($event.target).value)"
       [disabled]="disabled"
-      placeholder="Notas adicionales sobre el estado dental..."
+      [placeholder]="'MEDICAL_HISTORY.TEMPLATE_DENTAL_OBSERVATIONS_PLACEHOLDER' | translate"
     ></textarea>
   </mat-form-field>
 </div>

@@ -1,7 +1,7 @@
 .menu-container {
   height: 100%; /* Cambiado de 100vh a 100% para que lo maneje el sidenav */
   width: 100%; /* Ocupa todo el mat-sidenav */
-  background: #1e1b4b;
+  background: var(--color-primary);
   color: white;
   display: flex;
   flex-direction: column;
@@ -101,9 +101,9 @@
 }
 
 .menu-link.active {
-  background: rgba(91, 108, 255, 0.15) !important;
-  color: #8A96FF !important;
-  border-left: 3px solid #5B6CFF;
+  background: rgba(255, 255, 255, 0.12) !important;
+  color: var(--color-primary-light) !important;
+  border-left: 3px solid var(--color-primary-light);
 }
 
 .menu-icon {

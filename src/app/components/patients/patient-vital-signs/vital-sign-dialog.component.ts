@@ -1,6 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { TranslateService } from '@ngx-translate/core';
 import { ClinicalDataService } from 'src/app/services/clinical-data.service';
 import { IVitalSign } from 'src/app/entities/IVitalSign';
 
@@ -25,10 +26,11 @@ export class VitalSignDialogComponent implements OnInit {
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<VitalSignDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: VitalSignDialogData,
-    private clinicalDataService: ClinicalDataService
+    private clinicalDataService: ClinicalDataService,
+    private translate: TranslateService
   ) {
     this.isEdit = !!data.vitalSign;
-    this.title = this.isEdit ? 'Editar Signos Vitales' : 'Nuevos Signos Vitales';
+    this.title = this.isEdit ? this.translate.instant('PATIENTS.VITAL_SIGN_EDIT_TITLE') : this.translate.instant('PATIENTS.VITAL_SIGN_NEW_TITLE');
 
     const now = new Date();
     const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;

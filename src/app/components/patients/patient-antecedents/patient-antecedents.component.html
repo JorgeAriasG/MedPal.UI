@@ -1,9 +1,9 @@
 <div class="antecedents-container">
   <div class="antecedents-header">
-    <h3><mat-icon>assignment</mat-icon> Antecedentes del Paciente</h3>
+    <h3><mat-icon>assignment</mat-icon> {{ 'PATIENTS.ANTECEDENTS_TITLE' | translate }}</h3>
     <button mat-raised-button color="primary" (click)="save()" [disabled]="saving" class="save-btn">
       <mat-spinner *ngIf="saving" diameter="18" class="inline-spinner"></mat-spinner>
-      <span *ngIf="!saving">Guardar</span>
+      <span *ngIf="!saving">{{ 'PATIENTS.ANTECEDENTS_SAVE' | translate }}</span>
     </button>
   </div>
 
@@ -20,71 +20,71 @@
     <mat-expansion-panel expanded class="antecedent-panel">
       <mat-expansion-panel-header>
         <mat-panel-title>
-          <mat-icon>people</mat-icon> Antecedentes Familiares
+          <mat-icon>people</mat-icon> {{ 'PATIENTS.ANTECEDENTS_FAMILY' | translate }}
         </mat-panel-title>
       </mat-expansion-panel-header>
-      <p class="field-hint">Enfermedades relevantes en familiares directos (padres, hermanos, hijos)</p>
+      <p class="field-hint">{{ 'PATIENTS.ANTECEDENTS_FAMILY_HINT' | translate }}</p>
       <mat-form-field appearance="outline" class="w-100">
-        <textarea matInput [(ngModel)]="data.familiares" rows="3" placeholder="Diabetes, hipertensión, cáncer, cardiopatías en familiares..."></textarea>
+        <textarea matInput [(ngModel)]="data.familiares" rows="3" [placeholder]="'PATIENTS.ANTECEDENTS_FAMILY_PLACEHOLDER' | translate"></textarea>
       </mat-form-field>
     </mat-expansion-panel>
 
     <mat-expansion-panel class="antecedent-panel">
       <mat-expansion-panel-header>
         <mat-panel-title>
-          <mat-icon>personal_injury</mat-icon> Antecedentes Patológicos
+          <mat-icon>personal_injury</mat-icon> {{ 'PATIENTS.ANTECEDENTS_PATHOLOGICAL' | translate }}
         </mat-panel-title>
       </mat-expansion-panel-header>
-      <p class="field-hint">Enfermedades previas del paciente (crónicas, agudas, hospitalizaciones)</p>
+      <p class="field-hint">{{ 'PATIENTS.ANTECEDENTS_PATHOLOGICAL_HINT' | translate }}</p>
       <mat-form-field appearance="outline" class="w-100">
-        <textarea matInput [(ngModel)]="data.patologicos" rows="3" placeholder="Diabetes tipo 2, HTA, asma, hospitalizaciones previas..."></textarea>
+        <textarea matInput [(ngModel)]="data.patologicos" rows="3" [placeholder]="'PATIENTS.ANTECEDENTS_PATHOLOGICAL_PLACEHOLDER' | translate"></textarea>
       </mat-form-field>
     </mat-expansion-panel>
 
     <mat-expansion-panel class="antecedent-panel">
       <mat-expansion-panel-header>
         <mat-panel-title>
-          <mat-icon>self_improvement</mat-icon> Antecedentes No Patológicos
+          <mat-icon>self_improvement</mat-icon> {{ 'PATIENTS.ANTECEDENTS_NON_PATHOLOGICAL' | translate }}
         </mat-panel-title>
       </mat-expansion-panel-header>
-      <p class="field-hint">Hábitos y estilo de vida (tabaquismo, alcohol, actividad física, alimentación)</p>
+      <p class="field-hint">{{ 'PATIENTS.ANTECEDENTS_NON_PATHOLOGICAL_HINT' | translate }}</p>
       <mat-form-field appearance="outline" class="w-100">
-        <textarea matInput [(ngModel)]="data.noPatologicos" rows="3" placeholder="Tabaquismo (10 cigarrillos/día), alcohol (ocasional), sedentarismo..."></textarea>
+        <textarea matInput [(ngModel)]="data.noPatologicos" rows="3" [placeholder]="'PATIENTS.ANTECEDENTS_NON_PATHOLOGICAL_PLACEHOLDER' | translate"></textarea>
       </mat-form-field>
     </mat-expansion-panel>
 
     <mat-expansion-panel class="antecedent-panel">
       <mat-expansion-panel-header>
         <mat-panel-title>
-          <mat-icon>local_hospital</mat-icon> Antecedentes Quirúrgicos
+          <mat-icon>local_hospital</mat-icon> {{ 'PATIENTS.ANTECEDENTS_SURGICAL' | translate }}
         </mat-panel-title>
       </mat-expansion-panel-header>
-      <p class="field-hint">Cirugías previas, procedimientos invasivos, transfusiones</p>
+      <p class="field-hint">{{ 'PATIENTS.ANTECEDENTS_SURGICAL_HINT' | translate }}</p>
       <mat-form-field appearance="outline" class="w-100">
-        <textarea matInput [(ngModel)]="data.quirurgicos" rows="3" placeholder="Apendicectomía (2015), cesárea (2018)..."></textarea>
+        <textarea matInput [(ngModel)]="data.quirurgicos" rows="3" [placeholder]="'PATIENTS.ANTECEDENTS_SURGICAL_PLACEHOLDER' | translate"></textarea>
       </mat-form-field>
     </mat-expansion-panel>
 
     <mat-expansion-panel class="antecedent-panel">
       <mat-expansion-panel-header>
         <mat-panel-title>
-          <mat-icon>monitor_heart</mat-icon> Hábitos
+          <mat-icon>monitor_heart</mat-icon> {{ 'PATIENTS.ANTECEDENTS_HABITS' | translate }}
         </mat-panel-title>
       </mat-expansion-panel-header>
-      <p class="field-hint">Alimentación, sueño, ejercicio, consumo de sustancias</p>
+      <p class="field-hint">{{ 'PATIENTS.ANTECEDENTS_HABITS_HINT' | translate }}</p>
       <mat-form-field appearance="outline" class="w-100">
-        <textarea matInput [(ngModel)]="data.habitos" rows="3" placeholder="Dieta balanceada, duerme 7h, ejercicio 3x/semana..."></textarea>
+        <textarea matInput [(ngModel)]="data.habitos" rows="3" [placeholder]="'PATIENTS.ANTECEDENTS_HABITS_PLACEHOLDER' | translate"></textarea>
       </mat-form-field>
     </mat-expansion-panel>
 
     <mat-expansion-panel class="antecedent-panel">
       <mat-expansion-panel-header>
         <mat-panel-title>
-          <mat-icon>note</mat-icon> Observaciones
+          <mat-icon>note</mat-icon> {{ 'PATIENTS.ANTECEDENTS_OBSERVATIONS' | translate }}
         </mat-panel-title>
       </mat-expansion-panel-header>
       <mat-form-field appearance="outline" class="w-100">
-        <textarea matInput [(ngModel)]="data.observaciones" rows="3" placeholder="Notas adicionales..."></textarea>
+        <textarea matInput [(ngModel)]="data.observaciones" rows="3" [placeholder]="'PATIENTS.ANTECEDENTS_OBSERVATIONS_PLACEHOLDER' | translate"></textarea>
       </mat-form-field>
     </mat-expansion-panel>
   </div>

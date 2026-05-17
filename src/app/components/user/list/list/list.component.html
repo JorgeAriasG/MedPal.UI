@@ -4,13 +4,13 @@
     <div class="header-content">
       <div class="page-title">
         <mat-icon class="title-icon">people</mat-icon>
-        <span>Users</span>
+        <span>{{ 'USERS.TITLE' | translate }}</span>
       </div>
-      <p class="page-subtitle">Manage system users and their clinic assignments</p>
+      <p class="page-subtitle">{{ 'USERS.SUBTITLE' | translate }}</p>
     </div>
     <button mat-raised-button color="primary" (click)="openAddDialog()" class="add-button">
       <mat-icon>add</mat-icon>
-      Add New User
+      {{ 'USERS.ADD' | translate }}
     </button>
   </div>
 
@@ -20,7 +20,7 @@
       <mat-icon class="search-icon">search</mat-icon>
       <input 
         type="text" 
-        placeholder="Search users..." 
+        [placeholder]="'USERS.SEARCH_PLACEHOLDER' | translate" 
         (input)="onSearch($event)"
         class="search-input"
       >
@@ -30,7 +30,7 @@
   <!-- Loading State -->
   <div class="loading-container" *ngIf="loading && users.length === 0">
     <mat-spinner diameter="40"></mat-spinner>
-    <p>Loading users...</p>
+    <p>{{ 'USERS.LOADING' | translate }}</p>
   </div>
 
   <!-- Users Table -->
@@ -41,7 +41,7 @@
         <th mat-header-cell *matHeaderCellDef class="column-md">
           <div class="header-label">
             <mat-icon>person</mat-icon>
-            Name
+            {{ 'USERS.TABLE_NAME' | translate }}
           </div>
         </th>
         <td mat-cell *matCellDef="let user" class="column-md">
@@ -54,7 +54,7 @@
         <th mat-header-cell *matHeaderCellDef class="column-lg">
           <div class="header-label">
             <mat-icon>email</mat-icon>
-            Email
+            {{ 'USERS.TABLE_EMAIL' | translate }}
           </div>
         </th>
         <td mat-cell *matCellDef="let user" class="column-lg">
@@ -67,7 +67,7 @@
         <th mat-header-cell *matHeaderCellDef class="column-md">
           <div class="header-label">
             <mat-icon>local_hospital</mat-icon>
-            Default Clinic
+            {{ 'USERS.TABLE_CLINIC' | translate }}
           </div>
         </th>
         <td mat-cell *matCellDef="let user" class="column-md">
@@ -75,7 +75,7 @@
             {{ user.defaultClinicId }}
           </span>
           <ng-template #noClinic>
-            <span class="badge empty">Not assigned</span>
+            <span class="badge empty">{{ 'USERS.NOT_ASSIGNED' | translate }}</span>
           </ng-template>
         </td>
       </ng-container>
@@ -85,15 +85,15 @@
         <th mat-header-cell *matHeaderCellDef class="column-actions">
           <div class="header-label">
             <mat-icon>settings</mat-icon>
-            Actions
+            {{ 'COMMON.ACTIONS' | translate }}
           </div>
         </th>
         <td mat-cell *matCellDef="let user" class="column-actions">
           <div class="action-buttons">
-            <button mat-icon-button class="action-btn" (click)="editUser(user)" matTooltip="Edit user">
+            <button mat-icon-button class="action-btn" (click)="editUser(user)" [matTooltip]="'USERS.TOOLTIP_EDIT' | translate">
               <mat-icon>edit</mat-icon>
             </button>
-            <button mat-icon-button class="action-btn" (click)="deleteUser(user.id)" matTooltip="Delete user">
+            <button mat-icon-button class="action-btn" (click)="deleteUser(user.id)" [matTooltip]="'USERS.TOOLTIP_DELETE' | translate">
               <mat-icon>delete</mat-icon>
             </button>
           </div>
@@ -110,11 +110,11 @@
     <div class="empty-state-icon">
       <mat-icon>groups_off</mat-icon>
     </div>
-    <h3 class="empty-state-title">No Users Found</h3>
-    <p class="empty-state-message">Get started by adding your first user to the system</p>
+    <h3 class="empty-state-title">{{ 'USERS.EMPTY_TITLE' | translate }}</h3>
+    <p class="empty-state-message">{{ 'USERS.EMPTY_MESSAGE' | translate }}</p>
     <button mat-raised-button color="primary" (click)="openAddDialog()">
       <mat-icon>add</mat-icon>
-      Create User
+      {{ 'USERS.EMPTY_BUTTON' | translate }}
     </button>
   </div>
 </div>

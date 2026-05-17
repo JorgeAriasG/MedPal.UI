@@ -7,7 +7,7 @@
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: linear-gradient(135deg, var(--color-bg-page) 0%, #F0F4F8 100%);
+  background: linear-gradient(135deg, var(--color-bg-page) 0%, var(--color-bg-page) 100%);
   padding: var(--spacing-lg);
   position: relative;
   flex-flow: column;
@@ -23,7 +23,7 @@
   opacity: 0.5;
   pointer-events: none;
   background:
-    radial-gradient(circle at 20% 50%, rgba(91, 108, 255, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 20% 50%, rgba(44, 62, 80, 0.06) 0%, transparent 50%),
     radial-gradient(circle at 80% 80%, rgba(79, 195, 247, 0.1) 0%, transparent 50%);
 }
 

@@ -5,8 +5,8 @@
         <mat-icon>medication</mat-icon>
       </div>
       <div>
-        <div class="main-card-title">New Digital Prescription</div>
-        <div class="main-card-subtitle">Create a verifiable prescription for your patient</div>
+        <div class="main-card-title">{{ 'PRESCRIPTIONS.TITLE_CREATE' | translate }}</div>
+        <div class="main-card-subtitle">{{ 'PRESCRIPTIONS.SUBTITLE_CREATE' | translate }}</div>
       </div>
     </div>
 
@@ -15,10 +15,10 @@
       <div class="allergy-alert-banner" *ngIf="matchingAllergies.length > 0" [@slideDown]>
         <mat-icon>report_problem</mat-icon>
         <div class="alert-content">
-          <strong>CRITICAL SAFETY ALERT</strong>
-          <p>The patient has a documented allergy to: 
+          <strong>{{ 'PRESCRIPTIONS.ALLERGY_ALERT' | translate }}</strong>
+          <p>{{ 'PRESCRIPTIONS.ALLERGY_WARNING' | translate }} 
             <span class="allergy-name" *ngFor="let allergy of matchingAllergies">{{ allergy }}</span>
-            . Prescription is blocked.</p>
+            {{ 'PRESCRIPTIONS.ALLERGY_BLOCKED' | translate }}</p>
         </div>
       </div>
 
@@ -27,27 +27,27 @@
         <div class="form-section">
           <div class="section-header">
             <mat-icon>person</mat-icon>
-            <h3>Patient Information</h3>
+            <h3>{{ 'PRESCRIPTIONS.SECTION_PATIENT' | translate }}</h3>
           </div>
           
           <div class="form-row">
             <mat-form-field appearance="outline" class="flex-2">
-              <mat-label>Select Patient</mat-label>
+              <mat-label>{{ 'PRESCRIPTIONS.FIELD_SELECT_PATIENT' | translate }}</mat-label>
               <mat-select formControlName="patientId" (selectionChange)="verifyAllergies()">
                 <mat-option *ngFor="let patient of patients" [value]="patient.id">
                   {{ patient.name }} {{ patient.lastname }}
                 </mat-option>
               </mat-select>
               <mat-error *ngIf="prescriptionForm.get('patientId')?.hasError('required')">
-                Please select a patient
+                {{ 'PRESCRIPTIONS.FIELD_NO_PATIENT' | translate }}
               </mat-error>
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="flex-3">
-              <mat-label>Clinical Diagnosis</mat-label>
-              <input matInput formControlName="diagnosis" placeholder="Primary diagnosis for this prescription">
+              <mat-label>{{ 'PRESCRIPTIONS.FIELD_DIAGNOSIS' | translate }}</mat-label>
+              <input matInput formControlName="diagnosis" [placeholder]="'PRESCRIPTIONS.FIELD_DIAGNOSIS_PLACEHOLDER' | translate">
               <mat-error *ngIf="prescriptionForm.get('diagnosis')?.hasError('required')">
-                Diagnosis is required for the medical record
+                {{ 'VALIDATION.DIAGNOSIS_REQUIRED' | translate }}
               </mat-error>
             </mat-form-field>
           </div>
@@ -57,10 +57,10 @@
         <div class="form-section">
           <div class="section-header">
             <mat-icon>list</mat-icon>
-            <h3>Medications & Dosages</h3>
+            <h3>{{ 'PRESCRIPTIONS.SECTION_MEDICATIONS' | translate }}</h3>
             <button mat-button color="primary" type="button" (click)="addItem()">
               <mat-icon>add</mat-icon>
-              Add Item
+              {{ 'PRESCRIPTIONS.BUTTON_ADD_ITEM' | translate }}
             </button>
           </div>
 
@@ -71,37 +71,37 @@
               <div class="row-inputs">
                 <div class="input-group">
                   <mat-form-field appearance="outline" class="med-name">
-                    <mat-label>Medication Name</mat-label>
-                    <input matInput formControlName="medication" placeholder="e.g. Ibuprofen">
+                    <mat-label>{{ 'PRESCRIPTIONS.FIELD_MEDICATION' | translate }}</mat-label>
+                    <input matInput formControlName="medication" [placeholder]="'PRESCRIPTIONS.FIELD_MEDICATION_PLACEHOLDER' | translate">
                     <mat-spinner matSuffix *ngIf="isCheckingAllergies" diameter="20"></mat-spinner>
                   </mat-form-field>
                   
                   <mat-form-field appearance="outline" class="med-dose">
-                    <mat-label>Dose</mat-label>
-                    <input matInput formControlName="dose" placeholder="500mg">
+                    <mat-label>{{ 'PRESCRIPTIONS.FIELD_DOSE' | translate }}</mat-label>
+                    <input matInput formControlName="dose" [placeholder]="'PRESCRIPTIONS.FIELD_DOSE_PLACEHOLDER' | translate">
                   </mat-form-field>
                 </div>
 
                 <div class="input-group">
                   <mat-form-field appearance="outline">
-                    <mat-label>Frequency</mat-label>
-                    <input matInput formControlName="frequency" placeholder="Every 8h">
+                    <mat-label>{{ 'PRESCRIPTIONS.FIELD_FREQUENCY' | translate }}</mat-label>
+                    <input matInput formControlName="frequency" [placeholder]="'PRESCRIPTIONS.FIELD_FREQUENCY_PLACEHOLDER' | translate">
                   </mat-form-field>
 
                   <mat-form-field appearance="outline">
-                    <mat-label>Duration</mat-label>
-                    <input matInput formControlName="duration" placeholder="5 days">
+                    <mat-label>{{ 'PRESCRIPTIONS.FIELD_DURATION' | translate }}</mat-label>
+                    <input matInput formControlName="duration" [placeholder]="'PRESCRIPTIONS.FIELD_DURATION_PLACEHOLDER' | translate">
                   </mat-form-field>
                 </div>
 
                 <mat-form-field appearance="outline" class="full-width">
-                  <mat-label>Special Instructions</mat-label>
-                  <input matInput formControlName="notes" placeholder="e.g. Administer after meals">
+                <mat-label>{{ 'PRESCRIPTIONS.FIELD_INSTRUCTIONS' | translate }}</mat-label>
+                <input matInput formControlName="notes" [placeholder]="'PRESCRIPTIONS.FIELD_INSTRUCTIONS_PLACEHOLDER' | translate">
                 </mat-form-field>
               </div>
 
               <div class="item-actions">
-                <button mat-icon-button color="warn" type="button" (click)="removeItem(i)" *ngIf="items.length > 1" matTooltip="Remove this medication">
+                <button mat-icon-button color="warn" type="button" (click)="removeItem(i)" *ngIf="items.length > 1" [matTooltip]="'PRESCRIPTIONS.TOOLTIP_REMOVE' | translate">
                   <mat-icon>delete_outline</mat-icon>
                 </button>
               </div>
@@ -123,7 +123,7 @@
         <div class="form-actions">
           <button mat-flat-button color="primary" type="submit" [disabled]="prescriptionForm.invalid || matchingAllergies.length > 0">
             <mat-icon>save</mat-icon>
-            <span>Issue & Generate QR</span>
+            <span>{{ 'PRESCRIPTIONS.BUTTON_ISSUE' | translate }}</span>
           </button>
         </div>
       </form>

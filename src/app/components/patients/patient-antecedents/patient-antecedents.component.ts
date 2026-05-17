@@ -1,6 +1,7 @@
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { TranslateService } from '@ngx-translate/core';
 import { ClinicalDataService } from 'src/app/services/clinical-data.service';
 
 export interface AntecedentsData {
@@ -35,7 +36,10 @@ export class PatientAntecedentsComponent implements OnInit, OnDestroy {
   error = '';
   private destroy$ = new Subject<void>();
 
-  constructor(private clinicalDataService: ClinicalDataService) {}
+  constructor(
+    private clinicalDataService: ClinicalDataService,
+    private translate: TranslateService
+  ) {}
 
   ngOnInit(): void {
     this.loadData();
@@ -80,7 +84,7 @@ export class PatientAntecedentsComponent implements OnInit, OnDestroy {
         },
         error: (err) => {
           this.saving = false;
-          this.error = 'Error al guardar antecedentes';
+          this.error = this.translate.instant('PATIENTS.ERROR_SAVE_ANTECEDENTS');
           console.error(err);
         },
       });

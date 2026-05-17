@@ -65,8 +65,8 @@
   display: inline-flex;
   align-items: center;
   padding: 2px 8px;
-  background: #eef2ff;
-  color: #5b6cff;
+  background: var(--color-primary-light);
+  color: var(--color-primary);
   border-radius: 4px;
   font-weight: 600;
   font-size: 12px;

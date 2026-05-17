@@ -3,20 +3,18 @@
     <div class="timeout-icon">
       <mat-icon>timer</mat-icon>
     </div>
-    <h2 class="timeout-title">Sesión por expirar</h2>
-    <p class="timeout-message">
-      Su sesión se cerrará automáticamente por inactividad.
-    </p>
+    <h2 class="timeout-title">{{ 'TIMEOUT.TITLE' | translate }}</h2>
+    <p class="timeout-message">{{ 'TIMEOUT.MESSAGE' | translate }}</p>
     <div class="timeout-countdown">
       <span class="countdown-value">{{ displayMinutes }}:{{ displaySeconds | number:'2.0' }}</span>
-      <span class="countdown-label">segundos restantes</span>
+      <span class="countdown-label">{{ 'TIMEOUT.SECONDS_REMAINING' | translate }}</span>
     </div>
     <div class="timeout-actions">
       <button mat-stroked-button color="primary" (click)="onLogout()">
-        Cerrar sesión
+        {{ 'TIMEOUT.LOGOUT' | translate }}
       </button>
       <button mat-raised-button color="primary" (click)="onContinue()">
-        Seguir conectado
+        {{ 'TIMEOUT.CONTINUE' | translate }}
       </button>
     </div>
   </div>

@@ -11,6 +11,8 @@ import {
   withInterceptorsFromDi,
   HTTP_INTERCEPTORS,
 } from '@angular/common/http';
+import { provideTranslateService } from '@ngx-translate/core';
+import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { LoginComponent } from './components/user/login/login.component';
@@ -30,6 +32,7 @@ import { AuthInterceptor } from './interceptors/authInterceptor';
 import { AuditContextInterceptor } from './interceptors/audit-context.interceptor';
 import { localStorageSync } from 'ngrx-store-localstorage';
 import { ActionReducer, MetaReducer } from '@ngrx/store';
+
 
 // Meta-reducer para persistencia automática del state
 export function localStorageSyncReducer(
@@ -69,6 +72,11 @@ export const metaReducers: MetaReducer<any>[] = [localStorageSyncReducer];
   ],
   providers: [
     provideHttpClient(withInterceptorsFromDi()),
+    provideTranslateService({ fallbackLang: 'es' }),
+    provideTranslateHttpLoader({
+      prefix: './assets/i18n/',
+      suffix: '.json',
+    }),
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: AuditContextInterceptor, multi: true },
   ],

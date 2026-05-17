@@ -4,6 +4,7 @@ import { Store } from '@ngrx/store';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from '../../../services/auth.service';
 import { AuthState } from '../../../store/reducers/auth.reducer';
 import { selectAuthError, selectIsLoading } from '../../../store/selectors/auth.selectors';
@@ -24,20 +25,14 @@ export class SignupComponent implements OnInit, OnDestroy {
   passwordStrengthText = '';
   private destroy$ = new Subject<void>();
 
-  specialties = [
-    { value: 'General', label: 'General Practice' },
-    { value: 'Dentistry', label: 'Dentistry' },
-    { value: 'Nutrition', label: 'Nutrition' },
-    { value: 'Cardiology', label: 'Cardiology' },
-    { value: 'Pediatrics', label: 'Pediatrics' },
-    { value: 'Dermatology', label: 'Dermatology' },
-  ];
+  specialties: { value: string; label: string }[] = [];
 
   constructor(
     private fb: FormBuilder,
     private store: Store<{ auth: AuthState }>,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private translate: TranslateService
   ) {
     this.form = this.createForm();
     this.error$ = this.store.select(selectAuthError);
@@ -45,7 +40,14 @@ export class SignupComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // Initialization if needed
+    this.specialties = [
+      { value: 'General', label: this.translate.instant('AUTH.SIGNUP.SPECIALTY_GENERAL') },
+      { value: 'Dentistry', label: this.translate.instant('AUTH.SIGNUP.SPECIALTY_DENTISTRY') },
+      { value: 'Nutrition', label: this.translate.instant('AUTH.SIGNUP.SPECIALTY_NUTRITION') },
+      { value: 'Cardiology', label: this.translate.instant('AUTH.SIGNUP.SPECIALTY_CARDIOLOGY') },
+      { value: 'Pediatrics', label: this.translate.instant('AUTH.SIGNUP.SPECIALTY_PEDIATRICS') },
+      { value: 'Dermatology', label: this.translate.instant('AUTH.SIGNUP.SPECIALTY_DERMATOLOGY') },
+    ];
   }
 
   ngOnDestroy(): void {
@@ -103,15 +105,15 @@ export class SignupComponent implements OnInit, OnDestroy {
     if (strength <= 1) {
       this.passwordStrength = 'weak';
       this.passwordStrengthPercent = 33;
-      this.passwordStrengthText = 'Weak';
+      this.passwordStrengthText = this.translate.instant('AUTH.SIGNUP.PASSWORD_STRENGTH_WEAK');
     } else if (strength <= 2) {
       this.passwordStrength = 'medium';
       this.passwordStrengthPercent = 66;
-      this.passwordStrengthText = 'Medium';
+      this.passwordStrengthText = this.translate.instant('AUTH.SIGNUP.PASSWORD_STRENGTH_MEDIUM');
     } else {
       this.passwordStrength = 'strong';
       this.passwordStrengthPercent = 100;
-      this.passwordStrengthText = 'Strong';
+      this.passwordStrengthText = this.translate.instant('AUTH.SIGNUP.PASSWORD_STRENGTH_STRONG');
     }
   }
 

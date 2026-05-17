@@ -3,15 +3,15 @@
   <div class="filters-header">
     <div class="filter-group main-search">
       <mat-form-field appearance="outline">
-        <mat-label>Buscar en historial</mat-label>
-        <input matInput [(ngModel)]="searchTerm" (ngModelChange)="applyFilters()" placeholder="Diagnóstico, notas o doctor...">
+        <mat-label>{{ 'MEDICAL_HISTORY.TIMELINE_SEARCH' | translate }}</mat-label>
+        <input matInput [(ngModel)]="searchTerm" (ngModelChange)="applyFilters()" [placeholder]="'MEDICAL_HISTORY.TIMELINE_SEARCH_PLACEHOLDER' | translate">
         <mat-icon matPrefix>search</mat-icon>
       </mat-form-field>
     </div>
 
     <div class="filter-group">
       <mat-form-field appearance="outline">
-        <mat-label>Especialidad</mat-label>
+        <mat-label>{{ 'MEDICAL_HISTORY.TIMELINE_SPECIALTY' | translate }}</mat-label>
         <mat-select [(ngModel)]="selectedSpecialty" (selectionChange)="applyFilters()">
           <mat-option *ngFor="let spec of specialties" [value]="spec">
             {{ spec }}
@@ -23,10 +23,10 @@
 
     <div class="filter-group">
       <mat-form-field appearance="outline">
-        <mat-label>Rango de fechas</mat-label>
+        <mat-label>{{ 'MEDICAL_HISTORY.TIMELINE_DATE_RANGE' | translate }}</mat-label>
         <mat-date-range-input [rangePicker]="picker">
-          <input matStartDate [(ngModel)]="startDate" (ngModelChange)="applyFilters()" placeholder="Inicio">
-          <input matEndDate [(ngModel)]="endDate" (ngModelChange)="applyFilters()" placeholder="Fin">
+          <input matStartDate [(ngModel)]="startDate" (ngModelChange)="applyFilters()" [placeholder]="'MEDICAL_HISTORY.TIMELINE_START' | translate">
+          <input matEndDate [(ngModel)]="endDate" (ngModelChange)="applyFilters()" [placeholder]="'MEDICAL_HISTORY.TIMELINE_END' | translate">
         </mat-date-range-input>
         <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-date-range-picker #picker></mat-date-range-picker>
@@ -35,13 +35,13 @@
 
     <button mat-stroked-button color="warn" class="clear-btn" (click)='resetFilters()'>
       <mat-icon>filter_list_off</mat-icon>
-      Limpiar
+      {{ 'MEDICAL_HISTORY.TIMELINE_CLEAR' | translate }}
     </button>
   </div>
 
   <div *ngIf="filteredEntries.length === 0" class="empty-state">
     <mat-icon>event_note</mat-icon>
-    <p>No se encontraron consultas con los filtros aplicados</p>
+    <p>{{ 'MEDICAL_HISTORY.TIMELINE_EMPTY_FILTERED' | translate }}</p>
   </div>
 
   <div class="timeline" *ngIf="filteredEntries.length > 0">
@@ -60,7 +60,7 @@
             <div>
               <mat-card-title>{{ entry.specialtyType }}</mat-card-title>
               <mat-card-subtitle>
-                {{ entry.createdAt | date : "medium" }} • Dr.
+                {{ entry.createdAt | date : "medium" }} • {{ 'MEDICAL_HISTORY.TIMELINE_DOCTOR_PREFIX' | translate }}
                 {{ entry.doctorName }}
               </mat-card-subtitle>
             </div>
@@ -77,17 +77,17 @@
           <!-- Common Fields -->
           <div class="common-info">
             <div class="info-section">
-              <h4><mat-icon>assignment</mat-icon> Diagnóstico</h4>
+              <h4><mat-icon>assignment</mat-icon> {{ 'MEDICAL_HISTORY.TIMELINE_DIAGNOSIS' | translate }}</h4>
               <p>{{ entry.diagnosis }}</p>
             </div>
 
             <div class="info-section">
-              <h4><mat-icon>description</mat-icon> Notas Clínicas</h4>
+              <h4><mat-icon>description</mat-icon> {{ 'MEDICAL_HISTORY.TIMELINE_CLINICAL_NOTES' | translate }}</h4>
               <p class="clinical-notes">{{ entry.clinicalNotes }}</p>
             </div>
 
             <div class="info-section" *ngIf="entry.treatmentPlan">
-              <h4><mat-icon>healing</mat-icon> Plan de Tratamiento</h4>
+              <h4><mat-icon>healing</mat-icon> {{ 'MEDICAL_HISTORY.TIMELINE_TREATMENT_PLAN' | translate }}</h4>
               <p>{{ entry.treatmentPlan }}</p>
             </div>
           </div>
@@ -96,7 +96,7 @@
           <div class="specialty-data" [ngSwitch]="entry.specialtyType">
             <!-- Dental Data -->
             <div *ngSwitchCase="'Dental'" class="dental-data">
-              <h4><mat-icon>medical_services</mat-icon> Odontograma</h4>
+              <h4><mat-icon>medical_services</mat-icon> {{ 'MEDICAL_HISTORY.TIMELINE_ODONTOGRAM' | translate }}</h4>
               <div
                 class="teeth-summary"
                 *ngIf="getDentalData(entry) as dentalData"
@@ -116,33 +116,33 @@
                   </div>
                 </div>
                 <p *ngIf="dentalData.observations" class="observations">
-                  <strong>Observaciones:</strong> {{ dentalData.observations }}
+                  <strong>{{ 'MEDICAL_HISTORY.TIMELINE_OBSERVATIONS' | translate }}</strong> {{ dentalData.observations }}
                 </p>
               </div>
             </div>
 
             <!-- Nutrition Data -->
             <div *ngSwitchCase="'Nutrición'" class="nutrition-data">
-              <h4><mat-icon>restaurant</mat-icon> Evaluación Nutricional</h4>
+              <h4><mat-icon>restaurant</mat-icon> {{ 'MEDICAL_HISTORY.TIMELINE_NUTRITION_EVAL' | translate }}</h4>
               <div
                 *ngIf="getNutritionData(entry) as nutritionData"
                 class="nutrition-summary"
               >
                 <div class="nutrition-metrics">
                   <div class="metric">
-                    <span class="metric-label">Peso:</span>
+                    <span class="metric-label">{{ 'MEDICAL_HISTORY.TIMELINE_WEIGHT' | translate }}</span>
                     <span class="metric-value"
                       >{{ nutritionData.peso }} kg</span
                     >
                   </div>
                   <div class="metric">
-                    <span class="metric-label">Altura:</span>
+                    <span class="metric-label">{{ 'MEDICAL_HISTORY.TIMELINE_HEIGHT' | translate }}</span>
                     <span class="metric-value"
                       >{{ nutritionData.altura }} m</span
                     >
                   </div>
                   <div class="metric">
-                    <span class="metric-label">IMC:</span>
+                    <span class="metric-label">{{ 'MEDICAL_HISTORY.TIMELINE_BMI' | translate }}</span>
                     <span
                       class="metric-value"
                       [style.color]="getIMCColor(nutritionData.imc)"
@@ -151,17 +151,17 @@
                     </span>
                   </div>
                   <div class="metric">
-                    <span class="metric-label">Calorías/día:</span>
+                    <span class="metric-label">{{ 'MEDICAL_HISTORY.TIMELINE_CALORIES' | translate }}</span>
                     <span class="metric-value">{{
                       nutritionData.caloriasDiarias
                     }}</span>
                   </div>
                 </div>
                 <p *ngIf="nutritionData.objetivo">
-                  <strong>Objetivo:</strong> {{ nutritionData.objetivo }}
+                  <strong>{{ 'MEDICAL_HISTORY.TIMELINE_OBJECTIVE' | translate }}</strong> {{ nutritionData.objetivo }}
                 </p>
                 <div *ngIf="nutritionData.restricciones && nutritionData.restricciones.length > 0">
-                  <strong>Restricciones:</strong>
+                  <strong>{{ 'MEDICAL_HISTORY.TIMELINE_RESTRICTIONS' | translate }}</strong>
                   <mat-chip-set>
                     <mat-chip *ngFor="let r of nutritionData.restricciones">{{
                       r
@@ -173,7 +173,7 @@
 
             <!-- Generic Data -->
             <div *ngSwitchDefault class="generic-data">
-              <h4><mat-icon>notes</mat-icon> Datos Adicionales</h4>
+              <h4><mat-icon>notes</mat-icon> {{ 'MEDICAL_HISTORY.TIMELINE_ADDITIONAL_DATA' | translate }}</h4>
               <div *ngIf="getGenericData(entry) as genericData">
                 <pre class="custom-data">{{ genericData.customData }}</pre>
               </div>

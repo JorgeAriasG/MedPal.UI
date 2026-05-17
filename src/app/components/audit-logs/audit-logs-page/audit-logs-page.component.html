@@ -21,10 +21,9 @@
       <mat-card-header>
         <mat-card-title>
           <mat-icon class="title-icon">security_audit</mat-icon>
-          Audit Logs
+          {{ 'AUDIT.TITLE' | translate }}
         </mat-card-title>
-        <mat-card-subtitle
-          >Monitor access to medical records and patient data</mat-card-subtitle
+        <mat-card-subtitle>{{ 'AUDIT.SUBTITLE' | translate }}</mat-card-subtitle
         >
       </mat-card-header>
     </mat-card>
@@ -39,7 +38,7 @@
     <!-- Loading State -->
     <div *ngIf="loading$ | async" class="loading-container">
       <mat-spinner diameter="50"></mat-spinner>
-      <p class="loading-text">Loading audit logs...</p>
+      <p class="loading-text">{{ 'AUDIT.LOADING' | translate }}</p>
     </div>
 
     <!-- Empty State -->
@@ -53,10 +52,8 @@
       <mat-card>
         <mat-card-content>
           <mat-icon class="empty-icon">info</mat-icon>
-          <p class="empty-text">No audit logs found</p>
-          <p class="empty-subtext">
-            Try adjusting your filters or date range
-          </p>
+          <p class="empty-text">{{ 'AUDIT.EMPTY_TITLE' | translate }}</p>
+          <p class="empty-subtext">{{ 'AUDIT.EMPTY_MESSAGE' | translate }}</p>
         </mat-card-content>
       </mat-card>
     </div>

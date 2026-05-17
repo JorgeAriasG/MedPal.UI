@@ -3,6 +3,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTable } from '@angular/material/table';
+import { TranslateService } from '@ngx-translate/core';
 import { ClinicalDataService } from 'src/app/services/clinical-data.service';
 import { IVitalSign } from 'src/app/entities/IVitalSign';
 import { VitalSignDialogComponent } from './vital-sign-dialog.component';
@@ -27,7 +28,8 @@ export class PatientVitalSignsComponent implements OnInit, OnDestroy {
 
   constructor(
     private clinicalDataService: ClinicalDataService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private translate: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -52,7 +54,7 @@ export class PatientVitalSignsComponent implements OnInit, OnDestroy {
         },
         error: () => {
           this.loading = false;
-          this.error = 'Error al cargar signos vitales';
+          this.error = this.translate.instant('PATIENTS.ERROR_LOAD_VITAL');
         },
       });
   }
@@ -75,13 +77,13 @@ export class PatientVitalSignsComponent implements OnInit, OnDestroy {
   }
 
   delete(id: number): void {
-    if (!confirm('¿Eliminar este registro de signos vitales?')) return;
+    if (!confirm(this.translate.instant('PATIENTS.CONFIRM_DELETE_VITAL'))) return;
     this.clinicalDataService
       .deleteVitalSign(id)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: () => this.loadData(),
-        error: () => this.error = 'Error al eliminar',
+        error: () => this.error = this.translate.instant('PATIENTS.ERROR_DELETE_VITAL'),
       });
   }
 }

@@ -131,7 +131,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
           this.loading = false;
           this.appointments = response;
           const statusColors: Record<string, { primary: string; secondary: string; secondaryText: string }> = {
-            Scheduled: { primary: '#5B6CFF', secondary: 'rgba(91,108,255,0.12)', secondaryText: '#5B6CFF' },
+            Scheduled: { primary: '#2C3E50', secondary: 'rgba(44,62,80,0.12)', secondaryText: '#2C3E50' },
             Confirmed: { primary: '#34D399', secondary: 'rgba(52,211,153,0.12)', secondaryText: '#059669' },
             Cancelled: { primary: '#F87171', secondary: 'rgba(248,113,113,0.12)', secondaryText: '#DC2626' },
             Completed: { primary: '#A78BFA', secondary: 'rgba(167,139,250,0.12)', secondaryText: '#7C3AED' },

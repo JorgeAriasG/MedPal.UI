@@ -3,6 +3,7 @@ import { Store } from '@ngrx/store';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil, distinctUntilChanged } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 import { AuthState } from './store/reducers/auth.reducer';
 import { selectIsLoggedIn } from './store/selectors/auth.selectors';
 import { UiService } from './services/ui.service';
@@ -31,8 +32,11 @@ export class AppComponent implements OnInit, OnDestroy {
     private shortcutService: KeyboardShortcutService,
     private idleService: IdleService,
     private authService: AuthService,
+    private translate: TranslateService,
   ) {
     this.isLoggedIn$ = this.store.select(selectIsLoggedIn);
+    translate.setDefaultLang('es');
+    translate.use('es');
   }
 
   ngOnInit() {

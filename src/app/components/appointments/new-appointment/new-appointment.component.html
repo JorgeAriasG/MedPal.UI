@@ -1,7 +1,7 @@
 <div class="appointment-dialog">
   <!-- Header -->
   <div class="dialog-header">
-    <h2 class="dialog-title">{{ isEditMode ? 'Edit Appointment' : 'New Appointment' }}</h2>
+    <h2 class="dialog-title">{{ isEditMode ? ('APPOINTMENTS.DIALOG_EDIT_TITLE' | translate) : ('APPOINTMENTS.DIALOG_NEW_TITLE' | translate) }}</h2>
   </div>
 
   <!-- Content -->
@@ -9,17 +9,17 @@
     <div class="appointment-form-wrapper" [class.loading-overlay]="isLoading">
       <!-- Patient Section -->
       <div class="form-section">
-        <h3 class="section-title">Patient Selection</h3>
+        <h3 class="section-title">{{ 'APPOINTMENTS.SECTION_PATIENT' | translate }}</h3>
 
         <form [formGroup]="patientForm" class="patient-form">
           <mat-form-field class="full-width" appearance="outline">
-            <mat-label>Search Patient</mat-label>
+            <mat-label>{{ 'APPOINTMENTS.SEARCH_PATIENT' | translate }}</mat-label>
             <input
               matInput
               formControlName="name"
               [matAutocomplete]="auto"
               autocomplete="off"
-              placeholder="Search by name..."
+              [placeholder]="'APPOINTMENTS.SEARCH_PATIENT_PLACEHOLDER' | translate"
             />
             <mat-icon matPrefix>person_search</mat-icon>
             <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="selectPatient($event)">
@@ -27,7 +27,7 @@
                 {{ option.name }} {{ option.lastname }}
               </mat-option>
             </mat-autocomplete>
-            <mat-hint *ngIf="isEditMode">Patient cannot be changed when editing an existing appointment.</mat-hint>
+            <mat-hint *ngIf="isEditMode">{{ 'APPOINTMENTS.HINT_PATIENT_LOCKED' | translate }}</mat-hint>
           </mat-form-field>
 
         </form>
@@ -35,37 +35,37 @@
 
       <!-- Appointment Details Section -->
       <div class="form-section">
-        <h3 class="section-title">Appointment Details</h3>
+        <h3 class="section-title">{{ 'APPOINTMENTS.SECTION_DETAILS' | translate }}</h3>
 
         <form [formGroup]="appointmentForm" class="appointment-details-form">
           <div class="form-row">
             <mat-form-field class="form-col" appearance="outline">
-              <mat-label>Date</mat-label>
+              <mat-label>{{ 'COMMON.DATE' | translate }}</mat-label>
               <input matInput [matDatepicker]="datepicker" formControlName="date" />
               <mat-datepicker-toggle matSuffix [for]="datepicker"></mat-datepicker-toggle>
               <mat-datepicker #datepicker></mat-datepicker>
               <mat-icon matPrefix>event</mat-icon>
-              <mat-error *ngIf="appointmentForm.get('date')?.hasError('required')">Date is required</mat-error>
+              <mat-error *ngIf="appointmentForm.get('date')?.hasError('required')">{{ 'VALIDATION.DATE_REQUIRED' | translate }}</mat-error>
             </mat-form-field>
 
             <mat-form-field class="form-col" appearance="outline">
-              <mat-label>Time</mat-label>
+              <mat-label>{{ 'COMMON.TIME' | translate }}</mat-label>
               <mat-select formControlName="time">
                 <mat-option *ngIf="availableSlots.length === 0" [value]="null" disabled>
-                  {{ clinicOpen ? 'No available slots' : 'Loading...' }}
+                  {{ clinicOpen ? ('APPOINTMENTS.SLOTS_NONE' | translate) : ('COMMON.LOADING' | translate) }}
                 </mat-option>
                 <mat-option *ngFor="let slot of availableSlots" [value]="{ hour: slot.hour, minute: slot.minute }">
                   {{ slot.label }}
                 </mat-option>
               </mat-select>
               <mat-icon matPrefix>schedule</mat-icon>
-              <mat-error *ngIf="appointmentForm.get('time')?.hasError('required')">Time is required</mat-error>
+              <mat-error *ngIf="appointmentForm.get('time')?.hasError('required')">{{ 'VALIDATION.TIME_REQUIRED' | translate }}</mat-error>
             </mat-form-field>
           </div>
 
           <div class="form-row">
             <mat-form-field class="form-col" appearance="outline">
-              <mat-label>Status</mat-label>
+              <mat-label>{{ 'COMMON.STATUS' | translate }}</mat-label>
               <mat-select formControlName="status">
                 <mat-option *ngFor="let option of statusOptions" [value]="option.value">
                   {{ option.label }}
@@ -78,8 +78,8 @@
           </div>
 
           <mat-form-field class="full-width" appearance="outline">
-            <mat-label>Notes</mat-label>
-            <textarea matInput formControlName="notes" rows="3" placeholder="Add any additional notes..."></textarea>
+            <mat-label>{{ 'COMMON.NOTES' | translate }}</mat-label>
+            <textarea matInput formControlName="notes" rows="3" [placeholder]="'APPOINTMENTS.NOTES_PLACEHOLDER' | translate"></textarea>
             <mat-icon matPrefix>note</mat-icon>
           </mat-form-field>
         </form>
@@ -94,13 +94,13 @@
 
   <!-- Actions -->
   <div class="dialog-actions">
-    <button mat-button (click)="closeDialog()" class="cancel-btn" [disabled]="isLoading">Cancel</button>
+    <button mat-button (click)="closeDialog()" class="cancel-btn" [disabled]="isLoading">{{ 'APPOINTMENTS.CANCEL' | translate }}</button>
     <button mat-raised-button color="primary" 
             (click)="saveAppointment()" 
             class="save-btn" 
             [disabled]="isLoading || appointmentForm.invalid">
       <mat-icon>{{ isEditMode ? 'save' : 'add_circle' }}</mat-icon>
-      <span>{{ isEditMode ? 'Update Appointment' : 'Create Appointment' }}</span>
+      <span>{{ isEditMode ? ('APPOINTMENTS.BUTTON_UPDATE' | translate) : ('APPOINTMENTS.BUTTON_CREATE' | translate) }}</span>
     </button>
   </div>
 </div>

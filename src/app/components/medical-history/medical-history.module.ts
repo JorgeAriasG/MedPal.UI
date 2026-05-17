@@ -14,6 +14,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatChipsModule } from '@angular/material/chips';
+import { TranslateModule } from '@ngx-translate/core';
 
 // Components
 import { DentalTemplateComponent } from './specialty-templates/dental-template/dental-template.component';
@@ -47,6 +48,7 @@ import { HistoryTimelineComponent } from './history-timeline/history-timeline.co
     MatSelectModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    TranslateModule,
   ],
   exports: [HistoryFormComponent, HistoryTimelineComponent],
 })

@@ -156,7 +156,7 @@
 
 .next-status.status-scheduled,
 .next-status.status-confirmed {
-  background: rgba(91, 108, 255, 0.1);
+  background: rgba(44, 62, 80, 0.1);
   color: var(--color-primary);
 }
 
@@ -290,7 +290,7 @@
 }
 
 .appt-row:hover {
-  background: rgba(91, 108, 255, 0.04);
+  background: rgba(44, 62, 80, 0.04);
 }
 
 .appt-time {
@@ -326,7 +326,7 @@
 }
 
 .badge-scheduled, .badge-confirmed {
-  background: rgba(91, 108, 255, 0.1);
+  background: rgba(44, 62, 80, 0.1);
   color: var(--color-primary);
 }
 
@@ -418,7 +418,7 @@
 }
 
 .patient-row:hover {
-  background: rgba(91, 108, 255, 0.04);
+  background: rgba(44, 62, 80, 0.04);
 }
 
 .patient-avatar {
@@ -427,7 +427,7 @@
   justify-content: center;
   width: 36px;
   height: 36px;
-  background: rgba(91, 108, 255, 0.08);
+  background: rgba(44, 62, 80, 0.08);
   border-radius: 50%;
   color: var(--color-primary);
   flex-shrink: 0;

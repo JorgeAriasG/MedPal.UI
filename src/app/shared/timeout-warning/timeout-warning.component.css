@@ -36,7 +36,7 @@
 
 .timeout-icon {
   font-size: 48px;
-  color: var(--color-primary, #5B6CFF);
+  color: var(--color-primary);
   margin-bottom: 16px;
 }
 
@@ -67,7 +67,7 @@
 .countdown-value {
   font-size: 48px;
   font-weight: 700;
-  color: #5B6CFF;
+  color: var(--color-primary);
   display: block;
   line-height: 1.1;
 }

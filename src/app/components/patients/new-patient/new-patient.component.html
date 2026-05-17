@@ -1,67 +1,67 @@
 <form (submit)="onSubmit($event)" class="new-patient-form">
   <div class="form-row">
     <mat-form-field appearance="outline">
-      <mat-label>Name</mat-label>
+      <mat-label>{{ 'PATIENTS.FORM_FIRST_NAME' | translate }}</mat-label>
       <input matInput [(ngModel)]="newPatient.name" name="name" required />
     </mat-form-field>
 
     <mat-form-field appearance="outline">
-      <mat-label>Middlename</mat-label>
+      <mat-label>{{ 'PATIENTS.FORM_MIDDLENAME' | translate }}</mat-label>
       <input matInput [(ngModel)]="newPatient.middlename" name="middlename" />
     </mat-form-field>
 
     <mat-form-field appearance="outline">
-      <mat-label>Lastname</mat-label>
+      <mat-label>{{ 'PATIENTS.FORM_LAST_NAME' | translate }}</mat-label>
       <input matInput [(ngModel)]="newPatient.lastname" name="lastname" required />
     </mat-form-field>
   </div>
 
   <div class="form-row">
     <mat-form-field appearance="outline">
-      <mat-label>Email</mat-label>
+      <mat-label>{{ 'PATIENTS.FORM_EMAIL' | translate }}</mat-label>
       <input matInput [(ngModel)]="newPatient.email" name="email" type="email" required />
       <mat-error *ngIf="emailError">{{ emailError }}</mat-error>
     </mat-form-field>
 
     <mat-form-field appearance="outline">
-      <mat-label>Phone</mat-label>
+      <mat-label>{{ 'PATIENTS.FORM_PHONE' | translate }}</mat-label>
       <input matInput [(ngModel)]="newPatient.phone" name="phone" required />
     </mat-form-field>
   </div>
 
   <div class="form-row">
     <mat-form-field appearance="outline">
-      <mat-label>Date of Birth</mat-label>
+      <mat-label>{{ 'PATIENTS.FORM_DOB' | translate }}</mat-label>
       <input matInput [matDatepicker]="picker" [(ngModel)]="newPatient.dob" name="dob" required>
-      <mat-hint>Patient must be 18+</mat-hint>
+      <mat-hint>{{ 'PATIENTS.FORM_DOB_HINT' | translate }}</mat-hint>
       <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>
       <mat-error *ngIf="ageError">{{ ageError }}</mat-error>
     </mat-form-field>
 
     <mat-form-field appearance="outline">
-      <mat-label>Gender</mat-label>
+      <mat-label>{{ 'PATIENTS.FORM_GENDER' | translate }}</mat-label>
       <mat-select [(ngModel)]="newPatient.gender" name="gender" required>
-        <mat-option value="Male">Male</mat-option>
-        <mat-option value="Female">Female</mat-option>
-        <mat-option value="Other">Other</mat-option>
+        <mat-option value="Male">{{ 'PATIENTS.GENDER_MALE' | translate }}</mat-option>
+        <mat-option value="Female">{{ 'PATIENTS.GENDER_FEMALE' | translate }}</mat-option>
+        <mat-option value="Other">{{ 'PATIENTS.GENDER_OTHER' | translate }}</mat-option>
       </mat-select>
     </mat-form-field>
   </div>
 
   <mat-form-field appearance="outline" class="full-width">
-    <mat-label>Address</mat-label>
+    <mat-label>{{ 'PATIENTS.FORM_ADDRESS' | translate }}</mat-label>
     <textarea matInput [(ngModel)]="newPatient.address" name="address" required rows="2"></textarea>
   </mat-form-field>
 
   <mat-form-field appearance="outline" class="full-width">
-    <mat-label>CURP (opcional)</mat-label>
-    <input matInput [(ngModel)]="newPatient.curp" name="curp" placeholder="CURP-123456-789" maxlength="18" />
-    <mat-hint>Clave Única de Registro de Población (18 caracteres)</mat-hint>
+    <mat-label>{{ 'PATIENTS.FORM_CURP' | translate }}</mat-label>
+    <input matInput [(ngModel)]="newPatient.curp" name="curp" [placeholder]="'PATIENTS.FORM_CURP_PLACEHOLDER' | translate" maxlength="18" />
+    <mat-hint>{{ 'PATIENTS.FORM_CURP_HINT' | translate }}</mat-hint>
   </mat-form-field>
 
   <mat-form-field appearance="outline" class="full-width">
-    <mat-label>Emergency Contact</mat-label>
+    <mat-label>{{ 'PATIENTS.FORM_EMERGENCY_CONTACT' | translate }}</mat-label>
     <input matInput [(ngModel)]="newPatient.emergencyContact" name="emergencyContact" required />
   </mat-form-field>
 
@@ -69,7 +69,7 @@
     <button mat-flat-button color="primary" type="submit" [disabled]="isSubmitting">
       <mat-icon *ngIf="!isSubmitting">person_add</mat-icon>
       <mat-spinner *ngIf="isSubmitting" diameter="20"></mat-spinner>
-      <span class="ml-sm">{{ isSubmitting ? 'Saving...' : 'Register Patient' }}</span>
+      <span class="ml-sm">{{ isSubmitting ? ('PATIENTS.FORM_SAVING' | translate) : ('PATIENTS.FORM_SUBMIT' | translate) }}</span>
     </button>
   </div>
 </form>

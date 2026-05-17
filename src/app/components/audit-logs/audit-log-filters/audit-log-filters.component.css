@@ -133,7 +133,7 @@ form {
 }
 
 .reset-btn:hover:not(:disabled) {
-  background-color: rgba(91, 108, 255, 0.06);
+  background-color: rgba(44, 62, 80, 0.06);
 }
 
 .reset-btn:disabled {

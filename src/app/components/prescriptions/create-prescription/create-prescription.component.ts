@@ -13,6 +13,7 @@ import { PrescriptionService } from 'src/app/services/prescription.service';
 import {
   selectAuthContext,
 } from 'src/app/store/selectors/auth.selectors';
+import { TranslateService } from '@ngx-translate/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { fadeIn } from 'src/app/shared/animations';
 
@@ -41,7 +42,8 @@ export class CreatePrescriptionComponent implements OnInit, OnDestroy {
     private patientsService: PatientsService,
     private prescriptionService: PrescriptionService,
     private store: Store,
-    private router: Router
+    private router: Router,
+    private translate: TranslateService
   ) {
     this.prescriptionForm = this.fb.group({
       patientId: ['', Validators.required],
@@ -160,7 +162,7 @@ export class CreatePrescriptionComponent implements OnInit, OnDestroy {
   savePrescription() {
     if (this.prescriptionForm.invalid || this.matchingAllergies.length > 0) {
       if (this.matchingAllergies.length > 0) {
-        this.errorMessage = 'Cannot save: Patient is allergic to one or more medications.';
+        this.errorMessage = this.translate.instant('PRESCRIPTIONS.SNACKBAR_ALLERGY');
       }
       return;
     }
@@ -189,7 +191,7 @@ export class CreatePrescriptionComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (res) => {
-          this.infoMessage = 'Prescription created successfully!';
+          this.infoMessage = this.translate.instant('PRESCRIPTIONS.SNACKBAR_SUCCESS');
           setTimeout(() => {
             if (res.id) {
               this.router.navigate(['/prescriptions/detail', res.id]);
@@ -199,7 +201,7 @@ export class CreatePrescriptionComponent implements OnInit, OnDestroy {
           }, 1500);
         },
         error: (err) => {
-          this.errorMessage = 'Error creating prescription.';
+          this.errorMessage = this.translate.instant('PRESCRIPTIONS.SNACKBAR_ERROR');
           console.error(err);
         },
       });

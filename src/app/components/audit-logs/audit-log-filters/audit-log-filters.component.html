@@ -1,6 +1,6 @@
 <mat-card class="filters-card">
   <mat-card-header class="filters-header">
-    <mat-card-title>Filters</mat-card-title>
+    <mat-card-title>{{ 'AUDIT.FILTER_TITLE' | translate }}</mat-card-title>
     <button
       mat-icon-button
       (click)="toggleExpand()"
@@ -15,11 +15,11 @@
     <form [formGroup]="filterForm" (ngSubmit)="onSubmit()">
       <!-- Date Range Section -->
       <fieldset formGroupName="dateRange" class="filter-group">
-        <legend class="filter-legend">Date Range</legend>
+        <legend class="filter-legend">{{ 'AUDIT.FILTER_DATE_RANGE' | translate }}</legend>
 
         <div class="date-inputs">
           <mat-form-field appearance="outline" class="date-field">
-            <mat-label>Start Date</mat-label>
+            <mat-label>{{ 'AUDIT.FILTER_START_DATE' | translate }}</mat-label>
             <input
               matInput
               type="date"
@@ -31,12 +31,12 @@
                 dateRangeGroup.get('dateFrom')?.hasError('required')
               "
             >
-              Start date is required
+              {{ 'VALIDATION.DATE_REQUIRED' | translate }}
             </mat-error>
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="date-field">
-            <mat-label>End Date</mat-label>
+            <mat-label>{{ 'AUDIT.FILTER_END_DATE' | translate }}</mat-label>
             <input
               matInput
               type="date"
@@ -48,7 +48,7 @@
                 dateRangeGroup.get('dateTo')?.hasError('required')
               "
             >
-              End date is required
+              {{ 'VALIDATION.DATE_REQUIRED' | translate }}
             </mat-error>
           </mat-form-field>
         </div>
@@ -56,38 +56,38 @@
 
       <!-- Entity Filters Section -->
       <fieldset class="filter-group">
-        <legend class="filter-legend">Entities</legend>
+        <legend class="filter-legend">{{ 'AUDIT.FILTER_ENTITIES' | translate }}</legend>
 
         <div class="filter-inputs">
           <mat-form-field appearance="outline" class="filter-field">
-            <mat-label>User ID</mat-label>
+            <mat-label>{{ 'AUDIT.FILTER_USER_ID' | translate }}</mat-label>
             <input
               matInput
               type="number"
               formControlName="userId"
-              placeholder="Optional"
+              [placeholder]="'AUDIT.FILTER_OPTIONAL' | translate"
               [disabled]="isLoading"
             />
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="filter-field">
-            <mat-label>Clinic ID</mat-label>
+            <mat-label>{{ 'AUDIT.FILTER_CLINIC_ID' | translate }}</mat-label>
             <input
               matInput
               type="number"
               formControlName="clinicId"
-              placeholder="Optional"
+              [placeholder]="'AUDIT.FILTER_OPTIONAL' | translate"
               [disabled]="isLoading"
             />
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="filter-field">
-            <mat-label>Patient ID</mat-label>
+            <mat-label>{{ 'AUDIT.FILTER_PATIENT_ID' | translate }}</mat-label>
             <input
               matInput
               type="number"
               formControlName="patientId"
-              placeholder="Optional"
+              [placeholder]="'AUDIT.FILTER_OPTIONAL' | translate"
               [disabled]="isLoading"
             />
           </mat-form-field>
@@ -96,25 +96,25 @@
 
       <!-- Consent & Search Section -->
       <fieldset class="filter-group">
-        <legend class="filter-legend">Additional Filters</legend>
+        <legend class="filter-legend">{{ 'AUDIT.FILTER_ADDITIONAL' | translate }}</legend>
 
         <div class="filter-inputs">
           <mat-form-field appearance="outline" class="filter-field">
-            <mat-label>Has Valid Consent</mat-label>
+            <mat-label>{{ 'AUDIT.FILTER_HAS_CONSENT' | translate }}</mat-label>
             <mat-select formControlName="hasConsent" [disabled]="isLoading">
-              <mat-option value="">All</mat-option>
-              <mat-option value="true">Yes</mat-option>
-              <mat-option value="false">No</mat-option>
+              <mat-option value="">{{ 'COMMON.ALL' | translate }}</mat-option>
+              <mat-option value="true">{{ 'COMMON.YES' | translate }}</mat-option>
+              <mat-option value="false">{{ 'COMMON.NO' | translate }}</mat-option>
             </mat-select>
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="filter-field">
-            <mat-label>Search (Purpose/Notes)</mat-label>
+            <mat-label>{{ 'AUDIT.FILTER_SEARCH' | translate }}</mat-label>
             <input
               matInput
               type="text"
               formControlName="searchTerm"
-              placeholder="Optional"
+              [placeholder]="'AUDIT.FILTER_OPTIONAL' | translate"
               [disabled]="isLoading"
             />
           </mat-form-field>
@@ -131,7 +131,7 @@
           class="apply-btn"
         >
           <mat-icon>search</mat-icon>
-          Apply Filters
+          {{ 'AUDIT.BUTTON_APPLY' | translate }}
         </button>
 
         <button
@@ -142,7 +142,7 @@
           class="reset-btn"
         >
           <mat-icon>refresh</mat-icon>
-          Reset Filters
+          {{ 'AUDIT.BUTTON_RESET' | translate }}
         </button>
       </div>
     </form>

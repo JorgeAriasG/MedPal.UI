@@ -14,6 +14,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { formConfigMap, FormFieldConfig } from 'src/app/conf/form-config';
+import { TranslateService } from '@ngx-translate/core';
 import { ClinicService } from 'src/app/components/clinics/services/clinic.service';
 import { IClinic } from 'src/app/entities/IClinic';
 import { RolesService } from 'src/app/components/user/roles/services/roles.service';
@@ -35,7 +36,8 @@ export class EditModalComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<EditModalComponent>,
     private clinicService: ClinicService,
-    private rolesService: RolesService
+    private rolesService: RolesService,
+    private translate: TranslateService
   ) {
     this.form = this.fb.group({});
   }
@@ -312,18 +314,18 @@ export class EditModalComponent implements OnInit, OnDestroy {
 
     if (lowerKey.includes('gender')) {
       return [
-        { label: 'Male', value: 'M' },
-        { label: 'Female', value: 'F' },
-        { label: 'Other', value: 'O' },
+        { label: this.translate.instant('PATIENTS.GENDER_MALE'), value: 'M' },
+        { label: this.translate.instant('PATIENTS.GENDER_FEMALE'), value: 'F' },
+        { label: this.translate.instant('PATIENTS.GENDER_OTHER'), value: 'O' },
       ];
     }
 
     if (lowerKey.includes('status')) {
       return [
-        { label: 'Pending', value: 'pending' },
-        { label: 'Confirmed', value: 'confirmed' },
-        { label: 'Cancelled', value: 'cancelled' },
-        { label: 'Completed', value: 'completed' },
+        { label: this.translate.instant('APPOINTMENTS.STATUS_SCHEDULED'), value: 'scheduled' },
+        { label: this.translate.instant('APPOINTMENTS.STATUS_CONFIRMED'), value: 'confirmed' },
+        { label: this.translate.instant('APPOINTMENTS.STATUS_CANCELLED'), value: 'cancelled' },
+        { label: this.translate.instant('APPOINTMENTS.STATUS_COMPLETED'), value: 'completed' },
       ];
     }
 
@@ -333,8 +335,8 @@ export class EditModalComponent implements OnInit, OnDestroy {
     }
 
     return [
-      { label: 'Yes', value: true },
-      { label: 'No', value: false },
+      { label: this.translate.instant('COMMON.YES'), value: true },
+      { label: this.translate.instant('COMMON.NO'), value: false },
     ];
   }
 

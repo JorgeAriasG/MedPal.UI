@@ -2,15 +2,15 @@
   <!-- Page Header / Actions -->
   <div class="detail-header no-print">
     <div class="title-section">
-      <button mat-icon-button routerLink="/patients/detail/{{prescription.patientId}}" matTooltip="Back to Patient">
+      <button mat-icon-button routerLink="/patients/detail/{{prescription.patientId}}" [matTooltip]="'PRESCRIPTIONS.TOOLTIP_BACK' | translate">
         <mat-icon>arrow_back</mat-icon>
       </button>
-      <h1>Prescription Detail</h1>
+      <h1>{{ 'PRESCRIPTIONS.TITLE_DETAIL' | translate }}</h1>
     </div>
     <div class="action-section">
       <button mat-raised-button color="primary" (click)="print()">
         <mat-icon>print</mat-icon>
-        Print Prescription
+        {{ 'PRESCRIPTIONS.BUTTON_PRINT' | translate }}
       </button>
     </div>
   </div>
@@ -18,16 +18,16 @@
   <!-- Prescription Card (Printable Area) -->
   <mat-card class="prescription-card" id="printable-area">
     <mat-card-header>
-      <div class="prescription-watermark">DIGITAL PRESCRIPTION</div>
+      <div class="prescription-watermark">{{ 'PRESCRIPTIONS.WATERMARK' | translate }}</div>
       
       <div class="clinic-branding">
         <div class="logo-area">
           <mat-icon>medical_services</mat-icon>
-          <span class="brand-name">MedPal Network</span>
+          <span class="brand-name">{{ 'PRESCRIPTIONS.BRAND' | translate }}</span>
         </div>
         <div class="qr-container" *ngIf="qrCodeUrl">
           <img [src]="qrCodeUrl" alt="Validation QR" class="qr-code">
-          <span class="qr-hint">Scan to Verify</span>
+          <span class="qr-hint">{{ 'PRESCRIPTIONS.QR_HINT' | translate }}</span>
         </div>
       </div>
     </mat-card-header>
@@ -36,12 +36,12 @@
       <!-- Header Info -->
       <div class="info-grid">
         <div class="info-group">
-          <label>Issued For (Patient)</label>
+          <label>{{ 'PRESCRIPTIONS.LABEL_PATIENT' | translate }}</label>
           <p class="name-display">{{ prescription.patientName }}</p>
           <p class="meta-display">ID: #P-{{ prescription.patientId }}</p>
         </div>
         <div class="info-group text-right">
-          <label>Prescribing Physician</label>
+          <label>{{ 'PRESCRIPTIONS.LABEL_DOCTOR' | translate }}</label>
           <p class="name-display">{{ prescription.doctorName }}</p>
           <p class="meta-display">{{ prescription.doctorSpecialty }} | Lic: {{ prescription.doctorLicense }}</p>
         </div>
@@ -49,15 +49,15 @@
 
       <div class="dates-row">
         <div class="date-item">
-          <label>Issued Date</label>
+          <label>{{ 'PRESCRIPTIONS.LABEL_ISSUED' | translate }}</label>
           <span>{{ prescription.createdAt | date: 'MMM dd, yyyy HH:mm' }}</span>
         </div>
         <div class="date-item">
-          <label>Expiration Date</label>
+          <label>{{ 'PRESCRIPTIONS.LABEL_EXPIRATION' | translate }}</label>
           <span class="warning-text">{{ prescription.expiresAt | date: 'MMM dd, yyyy' }}</span>
         </div>
         <div class="date-item">
-          <label>Prescription Status</label>
+          <label>{{ 'PRESCRIPTIONS.LABEL_STATUS' | translate }}</label>
           <span class="status-badge" [class.success]="prescription.status === 'Active'">
             {{ prescription.status }}
           </span>
@@ -65,20 +65,20 @@
       </div>
 
       <div class="diagnosis-section">
-        <label>Clinical Diagnosis</label>
+        <label>{{ 'PRESCRIPTIONS.LABEL_DIAGNOSIS' | translate }}</label>
         <p>{{ prescription.diagnosis }}</p>
       </div>
 
       <!-- Medications Table -->
       <div class="medications-section">
-        <h3>Medications & Instructions</h3>
+        <h3>{{ 'PRESCRIPTIONS.TABLE_TITLE' | translate }}</h3>
         <table class="med-table">
           <thead>
             <tr>
-              <th>Medication Name</th>
-              <th>Dose / Route</th>
-              <th>Frequency</th>
-              <th>Duration</th>
+              <th>{{ 'PRESCRIPTIONS.TABLE_MEDICATION' | translate }}</th>
+              <th>{{ 'PRESCRIPTIONS.TABLE_DOSE' | translate }}</th>
+              <th>{{ 'PRESCRIPTIONS.TABLE_FREQUENCY' | translate }}</th>
+              <th>{{ 'PRESCRIPTIONS.TABLE_DURATION' | translate }}</th>
             </tr>
           </thead>
           <tbody>
@@ -98,11 +98,11 @@
       <div class="prescription-footer">
         <div class="footer-note">
           <mat-icon>verified_user</mat-icon>
-          <p>This is a digitally signed prescription by MedPal. Authenticity can be verified by scanning the QR code or visiting the MedPal portal with the code: <strong>{{ prescription.uniqueCode }}</strong></p>
+          <p>{{ 'PRESCRIPTIONS.FOOTER_QR' | translate }} <strong>{{ prescription.uniqueCode }}</strong></p>
         </div>
         <div class="signature-line">
           <div class="line"></div>
-          <span class="doctor-caption">Digitally signed by {{ prescription.doctorName }}</span>
+          <span class="doctor-caption">{{ 'PRESCRIPTIONS.FOOTER_DIGITAL_SIG' | translate }} {{ prescription.doctorName }}</span>
         </div>
       </div>
     </mat-card-content>
@@ -113,12 +113,12 @@
 <ng-template #loadingOrError class="no-print">
   <div class="state-container" *ngIf="loading">
     <mat-spinner diameter="40"></mat-spinner>
-    <p>Loading prescription details...</p>
+    <p>{{ 'PRESCRIPTIONS.LOADING' | translate }}</p>
   </div>
   <div class="state-container" *ngIf="error && !loading">
     <mat-icon color="warn">error</mat-icon>
-    <h3>Error</h3>
+    <h3>{{ 'ERRORS.LOAD_FAILED' | translate }}</h3>
     <p>{{ error }}</p>
-    <button mat-button color="primary" routerLink="/patients">Back to Patients</button>
+    <button mat-button color="primary" routerLink="/patients">{{ 'COMMON.BACK' | translate }}</button>
   </div>
 </ng-template>

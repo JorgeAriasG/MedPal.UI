@@ -19,7 +19,7 @@
 }
 
 .antecedents-header h3 mat-icon {
-  color: var(--color-primary, #5B6CFF);
+  color: var(--color-primary);
 }
 
 .save-btn {
@@ -73,7 +73,7 @@
   font-size: 20px;
   width: 20px;
   height: 20px;
-  color: var(--color-primary, #5B6CFF);
+  color: var(--color-primary);
 }
 
 .field-hint {

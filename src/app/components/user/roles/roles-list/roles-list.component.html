@@ -4,13 +4,13 @@
     <div class="header-content">
       <div class="page-title">
         <mat-icon class="title-icon">admin_panel_settings</mat-icon>
-        <span>Roles</span>
+        <span>{{ 'ROLES.TITLE' | translate }}</span>
       </div>
-      <p class="page-subtitle">Manage system roles and permissions</p>
+      <p class="page-subtitle">{{ 'ROLES.SUBTITLE' | translate }}</p>
     </div>
     <button mat-raised-button color="primary" (click)="openAddDialog()" class="add-button">
       <mat-icon>add</mat-icon>
-      Add New Role
+      {{ 'ROLES.ADD' | translate }}
     </button>
   </div>
 
@@ -20,7 +20,7 @@
       <mat-icon class="search-icon">search</mat-icon>
       <input 
         type="text" 
-        placeholder="Search roles..." 
+        [placeholder]="'ROLES.SEARCH_PLACEHOLDER' | translate" 
         (input)="onSearch($event)"
         class="search-input"
       >
@@ -30,7 +30,7 @@
   <!-- Loading State -->
   <div class="loading-container" *ngIf="loading && roles.length === 0">
     <mat-spinner diameter="40"></mat-spinner>
-    <p>Loading roles...</p>
+    <p>{{ 'ROLES.LOADING' | translate }}</p>
   </div>
 
   <!-- Roles Table -->
@@ -41,7 +41,7 @@
         <th mat-header-cell *matHeaderCellDef class="column-md">
           <div class="header-label">
             <mat-icon>label</mat-icon>
-            Name
+            {{ 'ROLES.TABLE_NAME' | translate }}
           </div>
         </th>
         <td mat-cell *matCellDef="let role" class="column-md">
@@ -54,7 +54,7 @@
         <th mat-header-cell *matHeaderCellDef class="column-lg">
           <div class="header-label">
             <mat-icon>description</mat-icon>
-            Description
+            {{ 'ROLES.TABLE_DESCRIPTION' | translate }}
           </div>
         </th>
         <td mat-cell *matCellDef="let role" class="column-lg">
@@ -62,7 +62,7 @@
             {{ role.description }}
           </span>
           <ng-template #noDescription>
-            <span class="badge empty">No description</span>
+            <span class="badge empty">{{ 'ROLES.NO_DESCRIPTION' | translate }}</span>
           </ng-template>
         </td>
       </ng-container>
@@ -72,15 +72,15 @@
         <th mat-header-cell *matHeaderCellDef class="column-actions">
           <div class="header-label">
             <mat-icon>settings</mat-icon>
-            Actions
+            {{ 'COMMON.ACTIONS' | translate }}
           </div>
         </th>
         <td mat-cell *matCellDef="let role" class="column-actions">
           <div class="action-buttons">
-            <button mat-icon-button class="action-btn" (click)="editRole(role)" matTooltip="Edit role">
+            <button mat-icon-button class="action-btn" (click)="editRole(role)" [matTooltip]="'ROLES.TOOLTIP_EDIT' | translate">
               <mat-icon>edit</mat-icon>
             </button>
-            <button mat-icon-button class="action-btn" (click)="deleteRole(role.id!)" matTooltip="Delete role">
+            <button mat-icon-button class="action-btn" (click)="deleteRole(role.id!)" [matTooltip]="'ROLES.TOOLTIP_DELETE' | translate">
               <mat-icon>delete</mat-icon>
             </button>
           </div>
@@ -97,11 +97,11 @@
     <div class="empty-state-icon">
       <mat-icon>badge</mat-icon>
     </div>
-    <h3 class="empty-state-title">No Roles Found</h3>
-    <p class="empty-state-message">Create your first role to organize permissions and access control</p>
+    <h3 class="empty-state-title">{{ 'ROLES.EMPTY_TITLE' | translate }}</h3>
+    <p class="empty-state-message">{{ 'ROLES.EMPTY_MESSAGE' | translate }}</p>
     <button mat-raised-button color="primary" (click)="openAddDialog()">
       <mat-icon>add</mat-icon>
-      Create Role
+      {{ 'ROLES.EMPTY_BUTTON' | translate }}
     </button>
   </div>
 </div>

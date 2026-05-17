@@ -1,16 +1,16 @@
 <div class="generic-template">
-  <h3>Datos Específicos de la Especialidad</h3>
+  <h3>{{ 'MEDICAL_HISTORY.TEMPLATE_GENERIC_TITLE' | translate }}</h3>
 
   <mat-form-field appearance="outline" class="w-100">
-    <mat-label>Información Adicional</mat-label>
+    <mat-label>{{ 'MEDICAL_HISTORY.TEMPLATE_GENERIC_INFO_LABEL' | translate }}</mat-label>
     <textarea
       matInput
       rows="8"
       [value]="genericData.customData"
       (input)="updateData($any($event.target).value)"
       [disabled]="disabled"
-      placeholder="Ingrese datos específicos de la especialidad en formato libre..."
+      [placeholder]="'MEDICAL_HISTORY.TEMPLATE_GENERIC_PLACEHOLDER' | translate"
     ></textarea>
-    <mat-hint>Puede ingresar texto libre o datos en formato JSON</mat-hint>
+    <mat-hint>{{ 'MEDICAL_HISTORY.TEMPLATE_GENERIC_HINT' | translate }}</mat-hint>
   </mat-form-field>
 </div>

@@ -69,7 +69,7 @@
 .search-input:focus {
   border-color: var(--color-primary);
   background: var(--color-bg-surface);
-  box-shadow: 0 0 0 4px rgba(91, 108, 255, 0.12);
+  box-shadow: 0 0 0 4px rgba(44, 62, 80, 0.12);
 }
 
 .loading-container {
@@ -177,7 +177,7 @@
   text-transform: capitalize;
 }
 
-.status-chip[data-status="Scheduled"] { background: rgba(91, 108, 255, 0.1); color: var(--color-primary); }
+.status-chip[data-status="Scheduled"] { background: rgba(44, 62, 80, 0.1); color: var(--color-primary); }
 .status-chip[data-status="Confirmed"] { background: rgba(52, 211, 153, 0.1); color: var(--color-success); }
 .status-chip[data-status="Cancelled"] { background: rgba(248, 113, 113, 0.1); color: var(--color-danger); }
 .status-chip[data-status="Completed"] { background: rgba(167, 139, 250, 0.1); color: var(--color-prescription); }
@@ -220,7 +220,7 @@
   }
 
   .cal-selected-cell {
-    background: rgba(91, 108, 255, 0.05);
+    background: rgba(44, 62, 80, 0.05);
   }
 
   .cal-week-view .cal-event {

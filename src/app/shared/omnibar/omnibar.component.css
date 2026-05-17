@@ -91,7 +91,7 @@
 }
 
 .result-item:hover {
-  background: rgba(91, 108, 255, 0.08);
+  background: rgba(44, 62, 80, 0.08);
   transform: translateX(4px);
 }
 

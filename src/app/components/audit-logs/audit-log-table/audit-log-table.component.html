@@ -8,7 +8,7 @@
     >
       <!-- Access Time Column -->
       <ng-container matColumnDef="accessTime">
-        <th mat-header-cell *matHeaderCellDef>Access Time</th>
+        <th mat-header-cell *matHeaderCellDef>{{ 'AUDIT.TABLE_ACCESS_TIME' | translate }}</th>
         <td mat-cell *matCellDef="let element">
           {{ formatDate(element.accessTime) }}
         </td>
@@ -16,7 +16,7 @@
 
       <!-- User ID Column -->
       <ng-container matColumnDef="userId">
-        <th mat-header-cell *matHeaderCellDef>User ID</th>
+        <th mat-header-cell *matHeaderCellDef>{{ 'AUDIT.TABLE_USER_ID' | translate }}</th>
         <td mat-cell *matCellDef="let element">
           {{ element.userId }}
         </td>
@@ -24,7 +24,7 @@
 
       <!-- Clinic ID Column -->
       <ng-container matColumnDef="clinicId">
-        <th mat-header-cell *matHeaderCellDef>Clinic</th>
+        <th mat-header-cell *matHeaderCellDef>{{ 'AUDIT.TABLE_CLINIC' | translate }}</th>
         <td mat-cell *matCellDef="let element">
           {{ element.accessingClinicId }}
         </td>
@@ -32,7 +32,7 @@
 
       <!-- Patient ID Column -->
       <ng-container matColumnDef="patientId">
-        <th mat-header-cell *matHeaderCellDef>Patient ID</th>
+        <th mat-header-cell *matHeaderCellDef>{{ 'AUDIT.TABLE_PATIENT_ID' | translate }}</th>
         <td mat-cell *matCellDef="let element">
           {{ element.patientDetailsId }}
         </td>
@@ -40,7 +40,7 @@
 
       <!-- Purpose Column -->
       <ng-container matColumnDef="purpose">
-        <th mat-header-cell *matHeaderCellDef>Purpose</th>
+        <th mat-header-cell *matHeaderCellDef>{{ 'AUDIT.TABLE_PURPOSE' | translate }}</th>
         <td mat-cell *matCellDef="let element">
           {{ element.purpose }}
         </td>
@@ -48,7 +48,7 @@
 
       <!-- Consent Column -->
       <ng-container matColumnDef="hadValidConsent">
-        <th mat-header-cell *matHeaderCellDef>Valid Consent</th>
+        <th mat-header-cell *matHeaderCellDef>{{ 'AUDIT.TABLE_VALID_CONSENT' | translate }}</th>
         <td mat-cell *matCellDef="let element">
           <mat-chip
             [color]="getConsentColor(element.hadValidConsent)"
@@ -61,11 +61,11 @@
 
       <!-- Actions Column -->
       <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <th mat-header-cell *matHeaderCellDef>{{ 'AUDIT.TABLE_ACTIONS' | translate }}</th>
         <td mat-cell *matCellDef="let element">
           <button
             mat-icon-button
-            matTooltip="View Details"
+            [matTooltip]="'AUDIT.TOOLTIP_DETAIL' | translate"
             (click)="onRowSelect(element)"
           >
             <mat-icon>visibility</mat-icon>
@@ -91,7 +91,7 @@
       class="empty-table-state"
     >
       <mat-icon>inbox</mat-icon>
-      <p>No audit logs to display</p>
+      <p>{{ 'AUDIT.EMPTY_TABLE' | translate }}</p>
     </div>
   </div>
 

@@ -3,26 +3,26 @@
   <!-- Onboarding -->
   <div class="onboarding" *ngIf="totalPatientsThisMonth < 5">
     <div class="onboarding-body">
-      <h2 class="onboarding-title">Bienvenido a ClinicFlow</h2>
-      <p class="onboarding-desc">Completa estos pasos para poner tu clínica en marcha.</p>
+      <h2 class="onboarding-title">{{ 'HOME.WELCOME' | translate }}</h2>
+      <p class="onboarding-desc">{{ 'HOME.WELCOME_DESC' | translate }}</p>
       <div class="onboarding-steps">
         <span class="step" [class.done]="totalPatientsThisMonth > 0">
           <mat-icon>{{ totalPatientsThisMonth > 0 ? 'check_circle' : 'radio_button_unchecked' }}</mat-icon>
-          Registrar paciente
+          {{ 'HOME.STEP_REGISTER_PATIENT' | translate }}
         </span>
         <span class="step">
           <mat-icon>radio_button_unchecked</mat-icon>
-          Configurar horarios
+          {{ 'HOME.STEP_SETUP_SCHEDULE' | translate }}
         </span>
         <span class="step">
           <mat-icon>radio_button_unchecked</mat-icon>
-          Logo de clínica
+          {{ 'HOME.STEP_CLINIC_LOGO' | translate }}
         </span>
       </div>
     </div>
     <button mat-raised-button class="onboarding-cta" (click)="openOmnibar()">
       <mat-icon>bolt</mat-icon>
-      Acción rápida
+      {{ 'HOME.QUICK_ACTION' | translate }}
     </button>
   </div>
 
@@ -34,39 +34,39 @@
     </div>
     <button mat-stroked-button class="new-appt-btn" (click)="openNewAppointmentDialog()">
       <mat-icon>add</mat-icon>
-      Nueva cita
+      {{ 'APPOINTMENTS.NEW' | translate }}
     </button>
   </div>
 
   <!-- Today's Timeline -->
   <div class="timeline">
     <div class="timeline-next" *ngIf="nextAppointment">
-      <div class="next-label">Siguiente</div>
+      <div class="next-label">{{ 'HOME.NEXT' | translate }}</div>
       <div class="next-time">{{ nextAppointment.time }}</div>
       <div class="next-patient">{{ (patientMap.get(nextAppointment.patientId))?.name || 'Paciente' }} {{ (patientMap.get(nextAppointment.patientId))?.lastname || '' }}</div>
       <span class="next-status" [ngClass]="'status-' + (nextAppointment.status | lowercase)">{{ nextAppointment.status }}</span>
     </div>
     <div class="timeline-next empty-next" *ngIf="!nextAppointment">
       <mat-icon class="next-icon">event_busy</mat-icon>
-      <div class="next-label">Sin citas hoy</div>
-      <button mat-button color="primary" (click)="openNewAppointmentDialog()">Agendar ahora</button>
+      <div class="next-label">{{ 'HOME.NO_APPOINTMENTS_TODAY' | translate }}</div>
+      <button mat-button color="primary" (click)="openNewAppointmentDialog()">{{ 'HOME.BOOK_NOW' | translate }}</button>
     </div>
     <div class="timeline-stats">
       <div class="stat-card">
         <span class="stat-value">{{ appointmentsTodayCount }}</span>
-        <span class="stat-label">Citas hoy</span>
+        <span class="stat-label">{{ 'HOME.APPOINTMENTS_TODAY' | translate }}</span>
       </div>
       <div class="stat-card">
         <span class="stat-value complete">{{ todayCompleted }}</span>
-        <span class="stat-label">Completadas</span>
+        <span class="stat-label">{{ 'HOME.COMPLETED' | translate }}</span>
       </div>
       <div class="stat-card" *ngIf="todayCancelled > 0">
         <span class="stat-value cancelled">{{ todayCancelled }}</span>
-        <span class="stat-label">Canceladas</span>
+        <span class="stat-label">{{ 'HOME.CANCELLED' | translate }}</span>
       </div>
       <div class="stat-card">
         <span class="stat-value">{{ appointmentsThisWeekCount }}</span>
-        <span class="stat-label">Esta semana</span>
+        <span class="stat-label">{{ 'HOME.THIS_WEEK' | translate }}</span>
       </div>
     </div>
   </div>
@@ -74,8 +74,8 @@
   <!-- Upcoming Appointments (48h) -->
   <section class="section">
     <div class="section-header">
-      <h2 class="section-title">Próximas citas</h2>
-      <button mat-button class="section-link" (click)="navigateToCalendar()">Ver calendario</button>
+      <h2 class="section-title">{{ 'HOME.UPCOMING' | translate }}</h2>
+      <button mat-button class="section-link" (click)="navigateToCalendar()">{{ 'HOME.VIEW_CALENDAR' | translate }}</button>
     </div>
 
     <div *ngIf="upcomingAppointments.length > 0" class="appt-list">
@@ -94,7 +94,7 @@
 
     <div *ngIf="upcomingAppointments.length === 0" class="empty">
       <mat-icon>event_available</mat-icon>
-      <p>No hay citas próximas</p>
+      <p>{{ 'HOME.NO_UPCOMING' | translate }}</p>
     </div>
   </section>
 
@@ -102,8 +102,8 @@
   <div class="bottom-bar">
     <section class="section recent-section">
       <div class="section-header">
-        <h2 class="section-title">Pacientes recientes</h2>
-        <button mat-button class="section-link" (click)="navigateToPatients()">Ver todos</button>
+        <h2 class="section-title">{{ 'HOME.RECENT_PATIENTS' | translate }}</h2>
+        <button mat-button class="section-link" (click)="navigateToPatients()">{{ 'HOME.VIEW_ALL_PATIENTS' | translate }}</button>
       </div>
       <div *ngIf="recentPatients.length > 0" class="patient-list">
         <div *ngFor="let patient of recentPatients" class="patient-row" [routerLink]="'/patients/detail/' + patient.id">
@@ -119,22 +119,22 @@
       </div>
       <div *ngIf="recentPatients.length === 0" class="empty">
         <mat-icon>person_add</mat-icon>
-        <p>Sin pacientes aún</p>
+        <p>{{ 'HOME.NO_PATIENTS_YET' | translate }}</p>
       </div>
     </section>
 
     <aside class="quick-stats">
       <div class="qs-item">
         <span class="qs-value">{{ totalPatientsThisMonth }}</span>
-        <span class="qs-label">Total pacientes</span>
+        <span class="qs-label">{{ 'HOME.TOTAL_PATIENTS' | translate }}</span>
       </div>
       <mat-divider></mat-divider>
       <button mat-button class="qs-link" (click)="navigateToClinics()">
-        <mat-icon>local_hospital</mat-icon> Clínicas
+        <mat-icon>local_hospital</mat-icon> {{ 'MENU.CLINICS' | translate }}
       </button>
       <mat-divider></mat-divider>
       <button mat-button class="qs-link" (click)="navigateToPrescriptions()">
-        <mat-icon>description</mat-icon> Recetas
+        <mat-icon>description</mat-icon> {{ 'MENU.PRESCRIPTIONS' | translate }}
       </button>
     </aside>
   </div>

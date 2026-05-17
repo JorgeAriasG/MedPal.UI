@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { TranslateService } from '@ngx-translate/core';
 import { IPatientDetail } from 'src/app/entities/IMedicalHistory';
 import { PatientsService } from 'src/app/components/patients/services/patients.service';
 import { PrescriptionService } from 'src/app/services/prescription.service';
@@ -38,7 +39,8 @@ export class PatientDetailComponent implements OnInit, OnDestroy {
     private patientsService: PatientsService,
     private prescriptionService: PrescriptionService,
     private dialog: MatDialog,
-    private store: Store
+    private store: Store,
+    private translate: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -79,7 +81,7 @@ export class PatientDetailComponent implements OnInit, OnDestroy {
           this.loadPrescriptions(id);
         },
         error: (err) => {
-          this.error = 'Failed to load patient details';
+          this.error = this.translate.instant('PATIENTS.ERROR_LOAD');
           this.loading = false;
           console.error(err);
         },

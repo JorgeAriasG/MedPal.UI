@@ -13,45 +13,45 @@
     <mat-list-item class="menu-item">
       <button mat-button routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" class="menu-link">
         <mat-icon class="menu-icon">dashboard</mat-icon>
-        <span class="menu-text" *ngIf="!isCollapsed">Dashboard</span>
+        <span class="menu-text" *ngIf="!isCollapsed">{{ 'MENU.HOME' | translate }}</span>
       </button>
     </mat-list-item>
 
     <mat-list-item class="menu-item">
       <button mat-button routerLink="/appointments" routerLinkActive="active" class="menu-link">
         <mat-icon class="menu-icon">calendar_month</mat-icon>
-        <span class="menu-text" *ngIf="!isCollapsed">Agenda</span>
+        <span class="menu-text" *ngIf="!isCollapsed">{{ 'MENU.APPOINTMENTS' | translate }}</span>
       </button>
     </mat-list-item>
 
     <mat-list-item class="menu-item">
       <button mat-button routerLink="/patients" routerLinkActive="active" class="menu-link">
         <mat-icon class="menu-icon">people</mat-icon>
-        <span class="menu-text" *ngIf="!isCollapsed">Pacientes</span>
+        <span class="menu-text" *ngIf="!isCollapsed">{{ 'MENU.PATIENTS' | translate }}</span>
       </button>
     </mat-list-item>
 
     <mat-list-item class="menu-item">
       <button mat-button routerLink="/prescriptions/new" routerLinkActive="active" class="menu-link">
         <mat-icon class="menu-icon">description</mat-icon>
-        <span class="menu-text" *ngIf="!isCollapsed">Recetas</span>
+        <span class="menu-text" *ngIf="!isCollapsed">{{ 'MENU.PRESCRIPTIONS' | translate }}</span>
       </button>
     </mat-list-item>
 
     <mat-divider *ngIf="!isCollapsed" class="section-divider"></mat-divider>
-    <p class="section-header" *ngIf="!isCollapsed">Admin</p>
+    <p class="section-header" *ngIf="!isCollapsed">{{ 'MENU.SETTINGS' | translate }}</p>
 
     <mat-list-item class="menu-item">
       <button mat-button routerLink="/clinics" routerLinkActive="active" class="menu-link">
         <mat-icon class="menu-icon">local_hospital</mat-icon>
-        <span class="menu-text" *ngIf="!isCollapsed">Clínicas</span>
+        <span class="menu-text" *ngIf="!isCollapsed">{{ 'MENU.CLINICS' | translate }}</span>
       </button>
     </mat-list-item>
 
     <mat-list-item class="menu-item">
       <button mat-button routerLink="/users" routerLinkActive="active" class="menu-link">
         <mat-icon class="menu-icon">group</mat-icon>
-        <span class="menu-text" *ngIf="!isCollapsed">Usuarios</span>
+        <span class="menu-text" *ngIf="!isCollapsed">{{ 'MENU.USERS' | translate }}</span>
       </button>
     </mat-list-item>
   </mat-list>
@@ -60,7 +60,7 @@
     <mat-divider class="menu-divider"></mat-divider>
     <button mat-button class="logout-btn" (click)="logout()">
       <mat-icon class="menu-icon">logout</mat-icon>
-      <span class="menu-text" *ngIf="!isCollapsed">Cerrar Sesión</span>
+      <span class="menu-text" *ngIf="!isCollapsed">{{ 'MENU.LOGOUT' | translate }}</span>
     </button>
   </div>
 </nav>

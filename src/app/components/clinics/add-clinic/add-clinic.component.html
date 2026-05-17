@@ -1,36 +1,36 @@
 <h2 mat-dialog-title>
   <mat-icon>local_hospital</mat-icon>
-  Add Clinic
+  {{ 'CLINICS.DIALOG_TITLE' | translate }}
 </h2>
 <form (submit)="onSubmit($event)">
   <mat-dialog-content>
     <mat-form-field appearance="outline">
-      <mat-label>Clinic name</mat-label>
+      <mat-label>{{ 'CLINICS.DIALOG_NAME' | translate }}</mat-label>
       <input matInput [(ngModel)]="clinic.name" name="name" required />
     </mat-form-field>
     <mat-form-field appearance="outline">
-      <mat-label>Location</mat-label>
+      <mat-label>{{ 'CLINICS.DIALOG_LOCATION' | translate }}</mat-label>
       <input matInput [(ngModel)]="clinic.location" name="location" required />
     </mat-form-field>
     <mat-form-field appearance="outline">
-      <mat-label>Contact Info</mat-label>
+      <mat-label>{{ 'CLINICS.DIALOG_CONTACT' | translate }}</mat-label>
       <input matInput [(ngModel)]="clinic.contactInfo" name="contactInfo" required />
     </mat-form-field>
     <mat-form-field appearance="outline">
-      <mat-label>Opening Time</mat-label>
+      <mat-label>{{ 'CLINICS.DIALOG_OPENING' | translate }}</mat-label>
       <input matInput [matTimepicker]="timepicker" [(ngModel)]="clinic.open" name="open" required />
       <mat-timepicker #timepicker/>
       <mat-timepicker-toggle [for]="timepicker" matSuffix/>
     </mat-form-field>
     <mat-form-field appearance="outline">
-      <mat-label>Closing Time</mat-label>
+      <mat-label>{{ 'CLINICS.DIALOG_CLOSING' | translate }}</mat-label>
       <input matInput [matTimepicker]="timepicker2" [(ngModel)]="clinic.close" name="close" required />
       <mat-timepicker #timepicker2/>
       <mat-timepicker-toggle [for]="timepicker2" matSuffix/>
     </mat-form-field>
   </mat-dialog-content>
   <mat-dialog-actions>
-    <button mat-button type="button" mat-dialog-close>Cancel</button>
-    <button mat-raised-button color="primary" type="submit">Save Clinic</button>
+    <button mat-button type="button" mat-dialog-close>{{ 'CLINICS.DIALOG_CANCEL' | translate }}</button>
+    <button mat-raised-button color="primary" type="submit">{{ 'CLINICS.DIALOG_SAVE' | translate }}</button>
   </mat-dialog-actions>
 </form>

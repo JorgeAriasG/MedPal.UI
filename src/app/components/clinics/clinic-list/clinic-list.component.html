@@ -4,13 +4,13 @@
     <div class="header-content">
       <div class="page-title">
         <mat-icon class="title-icon">local_hospital</mat-icon>
-        <span>Clinics</span>
+        <span>{{ 'CLINICS.TITLE' | translate }}</span>
       </div>
-      <p class="page-subtitle">Manage your medical centers and locations</p>
+      <p class="page-subtitle">{{ 'CLINICS.SUBTITLE' | translate }}</p>
     </div>
     <button mat-raised-button color="primary" (click)="openAddDialog()" class="add-button">
       <mat-icon>add</mat-icon>
-      Add New Clinic
+      {{ 'CLINICS.ADD' | translate }}
     </button>
   </div>
 
@@ -20,7 +20,7 @@
       <mat-icon class="search-icon">search</mat-icon>
       <input 
         type="text" 
-        placeholder="Search clinics..." 
+        [placeholder]="'CLINICS.SEARCH_PLACEHOLDER' | translate" 
         (input)="onSearch($event)"
         class="search-input"
       >
@@ -30,7 +30,7 @@
   <!-- Loading State -->
   <div class="loading-container" *ngIf="loading && clinics.length === 0">
     <mat-spinner diameter="40"></mat-spinner>
-    <p>Loading clinics...</p>
+    <p>{{ 'CLINICS.LOADING' | translate }}</p>
   </div>
 
   <!-- Clinics Table -->
@@ -41,7 +41,7 @@
         <th mat-header-cell *matHeaderCellDef class="column-md">
           <div class="header-label">
             <mat-icon>business</mat-icon>
-            Name
+            {{ 'CLINICS.TABLE_NAME' | translate }}
           </div>
         </th>
         <td mat-cell *matCellDef="let clinic" class="column-md">
@@ -54,7 +54,7 @@
         <th mat-header-cell *matHeaderCellDef class="column-lg column-hide-1200">
           <div class="header-label">
             <mat-icon>location_on</mat-icon>
-            Location
+            {{ 'CLINICS.TABLE_LOCATION' | translate }}
           </div>
         </th>
         <td mat-cell *matCellDef="let clinic" class="column-lg column-hide-1200">
@@ -67,7 +67,7 @@
         <th mat-header-cell *matHeaderCellDef class="column-md column-hide-768">
           <div class="header-label">
             <mat-icon>phone</mat-icon>
-            Contact
+            {{ 'CLINICS.TABLE_CONTACT' | translate }}
           </div>
         </th>
         <td mat-cell *matCellDef="let clinic" class="column-md column-hide-768">
@@ -80,7 +80,7 @@
         <th mat-header-cell *matHeaderCellDef class="column-md column-hide-768">
           <div class="header-label">
             <mat-icon>access_time</mat-icon>
-            Hours
+            {{ 'CLINICS.TABLE_HOURS' | translate }}
           </div>
         </th>
         <td mat-cell *matCellDef="let clinic" class="column-md column-hide-768">
@@ -93,15 +93,15 @@
         <th mat-header-cell *matHeaderCellDef class="column-actions">
           <div class="header-label">
             <mat-icon>settings</mat-icon>
-            Actions
+            {{ 'COMMON.ACTIONS' | translate }}
           </div>
         </th>
         <td mat-cell *matCellDef="let clinic" class="column-actions">
           <div class="action-buttons">
-            <button mat-icon-button class="action-btn" (click)="editClinic(clinic)" matTooltip="Edit clinic">
+            <button mat-icon-button class="action-btn" (click)="editClinic(clinic)" [matTooltip]="'CLINICS.TOOLTIP_EDIT' | translate">
               <mat-icon>edit</mat-icon>
             </button>
-            <button mat-icon-button class="action-btn" (click)="deleteClinic(clinic.id)" matTooltip="Delete clinic">
+            <button mat-icon-button class="action-btn" (click)="deleteClinic(clinic.id)" [matTooltip]="'CLINICS.TOOLTIP_DELETE' | translate">
               <mat-icon>delete</mat-icon>
             </button>
           </div>
@@ -118,11 +118,11 @@
     <div class="empty-state-icon">
       <mat-icon>location_off</mat-icon>
     </div>
-    <h3 class="empty-state-title">No Clinics Found</h3>
-    <p class="empty-state-message">Create your first clinic to get started managing your medical centers</p>
+    <h3 class="empty-state-title">{{ 'CLINICS.EMPTY_TITLE' | translate }}</h3>
+    <p class="empty-state-message">{{ 'CLINICS.EMPTY_MESSAGE' | translate }}</p>
     <button mat-raised-button color="primary" (click)="openAddDialog()">
       <mat-icon>add</mat-icon>
-      Create Clinic
+      {{ 'CLINICS.EMPTY_BUTTON' | translate }}
     </button>
   </div>
 </div>

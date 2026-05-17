@@ -1,4 +1,4 @@
-﻿.users-container {
+.users-container {
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -101,7 +101,7 @@
 .search-input:focus {
   border-color: var(--color-primary);
   background: var(--color-bg-surface);
-  box-shadow: 0 0 0 4px rgba(91, 108, 255, 0.12);
+  box-shadow: 0 0 0 4px rgba(44, 62, 80, 0.12);
 }
 
 .loading-container {

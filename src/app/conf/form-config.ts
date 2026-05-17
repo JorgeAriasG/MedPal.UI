@@ -49,9 +49,9 @@ export const patientFormConfig: Record<string, FormFieldConfig> = {
     validators: Validators.required,
     type: 'select',
     options: [
-      { label: 'Male', value: 'M' },
-      { label: 'Female', value: 'F' },
-      { label: 'Other', value: 'O' },
+      { label: 'PATIENTS.GENDER_MALE', value: 'M' },
+      { label: 'PATIENTS.GENDER_FEMALE', value: 'F' },
+      { label: 'PATIENTS.GENDER_OTHER', value: 'O' },
     ],
   },
   emergencyContact: {
@@ -64,7 +64,7 @@ export const patientFormConfig: Record<string, FormFieldConfig> = {
     validators: Validators.required,
     type: 'select',
     options: [], // Will be populated dynamically by EditModalComponent
-    label: 'Clinic',
+    label: 'PATIENTS.FORM_CLINIC',
   }
 };
 
@@ -89,19 +89,19 @@ export const appointmentFormConfig: Record<string, FormFieldConfig> = {
     validators: Validators.required,
     type: 'select',
     options: [
-      { label: 'Scheduled', value: 'Scheduled' },
-      { label: 'In Progress', value: 'InProgress' },
-      { label: 'Completed', value: 'Completed' },
-      { label: 'Cancelled', value: 'Cancelled' },
-      { label: 'No-show', value: 'NoShow' },
-      { label: 'Rescheduled', value: 'Rescheduled' },
+      { label: 'APPOINTMENTS.STATUS_SCHEDULED', value: 'Scheduled' },
+      { label: 'APPOINTMENTS.STATUS_IN_PROGRESS', value: 'InProgress' },
+      { label: 'APPOINTMENTS.STATUS_COMPLETED', value: 'Completed' },
+      { label: 'APPOINTMENTS.STATUS_CANCELLED', value: 'Cancelled' },
+      { label: 'APPOINTMENTS.STATUS_NO_SHOW', value: 'NoShow' },
+      { label: 'APPOINTMENTS.STATUS_RESCHEDULED', value: 'Rescheduled' },
     ],
   },
   durationMinutes: {
     value: 30,
     validators: [Validators.required, Validators.min(15), Validators.max(120)],
     type: 'text', // Changed from 'number' to 'text' as 'number' is not in our FormFieldConfig type yet, but we'll use input type='number' in HTML
-    label: 'Duration (min)',
+    label: 'PATIENTS.FORM_DURATION',
   },
 };
 
@@ -138,13 +138,13 @@ export const userFormConfig: Record<string, FormFieldConfig> = {
     value: '',
     type: 'select',
     options: [], // Will be populated dynamically by EditModalComponent
-    label: 'Clinic',
+    label: 'PATIENTS.FORM_CLINIC',
   },
   roleId: {
     value: '',
     type: 'select',
     options: [], // Will be populated dynamically by EditModalComponent (admin only)
-    label: 'Role',
+    label: 'PATIENTS.FORM_ROLE',
   },
   acceptPrivacyTerms: {
     value: false,
@@ -184,13 +184,13 @@ export const userEditFormConfig: Record<string, FormFieldConfig> = {
     value: '',
     type: 'select',
     options: [], // Will be populated dynamically by EditModalComponent
-    label: 'Clinic',
+    label: 'PATIENTS.FORM_CLINIC',
   },
   roleId: {
     value: '',
     type: 'select',
     options: [], // Will be populated dynamically by EditModalComponent (admin only)
-    label: 'Role',
+    label: 'PATIENTS.FORM_ROLE',
   }
 };
 

@@ -40,11 +40,11 @@
 }
 
 .audit-log-row:hover {
-  background-color: rgba(91, 108, 255, 0.04);
+  background-color: rgba(44, 62, 80, 0.04);
 }
 
 .audit-log-row:active {
-  background-color: rgba(91, 108, 255, 0.08);
+  background-color: rgba(44, 62, 80, 0.08);
 }
 
 /* Empty State */
@@ -100,7 +100,7 @@ button[mat-icon-button] {
 }
 
 button[mat-icon-button]:hover {
-  background-color: rgba(91, 108, 255, 0.08);
+  background-color: rgba(44, 62, 80, 0.08);
 }
 
 /* Responsive Design */

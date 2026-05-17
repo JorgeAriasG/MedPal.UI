@@ -2,7 +2,7 @@
   <!-- Loading State -->
   <div class="loading-overlay" *ngIf="loading">
     <mat-spinner diameter="48"></mat-spinner>
-    <p class="mt-md text-muted">Loading patient details...</p>
+    <p class="mt-md text-muted">{{ 'PATIENTS.LOADING_DETAIL' | translate }}</p>
   </div>
 
   <!-- Main Content -->
@@ -38,7 +38,7 @@
             class="action-button"
           >
             <mat-icon>add_circle</mat-icon>
-            <span>New Consultation</span>
+            <span>{{ 'PATIENTS.NEW_CONSULTATION' | translate }}</span>
           </button>
           <button
             mat-raised-button
@@ -48,7 +48,7 @@
             class="action-button"
           >
             <mat-icon>post_add</mat-icon>
-            <span>New Prescription</span>
+            <span>{{ 'PATIENTS.NEW_PRESCRIPTION' | translate }}</span>
           </button>
         </div>
       </div>
@@ -61,7 +61,7 @@
           <mat-icon>warning</mat-icon>
         </div>
         <div class="alert-content">
-          <h3>Known Allergies</h3>
+          <h3>{{ 'PATIENTS.KNOWN_ALLERGIES' | translate }}</h3>
           <div class="allergy-chips">
             <mat-chip-set>
               <mat-chip
@@ -83,7 +83,7 @@
       <mat-tab>
         <ng-template mat-tab-label>
           <mat-icon class="tab-icon">person</mat-icon>
-          <span>Overview</span>
+          <span>{{ 'PATIENTS.TAB_OVERVIEW' | translate }}</span>
         </ng-template>
 
         <div class="tab-content" [@fadeIn]>
@@ -93,28 +93,28 @@
               <div class="card-header">
                 <h3 class="card-title">
                   <mat-icon>info</mat-icon>
-                  Demographics
+                  {{ 'PATIENTS.DEMOGRAPHICS' | translate }}
                 </h3>
               </div>
               <div class="card-body">
                 <div class="info-row">
-                  <span class="label">Date of Birth</span>
+                  <span class="label">{{ 'PATIENTS.FORM_DOB' | translate }}</span>
                   <span class="value">{{ patient.dob | date: 'MMM dd, yyyy' }}</span>
                 </div>
                 <div class="info-row">
-                  <span class="label">Gender</span>
+                  <span class="label">{{ 'PATIENTS.FORM_GENDER' | translate }}</span>
                   <span class="value">{{ patient.gender }}</span>
                 </div>
                 <div class="info-row">
-                  <span class="label">CURP</span>
+                  <span class="label">{{ 'PATIENTS.CURP' | translate }}</span>
                   <span class="value">{{ patient.curp || '—' }}</span>
                 </div>
                 <div class="info-row">
-                  <span class="label">Address</span>
+                  <span class="label">{{ 'PATIENTS.FORM_ADDRESS' | translate }}</span>
                   <span class="value">{{ patient.address }}</span>
                 </div>
                 <div class="info-row">
-                  <span class="label">Emergency Contact</span>
+                  <span class="label">{{ 'PATIENTS.EMERGENCY_CONTACT' | translate }}</span>
                   <span class="value">{{ patient.emergencyContact }}</span>
                 </div>
               </div>
@@ -125,23 +125,23 @@
               <div class="card-header">
                 <h3 class="card-title">
                   <mat-icon>assessment</mat-icon>
-                  Quick Stats
+                  {{ 'PATIENTS.QUICK_STATS' | translate }}
                 </h3>
               </div>
               <div class="card-body stats-layout">
                 <div class="stat">
                   <span class="stat-value">{{ medicalHistory.length }}</span>
-                  <span class="stat-label">Consultations</span>
+                  <span class="stat-label">{{ 'PATIENTS.STAT_CONSULTATIONS' | translate }}</span>
                 </div>
                 <div class="divider"></div>
                 <div class="stat">
                   <span class="stat-value">{{ prescriptions.length }}</span>
-                  <span class="stat-label">Prescriptions</span>
+                  <span class="stat-label">{{ 'PATIENTS.STAT_PRESCRIPTIONS' | translate }}</span>
                 </div>
                 <div class="divider"></div>
                 <div class="stat">
                   <span class="stat-value">{{ allergies.length }}</span>
-                  <span class="stat-label">Allergies</span>
+                  <span class="stat-label">{{ 'PATIENTS.STAT_ALLERGIES' | translate }}</span>
                 </div>
               </div>
             </div>
@@ -153,7 +153,7 @@
       <mat-tab>
         <ng-template mat-tab-label>
           <mat-icon class="tab-icon">history</mat-icon>
-          <span>Medical History</span>
+          <span>{{ 'PATIENTS.SECTION_HISTORY' | translate }}</span>
         </ng-template>
 
         <div class="tab-content">
@@ -169,7 +169,7 @@
       <mat-tab>
         <ng-template mat-tab-label>
           <mat-icon class="tab-icon">assignment</mat-icon>
-          <span>Antecedentes</span>
+          <span>{{ 'PATIENTS.SECTION_ANTECEDENTS' | translate }}</span>
         </ng-template>
 
         <div class="tab-content">
@@ -184,7 +184,7 @@
       <mat-tab>
         <ng-template mat-tab-label>
           <mat-icon class="tab-icon">monitor_heart</mat-icon>
-          <span>Signos Vitales</span>
+          <span>{{ 'PATIENTS.SECTION_VITAL_SIGNS' | translate }}</span>
         </ng-template>
 
         <div class="tab-content">
@@ -199,7 +199,7 @@
       <mat-tab>
         <ng-template mat-tab-label>
           <mat-icon class="tab-icon">verified_user</mat-icon>
-          <span>Consentimientos</span>
+          <span>{{ 'PATIENTS.SECTION_CONSENTS' | translate }}</span>
         </ng-template>
 
         <div class="tab-content">
@@ -215,14 +215,14 @@
       <mat-tab>
         <ng-template mat-tab-label>
           <mat-icon class="tab-icon">medication</mat-icon>
-          <span>Prescriptions</span>
+          <span>{{ 'PATIENTS.TAB_PRESCRIPTIONS' | translate }}</span>
         </ng-template>
 
         <div class="tab-content">
           <div class="prescriptions-container">
             <div class="prescriptions-header" *ngIf="prescriptions.length > 0">
-              <h3>Active Prescriptions</h3>
-              <p class="text-small text-muted">{{ prescriptions.length }} prescriptions on file</p>
+              <h3>{{ 'PATIENTS.ACTIVE_PRESCRIPTIONS' | translate }}</h3>
+              <p class="text-small text-muted">{{ 'PATIENTS.PRESCRIPTIONS_COUNT' | translate:{count: prescriptions.length} }}</p>
             </div>
 
             <div class="prescriptions-list" *ngIf="prescriptions.length > 0; else noPrescriptions">
@@ -238,14 +238,14 @@
                   <div class="prescription-actions">
                     <button
                       mat-icon-button
-                      matTooltip="View Details"
+                      [matTooltip]="'COMMON.VIEW_DETAILS' | translate"
                       [routerLink]="['/prescriptions/detail', p.id]"
                     >
                       <mat-icon>visibility</mat-icon>
                     </button>
                     <button
                       mat-icon-button
-                      matTooltip="Print"
+                      [matTooltip]="'COMMON.PRINT' | translate"
                     >
                       <mat-icon>print</mat-icon>
                     </button>
@@ -253,7 +253,7 @@
                 </div>
                 <div class="prescription-body">
                   <div class="diagnosis">
-                    <span class="label">Diagnosis</span>
+                    <span class="label">{{ 'COMMON.DIAGNOSIS' | translate }}</span>
                     <p class="diagnosis-text">{{ p.diagnosis }}</p>
                   </div>
                 </div>
@@ -265,8 +265,8 @@
                 <div class="empty-icon">
                   <mat-icon>medication</mat-icon>
                 </div>
-                <h3>No Prescriptions</h3>
-                <p>No prescriptions found for this patient</p>
+                <h3>{{ 'PATIENTS.NO_PRESCRIPTIONS_TITLE' | translate }}</h3>
+                <p>{{ 'PATIENTS.NO_PRESCRIPTIONS_MESSAGE' | translate }}</p>
                 <button
                   mat-raised-button
                   color="primary"
@@ -275,7 +275,7 @@
                   class="mt-lg"
                 >
                   <mat-icon>add</mat-icon>
-                  Create First Prescription
+                  {{ 'PATIENTS.CREATE_FIRST_PRESCRIPTION' | translate }}
                 </button>
               </div>
             </ng-template>
@@ -290,11 +290,11 @@
     <mat-card class="error-card">
       <div class="error-content">
         <mat-icon class="error-icon">error_outline</mat-icon>
-        <h3>Error Loading Patient</h3>
+        <h3>{{ 'PATIENTS.ERROR_LOADING_PATIENT' | translate }}</h3>
         <p>{{ error }}</p>
         <button mat-raised-button color="primary" routerLink="/patients">
           <mat-icon>arrow_back</mat-icon>
-          Back to Patients
+          {{ 'PATIENTS.DETAIL_BACK' | translate }}
         </button>
       </div>
     </mat-card>

@@ -1,6 +1,6 @@
 <div class="consents-container">
   <div class="consents-header">
-    <h3><mat-icon>verified_user</mat-icon> Consentimientos</h3>
+    <h3><mat-icon>verified_user</mat-icon> {{ 'PATIENTS.CONSENTS_TITLE' | translate }}</h3>
   </div>
 
   <div *ngIf="loading" class="loading-section">
@@ -14,8 +14,8 @@
 
   <div *ngIf="!loading && consents.length === 0" class="empty-state">
     <mat-icon class="empty-icon">verified_user</mat-icon>
-    <h3>Sin consentimientos</h3>
-    <p>No hay consentimientos registrados para este paciente</p>
+    <h3>{{ 'PATIENTS.CONSENTS_NO_DATA' | translate }}</h3>
+    <p>{{ 'PATIENTS.CONSENTS_NO_DATA' | translate }}</p>
   </div>
 
   <div *ngIf="!loading && consents.length > 0" class="consents-list">
@@ -39,7 +39,7 @@
               </span>
               <span class="meta-item" *ngIf="consent.expiryDate">
                 <mat-icon>event</mat-icon>
-                Expira: {{ consent.expiryDate | date:'dd/MM/yyyy' }}
+                {{ 'PATIENTS.CONSENTS_EXPIRATION' | translate }}: {{ consent.expiryDate | date:'dd/MM/yyyy' }}
               </span>
             </div>
           </div>
@@ -48,16 +48,16 @@
               [color]="consent.isApproved ? 'primary' : 'warn'"
               highlighted
             >
-              {{ consent.isApproved ? 'Aprobado' : 'Revocado' }}
+              {{ consent.isApproved ? ('PATIENTS.CONSENTS_GRANTED' | translate) : ('PATIENTS.CONSENTS_REVOKED' | translate) }}
             </mat-chip>
             <button
               *ngIf="consent.isApproved"
               mat-stroked-button
               color="warn"
               (click)="revoke(consent)"
-              matTooltip="Revocar consentimiento"
+              [matTooltip]="'PATIENTS.CONSENTS_REVOKE' | translate"
             >
-              Revocar
+              {{ 'PATIENTS.CONSENTS_REVOKE' | translate }}
             </button>
           </div>
         </div>

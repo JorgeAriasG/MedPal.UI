@@ -1,11 +1,11 @@
 <div class="nutrition-template">
-  <h3>Evaluación Nutricional</h3>
+  <h3>{{ 'MEDICAL_HISTORY.TEMPLATE_NUTRITION_TITLE' | translate }}</h3>
 
   <div class="row">
     <!-- Peso -->
     <div class="col-md-6">
       <mat-form-field appearance="outline" class="w-100">
-        <mat-label>Peso (kg)</mat-label>
+        <mat-label>{{ 'MEDICAL_HISTORY.TEMPLATE_NUTRITION_PESO' | translate }}</mat-label>
         <input
           matInput
           type="number"
@@ -21,7 +21,7 @@
     <!-- Altura -->
     <div class="col-md-6">
       <mat-form-field appearance="outline" class="w-100">
-        <mat-label>Altura (m)</mat-label>
+        <mat-label>{{ 'MEDICAL_HISTORY.TEMPLATE_NUTRITION_ALTURA' | translate }}</mat-label>
         <input
           matInput
           type="number"
@@ -41,7 +41,7 @@
       <div class="imc-display">
         <div class="imc-value">
           <span class="imc-number">{{ nutritionData.imc || "0.00" }}</span>
-          <span class="imc-label">IMC</span>
+          <span class="imc-label">{{ 'PATIENTS.VITAL_SIGNS_BMI' | translate }}</span>
         </div>
         <div class="imc-category" [style.color]="getIMCColor()">
           {{ getIMCCategory() }}
@@ -52,19 +52,19 @@
 
   <!-- Objetivo -->
   <mat-form-field appearance="outline" class="w-100 mt-3">
-    <mat-label>Objetivo</mat-label>
+    <mat-label>{{ 'MEDICAL_HISTORY.TEMPLATE_NUTRITION_OBJECTIVE' | translate }}</mat-label>
     <input
       matInput
       [value]="nutritionData.objetivo"
       (input)="updateField('objetivo', $any($event.target).value)"
       [disabled]="disabled"
-      placeholder="Ej: Bajar 10kg en 3 meses"
+      [placeholder]="'MEDICAL_HISTORY.TEMPLATE_NUTRITION_OBJECTIVE_PLACEHOLDER' | translate"
     />
   </mat-form-field>
 
   <!-- Calorías Diarias -->
   <mat-form-field appearance="outline" class="w-100">
-    <mat-label>Calorías Diarias Recomendadas</mat-label>
+    <mat-label>{{ 'MEDICAL_HISTORY.TEMPLATE_NUTRITION_CALORIES' | translate }}</mat-label>
     <input
       matInput
       type="number"
@@ -77,17 +77,17 @@
 
   <!-- Restricciones Alimenticias -->
   <div class="restrictions-section">
-    <h4>Restricciones Alimenticias</h4>
+    <h4>{{ 'MEDICAL_HISTORY.TEMPLATE_NUTRITION_RESTRICTIONS_TITLE' | translate }}</h4>
 
     <div class="add-restriction">
       <mat-form-field appearance="outline" class="restriction-input">
-        <mat-label>Agregar restricción</mat-label>
+        <mat-label>{{ 'MEDICAL_HISTORY.TEMPLATE_NUTRITION_ADD_RESTRICTION' | translate }}</mat-label>
         <input
           matInput
           [(ngModel)]="newRestriction"
           (keyup.enter)="addRestriction()"
           [disabled]="disabled"
-          placeholder="Ej: Lactosa, Gluten"
+          [placeholder]="'MEDICAL_HISTORY.TEMPLATE_NUTRITION_RESTRICTION_PLACEHOLDER' | translate"
         />
       </mat-form-field>
       <button
@@ -97,7 +97,7 @@
         [disabled]="disabled || !newRestriction.trim()"
       >
         <mat-icon>add</mat-icon>
-        Agregar
+        {{ 'MEDICAL_HISTORY.TEMPLATE_NUTRITION_ADD_BUTTON' | translate }}
       </button>
     </div>
 
@@ -113,7 +113,7 @@
     </mat-chip-set>
 
     <p *ngIf="nutritionData.restricciones.length === 0" class="text-muted">
-      No hay restricciones alimenticias registradas
+      {{ 'MEDICAL_HISTORY.TEMPLATE_NUTRITION_NO_RESTRICTIONS' | translate }}
     </p>
   </div>
 </div>

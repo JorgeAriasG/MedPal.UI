@@ -18,6 +18,7 @@ import { takeUntil } from 'rxjs/operators';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { TranslateModule } from '@ngx-translate/core';
 import {
   IMedicalRecordAccessLog,
   AuditLogFilter,
@@ -49,6 +50,7 @@ import { AuditLogTableComponent } from '../audit-log-table/audit-log-table.compo
     MatIconModule,
     MatProgressSpinnerModule,
     AsyncPipe,
+    TranslateModule,
     AuditLogFiltersComponent,
     AuditLogTableComponent,
   ],

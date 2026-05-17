@@ -1,20 +1,20 @@
-<h2 mat-dialog-title>Nueva Consulta Médica</h2>
+<h2 mat-dialog-title>{{ 'MEDICAL_HISTORY.FORM_TITLE_NEW' | translate }}</h2>
 
 <mat-dialog-content>
   <form [formGroup]="historyForm">
     <!-- Common Fields -->
     <div class="common-fields">
-      <h3>Información General</h3>
+      <h3>{{ 'MEDICAL_HISTORY.FORM_GENERAL_INFO' | translate }}</h3>
 
       <mat-form-field appearance="outline" class="w-100">
-        <mat-label>Diagnóstico</mat-label>
+        <mat-label>{{ 'MEDICAL_HISTORY.FORM_DIAGNOSIS' | translate }}</mat-label>
         <input
           matInput
           formControlName="diagnosis"
-          placeholder="Diagnóstico principal"
+          [placeholder]="'MEDICAL_HISTORY.FORM_DIAGNOSIS_PLACEHOLDER_SHORT' | translate"
         />
         <mat-error *ngIf="historyForm.get('diagnosis')?.hasError('required')">
-          El diagnóstico es requerido
+          {{ 'MEDICAL_HISTORY.FORM_DIAGNOSIS_REQUIRED' | translate }}
         </mat-error>
       </mat-form-field>
 
@@ -23,34 +23,34 @@
       </div>
 
       <mat-form-field appearance="outline" class="w-100">
-        <mat-label>Fecha del Diagnóstico</mat-label>
+        <mat-label>{{ 'MEDICAL_HISTORY.FORM_DATE_LABEL' | translate }}</mat-label>
         <input
           matInput
           type="date"
           formControlName="diagnosisDate"
         />
         <mat-error *ngIf="historyForm.get('diagnosisDate')?.hasError('required')">
-          La fecha del diagnóstico es requerida
+          {{ 'MEDICAL_HISTORY.FORM_DATE_REQUIRED' | translate }}
         </mat-error>
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="w-100">
-        <mat-label>Notas Clínicas</mat-label>
+        <mat-label>{{ 'MEDICAL_HISTORY.FORM_CLINICAL_NOTES' | translate }}</mat-label>
         <textarea
           matInput
           formControlName="clinicalNotes"
           rows="4"
-          placeholder="Observaciones y notas de la consulta"
+          [placeholder]="'MEDICAL_HISTORY.FORM_CLINICAL_NOTES_PLACEHOLDER' | translate"
         ></textarea>
         <mat-error
           *ngIf="historyForm.get('clinicalNotes')?.hasError('required')"
         >
-          Las notas clínicas son requeridas
+          {{ 'MEDICAL_HISTORY.FORM_CLINICAL_NOTES_REQUIRED' | translate }}
         </mat-error>
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="w-100">
-        <mat-label>Fecha de Seguimiento</mat-label>
+        <mat-label>{{ 'MEDICAL_HISTORY.FORM_FOLLOW_UP' | translate }}</mat-label>
         <input
           matInput
           type="date"
@@ -61,7 +61,7 @@
 
     <!-- Dynamic Specialty Template -->
     <div class="specialty-section">
-      <h3>Datos Específicos - {{ specialtyType }}</h3>
+      <h3>{{ 'MEDICAL_HISTORY.FORM_SPECIALTY_DATA' | translate:{specialty: specialtyType} }}</h3>
 
       <div [ngSwitch]="config.template">
         <app-dental-template
@@ -91,7 +91,7 @@
     <div class="confidentiality-section">
       <mat-checkbox formControlName="isConfidential">
         <mat-icon>lock</mat-icon>
-        Marcar como confidencial
+        {{ 'MEDICAL_HISTORY.FORM_CONFIDENTIAL' | translate }}
       </mat-checkbox>
     </div>
 
@@ -103,7 +103,7 @@
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
-  <button mat-button (click)="onCancel()" [disabled]="loading">Cancelar</button>
+  <button mat-button (click)="onCancel()" [disabled]="loading">{{ 'COMMON.CANCEL' | translate }}</button>
   <button
     mat-raised-button
     color="primary"
@@ -115,6 +115,6 @@
       diameter="20"
       class="inline-spinner"
     ></mat-spinner>
-    <span *ngIf="!loading">Guardar Consulta</span>
+    <span *ngIf="!loading">{{ 'MEDICAL_HISTORY.FORM_SAVE_CONSULTATION' | translate }}</span>
   </button>
 </mat-dialog-actions>

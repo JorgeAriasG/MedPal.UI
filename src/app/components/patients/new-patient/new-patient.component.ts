@@ -5,6 +5,7 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { PatientsService } from 'src/app/components/patients/services/patients.service';
 import { IPatient } from 'src/app/entities/IPatient';
 import { Store } from '@ngrx/store';
@@ -42,7 +43,11 @@ export class NewPatientComponent implements OnInit, OnDestroy {
 
   private destroy$ = new Subject<void>();
 
-  constructor(private patientsService: PatientsService, private store: Store) {}
+  constructor(
+    private patientsService: PatientsService,
+    private store: Store,
+    private translate: TranslateService
+  ) {}
 
   ngOnInit(): void {
     // Obtener clinicId del store
@@ -70,7 +75,7 @@ export class NewPatientComponent implements OnInit, OnDestroy {
     this.ageError = null;
 
     if (!this.validateAge()) {
-      this.ageError = 'Patient must be at least 18 years old.';
+      this.ageError = this.translate.instant('PATIENTS.ERROR_AGE');
       return;
     }
 
@@ -78,7 +83,7 @@ export class NewPatientComponent implements OnInit, OnDestroy {
     this.patientsService.checkEmail(this.newPatient.email).subscribe({
       next: (exists) => {
         if (exists) {
-          this.emailError = 'This email is already registered.';
+          this.emailError = this.translate.instant('PATIENTS.ERROR_EMAIL_EXISTS');
           this.isSubmitting = false;
         } else {
           this.savePatient();

@@ -22,7 +22,7 @@
 .header-avatar {
   width: 48px;
   height: 48px;
-  background-color: rgba(91, 108, 255, 0.1);
+  background-color: rgba(44, 62, 80, 0.1);
   color: var(--color-primary);
   display: flex;
   align-items: center;
@@ -144,7 +144,7 @@
 
 .item-row-card:hover {
   border-color: var(--color-primary);
-  background-color: rgba(91, 108, 255, 0.04);
+  background-color: rgba(44, 62, 80, 0.04);
 }
 
 .item-index {
