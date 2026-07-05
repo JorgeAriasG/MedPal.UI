@@ -1,0 +1,18 @@
+<div class="checkout-required-container">
+  <div class="required-card">
+    <div class="required-icon">
+      <mat-icon>credit_card</mat-icon>
+    </div>
+    <h1>{{ 'CHECKOUT.REQUIRED_TITLE' | translate }}</h1>
+    <p class="required-message">{{ 'CHECKOUT.REQUIRED_MESSAGE' | translate }}</p>
+    <div class="required-actions">
+      <button mat-raised-button color="primary"
+              (click)="goToCheckout()"
+              [disabled]="loading">
+        <mat-spinner *ngIf="loading" diameter="20" class="inline-spinner"></mat-spinner>
+        <span *ngIf="!loading">{{ 'CHECKOUT.COMPLETE_PAYMENT' | translate }}</span>
+      </button>
+    </div>
+    <p class="error-text" *ngIf="error">{{ error }}</p>
+  </div>
+</div>

@@ -1,0 +1,101 @@
+<div class="summary-container">
+  <div class="summary-header">
+    <h3 class="summary-title">Resumen del Paciente</h3>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading-section" *ngIf="loading">
+    <mat-spinner diameter="32"></mat-spinner>
+  </div>
+
+  <!-- Content -->
+  <ng-container *ngIf="!loading">
+    <!-- Metric Cards -->
+    <div class="metric-grid">
+      <div class="metric-card">
+        <span class="metric-label">Peso</span>
+        <div class="metric-value-row">
+          <span class="metric-value">{{ (latestBodyComp && latestBodyComp.weight) || (progressEntries[0] && progressEntries[0].weight) || '—' }}</span>
+          <span class="metric-unit">kg</span>
+        </div>
+        <span class="metric-delta" [class.delta-down]="weightDiff < 0" [class.delta-up]="weightDiff > 0">
+          <mat-icon *ngIf="weightDiff !== 0">{{ weightDiff > 0 ? 'arrow_upward' : 'arrow_downward' }}</mat-icon>
+          {{ weightDiff !== 0 ? weightDiff : '—' }} kg
+        </span>
+      </div>
+
+      <div class="metric-card">
+        <span class="metric-label">IMC</span>
+        <div class="metric-value-row">
+          <span class="metric-value">{{ (latestBodyComp && latestBodyComp.bmi) || '—' }}</span>
+        </div>
+        <span class="metric-delta" [class.delta-down]="bmiDiff < 0" [class.delta-up]="bmiDiff > 0">
+          <mat-icon *ngIf="bmiDiff !== 0">{{ bmiDiff > 0 ? 'arrow_upward' : 'arrow_downward' }}</mat-icon>
+          {{ bmiDiff !== 0 ? bmiDiff : '—' }}
+        </span>
+      </div>
+
+      <div class="metric-card">
+        <span class="metric-label">Grasa Corporal</span>
+        <div class="metric-value-row">
+          <span class="metric-value">{{ (latestBodyComp && latestBodyComp.bodyFatPercentage) || (progressEntries[0] && progressEntries[0].bodyFatPercentage) || '—' }}</span>
+          <span class="metric-unit">%</span>
+        </div>
+        <span class="metric-delta" [class.delta-down]="fatDiff < 0" [class.delta-up]="fatDiff > 0">
+          <mat-icon *ngIf="fatDiff !== 0">{{ fatDiff > 0 ? 'arrow_upward' : 'arrow_downward' }}</mat-icon>
+          {{ fatDiff !== 0 ? fatDiff : '—' }}%
+        </span>
+      </div>
+
+      <div class="metric-card">
+        <span class="metric-label">Plan Activo</span>
+        <div class="metric-value-row">
+          <span class="metric-value" *ngIf="activeDietPlan">{{ activeDietPlan.name }}</span>
+          <span class="metric-value muted" *ngIf="!activeDietPlan">Sin plan</span>
+        </div>
+        <span class="metric-sub" *ngIf="activeDietPlan">
+          {{ activeDietPlan.dailyCalories || '—' }} cal/día
+        </span>
+      </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="charts-grid" *ngIf="progressEntries.length >= 2">
+      <div class="chart-card">
+        <h4 class="chart-title">Evolución de Peso</h4>
+        <div class="chart-wrapper">
+          <canvas baseChart
+            [data]="weightChartData"
+            [options]="weightChartOptions"
+            type="line">
+          </canvas>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <h4 class="chart-title">Composición Corporal</h4>
+        <div class="chart-wrapper">
+          <canvas baseChart
+            [data]="bodyCompChartData"
+            [options]="bodyCompChartOptions"
+            type="bar">
+          </canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty state -->
+    <div class="empty-state" *ngIf="progressEntries.length === 0 && !latestBodyComp">
+      <mat-icon class="empty-icon">monitor_weight</mat-icon>
+      <p class="empty-text">No hay datos de evolución previos</p>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-section" *ngIf="!readonly">
+      <button mat-flat-button color="primary" class="start-btn" (click)="onStart()">
+        <mat-icon>play_arrow</mat-icon>
+        Comenzar Consulta
+      </button>
+    </div>
+  </ng-container>
+</div>

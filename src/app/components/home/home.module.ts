@@ -29,11 +29,15 @@ import {
 } from '@angular/common/http';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatMenuModule } from '@angular/material/menu';
 import { NewPatientComponent } from '../patients/new-patient/new-patient.component';
 import { PatientDetailComponent } from '../patients/patient-detail/patient-detail.component';
 import { AddClinicComponent } from '../clinics/add-clinic/add-clinic.component';
 import { QuickactionMenuComponent } from '../quickaction-menu/quickaction-menu.component';
 import { AppointmentComponent } from '../appointments/appointment/appointment.component';
+import { ConfirmStartConsultationComponent } from '../appointments/appointment/confirm-start-consultation/confirm-start-consultation.component';
+import { ConsultationComponent } from '../appointments/consultation/consultation.component';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { MatTimepickerModule } from '@angular/material/timepicker';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -45,6 +49,8 @@ import { NewRoleComponent } from '../user/roles/new-role/new-role.component';
 import { CreatePrescriptionComponent } from '../prescriptions/create-prescription/create-prescription.component';
 import { PrescriptionDetailComponent } from '../prescriptions/prescription-detail/prescription-detail.component';
 import { MedicalHistoryModule } from '../medical-history/medical-history.module';
+import { NutritionModule } from 'src/app/nutrition/nutrition.module';
+import { AuthGuard } from 'src/app/guards/auth.guard';
 import { AuditAccessGuard } from 'src/app/guards/audit-access.guard';
 import { AuditAdminGuard } from 'src/app/guards/audit-admin.guard';
 import { ConsentAccessGuard } from 'src/app/guards/consent-access.guard';
@@ -53,6 +59,13 @@ import { PatientAntecedentsComponent } from '../patients/patient-antecedents/pat
 import { PatientVitalSignsComponent } from '../patients/patient-vital-signs/patient-vital-signs.component';
 import { VitalSignDialogComponent } from '../patients/patient-vital-signs/vital-sign-dialog.component';
 import { PatientConsentsComponent } from '../patients/patient-consents/patient-consents.component';
+import { PatientGeneralComponent } from '../patients/patient-general/patient-general.component';
+import { PatientDentalComponent } from '../patients/patient-dental/patient-dental.component';
+import { NutritionPatientComponent } from '../patients/nutrition-patient/nutrition-patient.component';
+import { SettingsComponent } from '../settings/settings.component';
+import { CheckoutSuccessComponent } from '../checkout/checkout-success/checkout-success.component';
+import { CheckoutRequiredComponent } from '../checkout/checkout-required/checkout-required.component';
+import { StripeCheckoutModalComponent } from '../checkout/stripe-checkout-modal/stripe-checkout-modal.component';
 import { MatExpansionModule } from '@angular/material/expansion';
 
 @NgModule({
@@ -67,14 +80,23 @@ import { MatExpansionModule } from '@angular/material/expansion';
     PatientVitalSignsComponent,
     VitalSignDialogComponent,
     PatientConsentsComponent,
+    PatientGeneralComponent,
+    PatientDentalComponent,
+    NutritionPatientComponent,
     AddClinicComponent,
     QuickactionMenuComponent,
     AppointmentComponent,
+    ConfirmStartConsultationComponent,
+    ConsultationComponent,
     ListComponent,
     RolesListComponent,
     NewRoleComponent,
     CreatePrescriptionComponent,
     PrescriptionDetailComponent,
+    SettingsComponent,
+    CheckoutSuccessComponent,
+    CheckoutRequiredComponent,
+    StripeCheckoutModalComponent,
   ],
   exports: [
     HomeComponent,
@@ -115,9 +137,12 @@ import { MatExpansionModule } from '@angular/material/expansion';
     FormsModule,
     MatDialogModule,
     MatProgressSpinnerModule,
+    MatProgressBarModule,
+    MatMenuModule,
     MatButtonToggleModule,
     MatExpansionModule,
     MedicalHistoryModule,
+    NutritionModule,
     CalendarModule.forRoot({
       provide: DateAdapter,
       useFactory: adapterFactory,
@@ -127,17 +152,51 @@ import { MatExpansionModule } from '@angular/material/expansion';
       { path: 'patients', component: PatientsComponent },
       { path: 'appointments', component: AppointmentComponent },
       {
+        path: 'appointments/:id/consultation',
+        component: ConsultationComponent,
+      },
+      {
         path: 'appointments/new-appointment',
         component: NewAppointmentComponent,
       },
       { path: 'patients/detail/:id', component: PatientDetailComponent },
       { path: 'clinics', component: ClinicListComponent },
       { path: 'users', component: ListComponent },
+      { path: 'checkout/success', component: CheckoutSuccessComponent },
+      { path: 'checkout/required', component: CheckoutRequiredComponent },
+      { path: 'settings', component: SettingsComponent },
       { path: 'roles', component: RolesListComponent },
+      {
+        path: 'reports',
+        canActivate: [AuthGuard],
+        children: [
+          {
+            path: '',
+            loadChildren: () =>
+              import('../reports/reports.module').then(
+                (m) => m.ReportsModule
+              ),
+          },
+        ],
+      },
       { path: 'prescriptions/new', component: CreatePrescriptionComponent },
       {
         path: 'prescriptions/detail/:id',
         component: PrescriptionDetailComponent,
+      },
+      // Nutrition module (lazy-loaded)
+      {
+        path: 'nutrition',
+        canActivate: [AuthGuard],
+        children: [
+          {
+            path: '',
+            loadChildren: () =>
+              import('src/app/nutrition/nutrition.module').then(
+                (m) => m.NutritionModule
+              ),
+          },
+        ],
       },
       // Audit routes (protected with guards)
       {

@@ -146,7 +146,8 @@ export class NewAppointmentComponent implements OnInit, OnDestroy {
     const app = this.dialogData.appointment;
     this.selectedPatient = app.patient;
     
-    const date = new Date(app.date);
+    const [y, mo, d] = app.date.split('-').map(Number);
+    const date = new Date(y, mo - 1, d);
     const [h, m] = app.time.split(':');
 
     this.appointmentForm.patchValue({
@@ -160,7 +161,7 @@ export class NewAppointmentComponent implements OnInit, OnDestroy {
     if (app.patient) {
       this.patientForm.patchValue({
         id: app.patient.id,
-        name: app.patient.name,
+        name: app.patient,
         lastname: app.patient.lastname,
         email: app.patient.email,
         phone: app.patient.phone,

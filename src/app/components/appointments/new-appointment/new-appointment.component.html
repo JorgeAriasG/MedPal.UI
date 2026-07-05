@@ -68,7 +68,7 @@
               <mat-label>{{ 'COMMON.STATUS' | translate }}</mat-label>
               <mat-select formControlName="status">
                 <mat-option *ngFor="let option of statusOptions" [value]="option.value">
-                  {{ option.label }}
+                  {{ option.label | translate }}
                 </mat-option>
               </mat-select>
               <mat-icon matPrefix>flag</mat-icon>

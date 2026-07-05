@@ -25,7 +25,6 @@ import { ClinicService } from '../components/clinics/services/clinic.service';
 export class ClinicContextService {
   // Roles that are clinic-based and require a clinic context
   private readonly CLINIC_REQUIRING_ROLES = [
-    'Doctor',
     'HealthProfessional',
     'Receptionist',
     'Patient',

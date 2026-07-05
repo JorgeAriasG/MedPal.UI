@@ -9,6 +9,11 @@ import { ApiService } from './api.service';
 import {
   LoginResponse,
   RegisterRequest,
+  RegisterResponse,
+  InitiateRegRequest,
+  InitiateRegResponse,
+  CompleteRegRequest,
+  CompleteRegResponse,
   User,
   AuthContext,
   UserRole,
@@ -105,19 +110,67 @@ export class AuthService {
    * @param registerData Registration data
    * @returns Observable<LoginResponse>
    */
-  signup(registerData: RegisterRequest): Observable<LoginResponse> {
+  signup(registerData: RegisterRequest): Observable<RegisterResponse> {
     return this.apiService
-      .post<LoginResponse>('User/register', registerData)
+      .post<RegisterResponse>('User/register', registerData)
       .pipe(
-        tap((response: LoginResponse) => {
+        tap((response: RegisterResponse) => {
+          const u = response.user;
+          if (!u || !u.token) return;
+
           // Automatically log in after successful registration
-          localStorage.setItem(this.TOKEN_KEY, response.token);
-          localStorage.setItem(this.ROLE_KEY, response.role);
-          const permissions = response.permissions || [];
+          localStorage.setItem(this.TOKEN_KEY, u.token);
+          localStorage.setItem(this.ROLE_KEY, u.role);
+          const permissions = u.permissions || [];
           localStorage.setItem(
             this.PERMISSIONS_KEY,
             JSON.stringify(permissions),
           );
+
+          const user: User = {
+            id: u.id,
+            name: u.name,
+            email: u.email,
+            role: u.role,
+            accountId: u.accountId,
+            clinicId: u.clinicId,
+          };
+          localStorage.setItem(this.USER_KEY, JSON.stringify(user));
+          this.currentUserSubject.next(user);
+        }),
+      );
+  }
+
+  /**
+   * Initiate registration with Stripe payment
+   * Creates a pending registration and Stripe Checkout Session.
+   * No account is created until payment is confirmed.
+   *
+   * @param dto Registration data including plan selection
+   * @returns InitiateRegResponse with clientSecret for Embedded Checkout
+   */
+  initiateRegistration(dto: InitiateRegRequest): Observable<InitiateRegResponse> {
+    return this.apiService.post<InitiateRegResponse>('User/initiate-registration', dto);
+  }
+
+  /**
+   * Complete registration after successful Stripe payment
+   * Creates Account, User, Clinic, and Subscription in the backend.
+   * Auto-login on success.
+   *
+   * @param dto Contains sessionId from Stripe Checkout
+   * @returns CompleteRegResponse with token and user data
+   */
+  completeRegistration(dto: CompleteRegRequest): Observable<CompleteRegResponse> {
+    return this.apiService.post<CompleteRegResponse>('User/complete-registration', dto)
+      .pipe(
+        tap((response: CompleteRegResponse) => {
+          if (!response.token) return;
+
+          localStorage.setItem(this.TOKEN_KEY, response.token);
+          localStorage.setItem(this.ROLE_KEY, response.role);
+          const permissions = response.permissions || [];
+          localStorage.setItem(this.PERMISSIONS_KEY, JSON.stringify(permissions));
 
           const user: User = {
             id: response.id,
@@ -270,16 +323,7 @@ export class AuthService {
   }
 
   /**
-   * Check if current user is Doctor
-   *
-   * @returns boolean
-   */
-  isDoctor(): boolean {
-    return this.getRole() === UserRole.DOCTOR;
-  }
-
-  /**
-   * Check if current user is HealthProfessional
+   * Check if current user is a clinical professional (HealthProfessional)
    *
    * @returns boolean
    */
@@ -288,7 +332,7 @@ export class AuthService {
   }
 
   /**
-   * Check if current user has clinical role (Doctor or HealthProfessional)
+   * Check if current user has clinical role (HealthProfessional)
    *
    * @returns boolean
    */

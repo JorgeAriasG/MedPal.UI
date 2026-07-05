@@ -100,9 +100,10 @@ export class ClinicListComponent implements OnInit, OnDestroy {
 
   openAddDialog(): void {
     const dialogRef = this.dialog.open(AddClinicComponent, {
-      width: '500px',
+      width: '600px',
       disableClose: false,
       panelClass: 'custom-dialog',
+      data: { isEdit: false },
     });
 
     dialogRef
@@ -140,11 +141,20 @@ export class ClinicListComponent implements OnInit, OnDestroy {
   }
 
   editClinic(clinic: IClinic): void {
-    this.isEdit = true;
-    this.dialog.open(AddClinicComponent, {
-      width: '400px',
-      data: [clinic, this.isEdit],
+    const dialogRef = this.dialog.open(AddClinicComponent, {
+      width: '600px',
+      panelClass: 'custom-dialog',
+      data: { clinic, isEdit: true },
     });
+
+    dialogRef
+      .afterClosed()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((res) => {
+        if (res) {
+          this.getClinics();
+        }
+      });
   }
 
   deleteClinic(id: number): void {}

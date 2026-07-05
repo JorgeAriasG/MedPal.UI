@@ -51,7 +51,7 @@ export class TenantContextService {
 
       // Parse auth state from JSON
       const authState = JSON.parse(token);
-      const jwtToken = authState?.token;
+      const jwtToken = authState?.userToken;
 
       if (!jwtToken) {
         this.clearContext();
@@ -293,7 +293,7 @@ export class TenantContextService {
    * @returns true if user is medical staff
    */
   public isMedicalProfessional(): boolean {
-    return this.hasAnyRole(['DOCTOR', 'NURSE', 'PHARMACIST']);
+    return this.hasAnyRole(['HEALTH_PROFESSIONAL', 'NURSE', 'PHARMACIST']);
   }
 
   /**

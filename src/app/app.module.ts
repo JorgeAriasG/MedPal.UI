@@ -1,4 +1,3 @@
-import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { NgModule, isDevMode } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
@@ -18,6 +17,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { LoginComponent } from './components/user/login/login.component';
 import { SharedModule } from './shared/shared.module';
 import { SignupComponent } from './components/user/signup/signup.component';
+import { WelcomeComponent } from './components/user/welcome/welcome.component';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
@@ -49,7 +49,7 @@ export function localStorageSyncReducer(
 export const metaReducers: MetaReducer<any>[] = [localStorageSyncReducer];
 
 @NgModule({
-  declarations: [AppComponent, LoginComponent, SignupComponent],
+  declarations: [AppComponent, LoginComponent, SignupComponent, WelcomeComponent],
   bootstrap: [AppComponent],
   imports: [
     BrowserModule,

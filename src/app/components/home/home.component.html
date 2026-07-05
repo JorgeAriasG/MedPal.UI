@@ -43,8 +43,8 @@
     <div class="timeline-next" *ngIf="nextAppointment">
       <div class="next-label">{{ 'HOME.NEXT' | translate }}</div>
       <div class="next-time">{{ nextAppointment.time }}</div>
-      <div class="next-patient">{{ (patientMap.get(nextAppointment.patientId))?.name || 'Paciente' }} {{ (patientMap.get(nextAppointment.patientId))?.lastname || '' }}</div>
-      <span class="next-status" [ngClass]="'status-' + (nextAppointment.status | lowercase)">{{ nextAppointment.status }}</span>
+      <div class="next-patient">{{ nextAppointment.patient?.name || patientMap.get(nextAppointment.patientId)?.name || 'Paciente' }} {{ nextAppointment.patient?.lastname || patientMap.get(nextAppointment.patientId)?.lastname || '' }}</div>
+      <span class="next-status" [ngClass]="'status-' + (nextAppointment.status | lowercase)">{{ 'APPOINTMENTS.STATUS_' + nextAppointment.status | translate }}</span>
     </div>
     <div class="timeline-next empty-next" *ngIf="!nextAppointment">
       <mat-icon class="next-icon">event_busy</mat-icon>
@@ -82,10 +82,10 @@
       <div *ngFor="let appt of upcomingAppointments" class="appt-row" (click)="openEditAppointmentModal(appt)">
         <div class="appt-time">{{ appt.time }}</div>
         <div class="appt-info">
-          <span class="appt-patient">{{ (patientMap.get(appt.patientId))?.name }} {{ (patientMap.get(appt.patientId))?.lastname }}</span>
+          <span class="appt-patient">{{ appt.patient?.name || patientMap.get(appt.patientId)?.name || '' }} {{ appt.patient?.lastname || patientMap.get(appt.patientId)?.lastname || '' }}</span>
           <span class="appt-date">{{ appt.date }}</span>
         </div>
-        <span class="appt-badge" [ngClass]="'badge-' + (appt.status | lowercase)">{{ appt.status }}</span>
+        <span class="appt-badge" [ngClass]="'badge-' + (appt.status | lowercase)">{{ 'APPOINTMENTS.STATUS_' + appt.status | translate }}</span>
         <button mat-icon-button class="appt-edit" (click)="$event.stopPropagation(); openEditAppointmentModal(appt)">
           <mat-icon>edit</mat-icon>
         </button>

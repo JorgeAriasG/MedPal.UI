@@ -37,4 +37,4 @@ export interface GenericData {
 export type SpecialtyDataType = DentalData | NutritionData | GenericData;
 
 // Specialty type enum
-export type SpecialtyType = 'Dental' | 'Nutrición' | 'Cardiología' | 'General' | 'Pediatría' | 'Dermatología';
+export type SpecialtyType = 'Dental' | 'Nutrition' | 'Cardiology' | 'General' | 'Pediatrics' | 'Dermatology';

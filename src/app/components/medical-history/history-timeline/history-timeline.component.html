@@ -13,9 +13,7 @@
       <mat-form-field appearance="outline">
         <mat-label>{{ 'MEDICAL_HISTORY.TIMELINE_SPECIALTY' | translate }}</mat-label>
         <mat-select [(ngModel)]="selectedSpecialty" (selectionChange)="applyFilters()">
-          <mat-option *ngFor="let spec of specialties" [value]="spec">
-            {{ spec }}
-          </mat-option>
+          <mat-option *ngFor="let spec of specialties" [value]="spec">{{ spec }}</mat-option>
         </mat-select>
         <mat-icon matPrefix>category</mat-icon>
       </mat-form-field>
@@ -39,16 +37,15 @@
     </button>
   </div>
 
+  <!-- Empty State -->
   <div *ngIf="filteredEntries.length === 0" class="empty-state">
     <mat-icon>event_note</mat-icon>
     <p>{{ 'MEDICAL_HISTORY.TIMELINE_EMPTY_FILTERED' | translate }}</p>
   </div>
 
+  <!-- Timeline Entries -->
   <div class="timeline" *ngIf="filteredEntries.length > 0">
-    <div
-      *ngFor="let entry of filteredEntries; let i = index"
-      class="timeline-entry"
-    >
+    <div *ngFor="let entry of filteredEntries; let i = index" class="timeline-entry">
       <div class="timeline-marker">
         <div class="timeline-dot"></div>
         <div class="timeline-line" *ngIf="i < filteredEntries.length - 1"></div>
@@ -58,18 +55,12 @@
         <mat-card-header>
           <div class="entry-header">
             <div>
-              <mat-card-title>{{ entry.specialtyType }}</mat-card-title>
+              <mat-card-title>{{ getSpecialtyLabel(entry.specialtyType) }}</mat-card-title>
               <mat-card-subtitle>
                 {{ entry.createdAt | date : "medium" }} • {{ 'MEDICAL_HISTORY.TIMELINE_DOCTOR_PREFIX' | translate }}
                 {{ entry.doctorName }}
               </mat-card-subtitle>
             </div>
-            <mat-chip
-              [style.background-color]="'#3f51b5'"
-              [style.color]="'white'"
-            >
-              {{ entry.specialtyType }}
-            </mat-chip>
           </div>
         </mat-card-header>
 
@@ -97,22 +88,12 @@
             <!-- Dental Data -->
             <div *ngSwitchCase="'Dental'" class="dental-data">
               <h4><mat-icon>medical_services</mat-icon> {{ 'MEDICAL_HISTORY.TIMELINE_ODONTOGRAM' | translate }}</h4>
-              <div
-                class="teeth-summary"
-                *ngIf="getDentalData(entry) as dentalData"
-              >
+              <div *ngIf="getDentalData(entry) as dentalData" class="teeth-summary">
                 <div class="teeth-grid" *ngIf="dentalData.teeth">
-                  <div
-                    *ngFor="let toothNum of dentalData.teeth | keyvalue"
-                    class="tooth-summary"
-                    [style.background-color]="
-                      getToothStatusColor(toothNum.value.status)
-                    "
-                  >
+                  <div *ngFor="let toothNum of dentalData.teeth | keyvalue" class="tooth-summary"
+                    [style.background-color]="getToothStatusColor(toothNum.value.status)">
                     <span class="tooth-num">{{ toothNum.key }}</span>
-                    <span class="tooth-status">{{
-                      toothNum.value.status
-                    }}</span>
+                    <span class="tooth-status">{{ toothNum.value.status }}</span>
                   </div>
                 </div>
                 <p *ngIf="dentalData.observations" class="observations">
@@ -122,50 +103,34 @@
             </div>
 
             <!-- Nutrition Data -->
-            <div *ngSwitchCase="'Nutrición'" class="nutrition-data">
+            <div *ngSwitchCase="'Nutrition'" class="nutrition-data">
               <h4><mat-icon>restaurant</mat-icon> {{ 'MEDICAL_HISTORY.TIMELINE_NUTRITION_EVAL' | translate }}</h4>
-              <div
-                *ngIf="getNutritionData(entry) as nutritionData"
-                class="nutrition-summary"
-              >
+              <div *ngIf="getNutritionData(entry) as nutritionData" class="nutrition-summary">
                 <div class="nutrition-metrics">
                   <div class="metric">
                     <span class="metric-label">{{ 'MEDICAL_HISTORY.TIMELINE_WEIGHT' | translate }}</span>
-                    <span class="metric-value"
-                      >{{ nutritionData.peso }} kg</span
-                    >
+                    <span class="metric-value">{{ nutritionData.peso }} kg</span>
                   </div>
                   <div class="metric">
                     <span class="metric-label">{{ 'MEDICAL_HISTORY.TIMELINE_HEIGHT' | translate }}</span>
-                    <span class="metric-value"
-                      >{{ nutritionData.altura }} m</span
-                    >
+                    <span class="metric-value">{{ nutritionData.altura }} m</span>
                   </div>
                   <div class="metric">
                     <span class="metric-label">{{ 'MEDICAL_HISTORY.TIMELINE_BMI' | translate }}</span>
-                    <span
-                      class="metric-value"
-                      [style.color]="getIMCColor(nutritionData.imc)"
-                    >
-                      {{ nutritionData.imc }}
-                    </span>
+                    <span class="metric-value" [style.color]="getIMCColor(nutritionData.imc)">{{ nutritionData.imc }}</span>
                   </div>
                   <div class="metric">
                     <span class="metric-label">{{ 'MEDICAL_HISTORY.TIMELINE_CALORIES' | translate }}</span>
-                    <span class="metric-value">{{
-                      nutritionData.caloriasDiarias
-                    }}</span>
+                    <span class="metric-value">{{ nutritionData.caloriasDiarias }}</span>
                   </div>
                 </div>
-                <p *ngIf="nutritionData.objetivo">
+                <p *ngIf="nutritionData.objetivo" class="nutrition-objective">
                   <strong>{{ 'MEDICAL_HISTORY.TIMELINE_OBJECTIVE' | translate }}</strong> {{ nutritionData.objetivo }}
                 </p>
-                <div *ngIf="nutritionData.restricciones && nutritionData.restricciones.length > 0">
+                <div *ngIf="nutritionData.restricciones && nutritionData.restricciones.length > 0" class="nutrition-restrictions">
                   <strong>{{ 'MEDICAL_HISTORY.TIMELINE_RESTRICTIONS' | translate }}</strong>
                   <mat-chip-set>
-                    <mat-chip *ngFor="let r of nutritionData.restricciones">{{
-                      r
-                    }}</mat-chip>
+                    <mat-chip *ngFor="let r of nutritionData.restricciones">{{ r }}</mat-chip>
                   </mat-chip-set>
                 </div>
               </div>

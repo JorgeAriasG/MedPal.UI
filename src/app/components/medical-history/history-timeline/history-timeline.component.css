@@ -1,21 +1,21 @@
 .timeline-container {
-  padding: 1rem;
+  padding: var(--spacing-lg);
   max-width: 1200px;
   margin: 0 auto;
 }
 
-/* Filters Header Styles */
+/* Filters Header */
 .filters-header {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
+  gap: var(--spacing-md);
   align-items: center;
-  background: white;
-  padding: 1.25rem;
-  border-radius: 12px;
-  margin-bottom: 2rem;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-  border: 1px solid #eef0f2;
+  background: var(--color-bg-surface);
+  padding: var(--spacing-lg);
+  border-radius: var(--border-radius-lg);
+  margin-bottom: var(--spacing-lg);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--color-border);
 }
 
 .filter-group {
@@ -30,77 +30,89 @@
 
 .filters-header mat-form-field {
   width: 100%;
+  margin-bottom: 0;
 }
 
-::ng-deep .filters-header .mat-mdc-form-field-subscript-wrapper {
-  display: none; /* Remove hint/error space to save vertical height */
+.filters-header .mat-mdc-form-field-subscript-wrapper {
+  display: none;
 }
 
 .clear-btn {
-  height: 56px; /* Match Material outline height */
-  padding: 0 1.5rem;
-  border-radius: 8px;
+  height: 56px;
+  padding: 0 var(--spacing-lg);
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 4px;
+  gap: var(--spacing-sm);
 }
 
-.clear-btn:hover {
-  background-color: rgba(244, 67, 54, 0.04);
-}
-
+/* Empty State */
 .empty-state {
   text-align: center;
-  padding: 60px 20px;
-  color: #999;
+  padding: var(--spacing-3xl) var(--spacing-lg);
+  color: var(--color-text-secondary);
 }
 
 .empty-state mat-icon {
-  font-size: 64px;
-  width: 64px;
-  height: 64px;
-  margin-bottom: 16px;
+  font-size: 56px;
+  width: 56px;
+  height: 56px;
+  margin-bottom: var(--spacing-md);
+  color: var(--color-text-disabled);
 }
 
+.empty-state p {
+  margin: 0;
+  font-size: var(--font-size-body);
+}
+
+/* Timeline */
 .timeline {
   position: relative;
 }
 
 .timeline-entry {
   display: flex;
-  margin-bottom: 30px;
+  margin-bottom: var(--spacing-lg);
   position: relative;
 }
 
 .timeline-marker {
   position: relative;
-  margin-right: 20px;
+  margin-right: var(--spacing-lg);
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
 .timeline-dot {
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
   background: var(--color-primary);
   border-radius: 50%;
-  border: 3px solid white;
+  border: 3px solid var(--color-bg-surface);
   box-shadow: 0 0 0 2px var(--color-primary);
   z-index: 1;
+  flex-shrink: 0;
 }
 
 .timeline-line {
   width: 2px;
   flex: 1;
-  background: #e0e0e0;
+  background: var(--color-divider);
   margin-top: 4px;
 }
 
+/* Timeline Card */
 .timeline-card {
   flex: 1;
   margin-bottom: 0;
+  border-radius: var(--border-radius-lg) !important;
+  transition: box-shadow var(--transition-normal), transform var(--transition-normal);
+}
+
+.timeline-card:hover {
+  box-shadow: var(--shadow-lg) !important;
+  transform: translateY(-2px);
 }
 
 .entry-header {
@@ -110,22 +122,50 @@
   width: 100%;
 }
 
+.entry-header mat-card-title {
+  font-size: var(--font-size-body-large);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  margin-bottom: 4px;
+}
+
+.entry-header mat-card-subtitle {
+  font-size: var(--font-size-small);
+  color: var(--color-text-secondary);
+}
+
+.specialty-badge {
+  font-size: var(--font-size-caption);
+  padding: 3px 12px;
+  border-radius: 20px;
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  font-weight: var(--font-weight-medium);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Common Info */
 .common-info {
-  margin-bottom: 20px;
+  margin-bottom: var(--spacing-lg);
 }
 
 .info-section {
-  margin-bottom: 16px;
+  margin-bottom: var(--spacing-md);
+}
+
+.info-section:last-child {
+  margin-bottom: 0;
 }
 
 .info-section h4 {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin: 0 0 8px 0;
-  color: #666;
-  font-size: 14px;
-  font-weight: 500;
+  gap: var(--spacing-sm);
+  margin: 0 0 var(--spacing-sm) 0;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-medium);
 }
 
 .info-section h4 mat-icon {
@@ -137,49 +177,55 @@
 .info-section p {
   margin: 0;
   padding-left: 26px;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-body);
 }
 
 .clinical-notes {
   white-space: pre-wrap;
-  background: #f5f5f5;
-  padding: 12px;
-  border-radius: 4px;
+  background: var(--color-bg-page);
+  padding: var(--spacing-md);
+  border-radius: var(--border-radius-sm);
+  margin: 0;
 }
 
+/* Specialty Data */
 .specialty-data {
-  margin-top: 20px;
-  padding-top: 20px;
-  border-top: 1px solid #e0e0e0;
+  margin-top: var(--spacing-lg);
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid var(--color-divider);
 }
 
 .specialty-data h4 {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 16px;
-  color: #333;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-medium);
 }
 
-/* Dental Data Styles */
+/* Dental Data */
 .teeth-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-  gap: 8px;
-  margin-bottom: 16px;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
 }
 
 .tooth-summary {
-  padding: 8px;
-  border-radius: 4px;
+  padding: var(--spacing-sm);
+  border-radius: var(--border-radius-sm);
   text-align: center;
   color: white;
-  font-size: 12px;
+  font-size: var(--font-size-caption);
 }
 
 .tooth-num {
   display: block;
-  font-weight: bold;
-  margin-bottom: 4px;
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-small);
+  margin-bottom: 2px;
 }
 
 .tooth-status {
@@ -189,56 +235,85 @@
 }
 
 .observations {
-  background: #f5f5f5;
-  padding: 12px;
-  border-radius: 4px;
-  margin-top: 12px;
+  background: var(--color-bg-page);
+  padding: var(--spacing-md);
+  border-radius: var(--border-radius-sm);
+  margin-top: var(--spacing-md);
+  font-size: var(--font-size-small);
+  color: var(--color-text-primary);
 }
 
-/* Nutrition Data Styles */
+.observations strong {
+  color: var(--color-text-secondary);
+}
+
+/* Nutrition Data */
 .nutrition-metrics {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 16px;
-  margin-bottom: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
 }
 
 .metric {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
 }
 
 .metric-label {
-  font-size: 12px;
-  color: #666;
+  font-size: var(--font-size-caption);
+  color: var(--color-text-secondary);
   text-transform: uppercase;
+  letter-spacing: 0.3px;
 }
 
 .metric-value {
-  font-size: 20px;
-  font-weight: 500;
-  color: #333;
+  font-size: 22px;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
 }
 
-/* Generic Data Styles */
+.nutrition-objective {
+  font-size: var(--font-size-small);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-sm);
+}
+
+.nutrition-objective strong {
+  color: var(--color-text-primary);
+}
+
+.nutrition-restrictions strong {
+  display: block;
+  font-size: var(--font-size-small);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-xs);
+}
+
+/* Generic Data */
 .custom-data {
-  background: #f5f5f5;
-  padding: 12px;
-  border-radius: 4px;
+  background: var(--color-bg-page);
+  padding: var(--spacing-md);
+  border-radius: var(--border-radius-sm);
   white-space: pre-wrap;
   font-family: 'Courier New', monospace;
-  font-size: 12px;
+  font-size: var(--font-size-caption);
   margin: 0;
+  color: var(--color-text-primary);
 }
 
 @media (max-width: 768px) {
   .timeline-entry {
-    margin-bottom: 20px;
+    margin-bottom: var(--spacing-md);
   }
 
   .timeline-marker {
-    margin-right: 12px;
+    margin-right: var(--spacing-md);
+  }
+
+  .timeline-container {
+    padding: var(--spacing-md);
   }
 
   .teeth-grid {
@@ -246,6 +321,20 @@
   }
 
   .nutrition-metrics {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .filters-header {
+    flex-direction: column;
+  }
+
+  .filter-group,
+  .filter-group.main-search {
+    min-width: 100%;
+  }
+
+  .entry-header {
+    flex-direction: column;
+    gap: var(--spacing-sm);
   }
 }

@@ -1,218 +1,227 @@
 <div class="signup-container">
-  <!-- Background Decorativo -->
   <div class="signup-background"></div>
-
-  <!-- Card Principal -->
   <div class="signup-card">
+    <div class="signup-layout">
+      <!-- Left: Stepper -->
+      <aside class="stepper-sidebar">
+        <div class="stepper-header">
+          <img src="assets/logo-240.png" alt="ClinicFlow" class="stepper-logo-img">
+        </div>
+        <ul class="stepper-steps">
+          <li *ngFor="let step of steps; let i = index"
+              class="stepper-step"
+              [class.active]="currentStep === i"
+              [class.completed]="currentStep > i">
+            <div class="step-indicator">
+              <mat-icon *ngIf="currentStep > i" class="step-icon">check</mat-icon>
+              <span *ngIf="currentStep <= i" class="step-number">{{ i + 1 }}</span>
+            </div>
+            <span class="step-label">{{ step.label | translate }}</span>
+          </li>
+        </ul>
+      </aside>
 
-    <!-- Header -->
-    <div class="signup-header">
-      <h1 class="signup-title">{{ 'AUTH.SIGNUP.TITLE' | translate }}</h1>
-      <p class="signup-subtitle">{{ 'AUTH.SIGNUP.SUBTITLE' | translate }}</p>
-    </div>
-
-    <!-- Form con Tabs -->
-    <form [formGroup]="form" (ngSubmit)="submit()" class="signup-form">
-
-      <!-- Tabs -->
-      <mat-tab-group class="signup-tabs">
-
-        <!-- Tab 1: Personal Information -->
-        <mat-tab [label]="'AUTH.SIGNUP.TAB_PERSONAL' | translate">
-          <div class="tab-content">
-            <!-- First Name -->
-            <mat-form-field class="full-width" appearance="outline">
-              <mat-label>{{ 'AUTH.SIGNUP.FIRST_NAME' | translate }}</mat-label>
-              <input matInput formControlName="firstName" [placeholder]="'AUTH.SIGNUP.FIRST_NAME_PLACEHOLDER' | translate">
-              <mat-error *ngIf="form.get('firstName')?.hasError('required')">
-                {{ 'VALIDATION.FIRST_NAME_REQUIRED' | translate }}
-              </mat-error>
-            </mat-form-field>
-
-            <!-- Last Name -->
-            <mat-form-field class="full-width" appearance="outline">
-              <mat-label>{{ 'AUTH.SIGNUP.LAST_NAME' | translate }}</mat-label>
-              <input matInput formControlName="lastName" [placeholder]="'AUTH.SIGNUP.LAST_NAME_PLACEHOLDER' | translate">
-              <mat-error *ngIf="form.get('lastName')?.hasError('required')">
-                {{ 'VALIDATION.LAST_NAME_REQUIRED' | translate }}
-              </mat-error>
-            </mat-form-field>
-
-            <!-- Email -->
-            <mat-form-field class="full-width" appearance="outline">
-              <mat-label>{{ 'COMMON.EMAIL' | translate }}</mat-label>
-              <input matInput type="email" formControlName="email" [placeholder]="'AUTH.SIGNUP.EMAIL_PLACEHOLDER' | translate">
-              <mat-icon matPrefix>email</mat-icon>
-              <mat-error *ngIf="form.get('email')?.hasError('required')">
-                {{ 'VALIDATION.EMAIL_REQUIRED' | translate }}
-              </mat-error>
-              <mat-error *ngIf="form.get('email')?.hasError('email')">
-                {{ 'VALIDATION.EMAIL_INVALID' | translate }}
-              </mat-error>
-            </mat-form-field>
-
-            <!-- Phone (Optional) -->
-            <mat-form-field class="full-width" appearance="outline">
-              <mat-label>{{ 'COMMON.PHONE' | translate }} ({{ 'COMMON.OPTIONAL' | translate }})</mat-label>
-              <input matInput type="tel" formControlName="phone" [placeholder]="'AUTH.SIGNUP.PHONE_PLACEHOLDER' | translate">
-              <mat-icon matPrefix>phone</mat-icon>
-            </mat-form-field>
+      <!-- Right: Form Content -->
+      <main class="form-content">
+        <div class="step-body" [formGroup]="form" [ngSwitch]="currentStep">
+          <!-- Step 0: Personal Info -->
+          <div *ngSwitchCase="0" class="step-panel">
+            <h2 class="step-title">{{ 'AUTH.SIGNUP.TAB_PERSONAL' | translate }}</h2>
+            <p class="step-subtitle">{{ 'AUTH.SIGNUP.PERSONAL_DESC' | translate }}</p>
+            <div class="form-fields">
+              <mat-form-field appearance="outline">
+                <mat-label>{{ 'AUTH.SIGNUP.FIRST_NAME' | translate }}</mat-label>
+                <input matInput formControlName="firstName" [placeholder]="'AUTH.SIGNUP.FIRST_NAME_PLACEHOLDER' | translate">
+                <mat-error *ngIf="form.get('firstName')?.hasError('required')">{{ 'VALIDATION.FIRST_NAME_REQUIRED' | translate }}</mat-error>
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>{{ 'AUTH.SIGNUP.LAST_NAME' | translate }}</mat-label>
+                <input matInput formControlName="lastName" [placeholder]="'AUTH.SIGNUP.LAST_NAME_PLACEHOLDER' | translate">
+                <mat-error *ngIf="form.get('lastName')?.hasError('required')">{{ 'VALIDATION.LAST_NAME_REQUIRED' | translate }}</mat-error>
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>{{ 'COMMON.EMAIL' | translate }}</mat-label>
+                <input matInput type="email" formControlName="email" [placeholder]="'AUTH.SIGNUP.EMAIL_PLACEHOLDER' | translate">
+                <mat-icon matPrefix>email</mat-icon>
+                <mat-error *ngIf="form.get('email')?.hasError('required')">{{ 'VALIDATION.EMAIL_REQUIRED' | translate }}</mat-error>
+                <mat-error *ngIf="form.get('email')?.hasError('email')">{{ 'VALIDATION.EMAIL_INVALID' | translate }}</mat-error>
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>{{ 'COMMON.PHONE' | translate }} ({{ 'COMMON.OPTIONAL' | translate }})</mat-label>
+                <input matInput type="tel" formControlName="phone" [placeholder]="'AUTH.SIGNUP.PHONE_PLACEHOLDER' | translate">
+                <mat-icon matPrefix>phone</mat-icon>
+              </mat-form-field>
+            </div>
           </div>
-        </mat-tab>
 
-        <!-- Tab 2: Professional Information -->
-        <mat-tab [label]="'AUTH.SIGNUP.TAB_PROFESSIONAL' | translate">
-          <div class="tab-content">
-            <!-- License Number -->
-            <mat-form-field class="full-width" appearance="outline">
-              <mat-label>{{ 'AUTH.SIGNUP.LICENSE_NUMBER' | translate }}</mat-label>
-              <input matInput formControlName="licenseNumber" [placeholder]="'AUTH.SIGNUP.LICENSE_PLACEHOLDER' | translate">
-              <mat-icon matPrefix>badge</mat-icon>
-              <mat-error *ngIf="form.get('licenseNumber')?.hasError('required')">
-                {{ 'VALIDATION.LICENSE_REQUIRED' | translate }}
-              </mat-error>
-            </mat-form-field>
-
-            <!-- Specialty Dropdown -->
-            <mat-form-field class="full-width" appearance="outline">
-              <mat-label>{{ 'AUTH.SIGNUP.SPECIALTY' | translate }}</mat-label>
-              <mat-select formControlName="specialty">
-                <mat-option *ngFor="let spec of specialties" [value]="spec.value">
-                  {{ spec.label }}
-                </mat-option>
-              </mat-select>
-              <mat-icon matPrefix>medical_services</mat-icon>
-              <mat-error *ngIf="form.get('specialty')?.hasError('required')">
-                {{ 'VALIDATION.SPECIALTY_REQUIRED' | translate }}
-              </mat-error>
-            </mat-form-field>
+          <!-- Step 1: Professional Info -->
+          <div *ngSwitchCase="1" class="step-panel">
+            <h2 class="step-title">{{ 'AUTH.SIGNUP.TAB_PROFESSIONAL' | translate }}</h2>
+            <p class="step-subtitle">{{ 'AUTH.SIGNUP.PROFESSIONAL_DESC' | translate }}</p>
+            <div class="form-fields">
+              <mat-form-field appearance="outline">
+                <mat-label>{{ 'AUTH.SIGNUP.LICENSE_NUMBER' | translate }}</mat-label>
+                <input matInput formControlName="licenseNumber" [placeholder]="'AUTH.SIGNUP.LICENSE_PLACEHOLDER' | translate">
+                <mat-icon matPrefix>badge</mat-icon>
+                <mat-error *ngIf="form.get('licenseNumber')?.hasError('required')">{{ 'VALIDATION.LICENSE_REQUIRED' | translate }}</mat-error>
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>{{ 'AUTH.SIGNUP.SPECIALTY' | translate }}</mat-label>
+                <mat-select formControlName="specialty">
+                  <mat-option *ngFor="let spec of specialties" [value]="spec.value">{{ spec.label }}</mat-option>
+                </mat-select>
+                <mat-icon matPrefix>medical_services</mat-icon>
+                <mat-error *ngIf="form.get('specialty')?.hasError('required')">{{ 'VALIDATION.SPECIALTY_REQUIRED' | translate }}</mat-error>
+              </mat-form-field>
+            </div>
           </div>
-        </mat-tab>
 
-        <!-- Tab 3: Account Information -->
-        <mat-tab [label]="'AUTH.SIGNUP.TAB_ACCOUNT' | translate">
-          <div class="tab-content">
-            <!-- Password -->
-            <mat-form-field class="full-width" appearance="outline">
-              <mat-label>{{ 'COMMON.PASSWORD' | translate }}</mat-label>
-              <input matInput
-                     [type]="showPassword ? 'text' : 'password'"
-                     formControlName="password"
-                     placeholder="••••••••"
-                     (input)="updatePasswordStrength()">
-              <mat-icon matPrefix>lock</mat-icon>
-              <button
-                mat-icon-button
-                matSuffix
-                (click)="togglePassword()"
-                type="button"
-                class="eye-button">
-                <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
-              </button>
-              <mat-error *ngIf="form.get('password')?.hasError('required')">
-                {{ 'VALIDATION.PASSWORD_REQUIRED' | translate }}
-              </mat-error>
-              <mat-error *ngIf="form.get('password')?.hasError('minlength')">
-                {{ 'VALIDATION.PASSWORD_MIN' | translate }}
-              </mat-error>
-            </mat-form-field>
-
-            <!-- Password Strength Indicator -->
-            <div class="password-strength" *ngIf="form.get('password')?.value">
-              <div class="strength-bar">
-                <div class="strength-fill" [ngClass]="'strength-' + passwordStrength" [style.width.%]="passwordStrengthPercent"></div>
+          <!-- Step 2: Account -->
+          <div *ngSwitchCase="2" class="step-panel">
+            <h2 class="step-title">{{ 'AUTH.SIGNUP.TAB_ACCOUNT' | translate }}</h2>
+            <p class="step-subtitle">{{ 'AUTH.SIGNUP.ACCOUNT_DESC' | translate }}</p>
+            <div class="form-fields">
+              <mat-form-field appearance="outline">
+                <mat-label>{{ 'COMMON.PASSWORD' | translate }}</mat-label>
+                <input matInput [type]="showPassword ? 'text' : 'password'" formControlName="password" placeholder="••••••••" (input)="updatePasswordStrength()">
+                <mat-icon matPrefix>lock</mat-icon>
+                <button mat-icon-button matSuffix (click)="togglePassword()" type="button" class="eye-button">
+                  <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+                </button>
+                <mat-error *ngIf="form.get('password')?.hasError('required')">{{ 'VALIDATION.PASSWORD_REQUIRED' | translate }}</mat-error>
+                <mat-error *ngIf="form.get('password')?.hasError('minlength')">{{ 'VALIDATION.PASSWORD_MIN' | translate }}</mat-error>
+              </mat-form-field>
+              <div class="password-strength" *ngIf="form.get('password')?.value">
+                <div class="strength-bar">
+                  <div class="strength-fill" [ngClass]="'strength-' + passwordStrength" [style.width.%]="passwordStrengthPercent"></div>
+                </div>
+                <p class="strength-text" [ngClass]="'strength-' + passwordStrength">{{ passwordStrengthText }}</p>
               </div>
-              <p class="strength-text" [ngClass]="'strength-' + passwordStrength">
-                {{ passwordStrengthText }}
-              </p>
-            </div>
-
-            <!-- Confirm Password -->
-            <mat-form-field class="full-width" appearance="outline">
-              <mat-label>{{ 'COMMON.CONFIRM_PASSWORD' | translate }}</mat-label>
-              <input matInput
-                     [type]="showPassword ? 'text' : 'password'"
-                     formControlName="confirmPassword"
-                     placeholder="••••••••">
-              <mat-icon matPrefix>lock</mat-icon>
-              <mat-error *ngIf="form.get('confirmPassword')?.hasError('required')">
-                {{ 'VALIDATION.CONFIRM_PASSWORD_REQUIRED' | translate }}
-              </mat-error>
-              <mat-error *ngIf="form.hasError('passwordMismatch')">
-                {{ 'VALIDATION.PASSWORDS_NOT_MATCH' | translate }}
-              </mat-error>
-            </mat-form-field>
-          </div>
-        </mat-tab>
-
-        <!-- Tab 4: Agreements -->
-        <mat-tab [label]="'AUTH.SIGNUP.TAB_AGREEMENTS' | translate">
-          <div class="tab-content">
-            <!-- Terms Checkbox -->
-            <div class="checkbox-group">
-              <mat-checkbox formControlName="acceptTerms" class="agreement-checkbox">
-                <span>{{ 'AUTH.SIGNUP.TERMS_AGREEMENT' | translate }}</span>
-              </mat-checkbox>
-              <mat-error *ngIf="form.get('acceptTerms')?.hasError('required')" class="checkbox-error">
-                {{ 'VALIDATION.TERMS_REQUIRED' | translate }}
-              </mat-error>
-            </div>
-
-            <!-- Data Processing Checkbox -->
-            <div class="checkbox-group">
-              <mat-checkbox formControlName="acceptDataProcessing" class="agreement-checkbox">
-                <span>{{ 'AUTH.SIGNUP.DATA_CONSENT' | translate }}</span>
-              </mat-checkbox>
-            </div>
-
-            <!-- Marketing Checkbox -->
-            <div class="checkbox-group">
-              <mat-checkbox formControlName="acceptMarketing" class="agreement-checkbox">
-                <span>{{ 'AUTH.SIGNUP.EMAIL_OPT_IN' | translate }}</span>
-              </mat-checkbox>
+              <mat-form-field appearance="outline">
+                <mat-label>{{ 'COMMON.CONFIRM_PASSWORD' | translate }}</mat-label>
+                <input matInput [type]="showPassword ? 'text' : 'password'" formControlName="confirmPassword" placeholder="••••••••">
+                <mat-icon matPrefix>lock</mat-icon>
+                <mat-error *ngIf="form.get('confirmPassword')?.hasError('required')">{{ 'VALIDATION.CONFIRM_PASSWORD_REQUIRED' | translate }}</mat-error>
+                <mat-error *ngIf="form.hasError('passwordMismatch')">{{ 'VALIDATION.PASSWORDS_NOT_MATCH' | translate }}</mat-error>
+              </mat-form-field>
             </div>
           </div>
-        </mat-tab>
 
-      </mat-tab-group>
+          <!-- Step 3: Plan Selection -->
+          <div *ngSwitchCase="3" class="step-panel">
+            <h2 class="step-title">{{ 'AUTH.SIGNUP.TAB_PLAN' | translate }}</h2>
+            <p class="step-subtitle">{{ 'AUTH.SIGNUP.PLAN_DESC' | translate }}</p>
+            <div class="plan-grid" *ngIf="plans.length > 0">
+              <div *ngFor="let plan of plans"
+                   class="plan-card"
+                   [class.selected]="selectedPlan?.name === plan.name"
+                   (click)="selectPlan(plan)">
+                <div class="plan-radio">
+                  <mat-icon [class.checked]="selectedPlan?.name === plan.name">
+                    {{ selectedPlan?.name === plan.name ? 'radio_button_checked' : 'radio_button_unchecked' }}
+                  </mat-icon>
+                </div>
+                <h3 class="plan-name">{{ plan.name }}</h3>
+                <p class="plan-desc">{{ plan.description }}</p>
+                <div class="plan-price">
+                  <span class="plan-amount">${{ plan.price.toLocaleString('es-MX') }}</span>
+                  <span class="plan-period">/mes</span>
+                </div>
+                <ul class="plan-features">
+                  <li>
+                    <mat-icon>group</mat-icon>
+                    <span>{{ 'AUTH.SIGNUP.PLAN_TEAM' | translate:{ max: plan.maxTeamMembers } }}</span>
+                  </li>
+                  <li>
+                    <mat-icon>local_hospital</mat-icon>
+                    <span>{{ 'AUTH.SIGNUP.PLAN_CLINICS' | translate:{ max: plan.maxClinics } }}</span>
+                  </li>
+                  <li>
+                    <mat-icon>calendar_month</mat-icon>
+                    <span>{{ 'AUTH.SIGNUP.PLAN_CALENDARS' | translate:{ max: plan.maxActiveCalendars } }}</span>
+                  </li>
+                </ul>
+                <div class="plan-trial">
+                  <mat-icon>free_breakfast</mat-icon>
+                  <span>{{ 'AUTH.SIGNUP.PLAN_TRIAL' | translate }}</span>
+                </div>
+                <div class="plan-check" *ngIf="selectedPlan?.name === plan.name">
+                  <mat-icon>check_circle</mat-icon>
+                </div>
+              </div>
+            </div>
+            <div class="plan-empty" *ngIf="plans.length === 0">
+              <mat-spinner diameter="32"></mat-spinner>
+              <p>{{ 'COMMON.LOADING' | translate }}</p>
+            </div>
+          </div>
 
-      <!-- Error Alert (Global) -->
-      <div class="error-alert" *ngIf="error$ | async as error">
-        <mat-icon>error_outline</mat-icon>
-        <span>{{ error }}</span>
-      </div>
+          <!-- Step 4: Confirm -->
+          <div *ngSwitchCase="4" class="step-panel">
+            <h2 class="step-title">{{ 'AUTH.SIGNUP.TAB_AGREEMENTS' | translate }}</h2>
+            <p class="step-subtitle">{{ 'AUTH.SIGNUP.CONFIRM_DESC' | translate }}</p>
+            <div class="form-fields">
+              <div class="checkbox-group">
+                <mat-checkbox formControlName="acceptTerms" class="agreement-checkbox">
+                  <span>{{ 'AUTH.SIGNUP.TERMS_AGREEMENT' | translate }}</span>
+                </mat-checkbox>
+                <mat-error *ngIf="form.get('acceptTerms')?.hasError('required')" class="checkbox-error">{{ 'VALIDATION.TERMS_REQUIRED' | translate }}</mat-error>
+              </div>
+              <div class="checkbox-group">
+                <mat-checkbox formControlName="acceptDataProcessing" class="agreement-checkbox">
+                  <span>{{ 'AUTH.SIGNUP.DATA_CONSENT' | translate }}</span>
+                </mat-checkbox>
+              </div>
+              <div class="checkbox-group">
+                <mat-checkbox formControlName="acceptMarketing" class="agreement-checkbox">
+                  <span>{{ 'AUTH.SIGNUP.EMAIL_OPT_IN' | translate }}</span>
+                </mat-checkbox>
+              </div>
+            </div>
+          </div>
+        </div>
 
-      <!-- Action Buttons -->
-      <div class="signup-actions">
-        <button
-          mat-stroked-button
-          routerLink="/login"
-          type="button"
-          class="back-button">
-          {{ 'AUTH.SIGNUP.BACK_TO_LOGIN' | translate }}
-        </button>
+        <!-- Navigation Buttons -->
+        <div class="step-actions">
+          <button mat-stroked-button (click)="back()" [disabled]="!canGoBack()" type="button" class="btn-back">
+            <mat-icon>arrow_back</mat-icon>
+            {{ 'AUTH.SIGNUP.BACK' | translate }}
+          </button>
+          <button *ngIf="currentStep < steps.length - 1"
+                  mat-raised-button color="primary"
+                  (click)="next()"
+                  [disabled]="!canGoNext()"
+                  type="button"
+                  class="btn-next">
+            {{ 'AUTH.SIGNUP.NEXT' | translate }}
+            <mat-icon>arrow_forward</mat-icon>
+          </button>
+          <button *ngIf="currentStep === steps.length - 1"
+                  mat-raised-button color="primary"
+                  (click)="submit()"
+                  [disabled]="(isLoading$ | async) || form.invalid"
+                  type="button"
+                  class="btn-submit">
+            <span *ngIf="!(isLoading$ | async)">{{ 'AUTH.SIGNUP.CREATE_ACCOUNT' | translate }}</span>
+            <mat-spinner *ngIf="isLoading$ | async" diameter="20" class="inline-spinner"></mat-spinner>
+          </button>
+        </div>
 
-        <button
-          mat-raised-button
-          color="primary"
-          type="submit"
-          [disabled]="(isLoading$ | async) || form.invalid"
-          class="submit-button">
-          <span *ngIf="!(isLoading$ | async)">{{ 'AUTH.SIGNUP.CREATE_ACCOUNT' | translate }}</span>
-          <mat-spinner *ngIf="isLoading$ | async" diameter="20" class="inline-spinner"></mat-spinner>
-        </button>
-      </div>
+        <!-- Error -->
+        <div class="error-alert" *ngIf="error$ | async as error">
+          <mat-icon>error_outline</mat-icon>
+          <span>{{ error }}</span>
+        </div>
+        <div class="error-alert" *ngIf="registrationError">
+          <mat-icon>error_outline</mat-icon>
+          <span>{{ registrationError }}</span>
+        </div>
 
-      <!-- Footer -->
-      <div class="signup-footer">
-        <p class="login-link">
-          {{ 'AUTH.SIGNUP.HAS_ACCOUNT' | translate }}
-          <a routerLink="/login" class="link-primary">{{ 'AUTH.SIGNUP.SIGN_IN' | translate }}</a>
-        </p>
-      </div>
-
-    </form>
-
+        <!-- Footer -->
+        <div class="step-footer">
+          <p>{{ 'AUTH.SIGNUP.HAS_ACCOUNT' | translate }} <a routerLink="/login" class="link-primary">{{ 'AUTH.SIGNUP.SIGN_IN' | translate }}</a></p>
+        </div>
+      </main>
+    </div>
   </div>
-
 </div>

@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from './components/user/login/login.component';
 import { SignupComponent } from './components/user/signup/signup.component';
+import { WelcomeComponent } from './components/user/welcome/welcome.component';
 import { AuthGuard } from './guards/auth.guard';
 import { ValidatePrescriptionComponent } from './components/public/validate-prescription/validate-prescription.component';
 import { UnauthorizedComponent } from './components/public/unauthorized/unauthorized.component';
@@ -9,6 +10,7 @@ import { UnauthorizedComponent } from './components/public/unauthorized/unauthor
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'signup', component: SignupComponent },
+  { path: 'bienvenido', component: WelcomeComponent },
   { path: 'unauthorized', component: UnauthorizedComponent },
   {
     path: '',

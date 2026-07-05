@@ -1,0 +1,91 @@
+<div class="diet-plan-detail">
+  <div class="detail-header">
+    <button mat-icon-button (click)="goBack()">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <h2 *ngIf="plan">{{ plan.name }}</h2>
+    <div class="header-actions">
+      <button mat-stroked-button (click)="edit()">
+        <mat-icon>edit</mat-icon>
+        {{ 'COMMON.EDIT' | translate }}
+      </button>
+      <button mat-stroked-button (click)="print()">
+        <mat-icon>print</mat-icon>
+        {{ 'COMMON.PRINT' | translate }}
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="loading-section">
+    <mat-spinner diameter="32"></mat-spinner>
+  </div>
+
+  <div class="plan-content" *ngIf="plan && !loading">
+    <!-- Summary -->
+    <div class="summary-cards">
+      <div class="summary-card">
+        <span class="label">{{ 'NUTRITION.DAILY_CALORIES' | translate }}</span>
+        <span class="value">{{ plan.dailyCalories }} kcal</span>
+      </div>
+      <div class="summary-card protein">
+        <span class="label">{{ 'NUTRITION.PROTEIN' | translate }}</span>
+        <span class="value">{{ plan.proteinG }}g</span>
+      </div>
+      <div class="summary-card carbs">
+        <span class="label">{{ 'NUTRITION.CARBS' | translate }}</span>
+        <span class="value">{{ plan.carbsG }}g</span>
+      </div>
+      <div class="summary-card fat">
+        <span class="label">{{ 'NUTRITION.FAT' | translate }}</span>
+        <span class="value">{{ plan.fatG }}g</span>
+      </div>
+    </div>
+
+    <p class="plan-desc" *ngIf="plan.description">{{ plan.description }}</p>
+    <p class="plan-objective" *ngIf="plan.objective"><strong>Objetivo:</strong> {{ plan.objective }}</p>
+
+    <div class="plan-dates">
+      <span><mat-icon>calendar_today</mat-icon> Inicio: {{ plan.startDate | date:'dd/MM/yyyy' }}</span>
+      <span *ngIf="plan.endDate"><mat-icon>event</mat-icon> Fin: {{ plan.endDate | date:'dd/MM/yyyy' }}</span>
+    </div>
+
+    <!-- Meals -->
+    <div class="meals-section">
+      <h3>{{ 'NUTRITION.MEAL_PLAN' | translate }}</h3>
+      <div class="meal-card card" *ngFor="let meal of plan.meals">
+        <div class="meal-card-header">
+          <div>
+            <span class="meal-type-badge">{{ mealTypeLabel(meal.mealName) }}</span>
+            <span class="meal-time" *ngIf="meal.timeOfDay">{{ meal.timeOfDay }}</span>
+          </div>
+          <span class="meal-calories">{{ getMealTotalCalories(meal.items) }} kcal</span>
+        </div>
+        <table class="meal-table">
+          <thead>
+            <tr>
+              <th>{{ 'NUTRITION.FOOD' | translate }}</th>
+              <th>{{ 'NUTRITION.PORTION' | translate }}</th>
+              <th>kcal</th>
+              <th>P</th>
+              <th>C</th>
+              <th>G</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of meal.items">
+              <td>{{ item.customFoodName }}</td>
+              <td>{{ item.quantity }} {{ item.unit }}</td>
+              <td>{{ item.calories }}</td>
+              <td>{{ item.protein }}g</td>
+              <td>{{ item.carbs }}g</td>
+              <td>{{ item.fat }}g</td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="preparation" *ngIf="meal.instructions">
+          <mat-icon>info</mat-icon> {{ meal.instructions }}
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

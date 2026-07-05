@@ -29,18 +29,15 @@
   color: var(--color-primary-light);
 }
 
-.logo-icon {
-  font-size: 28px;
-  width: 28px;
-  height: 28px;
-  min-width: 28px; /* Evita que se encoja */
+.logo-img {
+  height: 32px;
+  width: auto;
+  transition: all 0.2s ease;
 }
 
-.logo-text {
-  font-size: 18px;
-  font-weight: 700;
-  color: white;
-  white-space: nowrap;
+.collapsed .logo-img {
+  height: 28px;
+  width: 28px;
 }
 
 .toggle-btn {

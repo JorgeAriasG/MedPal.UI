@@ -105,7 +105,6 @@ export class AuthEffects {
         switchMap(({ clinicId, userRole }) => {
           // Roles that are clinic-based and may need clinic assignment
           const CLINIC_REQUIRING_ROLES = [
-            'Doctor',
             'HealthProfessional',
             'Receptionist',
             'Patient',

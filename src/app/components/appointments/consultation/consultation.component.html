@@ -1,0 +1,144 @@
+<div class="consultation-layout">
+  <!-- Loading -->
+  <div class="loading-screen" *ngIf="loading">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>Cargando consulta...</p>
+  </div>
+
+  <!-- Error -->
+  <div class="loading-screen" *ngIf="!loading && error">
+    <mat-icon class="error-icon">error_outline</mat-icon>
+    <p>No se pudo cargar la consulta</p>
+    <button mat-stroked-button (click)="goBack()">Volver a calendario</button>
+  </div>
+
+  <!-- Content -->
+  <div class="consultation-body" *ngIf="!loading && !error && appointment">
+    <!-- Column 1: Patient Info -->
+    <aside class="col-patient">
+      <div class="sidebar-header">
+        <button mat-icon-button class="back-btn" (click)="goBack()">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+        <h3 class="sidebar-title">Paciente</h3>
+      </div>
+
+      <div class="patient-avatar-section">
+        <div class="avatar-circle">
+          <span class="avatar-initials">
+            {{ appointment.patient?.name?.charAt(0) || '?' }}{{ appointment.patient?.lastname?.charAt(0) || '' }}
+          </span>
+        </div>
+        <h2 class="patient-name">
+          {{ appointment.patient?.name || '' }} {{ appointment.patient?.lastname || '' }}
+        </h2>
+      </div>
+
+      <div class="info-section">
+        <h4 class="section-label">Información</h4>
+        <div class="info-row">
+          <mat-icon class="info-icon">phone</mat-icon>
+          <span>{{ appointment.patient?.phone || '—' }}</span>
+        </div>
+        <div class="info-row">
+          <mat-icon class="info-icon">email</mat-icon>
+          <span>{{ appointment.patient?.email || '—' }}</span>
+        </div>
+        <div class="info-row">
+          <mat-icon class="info-icon">calendar_today</mat-icon>
+          <span>{{ appointment.date }} {{ appointment.time }}</span>
+        </div>
+      </div>
+
+      <div class="info-section">
+        <h4 class="section-label">Especialidad</h4>
+        <p class="info-value">{{ specialtyConfig.label }}</p>
+      </div>
+
+      <div class="info-section">
+        <h4 class="section-label">Datos Antropométricos</h4>
+        <div class="info-row">
+          <mat-icon class="info-icon">monitor_weight</mat-icon>
+          <span>Peso: {{ lastWeight || '—' }} kg</span>
+        </div>
+        <div class="info-row">
+          <mat-icon class="info-icon">height</mat-icon>
+          <span>Altura: {{ lastHeight || '—' }} cm</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Column 2: Stepper / Workspace -->
+    <main class="col-workspace">
+      <div class="workspace-header">
+        <h2>Notas de Consulta</h2>
+        <span class="status-badge" [attr.data-status]="appointment.status">
+          {{ appointment.status }}
+        </span>
+      </div>
+
+      <div class="workspace-content">
+        <ng-container [ngSwitch]="specialtyConfig.template">
+          <app-soap-template *ngSwitchCase="'soap'" [(ngModel)]="consultationData.specialtyData"></app-soap-template>
+          <app-dental-template *ngSwitchCase="'dental'" [(ngModel)]="consultationData.specialtyData"></app-dental-template>
+          <div *ngSwitchCase="'nutrition'">
+            <div *ngIf="loadingDetails" class="loading-section">
+              <mat-spinner diameter="32"></mat-spinner>
+            </div>
+            <app-nutrition-consultation-workspace
+              *ngIf="patientDetailsId"
+              [patientDetailsId]="patientDetailsId"
+              [weight]="lastWeight"
+              [height]="lastHeight">
+            </app-nutrition-consultation-workspace>
+          </div>
+          <app-generic-template *ngSwitchDefault [(ngModel)]="consultationData.specialtyData"></app-generic-template>
+        </ng-container>
+      </div>
+
+      <div class="workspace-diagnosis" *ngIf="specialtyConfig.usesCie10">
+        <h4>Diagnóstico</h4>
+        <app-cie10-search></app-cie10-search>
+      </div>
+    </main>
+
+    <!-- Column 3: Last Consultation Reference -->
+    <aside class="col-reference">
+      <div class="reference-header">
+        <h3 class="reference-title">Última Consulta</h3>
+      </div>
+      <div class="reference-body">
+        <ng-container [ngSwitch]="specialtyConfig.template">
+          <ng-container *ngSwitchCase="'nutrition'">
+            <app-nutrition-summary
+              *ngIf="patientDetailsId"
+              [patientDetailsId]="patientDetailsId"
+              [readonly]="true">
+            </app-nutrition-summary>
+          </ng-container>
+          <div *ngSwitchDefault class="reference-empty">
+            <mat-icon class="ref-empty-icon">history</mat-icon>
+            <p>No hay consultas previas disponibles</p>
+          </div>
+        </ng-container>
+      </div>
+    </aside>
+  </div>
+
+  <!-- Bottom Action Bar -->
+  <div class="action-bar" *ngIf="!loading && appointment">
+    <button mat-button class="draft-btn" (click)="saveDraft()" [disabled]="saving">
+      <mat-icon>save</mat-icon>
+      Guardar borrador
+    </button>
+    <div class="action-right">
+      <button mat-stroked-button class="cancel-btn" (click)="goBack()">
+        Cancelar
+      </button>
+      <button mat-raised-button color="primary" class="complete-btn" (click)="completeConsultation()" [disabled]="saving">
+        <mat-icon>check_circle</mat-icon>
+        {{ saving ? 'Guardando...' : 'Completar Consulta' }}
+      </button>
+    </div>
+  </div>
+</div>

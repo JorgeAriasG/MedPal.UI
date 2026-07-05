@@ -14,19 +14,19 @@ export const SPECIALTY_CONFIG: Record<SpecialtyType, SoapConfig> = {
     template: 'soap',
     label: 'Medicina General',
   },
-  Cardiología: {
+  Cardiology: {
     usesSoap: true,
     usesCie10: true,
     template: 'soap',
     label: 'Cardiología',
   },
-  Pediatría: {
+  Pediatrics: {
     usesSoap: true,
     usesCie10: true,
     template: 'soap',
     label: 'Pediatría',
   },
-  Dermatología: {
+  Dermatology: {
     usesSoap: true,
     usesCie10: true,
     template: 'soap',
@@ -38,7 +38,7 @@ export const SPECIALTY_CONFIG: Record<SpecialtyType, SoapConfig> = {
     template: 'dental',
     label: 'Odontología',
   },
-  'Nutrición': {
+  Nutrition: {
     usesSoap: false,
     usesCie10: false,
     template: 'nutrition',

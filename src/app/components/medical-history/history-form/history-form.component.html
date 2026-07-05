@@ -61,7 +61,7 @@
 
     <!-- Dynamic Specialty Template -->
     <div class="specialty-section">
-      <h3>{{ 'MEDICAL_HISTORY.FORM_SPECIALTY_DATA' | translate:{specialty: specialtyType} }}</h3>
+      <h3>{{ 'MEDICAL_HISTORY.FORM_SPECIALTY_DATA' | translate:{specialty: config.label} }}</h3>
 
       <div [ngSwitch]="config.template">
         <app-dental-template

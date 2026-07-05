@@ -2,12 +2,13 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
-import { Subject } from 'rxjs';
+import { Subject, forkJoin } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 import { IPatientDetail } from 'src/app/entities/IMedicalHistory';
 import { PatientsService } from 'src/app/components/patients/services/patients.service';
 import { PrescriptionService } from 'src/app/services/prescription.service';
+import { ClinicalDataService } from 'src/app/services/clinical-data.service';
 import { IPrescription } from 'src/app/entities/IPrescription';
 import { HistoryFormComponent } from '../../medical-history/history-form/history-form.component';
 import { MedicalHistoryReadDTO } from 'src/app/entities/medical-history.model';
@@ -32,12 +33,15 @@ export class PatientDetailComponent implements OnInit, OnDestroy {
   error = '';
   newNote = '';
   userSpecialty: SpecialtyType = 'General';
+  lastWeight = 0;
+  lastHeight = 0;
   private destroy$ = new Subject<void>();
 
   constructor(
     private route: ActivatedRoute,
     private patientsService: PatientsService,
     private prescriptionService: PrescriptionService,
+    private clinicalDataService: ClinicalDataService,
     private dialog: MatDialog,
     private store: Store,
     private translate: TranslateService
@@ -79,11 +83,29 @@ export class PatientDetailComponent implements OnInit, OnDestroy {
           
           this.loading = false;
           this.loadPrescriptions(id);
+
+          if (this.patientDetailsId) {
+            this.loadLatestVitals(this.patientDetailsId);
+          }
         },
         error: (err) => {
           this.error = this.translate.instant('PATIENTS.ERROR_LOAD');
           this.loading = false;
           console.error(err);
+        },
+      });
+  }
+
+  private loadLatestVitals(patientDetailsId: number): void {
+    this.clinicalDataService.getVitalSigns(patientDetailsId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (vitals) => {
+          if (vitals.length > 0) {
+            const latest = vitals[vitals.length - 1];
+            this.lastWeight = latest.weight || 0;
+            if (latest.height) this.lastHeight = latest.height;
+          }
         },
       });
   }

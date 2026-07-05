@@ -38,6 +38,20 @@
   margin-bottom: 16px;
 }
 
+.brand-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 24px;
+}
+
+.brand-logo {
+  height: 28px;
+  width: auto;
+}
+
 .status-section {
   padding: 40px 24px;
   text-align: center;

@@ -8,28 +8,31 @@
   <!-- Action Bar & Header -->
   <div class="appointments-actions">
     <div class="calendar-navigation">
-      <button
-        mat-icon-button
-        mwlCalendarPreviousView
-        [view]="view"
-        [(viewDate)]="viewDate"
-        (viewDateChange)="closeOpenMonthViewDay()">
-        <mat-icon>chevron_left</mat-icon>
-      </button>
-      <button
-        mat-button
-        mwlCalendarToday
-        [(viewDate)]="viewDate">
-        {{ 'APPOINTMENTS.TODAY_BUTTON' | translate }}
-      </button>
-      <button
-        mat-icon-button
-        mwlCalendarNextView
-        [view]="view"
-        [(viewDate)]="viewDate"
-        (viewDateChange)="closeOpenMonthViewDay()">
-        <mat-icon>chevron_right</mat-icon>
-      </button>
+      <div class="nav-pill-group">
+        <button
+          mat-icon-button
+          mwlCalendarPreviousView
+          [view]="view"
+          [(viewDate)]="viewDate"
+          (viewDateChange)="closeOpenMonthViewDay()">
+          <mat-icon>chevron_left</mat-icon>
+        </button>
+        <button
+          mat-button
+          mwlCalendarToday
+          [(viewDate)]="viewDate"
+          class="nav-today-btn">
+          {{ 'APPOINTMENTS.TODAY_BUTTON' | translate }}
+        </button>
+        <button
+          mat-icon-button
+          mwlCalendarNextView
+          [view]="view"
+          [(viewDate)]="viewDate"
+          (viewDateChange)="closeOpenMonthViewDay()">
+          <mat-icon>chevron_right</mat-icon>
+        </button>
+      </div>
       <h2 class="current-date-label">{{ viewDate | calendarDate:(view + 'ViewTitle'):'en' }}</h2>
     </div>
 
@@ -70,6 +73,7 @@
           [events]="events"
           [activeDayIsOpen]="activeDayIsOpen"
           (dayClicked)="viewDate = $event.day.date; activeDayIsOpen = true"
+          (eventClicked)="handleEventClick($event)"
           class="calendar-view">
         </mwl-calendar-month-view>
         <mwl-calendar-week-view
@@ -80,6 +84,10 @@
           [dayStartMinute]="dayStartMinute"
           [dayEndHour]="dayEndHour"
           [dayEndMinute]="dayEndMinute"
+          [snapDraggedEvents]="true"
+          [validateEventTimesChanged]="validateEventTimesChanged"
+          (eventTimesChanged)="onEventTimesChanged($event)"
+          (eventClicked)="handleEventClick($event)"
           class="calendar-view">
         </mwl-calendar-week-view>
         <mwl-calendar-day-view
@@ -90,6 +98,10 @@
           [dayStartMinute]="dayStartMinute"
           [dayEndHour]="dayEndHour"
           [dayEndMinute]="dayEndMinute"
+          [snapDraggedEvents]="true"
+          [validateEventTimesChanged]="validateEventTimesChanged"
+          (eventTimesChanged)="onEventTimesChanged($event)"
+          (eventClicked)="handleEventClick($event)"
           class="calendar-view">
         </mwl-calendar-day-view>
       </div>
@@ -183,6 +195,9 @@
                 <button mat-icon-button class="action-btn" (click)="openEditModal(appointment)" [matTooltip]="'APPOINTMENTS.TOOLTIP_EDIT' | translate">
                   <mat-icon>edit</mat-icon>
                 </button>
+                <button mat-icon-button class="action-btn cancel-btn" (click)="cancelAppointment(appointment)" *ngIf="appointment.status === 'Scheduled' || appointment.status === 'Confirmed'" matTooltip="Cancelar cita">
+                  <mat-icon>cancel</mat-icon>
+                </button>
               </div>
             </td>
           </ng-container>
@@ -205,3 +220,4 @@
 
   </div>
 </div>
+

@@ -1,0 +1,205 @@
+<mat-tab-group class="patient-tabs" animationDuration="300">
+  <!-- Overview Tab -->
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <mat-icon class="tab-icon">person</mat-icon>
+      <span>{{ 'PATIENTS.TAB_OVERVIEW' | translate }}</span>
+    </ng-template>
+
+    <div class="tab-content" [@fadeIn]>
+      <div class="overview-grid">
+        <!-- Demographics Card -->
+        <div class="card card-demographics">
+          <div class="card-header">
+            <h3 class="card-title">
+              <mat-icon>info</mat-icon>
+              {{ 'PATIENTS.DEMOGRAPHICS' | translate }}
+            </h3>
+          </div>
+          <div class="card-body">
+            <div class="info-row">
+              <span class="label">{{ 'PATIENTS.FORM_DOB' | translate }}</span>
+              <span class="value">{{ patient?.dob | date: 'MMM dd, yyyy' }}</span>
+            </div>
+            <div class="info-row">
+              <span class="label">{{ 'PATIENTS.FORM_GENDER' | translate }}</span>
+              <span class="value">{{ patient?.gender }}</span>
+            </div>
+            <div class="info-row">
+              <span class="label">{{ 'PATIENTS.CURP' | translate }}</span>
+              <span class="value">{{ patient?.curp || '—' }}</span>
+            </div>
+            <div class="info-row">
+              <span class="label">{{ 'PATIENTS.FORM_ADDRESS' | translate }}</span>
+              <span class="value">{{ patient?.address }}</span>
+            </div>
+            <div class="info-row">
+              <span class="label">{{ 'PATIENTS.EMERGENCY_CONTACT' | translate }}</span>
+              <span class="value">{{ patient?.emergencyContact }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Stats Card -->
+        <div class="card card-stats">
+          <div class="card-header">
+            <h3 class="card-title">
+              <mat-icon>assessment</mat-icon>
+              {{ 'PATIENTS.QUICK_STATS' | translate }}
+            </h3>
+          </div>
+          <div class="card-body stats-layout">
+            <div class="stat">
+              <span class="stat-value">{{ medicalHistory.length }}</span>
+              <span class="stat-label">{{ 'PATIENTS.STAT_CONSULTATIONS' | translate }}</span>
+            </div>
+            <div class="divider"></div>
+            <div class="stat">
+              <span class="stat-value">{{ allergies.length }}</span>
+              <span class="stat-label">{{ 'PATIENTS.STAT_ALLERGIES' | translate }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </mat-tab>
+
+  <!-- Medical History Tab -->
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <mat-icon class="tab-icon">history</mat-icon>
+      <span>{{ 'PATIENTS.SECTION_HISTORY' | translate }}</span>
+    </ng-template>
+
+    <div class="tab-content">
+      <app-history-timeline
+        [patientId]="patient?.id!"
+        [historyEntries]="medicalHistory"
+      >
+      </app-history-timeline>
+    </div>
+  </mat-tab>
+
+  <!-- Antecedents Tab -->
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <mat-icon class="tab-icon">assignment</mat-icon>
+      <span>{{ 'PATIENTS.SECTION_ANTECEDENTS' | translate }}</span>
+    </ng-template>
+
+    <div class="tab-content">
+      <app-patient-antecedents
+        *ngIf="patientDetailsId"
+        [patientDetailsId]="patientDetailsId">
+      </app-patient-antecedents>
+    </div>
+  </mat-tab>
+
+  <!-- Nutrition Tab -->
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <mat-icon class="tab-icon">restaurant</mat-icon>
+      <span>Nutrición</span>
+    </ng-template>
+
+    <div class="tab-content">
+      <mat-tab-group class="nutrition-subtabs" animationDuration="300">
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon>monitor_weight</mat-icon>
+            <span>{{ 'NUTRITION.BODY_COMP_TITLE' | translate }}</span>
+          </ng-template>
+          <div class="nutrition-tab-content">
+            <app-body-composition
+              *ngIf="patientDetailsId"
+              [patientDetailsId]="patientDetailsId">
+            </app-body-composition>
+          </div>
+        </mat-tab>
+
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon>straighten</mat-icon>
+            <span>{{ 'NUTRITION.ANTHROPOMETRY_TITLE' | translate }}</span>
+          </ng-template>
+          <div class="nutrition-tab-content">
+            <app-anthropometry
+              *ngIf="patientDetailsId"
+              [patientDetailsId]="patientDetailsId">
+            </app-anthropometry>
+          </div>
+        </mat-tab>
+
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon>calculate</mat-icon>
+            <span>{{ 'NUTRITION.ASSESSMENT_TITLE' | translate }}</span>
+          </ng-template>
+          <div class="nutrition-tab-content">
+            <app-assessment-calculator
+              *ngIf="patientDetailsId"
+              [patientDetailsId]="patientDetailsId"
+              [weight]="lastWeight"
+              [height]="lastHeight">
+            </app-assessment-calculator>
+          </div>
+        </mat-tab>
+
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon>restaurant_menu</mat-icon>
+            <span>{{ 'NUTRITION.DIET_PLANS_TITLE' | translate }}</span>
+          </ng-template>
+          <div class="nutrition-tab-content">
+            <app-diet-plan-list
+              *ngIf="patientDetailsId"
+              [patientDetailsId]="patientDetailsId">
+            </app-diet-plan-list>
+          </div>
+        </mat-tab>
+
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon>trending_up</mat-icon>
+            <span>{{ 'NUTRITION.PROGRESS_TITLE' | translate }}</span>
+          </ng-template>
+          <div class="nutrition-tab-content">
+            <app-progress-tracking
+              *ngIf="patientDetailsId"
+              [patientDetailsId]="patientDetailsId">
+            </app-progress-tracking>
+          </div>
+        </mat-tab>
+
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon>medication</mat-icon>
+            <span>{{ 'NUTRITION.SUPPLEMENTS_TITLE' | translate }}</span>
+          </ng-template>
+          <div class="nutrition-tab-content">
+            <app-supplement-list
+              *ngIf="patientDetailsId"
+              [patientDetailsId]="patientDetailsId">
+            </app-supplement-list>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </div>
+  </mat-tab>
+
+  <!-- Consentimientos Tab -->
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <mat-icon class="tab-icon">verified_user</mat-icon>
+      <span>{{ 'PATIENTS.SECTION_CONSENTS' | translate }}</span>
+    </ng-template>
+
+    <div class="tab-content">
+      <app-patient-consents
+        *ngIf="patientDetailsId"
+        [patientDetailsId]="patientDetailsId"
+        [patientName]="patient?.name || ''">
+      </app-patient-consents>
+    </div>
+  </mat-tab>
+</mat-tab-group>

@@ -1,8 +1,7 @@
 <nav class="menu-container" [class.collapsed]="isCollapsed">
   <div class="menu-header">
     <div class="menu-logo">
-      <mat-icon class="logo-icon">medical_services</mat-icon>
-      <span class="logo-text" *ngIf="!isCollapsed">ClinicFlow</span>
+      <img src="assets/logo-240-invert.png" alt="ClinicFlow" class="logo-img">
     </div>
     <button mat-icon-button class="toggle-btn" (click)="toggleSidebar()">
       <mat-icon>{{ isCollapsed ? 'chevron_right' : 'chevron_left' }}</mat-icon>
@@ -38,6 +37,23 @@
       </button>
     </mat-list-item>
 
+    <mat-list-item class="menu-item">
+      <button mat-button routerLink="/reports" routerLinkActive="active" class="menu-link">
+        <mat-icon class="menu-icon">analytics</mat-icon>
+        <span class="menu-text" *ngIf="!isCollapsed">{{ 'MENU.REPORTS' | translate }}</span>
+      </button>
+    </mat-list-item>
+
+    <mat-divider *ngIf="!isCollapsed" class="section-divider"></mat-divider>
+    <p class="section-header" *ngIf="!isCollapsed">{{ 'MENU.NUTRITION' | translate }}</p>
+
+    <mat-list-item class="menu-item">
+      <button mat-button routerLink="/nutrition/foods" routerLinkActive="active" class="menu-link">
+        <mat-icon class="menu-icon">menu_book</mat-icon>
+        <span class="menu-text" *ngIf="!isCollapsed">{{ 'MENU.FOOD_DATABASE' | translate }}</span>
+      </button>
+    </mat-list-item>
+
     <mat-divider *ngIf="!isCollapsed" class="section-divider"></mat-divider>
     <p class="section-header" *ngIf="!isCollapsed">{{ 'MENU.SETTINGS' | translate }}</p>
 
@@ -52,6 +68,13 @@
       <button mat-button routerLink="/users" routerLinkActive="active" class="menu-link">
         <mat-icon class="menu-icon">group</mat-icon>
         <span class="menu-text" *ngIf="!isCollapsed">{{ 'MENU.USERS' | translate }}</span>
+      </button>
+    </mat-list-item>
+
+    <mat-list-item class="menu-item">
+      <button mat-button routerLink="/settings" routerLinkActive="active" class="menu-link">
+        <mat-icon class="menu-icon">subscriptions</mat-icon>
+        <span class="menu-text" *ngIf="!isCollapsed">{{ 'MENU.SUBSCRIPTION' | translate }}</span>
       </button>
     </mat-list-item>
   </mat-list>

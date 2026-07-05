@@ -1,0 +1,65 @@
+<div class="food-database">
+  <div class="page-header">
+    <h2>
+      <mat-icon>menu_book</mat-icon>
+      {{ 'NUTRITION.FOOD_DATABASE' | translate }}
+    </h2>
+  </div>
+
+  <!-- Search -->
+  <div class="search-bar">
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-label>{{ 'NUTRITION.SEARCH_FOOD' | translate }}</mat-label>
+      <input matInput [formControl]="searchControl" placeholder="Buscar alimentos...">
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+  </div>
+
+  <!-- Category chips -->
+  <div class="category-chips">
+    <button class="category-chip" [class.active]="!selectedCategory" (click)="filterByCategory(null)">
+      {{ 'NUTRITION.ALL' | translate }}
+    </button>
+    <button class="category-chip" *ngFor="let cat of categories"
+      [class.active]="selectedCategory === cat.key"
+      (click)="filterByCategory(cat.key)">
+      {{ cat.label }}
+    </button>
+  </div>
+
+  <!-- Grid -->
+  <div class="food-grid">
+    <div class="food-card card" *ngFor="let item of filtered; trackBy: trackById">
+      <div class="food-card-header">
+        <h4>{{ item.name }}</h4>
+        <span class="category-badge">{{ getCategoryLabel(item.category) }}</span>
+      </div>
+      <div class="food-nutrition">
+        <div class="nutrient">
+          <span class="val">{{ item.calories }}</span>
+          <span class="lbl">kcal</span>
+        </div>
+        <div class="nutrient">
+          <span class="val">{{ item.protein }}g</span>
+          <span class="lbl">Proteína</span>
+        </div>
+        <div class="nutrient">
+          <span class="val">{{ item.carbs }}g</span>
+          <span class="lbl">Carbos</span>
+        </div>
+        <div class="nutrient">
+          <span class="val">{{ item.fat }}g</span>
+          <span class="lbl">Grasa</span>
+        </div>
+      </div>
+      <div class="food-portion">
+        {{ 'NUTRITION.PER' | translate }} {{ item.servingSize }}{{ item.servingUnit }}
+      </div>
+    </div>
+  </div>
+
+  <div class="empty-state" *ngIf="filtered.length === 0 && items.length > 0">
+    <mat-icon>search_off</mat-icon>
+    <p>{{ 'NUTRITION.NO_FOOD_RESULTS' | translate }}</p>
+  </div>
+</div>

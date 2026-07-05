@@ -1,0 +1,78 @@
+<div class="supplement-list">
+  <div class="section-header">
+    <h3>
+      <mat-icon>medication</mat-icon>
+      {{ 'NUTRITION.SUPPLEMENTS_TITLE' | translate }}
+    </h3>
+  </div>
+
+  <div *ngIf="loading" class="loading-section">
+    <mat-spinner diameter="32"></mat-spinner>
+  </div>
+
+  <div *ngIf="!loading && supplements.length === 0" class="empty-state">
+    <mat-icon class="empty-icon">medication</mat-icon>
+    <h3>{{ 'NUTRITION.NO_SUPPLEMENTS' | translate }}</h3>
+    <p>{{ 'NUTRITION.NO_SUPPLEMENTS_MSG' | translate }}</p>
+  </div>
+
+  <div class="supplements-list" *ngIf="!loading && supplements.length > 0">
+    <div class="supplement-card card" *ngFor="let supp of supplements; trackBy: trackById"
+      [class.inactive]="!supp.isActive">
+      <div class="supplement-header">
+        <div class="supplement-info">
+          <h4 class="supplement-name">{{ supp.name }}</h4>
+          <span class="supplement-brand" *ngIf="supp.brand">{{ supp.brand }}</span>
+        </div>
+        <span class="supplement-status" [class.active]="supp.isActive">
+          {{ (supp.isActive ? 'NUTRITION.ACTIVE' : 'NUTRITION.INACTIVE') | translate }}
+        </span>
+      </div>
+
+      <div class="supplement-details">
+        <div class="detail-row">
+          <span class="detail-label">{{ 'NUTRITION.DOSAGE' | translate }}:</span>
+          <span class="detail-value">{{ supp.dosage }} {{ supp.unit }}</span>
+        </div>
+        <div class="detail-row" *ngIf="supp.form">
+          <span class="detail-label">{{ 'NUTRITION.FORM' | translate }}:</span>
+          <span class="detail-value">{{ getFormLabel(supp.form) }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">{{ 'NUTRITION.FREQUENCY' | translate }}:</span>
+          <span class="detail-value">{{ supp.frequency }}</span>
+        </div>
+        <div class="detail-row" *ngIf="supp.timing">
+          <span class="detail-label">{{ 'NUTRITION.TIMING' | translate }}:</span>
+          <span class="detail-value">{{ supp.timing }}</span>
+        </div>
+        <div class="detail-row" *ngIf="supp.duration">
+          <span class="detail-label">{{ 'NUTRITION.DURATION' | translate }}:</span>
+          <span class="detail-value">{{ supp.duration }}</span>
+        </div>
+      </div>
+
+      <p class="supplement-indication" *ngIf="supp.indication">
+        <mat-icon>format_quote</mat-icon>
+        {{ supp.indication }}
+      </p>
+
+      <p class="supplement-notes" *ngIf="supp.notes">{{ supp.notes }}</p>
+
+      <div class="supplement-footer">
+        <span class="supplement-date" *ngIf="supp.startDate">
+          {{ 'NUTRITION.START' | translate }}: {{ supp.startDate | date:'dd/MM/yyyy' }}
+        </span>
+        <span class="supplement-date" *ngIf="supp.endDate">
+          {{ 'NUTRITION.END' | translate }}: {{ supp.endDate | date:'dd/MM/yyyy' }}
+        </span>
+      </div>
+
+      <div class="supplement-actions">
+        <button mat-icon-button [matTooltip]="'COMMON.DELETE' | translate" (click)="deleteSupplement(supp.id!)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

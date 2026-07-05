@@ -6,6 +6,7 @@ import {
   NutritionData,
   GenericData,
 } from 'src/app/entities/specialty-templates.model';
+import { SPECIALTY_CONFIG } from 'src/app/config/specialty-config';
 
 @Component({
   selector: 'app-history-timeline',
@@ -27,7 +28,7 @@ export class HistoryTimelineComponent implements OnChanges {
   searchTerm: string = '';
   filteredEntries: MedicalHistoryReadDTO[] = [];
  
-  specialties: string[] = ['Todas', 'Dental', 'Nutrición', 'General'];
+  specialties: string[] = ['Todas', 'Dental', 'Nutrition', 'General'];
 
   constructor(private medicalHistoryService: MedicalHistoryService) {}
 
@@ -92,6 +93,10 @@ export class HistoryTimelineComponent implements OnChanges {
     this.endDate = null;
     this.searchTerm = '';
     this.applyFilters();
+  }
+
+  getSpecialtyLabel(specialty: string): string {
+    return SPECIALTY_CONFIG[specialty as keyof typeof SPECIALTY_CONFIG]?.label || specialty;
   }
 
   parseSpecialtyData(entry: MedicalHistoryReadDTO): any {

@@ -2,6 +2,7 @@ import { IClinic } from "./IClinic";
 
 export interface IPatient {
   id?: number | null,
+  patientDetailsId?: number | null,
   name: string,
   middlename: string,
   lastname: string,
@@ -14,5 +15,7 @@ export interface IPatient {
   emergencyContact: string,
   clinicIds: number[],
   clinic?: IClinic,
-  clinics?: IClinic[]
+  clinics?: IClinic[],
+  weight?: number | null,
+  height?: number | null
 }

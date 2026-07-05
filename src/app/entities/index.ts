@@ -23,3 +23,4 @@ export * from './IRole';
 export * from './IUser';
 export * from './medical-history.model';
 export * from './specialty-templates.model';
+export * from './IConsultation';

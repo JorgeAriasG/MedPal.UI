@@ -68,11 +68,9 @@
   gap: var(--spacing-md);
 }
 
-.logo-icon {
-  color: var(--color-primary);
-  font-size: 32px;
-  width: 32px;
-  height: 32px;
+.login-logo-img {
+  height: 64px;
+  width: auto;
 }
 
 .login-subtitle {

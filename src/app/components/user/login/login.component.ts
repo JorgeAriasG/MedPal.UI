@@ -39,7 +39,10 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // No navigation needed here - effects handle it
+    const savedEmail = localStorage.getItem('saved_email');
+    if (savedEmail) {
+      this.form.patchValue({ email: savedEmail, rememberMe: true });
+    }
   }
 
   ngOnDestroy(): void {
@@ -56,7 +59,14 @@ export class LoginComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const { email, password } = this.form.value;
+    const { email, password, rememberMe } = this.form.value;
+
+    if (rememberMe) {
+      localStorage.setItem('saved_email', email);
+    } else {
+      localStorage.removeItem('saved_email');
+    }
+
     this.store.dispatch(login({ email, password }));
   }
 }

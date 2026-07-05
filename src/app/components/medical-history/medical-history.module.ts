@@ -50,6 +50,6 @@ import { HistoryTimelineComponent } from './history-timeline/history-timeline.co
     MatNativeDateModule,
     TranslateModule,
   ],
-  exports: [HistoryFormComponent, HistoryTimelineComponent],
+  exports: [HistoryFormComponent, HistoryTimelineComponent, SoapTemplateComponent, DentalTemplateComponent, NutritionTemplateComponent, GenericTemplateComponent],
 })
 export class MedicalHistoryModule {}

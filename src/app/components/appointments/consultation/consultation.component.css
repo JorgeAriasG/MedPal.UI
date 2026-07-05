@@ -1,0 +1,468 @@
+.consultation-layout {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--color-bg-page, #F6F8FC);
+}
+
+.loading-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 16px;
+  color: var(--color-text-secondary, #6B7280);
+}
+
+.error-icon {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+  color: var(--color-danger, #F87171);
+}
+
+/* ===== 3-Column Grid ===== */
+.consultation-body {
+  display: grid;
+  grid-template-columns: 280px 1fr minmax(300px, 380px);
+  flex: 1;
+  overflow: hidden;
+  gap: 0;
+}
+
+/* ===== Column 1: Patient Info ===== */
+.col-patient {
+  background: white;
+  border-right: 1px solid rgba(0,0,0,0.06);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  min-width: 0;
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 16px 8px;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.back-btn {
+  width: 32px;
+  height: 32px;
+  line-height: 32px;
+}
+
+.back-btn .mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  line-height: 18px;
+}
+
+.sidebar-title {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-secondary, #6B7280);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.patient-avatar-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 16px;
+  gap: 12px;
+}
+
+.avatar-circle {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--color-primary, #2C3E50);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatar-initials {
+  font-size: 22px;
+  font-weight: 600;
+  color: white;
+}
+
+.patient-name {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-text-primary, #111827);
+  text-align: center;
+}
+
+.info-section {
+  padding: 16px;
+  border-top: 1px solid rgba(0,0,0,0.05);
+}
+
+.section-label {
+  margin: 0 0 12px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-text-secondary, #6B7280);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.info-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 0;
+  font-size: 13px;
+  color: var(--color-text-primary, #111827);
+}
+
+.info-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  color: var(--color-text-secondary, #6B7280);
+}
+
+.info-value {
+  font-size: 14px;
+  color: var(--color-text-primary, #111827);
+  margin: 0;
+}
+
+/* ===== Column 2: Workspace ===== */
+.col-workspace {
+  padding: 24px 28px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.workspace-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+
+.workspace-header h2 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--color-text-primary, #111827);
+}
+
+.status-badge {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.status-badge[data-status="InProgress"] {
+  background: rgba(255, 160, 0, 0.12);
+  color: #FF8F00;
+}
+
+.status-badge[data-status="Scheduled"] {
+  background: rgba(44, 62, 80, 0.1);
+  color: var(--color-primary, #2C3E50);
+}
+
+.workspace-content {
+  background: white;
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,0.06);
+  padding: 24px;
+}
+
+.workspace-diagnosis {
+  background: white;
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,0.06);
+  padding: 24px;
+}
+
+.workspace-diagnosis h4 {
+  margin: 0 0 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-primary, #111827);
+}
+
+.loading-section {
+  display: flex;
+  justify-content: center;
+  padding: 48px 0;
+}
+
+/* ===== Column 3: Reference ===== */
+.col-reference {
+  background: white;
+  border-left: 1px solid rgba(0,0,0,0.06);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-width: 0;
+}
+
+.reference-header {
+  padding: 16px;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.reference-title {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-secondary, #6B7280);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.reference-body {
+  padding: 12px;
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.reference-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 48px 16px;
+  color: var(--color-text-secondary, #6B7280);
+  text-align: center;
+}
+
+.ref-empty-icon {
+  font-size: 40px;
+  width: 40px;
+  height: 40px;
+  color: var(--color-text-secondary, #9CA3AF);
+}
+
+.reference-empty p {
+  margin: 0;
+  font-size: 13px;
+  font-style: italic;
+}
+
+/* ===== Bottom Action Bar ===== */
+.action-bar {
+  height: 64px;
+  flex-shrink: 0;
+  background: white;
+  border-top: 1px solid rgba(0,0,0,0.06);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px 0 24px;
+}
+
+.draft-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--color-text-secondary, #6B7280);
+}
+
+.action-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.cancel-btn {
+  font-size: 13px;
+}
+
+.complete-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  border-radius: 8px;
+  padding: 0 20px;
+}
+
+/* ===== Column 3: Reference - override nutrition summary for narrow column ===== */
+
+.col-reference app-nutrition-summary .summary-container {
+  gap: 8px;
+}
+
+.col-reference app-nutrition-summary .summary-title {
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+
+.col-reference app-nutrition-summary .metric-grid {
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.col-reference app-nutrition-summary .metric-card {
+  padding: 8px;
+  gap: 2px;
+  overflow: hidden;
+}
+
+.col-reference app-nutrition-summary .metric-value {
+  font-size: 14px;
+}
+
+.col-reference app-nutrition-summary .metric-label {
+  font-size: 9px;
+  word-break: break-word;
+}
+
+.col-reference app-nutrition-summary .metric-unit {
+  font-size: 10px;
+}
+
+.col-reference app-nutrition-summary .metric-delta {
+  font-size: 10px;
+}
+
+.col-reference app-nutrition-summary .charts-grid {
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+.col-reference app-nutrition-summary .chart-card {
+  padding: 8px;
+  overflow: hidden;
+}
+
+.col-reference app-nutrition-summary .chart-wrapper {
+  height: 120px;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.col-reference app-nutrition-summary .chart-wrapper canvas {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.col-reference app-nutrition-summary .chart-title {
+  font-size: 11px;
+  margin-bottom: 6px;
+}
+
+.col-reference app-nutrition-summary .empty-state {
+  padding: 16px 0;
+}
+
+.col-reference app-nutrition-summary .empty-icon {
+  font-size: 28px;
+  width: 28px;
+  height: 28px;
+}
+
+.col-reference app-nutrition-summary .empty-text {
+  font-size: 11px;
+}
+
+/* ===== Responsive ===== */
+
+/* Wide: hide reference column */
+@media (max-width: 1200px) {
+  .col-reference {
+    display: none;
+  }
+}
+
+/* Tablet: single column */
+@media (max-width: 960px) {
+  .col-patient {
+    display: none;
+  }
+
+  .col-reference {
+    display: none;
+  }
+
+  .consultation-body {
+    grid-template-columns: 1fr;
+  }
+
+  .col-workspace {
+    padding: 20px;
+  }
+
+  .complete-btn .mat-icon {
+    margin-right: 4px;
+  }
+}
+
+/* Small tablet / large phone: compact */
+@media (max-width: 768px) {
+  .col-workspace {
+    padding: 16px;
+  }
+
+  .workspace-header h2 {
+    font-size: 18px;
+  }
+
+  .workspace-content {
+    padding: 16px;
+  }
+}
+
+/* Phone: action bar stacks */
+@media (max-width: 600px) {
+  .col-workspace {
+    padding: 12px;
+  }
+
+  .workspace-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .action-bar {
+    height: auto;
+    padding: 12px 16px;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .action-right {
+    width: 100%;
+    gap: 8px;
+  }
+
+  .action-right button {
+    flex: 1;
+  }
+
+  .complete-btn {
+    padding: 0 12px;
+    font-size: 13px;
+  }
+
+  .draft-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}

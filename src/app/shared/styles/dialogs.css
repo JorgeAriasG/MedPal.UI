@@ -65,6 +65,21 @@
   backdrop-filter: blur(2px);
 }
 
+/* ============ CONFIRM CONSULTATION INLINE POPOVER ============ */
+.confirm-consultation-panel {
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+}
+
+.confirm-consultation-panel .mat-mdc-dialog-surface {
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: none;
+}
+
+.confirm-consultation-backdrop {
+  background: transparent;
+}
+
 /* Dialog animations */
 .custom-dialog ::ng-deep .mat-mdc-dialog-container {
   animation: slideInDialog 0.2s ease forwards;

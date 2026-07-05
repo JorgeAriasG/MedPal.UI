@@ -146,7 +146,7 @@ export class PermissionService {
         Permission.APPROVE_CONSENT,
         Permission.VIEW_MEDICAL_HISTORY,
       ],
-      DOCTOR: [
+      HEALTH_PROFESSIONAL: [
         Permission.VIEW_MEDICAL_HISTORY,
         Permission.VIEW_CONSENT,
       ],

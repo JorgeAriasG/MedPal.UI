@@ -1,0 +1,80 @@
+<div class="progress-tracking">
+  <div class="section-header">
+    <h3>
+      <mat-icon>trending_up</mat-icon>
+      {{ 'NUTRITION.PROGRESS_TITLE' | translate }}
+    </h3>
+  </div>
+
+  <div *ngIf="loading" class="loading-section">
+    <mat-spinner diameter="32"></mat-spinner>
+  </div>
+
+  <div *ngIf="!loading && entries.length === 0" class="empty-state">
+    <mat-icon class="empty-icon">trending_up</mat-icon>
+    <h3>{{ 'NUTRITION.NO_PROGRESS' | translate }}</h3>
+    <p>{{ 'NUTRITION.NO_PROGRESS_MSG' | translate }}</p>
+  </div>
+
+  <div class="timeline" *ngIf="!loading && entries.length > 0">
+    <div class="timeline-entry" *ngFor="let entry of entries; let i = index; trackBy: trackByIndex">
+      <div class="timeline-dot"></div>
+      <div class="timeline-content card">
+        <div class="entry-header">
+          <span class="entry-date">{{ entry.recordedAt | date:'dd MMM yyyy' }}</span>
+          <span class="entry-badge" *ngIf="entry.adherence">Adherencia {{ entry.adherence }}%</span>
+        </div>
+
+        <div class="entry-metrics">
+          <div class="metric">
+            <span class="label">{{ 'NUTRITION.WEIGHT' | translate }}</span>
+            <span class="value">{{ entry.weight }} kg</span>
+          </div>
+          <div class="metric" *ngIf="entry.bodyFatPercentage">
+            <span class="label">{{ 'NUTRITION.BODY_FAT_PCT' | translate }}</span>
+            <span class="value">{{ entry.bodyFatPercentage }}%</span>
+          </div>
+          <div class="metric" *ngIf="entry.muscleMass">
+            <span class="label">{{ 'NUTRITION.SMM' | translate }}</span>
+            <span class="value">{{ entry.muscleMass }} kg</span>
+          </div>
+          <div class="metric" *ngIf="entry.waist">
+            <span class="label">{{ 'NUTRITION.WAIST_CIRC' | translate }}</span>
+            <span class="value">{{ entry.waist }} cm</span>
+          </div>
+        </div>
+
+        <div class="entry-trend" *ngIf="i < entries.length - 1">
+          <div class="trend-item" *ngIf="getTrend(entry, i).weight !== 0">
+            <mat-icon [class]="getTrendClass(getTrend(entry, i).weight, true)">
+              {{ getTrendIcon(getTrend(entry, i).weight) }}
+            </mat-icon>
+            <span>{{ getTrend(entry, i).weight }} kg</span>
+          </div>
+          <div class="trend-item" *ngIf="getTrend(entry, i).fat !== 0">
+            <mat-icon [class]="getTrendClass(getTrend(entry, i).fat, true)">
+              {{ getTrendIcon(getTrend(entry, i).fat) }}
+            </mat-icon>
+            <span>{{ getTrend(entry, i).fat }}% grasa</span>
+          </div>
+          <div class="trend-item" *ngIf="getTrend(entry, i).muscle !== 0">
+            <mat-icon [class]="getTrendClass(getTrend(entry, i).muscle)">
+              {{ getTrendIcon(getTrend(entry, i).muscle) }}
+            </mat-icon>
+            <span>{{ getTrend(entry, i).muscle }} kg músculo</span>
+          </div>
+        </div>
+
+        <div class="entry-notes" *ngIf="entry.notes">
+          <p>{{ entry.notes }}</p>
+        </div>
+
+        <div class="entry-photos" *ngIf="entry.photos && entry.photos.length > 0">
+          <div class="photo-thumb" *ngFor="let photo of entry.photos">
+            <img [src]="photo.photoUrl" [alt]="photo.photoType">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

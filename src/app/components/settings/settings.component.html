@@ -1,0 +1,155 @@
+<div class="settings-container">
+  <div class="page-header">
+    <div class="header-content">
+      <div class="page-title">
+        <mat-icon class="title-icon">settings</mat-icon>
+        <span>{{ 'SETTINGS.TITLE' | translate }}</span>
+      </div>
+      <p class="page-subtitle">{{ 'SETTINGS.SUBTITLE' | translate }}</p>
+    </div>
+  </div>
+
+  <div class="loading-container" *ngIf="loading">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>{{ 'COMMON.LOADING' | translate }}</p>
+  </div>
+
+  <div class="error-container" *ngIf="error">
+    <mat-icon class="error-icon">error_outline</mat-icon>
+    <p>{{ error }}</p>
+  </div>
+
+  <div *ngIf="subscription && !loading" class="content-grid">
+    <mat-card class="plan-card" @fadeIn>
+      <mat-card-header>
+        <mat-icon class="card-icon" mat-card-avatar>workspace_premium</mat-icon>
+        <mat-card-title>{{ 'SETTINGS.CURRENT_PLAN' | translate }}</mat-card-title>
+        <mat-card-subtitle>{{ 'SETTINGS.PLAN_DESC' | translate }}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="plan-header">
+          <span class="plan-name">{{ subscription.plan.name }}</span>
+          <span class="plan-badge" [ngClass]="getPlanBadgeClass(subscription.plan.name)">
+            {{ subscription.status === 'trial' ? ('SETTINGS.TRIAL' | translate) : ('SETTINGS.ACTIVE' | translate) }}
+          </span>
+        </div>
+        <p class="plan-description">{{ subscription.plan.description }}</p>
+        <div class="plan-price">
+          <span class="price-amount">${{ subscription.plan.price.toLocaleString('es-MX') }}</span>
+          <span class="price-period">/mes</span>
+        </div>
+        <div class="plan-period" *ngIf="subscription.trialEndsAt">
+          <mat-icon>schedule</mat-icon>
+          <span>{{ 'SETTINGS.TRIAL_ENDS' | translate }} {{ subscription.trialEndsAt | date:'dd/MM/yyyy' }}</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="usage-card" @fadeIn>
+      <mat-card-header>
+        <mat-icon class="card-icon" mat-card-avatar>insights</mat-icon>
+        <mat-card-title>{{ 'SETTINGS.USAGE' | translate }}</mat-card-title>
+        <mat-card-subtitle>{{ 'SETTINGS.USAGE_DESC' | translate }}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="usage-item">
+          <div class="usage-header">
+            <span class="usage-label">{{ 'SETTINGS.TEAM_MEMBERS' | translate }}</span>
+            <span class="usage-value">{{ subscription.currentTeamMembers }} / {{ subscription.maxTeamMembers }}</span>
+          </div>
+          <mat-progress-bar
+            mode="determinate"
+            [value]="getUsagePercent(subscription.currentTeamMembers, subscription.maxTeamMembers)"
+            [color]="getUsagePercent(subscription.currentTeamMembers, subscription.maxTeamMembers) >= 100 ? 'warn' : 'primary'">
+          </mat-progress-bar>
+        </div>
+        <div class="usage-item">
+          <div class="usage-header">
+            <span class="usage-label">{{ 'SETTINGS.CLINICS' | translate }}</span>
+            <span class="usage-value">{{ subscription.currentClinics }} / {{ subscription.maxClinics }}</span>
+          </div>
+          <mat-progress-bar
+            mode="determinate"
+            [value]="getUsagePercent(subscription.currentClinics, subscription.maxClinics)"
+            [color]="getUsagePercent(subscription.currentClinics, subscription.maxClinics) >= 100 ? 'warn' : 'primary'">
+          </mat-progress-bar>
+        </div>
+        <div class="usage-item">
+          <div class="usage-header">
+            <span class="usage-label">{{ 'SETTINGS.CALENDARS' | translate }}</span>
+            <span class="usage-value">-- / {{ subscription.maxActiveCalendars }}</span>
+          </div>
+          <mat-progress-bar mode="determinate" [value]="0" color="primary"></mat-progress-bar>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="limits-card" @fadeIn>
+      <mat-card-header>
+        <mat-icon class="card-icon" mat-card-avatar>fact_check</mat-icon>
+        <mat-card-title>{{ 'SETTINGS.PLAN_LIMITS' | translate }}</mat-card-title>
+        <mat-card-subtitle>{{ 'SETTINGS.LIMITS_DESC' | translate }}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="limit-item">
+          <mat-icon class="limit-icon check">check_circle</mat-icon>
+          <span>{{ 'SETTINGS.UNLIMITED_PATIENTS' | translate }}</span>
+        </div>
+        <div class="limit-item">
+          <mat-icon class="limit-icon check">check_circle</mat-icon>
+          <span>{{ 'SETTINGS.UNLIMITED_APPOINTMENTS' | translate }}</span>
+        </div>
+        <div class="limit-item">
+          <mat-icon class="limit-icon check">check_circle</mat-icon>
+          <span>{{ 'SETTINGS.UNLIMITED_RECORDS' | translate }}</span>
+        </div>
+        <div class="limit-item">
+          <mat-icon class="limit-icon" [ngClass]="subscription.currentTeamMembers < subscription.maxTeamMembers ? 'check' : 'close'">
+            {{ subscription.currentTeamMembers < subscription.maxTeamMembers ? 'check_circle' : 'cancel' }}
+          </mat-icon>
+          <span>{{ 'SETTINGS.LIMIT_TEAM' | translate:{ max: subscription.maxTeamMembers } }}</span>
+        </div>
+        <div class="limit-item">
+          <mat-icon class="limit-icon" [ngClass]="subscription.currentClinics < subscription.maxClinics ? 'check' : 'close'">
+            {{ subscription.currentClinics < subscription.maxClinics ? 'check_circle' : 'cancel' }}
+          </mat-icon>
+          <span>{{ 'SETTINGS.LIMIT_CLINICS' | translate:{ max: subscription.maxClinics } }}</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="billing-card" @fadeIn>
+      <mat-card-header>
+        <mat-icon class="card-icon" mat-card-avatar>credit_card</mat-icon>
+        <mat-card-title>{{ 'SETTINGS.BILLING_TITLE' | translate }}</mat-card-title>
+        <mat-card-subtitle>{{ 'SETTINGS.BILLING_DESC' | translate }}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="billing-info" *ngIf="isPendingPayment()">
+          <mat-icon class="billing-warning-icon">warning_amber</mat-icon>
+          <span>{{ 'SETTINGS.PAYMENT_PENDING' | translate }}</span>
+        </div>
+        <div class="billing-error" *ngIf="billingError">
+          <mat-icon>error_outline</mat-icon>
+          <span>{{ billingError }}</span>
+        </div>
+        <div class="billing-actions">
+          <button mat-stroked-button
+                  (click)="openPortal()"
+                  [disabled]="billingLoading || isPendingPayment()">
+            <mat-icon>manage_accounts</mat-icon>
+            {{ 'SETTINGS.MANAGE_BILLING' | translate }}
+          </button>
+          <button mat-raised-button
+                  color="primary"
+                  *ngIf="isPendingPayment()"
+                  (click)="completePayment()"
+                  [disabled]="billingLoading">
+            <mat-spinner *ngIf="billingLoading" diameter="18" class="inline-spinner"></mat-spinner>
+            <span *ngIf="!billingLoading">{{ 'SETTINGS.COMPLETE_PAYMENT' | translate }}</span>
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

@@ -6,6 +6,7 @@
 @import "@angular/material/prebuilt-themes/indigo-pink.css";
 @import "app/shared/styles/tables.css";
 @import "app/shared/styles/dialogs.css";
+@import "app/shared/styles/calendar-overrides.css";
 
 /* ========== CSS CUSTOM PROPERTIES / DESIGN TOKENS ========== */
 

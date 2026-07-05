@@ -1,0 +1,130 @@
+<div class="assessment-container">
+  <div class="section-header" (click)="calculatorOpen = !calculatorOpen">
+    <h3>
+      <mat-icon>calculate</mat-icon>
+      {{ 'NUTRITION.ASSESSMENT_TITLE' | translate }}
+    </h3>
+    <mat-icon>{{ calculatorOpen ? 'expand_less' : 'expand_more' }}</mat-icon>
+  </div>
+
+  <div class="assessment-content" *ngIf="calculatorOpen">
+    <div class="calc-grid">
+      <!-- Inputs -->
+      <div class="calc-inputs card">
+        <form [formGroup]="form">
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="flex-1">
+              <mat-label>{{ 'NUTRITION.WEIGHT' | translate }} (kg)</mat-label>
+              <input matInput type="number" formControlName="weight" step="0.1">
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="flex-1">
+              <mat-label>{{ 'NUTRITION.HEIGHT' | translate }} (m)</mat-label>
+              <input matInput type="number" formControlName="height" step="0.01">
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="flex-1">
+              <mat-label>{{ 'NUTRITION.AGE' | translate }}</mat-label>
+              <input matInput type="number" formControlName="age">
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="flex-1">
+              <mat-label>{{ 'NUTRITION.GENDER' | translate }}</mat-label>
+              <mat-select formControlName="gender">
+                <mat-option value="male">{{ 'NUTRITION.MALE' | translate }}</mat-option>
+                <mat-option value="female">{{ 'NUTRITION.FEMALE' | translate }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="flex-1">
+              <mat-label>{{ 'NUTRITION.BMR_METHOD' | translate }}</mat-label>
+              <mat-select formControlName="method">
+                <mat-option *ngFor="let m of methods" [value]="m">{{ getMethodLabel(m) }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="flex-1">
+              <mat-label>{{ 'NUTRITION.ACTIVITY_FACTOR' | translate }}</mat-label>
+              <mat-select formControlName="activityFactor">
+                <mat-option *ngFor="let f of activityFactors" [value]="f">{{ getActivityLabel(f) }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ 'NUTRITION.GOAL' | translate }}</mat-label>
+            <mat-select formControlName="goal">
+              <mat-option *ngFor="let g of goals" [value]="g">{{ getGoalLabel(g) }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <button mat-raised-button color="primary" class="w-100" (click)="calculate()">
+            <mat-icon>refresh</mat-icon>
+            {{ 'NUTRITION.CALCULATE' | translate }}
+          </button>
+        </form>
+      </div>
+
+      <!-- Results -->
+      <div class="calc-results" *ngIf="result">
+        <div class="result-card bmr">
+          <span class="result-label">{{ 'NUTRITION.BMR' | translate }}</span>
+          <span class="result-value">{{ result.bmr }}</span>
+          <span class="result-unit">kcal/día</span>
+        </div>
+
+        <div class="result-card tee">
+          <span class="result-label">{{ 'NUTRITION.TEE' | translate }}</span>
+          <span class="result-value">{{ result.totalEnergyExpenditure }}</span>
+          <span class="result-unit">kcal/día</span>
+        </div>
+
+        <div class="result-card calories">
+          <span class="result-label">{{ 'NUTRITION.ADJUSTED_CALORIES' | translate }}</span>
+          <span class="result-value">{{ result.totalEnergyExpenditure + result.goalCalorieAdjustment }}</span>
+          <span class="result-unit">kcal/día</span>
+        </div>
+
+        <div class="macro-breakdown">
+          <h4>{{ 'NUTRITION.MACRO_DISTRIBUTION' | translate }}</h4>
+          <div class="macro-row">
+            <div class="macro-bar">
+              <div class="bar protein" [style.width.%]="result.proteinTargetPercentage"></div>
+              <div class="bar fat" [style.width.%]="result.fatTargetPercentage"></div>
+              <div class="bar carbs" [style.width.%]="result.carbsTargetPercentage"></div>
+            </div>
+          </div>
+          <div class="macro-details">
+            <div class="macro-item protein">
+              <span class="dot"></span>
+              <span>{{ 'NUTRITION.PROTEIN' | translate }}</span>
+              <span class="macro-value">{{ result.proteinTargetGrams }}g ({{ result.proteinTargetPercentage }}%)</span>
+            </div>
+            <div class="macro-item fat">
+              <span class="dot"></span>
+              <span>{{ 'NUTRITION.FAT' | translate }}</span>
+              <span class="macro-value">{{ result.fatTargetGrams }}g ({{ result.fatTargetPercentage }}%)</span>
+            </div>
+            <div class="macro-item carbs">
+              <span class="dot"></span>
+              <span>{{ 'NUTRITION.CARBS' | translate }}</span>
+              <span class="macro-value">{{ result.carbsTargetGrams }}g ({{ result.carbsTargetPercentage }}%)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="extra-metrics">
+          <div class="metric">
+            <span class="label">{{ 'NUTRITION.WATER_TARGET' | translate }}</span>
+            <span class="value">{{ result.waterTargetMl }} ml</span>
+          </div>
+          <div class="metric">
+            <span class="label">{{ 'NUTRITION.FIBER_TARGET' | translate }}</span>
+            <span class="value">{{ result.fiberTargetGrams }}g</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

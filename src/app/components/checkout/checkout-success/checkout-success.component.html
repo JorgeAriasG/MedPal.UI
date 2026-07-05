@@ -1,0 +1,15 @@
+<div class="checkout-success-container">
+  <div class="success-card">
+    <div class="success-icon">
+      <mat-icon>check_circle</mat-icon>
+    </div>
+    <h1>{{ 'CHECKOUT.SUCCESS_TITLE' | translate }}</h1>
+    <p class="success-message">{{ 'CHECKOUT.SUCCESS_MESSAGE' | translate }}</p>
+    <div class="success-actions">
+      <button mat-raised-button color="primary" (click)="goToDashboard()">
+        {{ 'CHECKOUT.GO_TO_DASHBOARD' | translate }}
+      </button>
+    </div>
+    <p class="redirect-hint">{{ 'CHECKOUT.REDIRECT_HINT' | translate }}</p>
+  </div>
+</div>

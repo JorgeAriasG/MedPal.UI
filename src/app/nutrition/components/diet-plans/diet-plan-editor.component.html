@@ -1,0 +1,182 @@
+<div class="diet-plan-editor">
+  <div class="editor-header">
+    <button mat-icon-button (click)="cancel()">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <h2>{{ editId ? ('NUTRITION.EDIT_PLAN' | translate) : ('NUTRITION.NEW_PLAN' | translate) }}</h2>
+  </div>
+
+  <div *ngIf="loading" class="loading-section">
+    <mat-spinner diameter="32"></mat-spinner>
+  </div>
+
+  <form [formGroup]="form" class="editor-form" *ngIf="!loading" (input)="recalcItemMacros(); recalcTotals()">
+    <!-- Plan info -->
+    <div class="card">
+      <h3>{{ 'NUTRITION.PLAN_INFO' | translate }}</h3>
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="flex-2">
+          <mat-label>{{ 'NUTRITION.PLAN_TITLE' | translate }}</mat-label>
+          <input matInput formControlName="title" placeholder="Ej: Plan diabetes tipo 2">
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="flex-1">
+          <mat-label>{{ 'NUTRITION.DAILY_CALORIES' | translate }}</mat-label>
+          <input matInput type="number" formControlName="dailyCalories" readonly>
+        </mat-form-field>
+      </div>
+
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>{{ 'NUTRITION.PLAN_DESC' | translate }}</mat-label>
+        <textarea matInput formControlName="description" rows="2"></textarea>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>{{ 'NUTRITION.PLAN_OBJECTIVE' | translate }}</mat-label>
+        <input matInput formControlName="objective" placeholder="Objetivo del plan">
+      </mat-form-field>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="flex-1">
+          <mat-label>{{ 'NUTRITION.START_DATE' | translate }}</mat-label>
+          <input matInput [matDatepicker]="startPicker" formControlName="startDate">
+          <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+          <mat-datepicker #startPicker></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="flex-1">
+          <mat-label>{{ 'NUTRITION.END_DATE' | translate }}</mat-label>
+          <input matInput [matDatepicker]="endPicker" formControlName="endDate">
+          <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+          <mat-datepicker #endPicker></mat-datepicker>
+        </mat-form-field>
+      </div>
+
+      <mat-checkbox formControlName="isActive">{{ 'NUTRITION.ACTIVE_PLAN' | translate }}</mat-checkbox>
+    </div>
+
+    <!-- Macronutrient targets -->
+    <div class="card">
+      <h3>{{ 'NUTRITION.MACRO_TARGETS' | translate }}</h3>
+      <div class="macro-preview">
+        <div class="macro-stat">
+          <span class="label">{{ 'NUTRITION.PROTEIN' | translate }}</span>
+          <span class="value protein">{{ form.value.proteinGrams }}g</span>
+        </div>
+        <div class="macro-stat">
+          <span class="label">{{ 'NUTRITION.CARBS' | translate }}</span>
+          <span class="value carbs">{{ form.value.carbsGrams }}g</span>
+        </div>
+        <div class="macro-stat">
+          <span class="label">{{ 'NUTRITION.FAT' | translate }}</span>
+          <span class="value fat">{{ form.value.fatGrams }}g</span>
+        </div>
+        <div class="macro-stat">
+          <span class="label">{{ 'NUTRITION.FIBER' | translate }}</span>
+          <span class="value fiber">{{ form.value.fiberGrams }}g</span>
+        </div>
+        <div class="macro-stat">
+          <span class="label">{{ 'NUTRITION.WATER_TARGET' | translate }}</span>
+          <span class="value water">{{ form.value.waterMl }}ml</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Meal builder -->
+    <div class="card">
+      <h3>{{ 'NUTRITION.MEALS' | translate }}</h3>
+      <div formArrayName="meals">
+          <div class="meal-block card" *ngFor="let meal of meals.controls; let mi = index; trackBy: trackByIndex">
+          <div class="meal-header" [formGroupName]="mi">
+            <div class="meal-type-row">
+              <mat-form-field appearance="outline" class="meal-type-select">
+                <mat-label>{{ 'NUTRITION.MEAL_TYPE' | translate }}</mat-label>
+                <mat-select formControlName="mealType">
+                  <mat-option *ngFor="let mt of mealTypes" [value]="mt.key">{{ mt.label }}</mat-option>
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="meal-time">
+                <mat-label>{{ 'NUTRITION.TIME' | translate }}</mat-label>
+                <input matInput type="time" formControlName="time">
+              </mat-form-field>
+              <button mat-icon-button color="warn" (click)="removeMeal(mi)" *ngIf="meals.length > 1">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </div>
+
+          <!-- Food items -->
+          <div class="food-items" [formGroupName]="mi">
+            <div formArrayName="items">
+              <div class="food-row" *ngFor="let item of getMealItems(mi).controls; let ii = index; trackBy: trackByIndex" [formGroupName]="ii">
+                <mat-form-field appearance="outline" class="food-name">
+                  <mat-label>{{ 'NUTRITION.FOOD' | translate }}</mat-label>
+                  <input matInput formControlName="foodName" placeholder="Buscar alimento...">
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="food-portion">
+                  <mat-label>{{ 'NUTRITION.PORTION' | translate }}</mat-label>
+                  <input matInput type="number" formControlName="portion" step="1">
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="food-unit" *ngIf="item.value.unit !== 'otra'">
+                  <mat-label>{{ 'NUTRITION.UNIT' | translate }}</mat-label>
+                  <mat-select formControlName="unit">
+                    <mat-option value="g">g</mat-option>
+                    <mat-option value="ml">ml</mat-option>
+                    <mat-option value="pieza">pieza</mat-option>
+                    <mat-option value="rebanada">rebanada</mat-option>
+                    <mat-option value="taza">taza</mat-option>
+                    <mat-option value="cucharada">cucharada</mat-option>
+                    <mat-option value="unidad">unidad</mat-option>
+                    <mat-option value="otra">Otra...</mat-option>
+                  </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="food-unit-custom" *ngIf="item.value.unit === 'otra'">
+                  <mat-label>{{ 'NUTRITION.UNIT' | translate }}</mat-label>
+                  <input matInput formControlName="customUnit" placeholder="Ej: gotas, tabletas...">
+                </mat-form-field>
+                <div class="food-macros">
+                  <span class="macro-chip kcal" title="Calorías">{{ item.value.calories }} kcal</span>
+                  <span class="macro-chip protein" title="Proteína">{{ item.value.proteinGrams }}g</span>
+                </div>
+                <button mat-icon-button (click)="removeItem(mi, ii)" *ngIf="getMealItems(mi).length > 1">
+                  <mat-icon>close</mat-icon>
+                </button>
+              </div>
+            </div>
+
+            <div class="add-food-row">
+              <mat-form-field appearance="outline" class="food-search">
+                <mat-label>{{ 'NUTRITION.SEARCH_FOOD' | translate }}</mat-label>
+                <input matInput [(ngModel)]="searchQuery" (input)="onSearch(searchQuery)" [ngModelOptions]="{standalone: true}" placeholder="Buscar en base de datos...">
+              </mat-form-field>
+              <button mat-stroked-button (click)="addItem(mi)">
+                <mat-icon>add</mat-icon>
+                {{ 'NUTRITION.ADD_MANUAL' | translate }}
+              </button>
+            </div>
+
+            <!-- Search results -->
+            <div class="search-results" *ngIf="searchResults.length > 0">
+              <div class="result-item" *ngFor="let food of searchResults" (click)="selectFood(food, mi)">
+                <span class="food-name">{{ food.name }}</span>
+                <span class="food-info">{{ food.calories }} kcal | P:{{ food.protein }}g | C:{{ food.carbs }}g | G:{{ food.fat }}g</span>
+              </div>
+            </div>
+
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>{{ 'NUTRITION.PREPARATION' | translate }}</mat-label>
+              <textarea matInput formControlName="instructions" rows="1" placeholder="Instrucciones de preparación..."></textarea>
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="editor-actions">
+      <button mat-button (click)="cancel()">{{ 'COMMON.CANCEL' | translate }}</button>
+      <button mat-raised-button color="primary" (click)="save()" [disabled]="saving || form.invalid">
+        <mat-icon>save</mat-icon>
+        {{ saving ? ('COMMON.SAVING' | translate) : ('COMMON.SAVE' | translate) }}
+      </button>
+    </div>
+  </form>
+</div>
