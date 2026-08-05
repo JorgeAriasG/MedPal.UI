@@ -1,0 +1,96 @@
+<div class="treatments">
+  <h4 class="treatments-title">
+    <mat-icon>medical_services</mat-icon>
+    Tratamientos / Procedimientos
+  </h4>
+
+  <div class="treatments-form">
+    <mat-form-field appearance="outline" class="treatment-name-field">
+      <mat-label>Nombre</mat-label>
+      <input
+        matInput
+        [value]="newName"
+        (input)="newName = $any($event.target).value"
+        [disabled]="disabled"
+        placeholder="Ej. Limpieza dental, Brackets, Plan 1800 kcal..."
+      />
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="treatment-desc-field">
+      <mat-label>Descripción</mat-label>
+      <input
+        matInput
+        [value]="newDescription"
+        (input)="newDescription = $any($event.target).value"
+        [disabled]="disabled"
+        placeholder="Detalle opcional"
+      />
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="treatment-dose-field">
+      <mat-label>Dosis</mat-label>
+      <input
+        matInput
+        [value]="newDose"
+        (input)="newDose = $any($event.target).value"
+        [disabled]="disabled"
+        placeholder="Ej. 1 tableta"
+      />
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="treatment-frequency-field">
+      <mat-label>Frecuencia</mat-label>
+      <input
+        matInput
+        [value]="newFrequency"
+        (input)="newFrequency = $any($event.target).value"
+        [disabled]="disabled"
+        placeholder="Ej. Cada 8 horas"
+      />
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="treatment-duration-field">
+      <mat-label>Duración</mat-label>
+      <input
+        matInput
+        [value]="newDuration"
+        (input)="newDuration = $any($event.target).value"
+        [disabled]="disabled"
+        placeholder="Ej. 7 días"
+      />
+    </mat-form-field>
+    <button
+      mat-raised-button
+      color="primary"
+      type="button"
+      class="treatment-add-btn"
+      (click)="add()"
+      [disabled]="disabled || !newName.trim()"
+    >
+      <mat-icon>add</mat-icon>
+      Agregar
+    </button>
+  </div>
+
+  <div class="treatments-list" *ngIf="treatments.length > 0">
+    <div *ngFor="let treatment of treatments; let i = index" class="treatment-item">
+      <div class="treatment-content">
+        <span class="treatment-name">{{ treatment.name }}</span>
+        <span class="treatment-desc" *ngIf="treatment.description">{{ treatment.description }}</span>
+        <span class="treatment-posology" *ngIf="treatment.dose || treatment.frequency || treatment.duration">
+          {{ treatment.dose || '—' }} · {{ treatment.frequency || '—' }} · {{ treatment.duration || '—' }}
+        </span>
+      </div>
+      <button
+        mat-icon-button
+        type="button"
+        class="treatment-remove"
+        (click)="remove(i)"
+        [disabled]="disabled"
+        title="Quitar"
+      >
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <div class="treatments-empty" *ngIf="treatments.length === 0">
+    <p>Sin tratamientos registrados</p>
+  </div>
+</div>

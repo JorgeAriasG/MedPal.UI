@@ -6,7 +6,7 @@ import {
   NutritionData,
   GenericData,
 } from 'src/app/entities/specialty-templates.model';
-import { SPECIALTY_CONFIG } from 'src/app/config/specialty-config';
+import { SPECIALTY_CONFIG, resolveSpecialty } from 'src/app/config/specialty-config';
 
 @Component({
   selector: 'app-history-timeline',
@@ -96,7 +96,7 @@ export class HistoryTimelineComponent implements OnChanges {
   }
 
   getSpecialtyLabel(specialty: string): string {
-    return SPECIALTY_CONFIG[specialty as keyof typeof SPECIALTY_CONFIG]?.label || specialty;
+    return SPECIALTY_CONFIG[resolveSpecialty(specialty)]?.label || specialty;
   }
 
   parseSpecialtyData(entry: MedicalHistoryReadDTO): any {

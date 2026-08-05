@@ -1,4 +1,4 @@
-mat-dialog-title {
+h2[mat-dialog-title] {
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
@@ -6,7 +6,7 @@ mat-dialog-title {
   font-weight: 600;
 }
 
-mat-dialog-title mat-icon {
+h2[mat-dialog-title] mat-icon {
   color: var(--color-primary);
   font-size: 22px;
   width: 22px;
@@ -14,15 +14,28 @@ mat-dialog-title mat-icon {
 }
 
 mat-dialog-content {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--spacing-md);
+  align-items: start;
   min-width: 420px;
+}
+
+mat-dialog-content .cell-span-2,
+mat-dialog-content .checkbox-field {
+  grid-column: 1 / -1;
 }
 
 mat-dialog-actions {
   gap: var(--spacing-sm);
   padding: var(--spacing-md) 0 0;
+}
+
+@media (max-width: 560px) {
+  mat-dialog-content {
+    grid-template-columns: 1fr;
+    min-width: 0;
+  }
 }
 
 .checkbox-field {

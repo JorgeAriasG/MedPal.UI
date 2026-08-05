@@ -292,6 +292,15 @@
   font-size: 13px;
 }
 
+.presc-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--color-primary, #5B6CFF);
+  border-color: rgba(91, 108, 255, 0.35);
+}
+
 .complete-btn {
   display: flex;
   align-items: center;

@@ -74,4 +74,32 @@
       [placeholder]="'MEDICAL_HISTORY.TEMPLATE_DENTAL_OBSERVATIONS_PLACEHOLDER' | translate"
     ></textarea>
   </mat-form-field>
+
+  <!-- Consultation Engine compartidos -->
+  <div class="engine-section">
+    <app-clinical-notes
+      [ngModel]="dentalData.clinicalNotes || ''"
+      (ngModelChange)="onClinicalNotesChange($event)"
+    ></app-clinical-notes>
+
+    <app-diagnoses
+      [ngModel]="diagnosisValue"
+      (ngModelChange)="onDiagnosisChange($event)"
+    ></app-diagnoses>
+
+    <app-measurements
+      [ngModel]="dentalData.measurements"
+      (ngModelChange)="onMeasurementsChange($event)"
+    ></app-measurements>
+
+    <app-treatments
+      [ngModel]="dentalData.treatments"
+      (ngModelChange)="onTreatmentsChange($event)"
+    ></app-treatments>
+
+    <app-clinical-attachments
+      [attachments]="dentalData.attachments || []"
+      (attachmentsChange)="onAttachmentsChange($event)"
+    ></app-clinical-attachments>
+  </div>
 </div>

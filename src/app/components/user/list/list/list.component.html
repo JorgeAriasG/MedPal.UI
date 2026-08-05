@@ -1,12 +1,12 @@
-<div class="users-container">
+<div class="users-container cf-page-container">
   <!-- Page Header -->
-  <div class="page-header">
-    <div class="header-content">
-      <div class="page-title">
-        <mat-icon class="title-icon">people</mat-icon>
+  <div class="cf-page-header">
+    <div class="cf-header-content">
+      <div class="cf-page-title">
+        <mat-icon class="cf-title-icon">people</mat-icon>
         <span>{{ 'USERS.TITLE' | translate }}</span>
       </div>
-      <p class="page-subtitle">{{ 'USERS.SUBTITLE' | translate }}</p>
+      <p class="cf-page-subtitle">{{ 'USERS.SUBTITLE' | translate }}</p>
     </div>
     <button mat-raised-button color="primary" (click)="openAddDialog()" class="add-button">
       <mat-icon>add</mat-icon>
@@ -28,7 +28,7 @@
   </div>
 
   <!-- Loading State -->
-  <div class="loading-container" *ngIf="loading && users.length === 0">
+  <div class="cf-loading-container" *ngIf="loading && users.length === 0">
     <mat-spinner diameter="40"></mat-spinner>
     <p>{{ 'USERS.LOADING' | translate }}</p>
   </div>

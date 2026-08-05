@@ -221,6 +221,9 @@ export class HomeComponent implements OnInit, OnDestroy {
     const patient = this.patientMap.get(appointment.patientId);
     const dialogRef = this.dialog.open(EditModalComponent, {
       width: '600px',
+      maxHeight: '90vh',
+      disableClose: false,
+      panelClass: 'custom-dialog',
       data: {
         entityType: 'appointment',
         data: {
@@ -231,7 +234,7 @@ export class HomeComponent implements OnInit, OnDestroy {
           patientName: patient?.name,
           patientLastname: patient?.lastname,
         },
-        title: 'Edit Appointment',
+        title: 'APPOINTMENTS.DIALOG_EDIT_TITLE',
       },
     });
 

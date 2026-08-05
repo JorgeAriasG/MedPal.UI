@@ -39,6 +39,11 @@ export class PatientsService {
     return this.apiService.get(url);
   }
 
+  getPatientDetailsSummary(patientId: number): Observable<any> {
+    const url = `${this.patientDetailsEndpoint}/patient/${patientId}/summary`;
+    return this.apiService.get(url);
+  }
+
   updateMedicalHistory(history: any): Observable<any> {
     // ... code ...
     return this.apiService.post(`patient/history`, history);

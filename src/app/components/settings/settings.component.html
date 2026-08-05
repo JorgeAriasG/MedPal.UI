@@ -1,28 +1,28 @@
-<div class="settings-container">
-  <div class="page-header">
-    <div class="header-content">
-      <div class="page-title">
-        <mat-icon class="title-icon">settings</mat-icon>
+<div class="cf-page-container">
+  <div class="cf-page-header">
+    <div class="cf-header-content">
+      <div class="cf-page-title">
+        <mat-icon class="cf-title-icon">settings</mat-icon>
         <span>{{ 'SETTINGS.TITLE' | translate }}</span>
       </div>
-      <p class="page-subtitle">{{ 'SETTINGS.SUBTITLE' | translate }}</p>
+      <p class="cf-page-subtitle">{{ 'SETTINGS.SUBTITLE' | translate }}</p>
     </div>
   </div>
 
-  <div class="loading-container" *ngIf="loading">
+  <div class="cf-loading-container" *ngIf="loading">
     <mat-spinner diameter="40"></mat-spinner>
     <p>{{ 'COMMON.LOADING' | translate }}</p>
   </div>
 
-  <div class="error-container" *ngIf="error">
-    <mat-icon class="error-icon">error_outline</mat-icon>
+  <div class="cf-alert cf-alert-error" *ngIf="error">
+    <mat-icon>error_outline</mat-icon>
     <p>{{ error }}</p>
   </div>
 
   <div *ngIf="subscription && !loading" class="content-grid">
     <mat-card class="plan-card" @fadeIn>
       <mat-card-header>
-        <mat-icon class="card-icon" mat-card-avatar>workspace_premium</mat-icon>
+        <mat-icon class="cf-card-icon" mat-card-avatar>workspace_premium</mat-icon>
         <mat-card-title>{{ 'SETTINGS.CURRENT_PLAN' | translate }}</mat-card-title>
         <mat-card-subtitle>{{ 'SETTINGS.PLAN_DESC' | translate }}</mat-card-subtitle>
       </mat-card-header>
@@ -47,7 +47,7 @@
 
     <mat-card class="usage-card" @fadeIn>
       <mat-card-header>
-        <mat-icon class="card-icon" mat-card-avatar>insights</mat-icon>
+        <mat-icon class="cf-card-icon" mat-card-avatar>insights</mat-icon>
         <mat-card-title>{{ 'SETTINGS.USAGE' | translate }}</mat-card-title>
         <mat-card-subtitle>{{ 'SETTINGS.USAGE_DESC' | translate }}</mat-card-subtitle>
       </mat-card-header>
@@ -86,7 +86,7 @@
 
     <mat-card class="limits-card" @fadeIn>
       <mat-card-header>
-        <mat-icon class="card-icon" mat-card-avatar>fact_check</mat-icon>
+        <mat-icon class="cf-card-icon" mat-card-avatar>fact_check</mat-icon>
         <mat-card-title>{{ 'SETTINGS.PLAN_LIMITS' | translate }}</mat-card-title>
         <mat-card-subtitle>{{ 'SETTINGS.LIMITS_DESC' | translate }}</mat-card-subtitle>
       </mat-card-header>
@@ -120,16 +120,16 @@
 
     <mat-card class="billing-card" @fadeIn>
       <mat-card-header>
-        <mat-icon class="card-icon" mat-card-avatar>credit_card</mat-icon>
+        <mat-icon class="cf-card-icon" mat-card-avatar>credit_card</mat-icon>
         <mat-card-title>{{ 'SETTINGS.BILLING_TITLE' | translate }}</mat-card-title>
         <mat-card-subtitle>{{ 'SETTINGS.BILLING_DESC' | translate }}</mat-card-subtitle>
       </mat-card-header>
       <mat-card-content>
-        <div class="billing-info" *ngIf="isPendingPayment()">
-          <mat-icon class="billing-warning-icon">warning_amber</mat-icon>
+        <div class="cf-alert cf-alert-warning" *ngIf="isPendingPayment()">
+          <mat-icon>warning_amber</mat-icon>
           <span>{{ 'SETTINGS.PAYMENT_PENDING' | translate }}</span>
         </div>
-        <div class="billing-error" *ngIf="billingError">
+        <div class="cf-alert cf-alert-error billing-error" *ngIf="billingError">
           <mat-icon>error_outline</mat-icon>
           <span>{{ billingError }}</span>
         </div>

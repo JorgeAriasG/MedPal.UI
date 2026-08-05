@@ -1,8 +1,13 @@
-<div class="appointments-container">
+<div class="appointments-container cf-page-container">
   <!-- Header -->
-  <div class="appointments-header">
-    <h1 class="appointments-title">{{ 'APPOINTMENTS.TITLE' | translate }}</h1>
-    <p class="appointments-subtitle">{{ 'APPOINTMENTS.SUBTITLE' | translate }}</p>
+  <div class="cf-page-header">
+    <div class="cf-header-content">
+      <div class="cf-page-title">
+        <mat-icon class="cf-title-icon">calendar_month</mat-icon>
+        <span>{{ 'APPOINTMENTS.TITLE' | translate }}</span>
+      </div>
+      <p class="cf-page-subtitle">{{ 'APPOINTMENTS.SUBTITLE' | translate }}</p>
+    </div>
   </div>
 
   <!-- Action Bar & Header -->
@@ -123,7 +128,7 @@
       </div>
 
       <!-- Loading State -->
-      <div class="loading-container" *ngIf="loading && appointments.length === 0">
+      <div class="cf-loading-container" *ngIf="loading && appointments.length === 0">
         <mat-spinner diameter="40"></mat-spinner>
         <p>{{ 'APPOINTMENTS.LOADING' | translate }}</p>
       </div>

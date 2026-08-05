@@ -14,40 +14,48 @@ export const patientFormConfig: Record<string, FormFieldConfig> = {
     value: '',
     validators: Validators.required,
     type: 'text',
+    label: 'PATIENTS.FORM_FIRST_NAME',
   },
   middlename: {
     value: '',
     type: 'text',
+    label: 'PATIENTS.FORM_MIDDLENAME',
   },
   lastname: {
     value: '',
     validators: Validators.required,
     type: 'text',
+    label: 'PATIENTS.FORM_LAST_NAME',
   },
   phone: {
     value: '',
     validators: Validators.required,
     type: 'tel',
+    label: 'PATIENTS.FORM_PHONE',
   },
   email: {
     value: '',
     validators: [Validators.required, Validators.email],
     type: 'email',
+    label: 'PATIENTS.FORM_EMAIL',
   },
   address: {
     value: '',
     validators: Validators.required,
     type: 'textarea',
+    label: 'PATIENTS.FORM_ADDRESS',
   },
   dob: {
     value: '',
     validators: Validators.required,
     type: 'date',
+    label: 'PATIENTS.FORM_DOB',
   },
   gender: {
     value: '',
     validators: Validators.required,
     type: 'select',
+    label: 'PATIENTS.FORM_GENDER',
     options: [
       { label: 'PATIENTS.GENDER_MALE', value: 'M' },
       { label: 'PATIENTS.GENDER_FEMALE', value: 'F' },
@@ -58,6 +66,7 @@ export const patientFormConfig: Record<string, FormFieldConfig> = {
     value: '',
     validators: Validators.required,
     type: 'text',
+    label: 'PATIENTS.FORM_EMERGENCY_CONTACT',
   },
   clinicIds: {
     value: '',
@@ -73,21 +82,25 @@ export const appointmentFormConfig: Record<string, FormFieldConfig> = {
     value: '',
     validators: Validators.required,
     type: 'date',
+    label: 'APPOINTMENTS.TABLE_DATE',
   },
   time: {
     value: '',
     validators: Validators.required,
     type: 'time',
+    label: 'APPOINTMENTS.TABLE_TIME',
   },
   notes: {
     value: '',
     validators: Validators.required,
     type: 'textarea',
+    label: 'Notas',
   },
   status: {
     value: '',
     validators: Validators.required,
     type: 'select',
+    label: 'APPOINTMENTS.TABLE_STATUS',
     options: [
       { label: 'APPOINTMENTS.STATUS_SCHEDULED', value: 'Scheduled' },
       { label: 'APPOINTMENTS.STATUS_IN_PROGRESS', value: 'InProgress' },
@@ -110,29 +123,35 @@ export const userFormConfig: Record<string, FormFieldConfig> = {
     value: '',
     validators: Validators.required,
     type: 'text',
+    label: 'USERS.TABLE_NAME',
   },
   email: {
     value: '',
     validators: [Validators.required, Validators.email],
     type: 'email',
+    label: 'USERS.TABLE_EMAIL',
   },
   password: {
     value: '',
     validators: [Validators.required, Validators.minLength(8)],
     type: 'password',
+    label: 'Contraseña',
   },
   confirmPassword: {
     value: '',
     validators: [Validators.required, Validators.minLength(8)],
     type: 'password',
+    label: 'Confirmar Contraseña',
   },
   specialty: {
     value: '',
     type: 'text',
+    label: 'Especialidad',
   },
   professionalLicenseNumber: {
     value: '',
     type: 'text',
+    label: 'Número de Cédula Profesional',
   },
   clinicId: {
     value: '',
@@ -150,6 +169,7 @@ export const userFormConfig: Record<string, FormFieldConfig> = {
     value: false,
     validators: Validators.requiredTrue,
     type: 'checkbox',
+    label: 'Acepto los términos de privacidad y manejo de mis datos',
   },
 };
 
@@ -158,27 +178,33 @@ export const userEditFormConfig: Record<string, FormFieldConfig> = {
     value: '',
     validators: Validators.required,
     type: 'text',
+    label: 'USERS.TABLE_NAME',
   },
   email: {
     value: '',
     validators: [Validators.required, Validators.email],
     type: 'email',
+    label: 'USERS.TABLE_EMAIL',
   },
   password: {
     value: '',
     type: 'password',
+    label: 'Contraseña',
   },
   confirmPassword: {
     value: '',
     type: 'password',
+    label: 'Confirmar Contraseña',
   },
   specialty: {
     value: '',
     type: 'text',
+    label: 'Especialidad',
   },
   professionalLicenseNumber: {
     value: '',
     type: 'text',
+    label: 'Número de Cédula Profesional',
   },
   clinicId: {
     value: '',
@@ -199,16 +225,19 @@ export const clinicFormConfig: Record<string, FormFieldConfig> = {
     value: '',
     validators: Validators.required,
     type: 'text',
+    label: 'CLINICS.DIALOG_NAME',
   },
   location: {
     value: '',
     validators: Validators.required,
     type: 'text',
+    label: 'CLINICS.DIALOG_LOCATION',
   },
   contactInfo: {
     value: '',
     validators: Validators.required,
     type: 'text',
+    label: 'CLINICS.DIALOG_CONTACT',
   },
 };
 
@@ -217,11 +246,13 @@ export const roleFormConfig: Record<string, FormFieldConfig> = {
     value: '',
     validators: Validators.required,
     type: 'text',
+    label: 'ROLES.FORM_NAME',
   },
   description: {
     value: '',
     validators: Validators.required,
     type: 'textarea',
+    label: 'ROLES.FORM_DESCRIPTION',
   },
 };
 

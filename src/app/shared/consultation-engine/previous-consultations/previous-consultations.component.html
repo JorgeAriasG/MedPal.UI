@@ -1,0 +1,28 @@
+<div class="previous-consultations">
+  <div class="pc-header">
+    <h3 class="pc-title">
+      <mat-icon>history</mat-icon>
+      Consultas Anteriores
+    </h3>
+  </div>
+
+  <div *ngIf="loading" class="pc-loading">
+    <mat-spinner diameter="24"></mat-spinner>
+  </div>
+
+  <div *ngIf="!loading && entries.length === 0" class="pc-empty">
+    <mat-icon class="pc-empty-icon">event_note</mat-icon>
+    <p>No hay consultas previas</p>
+  </div>
+
+  <div *ngIf="!loading && entries.length > 0" class="pc-list">
+    <div *ngFor="let entry of entries" class="pc-item">
+      <div class="pc-item-head">
+        <span class="pc-specialty">{{ entry.specialtyType }}</span>
+        <span class="pc-date">{{ formatDate(entry.createdAt) }}</span>
+      </div>
+      <p class="pc-diagnosis" *ngIf="entry.diagnosis">{{ entry.diagnosis }}</p>
+      <p class="pc-notes" *ngIf="entry.clinicalNotes">{{ entry.clinicalNotes }}</p>
+    </div>
+  </div>
+</div>

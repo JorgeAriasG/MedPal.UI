@@ -74,7 +74,7 @@ export class ListComponent implements OnInit, OnDestroy {
       data: {
         entityType: 'user',
         data: {},
-        title: 'Create New User',
+        title: 'USERS.DIALOG_CREATE_TITLE',
         isCreate: true,
       },
     });
@@ -119,7 +119,7 @@ export class ListComponent implements OnInit, OnDestroy {
         data: {
           entityType: 'userEdit',
           data: user,
-          title: 'Edit User',
+          title: 'USERS.DIALOG_EDIT_TITLE',
         },
       })
       .afterClosed()

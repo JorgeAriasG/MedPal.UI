@@ -21,6 +21,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { TimeoutWarningComponent } from './timeout-warning/timeout-warning.component';
 import { Cie10SearchComponent } from './cie10-search/cie10-search.component';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
@@ -47,6 +48,7 @@ import { TranslateModule } from '@ngx-translate/core';
     MatCheckboxModule,
     MatTooltipModule,
     MatChipsModule,
+    MatSnackBarModule,
     FormsModule,
     ReactiveFormsModule,
     RouterModule,

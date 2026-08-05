@@ -602,6 +602,7 @@
     "HISTORY_NO_RECORDS": "Sin registros médicos",
     "HISTORY_ADD": "Agregar Registro",
     "FORM_CLINIC": "Clínica",
+    "EDIT_TITLE": "Editar Paciente",
     "FORM_ROLE": "Rol",
     "FORM_DURATION": "Duración (min)",
     "TABLE_CLINIC": "Clínica",

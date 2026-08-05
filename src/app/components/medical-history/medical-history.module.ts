@@ -15,6 +15,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatChipsModule } from '@angular/material/chips';
 import { TranslateModule } from '@ngx-translate/core';
+import { ConsultationEngineModule } from 'src/app/shared/consultation-engine/consultation-engine.module';
 
 // Components
 import { DentalTemplateComponent } from './specialty-templates/dental-template/dental-template.component';
@@ -49,6 +50,7 @@ import { HistoryTimelineComponent } from './history-timeline/history-timeline.co
     MatDatepickerModule,
     MatNativeDateModule,
     TranslateModule,
+    ConsultationEngineModule,
   ],
   exports: [HistoryFormComponent, HistoryTimelineComponent, SoapTemplateComponent, DentalTemplateComponent, NutritionTemplateComponent, GenericTemplateComponent],
 })

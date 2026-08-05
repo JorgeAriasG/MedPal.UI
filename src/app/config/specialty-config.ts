@@ -18,30 +18,59 @@ export const SPECIALTY_CONFIG: Record<SpecialtyType, SoapConfig> = {
     usesSoap: true,
     usesCie10: true,
     template: 'soap',
-    label: 'Cardiología',
+    label: 'Cardiolog��a',
   },
   Pediatrics: {
     usesSoap: true,
     usesCie10: true,
     template: 'soap',
-    label: 'Pediatría',
+    label: 'Pediatr��a',
   },
   Dermatology: {
     usesSoap: true,
     usesCie10: true,
     template: 'soap',
-    label: 'Dermatología',
+    label: 'Dermatolog��a',
   },
   Dental: {
     usesSoap: false,
     usesCie10: false,
     template: 'dental',
-    label: 'Odontología',
+    label: 'Odontolog��a',
   },
   Nutrition: {
     usesSoap: false,
     usesCie10: false,
     template: 'nutrition',
-    label: 'Nutrición',
+    label: 'Nutrici��n',
   },
 };
+
+const SPECIALTY_ALIASES: Record<string, SpecialtyType> = {
+  general: 'General',
+  'medicina general': 'General',
+  cardiology: 'Cardiology',
+  cardiologia: 'Cardiology',
+  pediatrics: 'Pediatrics',
+  pediatria: 'Pediatrics',
+  dermatology: 'Dermatology',
+  dermatologia: 'Dermatology',
+  dental: 'Dental',
+  odontologia: 'Dental',
+  nutrition: 'Nutrition',
+  nutricion: 'Nutrition',
+};
+
+function normalizeSpecialty(value: string): string {
+  return value
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .trim();
+}
+
+export function resolveSpecialty(value: string | null | undefined): SpecialtyType {
+  if (!value) return 'General';
+  const key = normalizeSpecialty(value);
+  return SPECIALTY_ALIASES[key] || 'General';
+}

@@ -4,6 +4,9 @@ import {
   DentalData,
   ToothStatus,
   ToothData,
+  MeasurementData,
+  TreatmentItem,
+  PendingAttachment,
 } from 'src/app/entities/specialty-templates.model';
 
 @Component({
@@ -130,7 +133,7 @@ export class DentalTemplateComponent implements ControlValueAccessor, OnInit {
       this.dentalData.teeth[toothNumber].status = status;
     }
 
-    this.onChange(this.dentalData);
+    this.emit();
     this.selectedTooth = null;
   }
 
@@ -153,10 +156,56 @@ export class DentalTemplateComponent implements ControlValueAccessor, OnInit {
   updateObservations(observations: string): void {
     if (this.disabled) return;
     this.dentalData.observations = observations;
-    this.onChange(this.dentalData);
+    this.emit();
   }
 
   clearSelection(): void {
     this.selectedTooth = null;
+  }
+
+  private diagnosisCache: { diagnosis: string; cie10Codes: string } | null = null;
+
+  get diagnosisValue(): { diagnosis: string; cie10Codes: string } {
+    const diagnosis = this.dentalData.diagnosis || '';
+    const cie10Codes = this.dentalData.cie10Codes || '';
+    if (
+      !this.diagnosisCache ||
+      this.diagnosisCache.diagnosis !== diagnosis ||
+      this.diagnosisCache.cie10Codes !== cie10Codes
+    ) {
+      this.diagnosisCache = { diagnosis, cie10Codes };
+    }
+    return this.diagnosisCache;
+  }
+
+  onDiagnosisChange(value: { diagnosis: string; cie10Codes: string }): void {
+    this.dentalData.diagnosis = value.diagnosis;
+    this.dentalData.cie10Codes = value.cie10Codes;
+    this.emit();
+  }
+
+  onClinicalNotesChange(value: string): void {
+    this.dentalData.clinicalNotes = value;
+    this.emit();
+  }
+
+  onTreatmentsChange(value: TreatmentItem[]): void {
+    this.dentalData.treatments = value;
+    this.emit();
+  }
+
+  onMeasurementsChange(value: MeasurementData): void {
+    this.dentalData.measurements = value;
+    this.emit();
+  }
+
+  onAttachmentsChange(value: PendingAttachment[]): void {
+    this.dentalData.attachments = value;
+    this.emit();
+  }
+
+  private emit(): void {
+    this.onChange(this.dentalData);
+    this.onTouched();
   }
 }

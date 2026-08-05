@@ -1,0 +1,65 @@
+<div class="clinical-attachments">
+  <div class="attachments-header">
+    <h4 class="attachments-title">
+      <mat-icon>attach_file</mat-icon>
+      Adjuntos Clínicos
+    </h4>
+    <span class="attachments-hint">Radiografías, fotos o documentos</span>
+  </div>
+
+  <div class="attachments-dropzone">
+    <input
+      #fileInput
+      type="file"
+      multiple
+      accept="image/*,.pdf,.doc,.docx"
+      (change)="onFilesSelected($event)"
+      [disabled]="disabled"
+      hidden
+    />
+    <button
+      mat-stroked-button
+      type="button"
+      (click)="fileInput.click()"
+      [disabled]="disabled"
+      class="upload-btn"
+    >
+      <mat-icon>upload_file</mat-icon>
+      Subir archivos
+    </button>
+  </div>
+
+  <div class="attachments-list" *ngIf="attachments.length > 0">
+    <div *ngFor="let attachment of attachments; let i = index" class="attachment-item">
+      <div class="attachment-thumb" *ngIf="attachment.objectUrl; else fileIcon">
+        <img [src]="attachment.objectUrl" [alt]="attachment.name" (click)="preview(attachment)" />
+      </div>
+      <ng-template #fileIcon>
+        <div class="attachment-thumb attachment-file" (click)="preview(attachment)">
+          <mat-icon>insert_drive_file</mat-icon>
+        </div>
+      </ng-template>
+
+      <div class="attachment-info">
+        <span class="attachment-name" [title]="attachment.name">{{ attachment.name }}</span>
+        <span class="attachment-meta">{{ formatSize(attachment.size) }}</span>
+      </div>
+
+      <button
+        mat-icon-button
+        type="button"
+        class="attachment-remove"
+        (click)="remove(i)"
+        [disabled]="disabled"
+        title="Quitar"
+      >
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <div class="attachments-empty" *ngIf="attachments.length === 0">
+    <mat-icon class="empty-icon">image_search</mat-icon>
+    <p>Sin adjuntos por el momento</p>
+  </div>
+</div>

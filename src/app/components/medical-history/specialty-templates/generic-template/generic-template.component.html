@@ -13,4 +13,32 @@
     ></textarea>
     <mat-hint>{{ 'MEDICAL_HISTORY.TEMPLATE_GENERIC_HINT' | translate }}</mat-hint>
   </mat-form-field>
+
+  <!-- Consultation Engine compartidos -->
+  <div class="engine-section">
+    <app-clinical-notes
+      [ngModel]="genericData.clinicalNotes || ''"
+      (ngModelChange)="onClinicalNotesChange($event)"
+    ></app-clinical-notes>
+
+    <app-diagnoses
+      [ngModel]="diagnosisValue"
+      (ngModelChange)="onDiagnosisChange($event)"
+    ></app-diagnoses>
+
+    <app-measurements
+      [ngModel]="genericData.measurements"
+      (ngModelChange)="onMeasurementsChange($event)"
+    ></app-measurements>
+
+    <app-treatments
+      [ngModel]="genericData.treatments"
+      (ngModelChange)="onTreatmentsChange($event)"
+    ></app-treatments>
+
+    <app-clinical-attachments
+      [attachments]="genericData.attachments || []"
+      (attachmentsChange)="onAttachmentsChange($event)"
+    ></app-clinical-attachments>
+  </div>
 </div>

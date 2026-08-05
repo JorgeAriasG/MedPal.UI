@@ -1,6 +1,11 @@
 import { Component, forwardRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { NutritionData } from 'src/app/entities/specialty-templates.model';
+import {
+  NutritionData,
+  MeasurementData,
+  TreatmentItem,
+  PendingAttachment,
+} from 'src/app/entities/specialty-templates.model';
 
 @Component({
   selector: 'app-nutrition-template',
@@ -34,6 +39,14 @@ export class NutritionTemplateComponent implements ControlValueAccessor {
   writeValue(value: NutritionData): void {
     if (value) {
       this.nutritionData = value;
+      if (!value.measurements && value.peso > 0 && value.altura > 0) {
+        const heightCm = value.altura > 3 ? value.altura : value.altura * 100;
+        this.nutritionData.measurements = {
+          weight: value.peso,
+          height: heightCm,
+          bmi: value.imc || 0,
+        };
+      }
     }
   }
 
@@ -49,28 +62,55 @@ export class NutritionTemplateComponent implements ControlValueAccessor {
     this.disabled = isDisabled;
   }
 
-  updateField(field: keyof NutritionData, value: any): void {
+  updateField(field: 'objetivo' | 'caloriasDiarias', value: any): void {
     if (this.disabled) return;
     (this.nutritionData as any)[field] = value;
-
-    // Auto-calculate IMC when peso or altura changes
-    if (field === 'peso' || field === 'altura') {
-      this.calculateIMC();
-    }
-
-    this.onChange(this.nutritionData);
-    this.onTouched();
+    this.emit();
   }
 
-  calculateIMC(): void {
-    if (this.nutritionData.peso > 0 && this.nutritionData.altura > 0) {
-      const alturaMetros = this.nutritionData.altura;
-      this.nutritionData.imc = Number(
-        (this.nutritionData.peso / (alturaMetros * alturaMetros)).toFixed(2)
-      );
-    } else {
-      this.nutritionData.imc = 0;
+  onMeasurementsChange(value: MeasurementData): void {
+    this.nutritionData.measurements = value;
+    // Mantener compatibilidad con el contrato NutritionData legado
+    this.nutritionData.peso = value.weight || 0;
+    this.nutritionData.altura = value.height || 0;
+    this.nutritionData.imc = value.bmi || 0;
+    this.emit();
+  }
+
+  private diagnosisCache: { diagnosis: string; cie10Codes: string } | null = null;
+
+  get diagnosisValue(): { diagnosis: string; cie10Codes: string } {
+    const diagnosis = this.nutritionData.diagnosis || '';
+    const cie10Codes = this.nutritionData.cie10Codes || '';
+    if (
+      !this.diagnosisCache ||
+      this.diagnosisCache.diagnosis !== diagnosis ||
+      this.diagnosisCache.cie10Codes !== cie10Codes
+    ) {
+      this.diagnosisCache = { diagnosis, cie10Codes };
     }
+    return this.diagnosisCache;
+  }
+
+  onDiagnosisChange(value: { diagnosis: string; cie10Codes: string }): void {
+    this.nutritionData.diagnosis = value.diagnosis;
+    this.nutritionData.cie10Codes = value.cie10Codes;
+    this.emit();
+  }
+
+  onClinicalNotesChange(value: string): void {
+    this.nutritionData.clinicalNotes = value;
+    this.emit();
+  }
+
+  onTreatmentsChange(value: TreatmentItem[]): void {
+    this.nutritionData.treatments = value;
+    this.emit();
+  }
+
+  onAttachmentsChange(value: PendingAttachment[]): void {
+    this.nutritionData.attachments = value;
+    this.emit();
   }
 
   addRestriction(): void {
@@ -81,7 +121,7 @@ export class NutritionTemplateComponent implements ControlValueAccessor {
     ) {
       this.nutritionData.restricciones.push(this.newRestriction.trim());
       this.newRestriction = '';
-      this.onChange(this.nutritionData);
+      this.emit();
     }
   }
 
@@ -91,25 +131,12 @@ export class NutritionTemplateComponent implements ControlValueAccessor {
     const index = this.nutritionData.restricciones.indexOf(restriction);
     if (index >= 0) {
       this.nutritionData.restricciones.splice(index, 1);
-      this.onChange(this.nutritionData);
+      this.emit();
     }
   }
 
-  getIMCCategory(): string {
-    const imc = this.nutritionData.imc;
-    if (imc === 0) return '';
-    if (imc < 18.5) return 'Bajo peso';
-    if (imc < 25) return 'Peso normal';
-    if (imc < 30) return 'Sobrepeso';
-    return 'Obesidad';
-  }
-
-  getIMCColor(): string {
-    const imc = this.nutritionData.imc;
-    if (imc === 0) return '#9e9e9e';
-    if (imc < 18.5) return '#ff9800';
-    if (imc < 25) return '#4caf50';
-    if (imc < 30) return '#ff9800';
-    return '#f44336';
+  private emit(): void {
+    this.onChange(this.nutritionData);
+    this.onTouched();
   }
 }

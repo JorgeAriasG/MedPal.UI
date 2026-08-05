@@ -19,6 +19,7 @@ import { ClinicService } from 'src/app/components/clinics/services/clinic.servic
 import { IClinic } from 'src/app/entities/IClinic';
 import { RolesService } from 'src/app/components/user/roles/services/roles.service';
 import { IRole } from 'src/app/entities/IRole';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-edit-modal',
@@ -31,18 +32,21 @@ export class EditModalComponent implements OnInit, OnDestroy {
   form: FormGroup;
   fields: any[] = [];
   private destroy$ = new Subject<void>();
+  private canAssignClinic = true;
 
   constructor(
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<EditModalComponent>,
     private clinicService: ClinicService,
     private rolesService: RolesService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private authService: AuthService
   ) {
     this.form = this.fb.group({});
   }
 
   ngOnInit(): void {
+    this.canAssignClinic = this.authService.isAdmin();
     try {
       if (
         this.inputData?.entityType &&
@@ -87,7 +91,11 @@ export class EditModalComponent implements OnInit, OnDestroy {
           }));
 
           // Actualizar la configuración del campo clinicId (para users) o clinicIds (para patients)
-          const clinicFieldKey = this.inputData?.entityType === 'user' || 'userEdit' ? 'clinicId' : 'clinicIds';
+          const entityType = this.inputData?.entityType;
+          const clinicFieldKey =
+            entityType === 'user' || entityType === 'userEdit'
+              ? 'clinicId'
+              : 'clinicIds';
           config[clinicFieldKey] = {
             ...config[clinicFieldKey],
             options: clinicOptions,
@@ -171,9 +179,20 @@ export class EditModalComponent implements OnInit, OnDestroy {
             : [fieldConfig.validators]
           : [];
 
-        const fieldValue =
+        const isClinicLocked =
+          (key === 'clinicIds' || key === 'clinicId') && !this.canAssignClinic;
+
+        let fieldValue =
           data && data[key] !== undefined ? data[key] : initialValue;
-        const isDisabled = data && data[key] && key === 'clinic' ? true : false;
+        if (
+          isClinicLocked &&
+          (fieldValue === null || fieldValue === undefined || fieldValue === '')
+        ) {
+          fieldValue = this.authService.getClinicId() ?? fieldValue;
+        }
+        const isDisabled =
+          (data && data[key] && key === 'clinic' ? true : false) ||
+          isClinicLocked;
 
         // Crear el control con disabled en el constructor
         group[key] = new FormControl(

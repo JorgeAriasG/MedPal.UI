@@ -31,6 +31,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { NewPatientComponent } from '../patients/new-patient/new-patient.component';
 import { PatientDetailComponent } from '../patients/patient-detail/patient-detail.component';
 import { AddClinicComponent } from '../clinics/add-clinic/add-clinic.component';
@@ -49,6 +50,7 @@ import { NewRoleComponent } from '../user/roles/new-role/new-role.component';
 import { CreatePrescriptionComponent } from '../prescriptions/create-prescription/create-prescription.component';
 import { PrescriptionDetailComponent } from '../prescriptions/prescription-detail/prescription-detail.component';
 import { MedicalHistoryModule } from '../medical-history/medical-history.module';
+import { ConsultationEngineModule } from 'src/app/shared/consultation-engine/consultation-engine.module';
 import { NutritionModule } from 'src/app/nutrition/nutrition.module';
 import { AuthGuard } from 'src/app/guards/auth.guard';
 import { AuditAccessGuard } from 'src/app/guards/audit-access.guard';
@@ -139,9 +141,11 @@ import { MatExpansionModule } from '@angular/material/expansion';
     MatProgressSpinnerModule,
     MatProgressBarModule,
     MatMenuModule,
+    MatSnackBarModule,
     MatButtonToggleModule,
     MatExpansionModule,
     MedicalHistoryModule,
+    ConsultationEngineModule,
     NutritionModule,
     CalendarModule.forRoot({
       provide: DateAdapter,

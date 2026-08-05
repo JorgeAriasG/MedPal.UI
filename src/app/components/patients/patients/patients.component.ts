@@ -160,10 +160,14 @@ export class PatientsComponent implements OnInit, OnDestroy {
     };
     this.dialog
       .open(EditModalComponent, {
+        width: '640px',
+        maxHeight: '90vh',
+        disableClose: false,
+        panelClass: 'custom-dialog',
         data: {
           entityType: 'patient',
           data: modalData,
-          title: 'Edit Patient',
+          title: 'PATIENTS.EDIT_TITLE',
         },
       })
       .afterClosed()

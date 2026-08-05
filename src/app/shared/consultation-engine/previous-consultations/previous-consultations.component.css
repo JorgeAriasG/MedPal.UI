@@ -1,0 +1,100 @@
+.previous-consultations {
+  display: flex;
+  flex-direction: column;
+}
+
+.pc-header {
+  margin-bottom: 12px;
+}
+
+.pc-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.pc-title mat-icon {
+  color: #5b6cff;
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.pc-loading {
+  display: flex;
+  justify-content: center;
+  padding: 16px;
+}
+
+.pc-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 16px;
+  color: #9ca3af;
+}
+
+.pc-empty-icon {
+  font-size: 28px;
+  width: 28px;
+  height: 28px;
+}
+
+.pc-empty p {
+  margin: 0;
+  font-size: 12px;
+}
+
+.pc-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pc-item {
+  padding: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.pc-item-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.pc-specialty {
+  font-size: 12px;
+  font-weight: 600;
+  color: #5b6cff;
+}
+
+.pc-date {
+  font-size: 11px;
+  color: #9ca3af;
+}
+
+.pc-diagnosis {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.pc-notes {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: #6b7280;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}

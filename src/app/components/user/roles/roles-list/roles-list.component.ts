@@ -71,7 +71,7 @@ export class RolesListComponent implements OnInit, OnDestroy {
       data: {
         entityType: 'role',
         data: {},
-        title: 'Create New Role',
+        title: 'ROLES.DIALOG_CREATE_TITLE',
         isCreate: true
       }
     });
@@ -113,7 +113,7 @@ export class RolesListComponent implements OnInit, OnDestroy {
         data: {
           entityType: 'role',
           data: role,
-          title: 'Edit Role',
+          title: 'ROLES.DIALOG_EDIT_TITLE',
         },
       })
       .afterClosed()

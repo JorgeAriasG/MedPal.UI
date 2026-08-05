@@ -10,7 +10,7 @@ import {
   SpecialtyType,
   SpecialtyDataType,
 } from 'src/app/entities/specialty-templates.model';
-import { SPECIALTY_CONFIG, SoapConfig } from 'src/app/config/specialty-config';
+import { SPECIALTY_CONFIG, SoapConfig, resolveSpecialty } from 'src/app/config/specialty-config';
 
 export interface HistoryFormData {
   patientDetailsId: number;
@@ -39,14 +39,11 @@ export class HistoryFormComponent implements OnInit, OnDestroy {
     private translate: TranslateService
   ) {
     this.specialtyType = (data.userSpecialty as SpecialtyType) || 'General';
-    this.config = SPECIALTY_CONFIG[this.specialtyType] || SPECIALTY_CONFIG.General;
+    this.config = SPECIALTY_CONFIG[resolveSpecialty(this.specialtyType)] || SPECIALTY_CONFIG.General;
 
     this.historyForm = this.fb.group({
-      diagnosis: ['', Validators.required],
       diagnosisDate: [new Date().toISOString().split('T')[0], Validators.required],
-      clinicalNotes: ['', Validators.required],
       followUpDate: [''],
-      cie10Codes: [''],
       specialtyData: [null],
       isConfidential: [true],
     });
@@ -90,23 +87,41 @@ export class HistoryFormComponent implements OnInit, OnDestroy {
       return;
     }
 
+    const formValue = this.historyForm.value;
+    const specialtyData = formValue.specialtyData || {};
+
+    const diagnosis = specialtyData.diagnosis || '';
+    let clinicalNotes =
+      specialtyData.clinicalNotes ||
+      (this.config.template === 'soap' ? specialtyData.plan : '') ||
+      '';
+    const cie10Codes = specialtyData.cie10Codes || undefined;
+    const treatments = specialtyData.treatments?.length
+      ? JSON.stringify(specialtyData.treatments)
+      : undefined;
+
+    if (!diagnosis || !clinicalNotes) {
+      this.errorMessage = this.translate.instant('MEDICAL_HISTORY.FORM_ERROR_REQUIRED');
+      return;
+    }
+
     this.loading = true;
     this.errorMessage = '';
 
-    const formValue = this.historyForm.value;
     const specialtyDataJson = this.medicalHistoryService.serializeSpecialtyData(
-      formValue.specialtyData
+      specialtyData
     );
 
     const dto: MedicalHistoryWriteDTO = {
       patientDetailsId: this.data.patientDetailsId,
       specialtyType: this.specialtyType,
-      diagnosis: formValue.diagnosis,
+      diagnosis,
       diagnosisDate: formValue.diagnosisDate,
-      clinicalNotes: formValue.clinicalNotes,
+      clinicalNotes,
       followUpDate: formValue.followUpDate || undefined,
       specialtyData: specialtyDataJson || undefined,
-      cie10Codes: formValue.cie10Codes || undefined,
+      cie10Codes,
+      treatments,
       isConfidential: formValue.isConfidential || true,
     };
 

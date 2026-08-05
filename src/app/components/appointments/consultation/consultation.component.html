@@ -56,15 +56,7 @@
       </div>
 
       <div class="info-section">
-        <h4 class="section-label">Datos Antropométricos</h4>
-        <div class="info-row">
-          <mat-icon class="info-icon">monitor_weight</mat-icon>
-          <span>Peso: {{ lastWeight || '—' }} kg</span>
-        </div>
-        <div class="info-row">
-          <mat-icon class="info-icon">height</mat-icon>
-          <span>Altura: {{ lastHeight || '—' }} cm</span>
-        </div>
+        <app-alerts [patientDetailsId]="patientDetailsId!" [antecedentsData]="antecedentsData"></app-alerts>
       </div>
     </aside>
 
@@ -81,46 +73,26 @@
         <ng-container [ngSwitch]="specialtyConfig.template">
           <app-soap-template *ngSwitchCase="'soap'" [(ngModel)]="consultationData.specialtyData"></app-soap-template>
           <app-dental-template *ngSwitchCase="'dental'" [(ngModel)]="consultationData.specialtyData"></app-dental-template>
-          <div *ngSwitchCase="'nutrition'">
-            <div *ngIf="loadingDetails" class="loading-section">
-              <mat-spinner diameter="32"></mat-spinner>
-            </div>
-            <app-nutrition-consultation-workspace
-              *ngIf="patientDetailsId"
-              [patientDetailsId]="patientDetailsId"
-              [weight]="lastWeight"
-              [height]="lastHeight">
-            </app-nutrition-consultation-workspace>
-          </div>
+          <app-nutrition-template *ngSwitchCase="'nutrition'" [(ngModel)]="consultationData.specialtyData"></app-nutrition-template>
           <app-generic-template *ngSwitchDefault [(ngModel)]="consultationData.specialtyData"></app-generic-template>
         </ng-container>
-      </div>
-
-      <div class="workspace-diagnosis" *ngIf="specialtyConfig.usesCie10">
-        <h4>Diagnóstico</h4>
-        <app-cie10-search></app-cie10-search>
       </div>
     </main>
 
     <!-- Column 3: Last Consultation Reference -->
     <aside class="col-reference">
       <div class="reference-header">
-        <h3 class="reference-title">Última Consulta</h3>
+        <h3 class="reference-title">Consultas Anteriores</h3>
       </div>
       <div class="reference-body">
-        <ng-container [ngSwitch]="specialtyConfig.template">
-          <ng-container *ngSwitchCase="'nutrition'">
-            <app-nutrition-summary
-              *ngIf="patientDetailsId"
-              [patientDetailsId]="patientDetailsId"
-              [readonly]="true">
-            </app-nutrition-summary>
-          </ng-container>
-          <div *ngSwitchDefault class="reference-empty">
-            <mat-icon class="ref-empty-icon">history</mat-icon>
-            <p>No hay consultas previas disponibles</p>
-          </div>
-        </ng-container>
+        <app-previous-consultations
+          *ngIf="patientDetailsId"
+          [patientDetailsId]="patientDetailsId"
+        ></app-previous-consultations>
+        <div *ngIf="!patientDetailsId" class="reference-empty">
+          <mat-icon class="ref-empty-icon">history</mat-icon>
+          <p>No hay consultas previas disponibles</p>
+        </div>
       </div>
     </aside>
   </div>
@@ -132,6 +104,10 @@
       Guardar borrador
     </button>
     <div class="action-right">
+      <button mat-stroked-button class="presc-btn" (click)="generatePrescription()" [disabled]="saving">
+        <mat-icon>receipt_long</mat-icon>
+        Generar Receta
+      </button>
       <button mat-stroked-button class="cancel-btn" (click)="goBack()">
         Cancelar
       </button>

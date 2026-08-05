@@ -11,6 +11,7 @@ export interface MedicalHistoryReadDTO {
   clinicalNotes: string;
   treatmentPlan: string;
   specialtyData: string; // JSON string (encrypted on backend)
+  treatments?: string; // JSON string: [{ "name": "...", "description": "..." }]
   createdAt: string | Date;
   lastUpdated?: string | Date;
 }
@@ -25,6 +26,7 @@ export interface MedicalHistoryWriteDTO {
   followUpDate?: string | Date;
   specialtyData?: string; // JSON string (will be encrypted by backend)
   cie10Codes?: string; // JSON array of CIE-10 codes: '["I10","E11.9"]'
+  treatments?: string; // JSON array: '[{"name":"...","description":"..."}]'
   prescriptionId?: number;
   isConfidential?: boolean;
 }
@@ -37,4 +39,13 @@ export interface MedicalHistoryWriteDTOLegacy {
   clinicalNotes: string;
   treatmentPlan: string;
   specialtyData: string; // JSON string (will be encrypted by backend)
+}
+
+// Lightweight summary for the reference panel (backend: /recent endpoint)
+export interface MedicalHistorySummaryDTO {
+  id: number;
+  specialtyType: SpecialtyType;
+  diagnosis: string;
+  clinicalNotes: string;
+  createdAt: string | Date;
 }

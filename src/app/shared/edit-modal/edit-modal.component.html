@@ -1,6 +1,6 @@
 <h2 mat-dialog-title>
   <mat-icon>edit</mat-icon>
-  {{ inputData?.['title'] || ('EDIT_MODAL.TITLE' | translate) }}
+  {{ (inputData?.['title'] || 'EDIT_MODAL.TITLE') | translate }}
 </h2>
 <form class="edit-form" [formGroup]="form" (ngSubmit)="onSubmit($event)">
   <mat-dialog-content>
@@ -10,7 +10,7 @@
         *ngIf="field.type === 'text' || field.type === 'email' || field.type === 'tel' || field.type === 'password'"
         appearance="outline"
       >
-        <mat-label>{{ field.label }}</mat-label>
+        <mat-label>{{ field.label | translate }}</mat-label>
         <input
           matInput
           [formControlName]="field.key"
@@ -29,7 +29,7 @@
 
       <!-- Date fields -->
       <mat-form-field *ngIf="field.type === 'date'" appearance="outline">
-        <mat-label>{{ field.label }}</mat-label>
+        <mat-label>{{ field.label | translate }}</mat-label>
         <input
           matInput
           [formControlName]="field.key"
@@ -44,7 +44,7 @@
 
       <!-- Time fields -->
       <mat-form-field *ngIf="field.type === 'time'" appearance="outline">
-        <mat-label>{{ field.label }}</mat-label>
+        <mat-label>{{ field.label | translate }}</mat-label>
         <input
           matInput
           [formControlName]="field.key"
@@ -57,7 +57,7 @@
 
       <!-- Select fields -->
       <mat-form-field *ngIf="field.type === 'select' && field.options && field.options.length > 0" appearance="outline">
-        <mat-label>{{ field.label }}</mat-label>
+        <mat-label>{{ field.label | translate }}</mat-label>
         <mat-select [formControlName]="field.key">
           <mat-option
             *ngFor="let option of field.options"
@@ -73,17 +73,18 @@
 
       <!-- Fallback text field for select without options -->
       <mat-form-field *ngIf="field.type === 'select' && (!field.options || field.options.length === 0)" appearance="outline">
-        <mat-label>{{ field.label }}</mat-label>
+        <mat-label>{{ field.label | translate }}</mat-label>
         <input
           matInput
           [formControlName]="field.key"
           [placeholder]="'EDIT_MODAL.NO_OPTIONS' | translate"
+          [disabled]="field.disabled"
         />
       </mat-form-field>
 
       <!-- Textarea fields -->
-      <mat-form-field *ngIf="field.type === 'textarea'" appearance="outline">
-        <mat-label>{{ field.label }}</mat-label>
+      <mat-form-field *ngIf="field.type === 'textarea'" appearance="outline" class="cell-span-2">
+        <mat-label>{{ field.label | translate }}</mat-label>
         <textarea
           matInput
           [formControlName]="field.key"
@@ -99,7 +100,7 @@
         <mat-checkbox
           [formControlName]="field.key"
         >
-          {{ field.label }}
+          {{ field.label | translate }}
         </mat-checkbox>
         <mat-error *ngIf="form.get(field.key)?.hasError('required')" class="error-text">
           {{ 'EDIT_MODAL.MUST_BE_ACCEPTED' | translate:{field: field.label} }}

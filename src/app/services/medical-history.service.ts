@@ -4,6 +4,7 @@ import { ApiService } from './api.service';
 import {
   MedicalHistoryReadDTO,
   MedicalHistoryWriteDTO,
+  MedicalHistorySummaryDTO,
 } from '../entities/medical-history.model';
 import { SpecialtyDataType } from '../entities/specialty-templates.model';
 
@@ -33,6 +34,18 @@ export class MedicalHistoryService {
     // For now, we'll use a dedicated endpoint if available
     return this.apiService.get<MedicalHistoryReadDTO[]>(
       `${this.endpoint}/patient/${patientId}`
+    );
+  }
+
+  /**
+   * Get a lightweight list of recent histories for the reference panel
+   */
+  getRecentHistory(
+    patientDetailsId: number,
+    take = 10
+  ): Observable<MedicalHistorySummaryDTO[]> {
+    return this.apiService.get<MedicalHistorySummaryDTO[]>(
+      `${this.endpoint}/patient/${patientDetailsId}/recent?take=${take}`
     );
   }
 

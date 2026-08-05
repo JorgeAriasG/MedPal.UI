@@ -7,6 +7,8 @@ import { PatientsService } from '../../components/patients/services/patients.ser
 import { AppointmensService } from '../../components/appointments/services/appointmens.service';
 import { Router } from '@angular/router';
 import { IAppointment } from 'src/app/entities/IAppointment';
+import { IPatient } from 'src/app/entities/IPatient';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -41,6 +43,7 @@ export class OmnibarComponent implements OnInit, OnDestroy {
   searchMode = false;
   searchTerm = '';
   loading = false;
+  creating = false;
   
   private sub = new Subscription();
 
@@ -49,6 +52,7 @@ export class OmnibarComponent implements OnInit, OnDestroy {
     private patientService: PatientsService,
     private appointmentService: AppointmensService,
     private authService: AuthService,
+    private snackBar: MatSnackBar,
     public router: Router
   ) {}
 
@@ -83,9 +87,8 @@ export class OmnibarComponent implements OnInit, OnDestroy {
       this.loading = true;
       
       this.patientService.getPatients(clinicId).pipe(
-        map((patients: any[]) => patients.filter(p => 
-          p.name.toLowerCase().includes(this.searchTerm.toLowerCase()) || 
-          (p.lastname && p.lastname.toLowerCase().includes(this.searchTerm.toLowerCase()))
+        map((patients: any[]) => patients.filter(p =>
+          `${p.name} ${p.lastname || ''}`.trim().toLowerCase().includes(this.searchTerm.toLowerCase())
         )),
         catchError(() => of([]))
       ).subscribe(filtered => {
@@ -106,7 +109,7 @@ export class OmnibarComponent implements OnInit, OnDestroy {
 
   executeAction() {
     if (this.selectedIndex === 0) {
-      this.createGhostAppointment();
+      this.createQuickAppointment();
     } else {
       this.selectPatient(this.results[this.selectedIndex - 1]);
     }
@@ -174,7 +177,9 @@ export class OmnibarComponent implements OnInit, OnDestroy {
     };
   }
 
-  createGhostAppointment() {
+  createQuickAppointment() {
+    if (this.creating) return;
+
     if (!this.searchTerm) {
       this.searchInput.nativeElement.focus();
       return;
@@ -189,25 +194,94 @@ export class OmnibarComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const ghostAppointment: any = {
-      patientName: smartData.name,
-      clinicId: clinicId,
-      userId: userId,
-      status: 'Scheduled',
-      date: smartData.date,
-      time: smartData.time,
-      durationMinutes: 30,
-      notes: 'Creado vía Comando Central'
+    const name = smartData.name.trim();
+    if (name.length < 2) {
+      this.snackBar.open('Escribe al menos 2 caracteres para el nombre del paciente', 'OK', {
+        duration: 4000,
+        panelClass: 'cf-toast-warn',
+      });
+      return;
+    }
+
+    const createAppointment = (patientId: number) => {
+      const appointment: any = {
+        patientId,
+        clinicId,
+        userId,
+        status: 'Scheduled',
+        date: smartData.date,
+        time: smartData.time,
+        durationMinutes: 30,
+        notes: 'Creado vía Comando Central',
+      };
+
+      this.appointmentService.saveAppointment(appointment).subscribe({
+        next: () => {
+          this.creating = false;
+          this.snackBar.open(`Cita agendada para ${name}`, 'OK', {
+            duration: 3000,
+            panelClass: 'cf-toast-success',
+          });
+          this.close();
+          this.router.navigate(['/appointments']);
+        },
+        error: (err) => {
+          this.creating = false;
+          console.error('[OMNIBAR DEBUG] Error en la petición:', err);
+          this.snackBar.open('No se pudo agendar la cita. Verifica los datos e inténtalo de nuevo.', 'OK', {
+            duration: 5000,
+            panelClass: 'cf-toast-error',
+          });
+        },
+      });
     };
 
-    this.appointmentService.saveAppointment(ghostAppointment).subscribe({
-      next: (res) => {
-        this.close();
-        this.router.navigate(['/appointments']);
+    const existing = this.results.find(
+      (p) =>
+        p.name &&
+        `${p.name} ${p.lastname || ''}`.trim().toLowerCase() === name.toLowerCase()
+    );
+
+    if (existing?.id) {
+      createAppointment(existing.id);
+      return;
+    }
+
+    const nameParts = name.split(' ');
+    const patientPayload: IPatient = {
+      name: nameParts[0],
+      middlename: '',
+      lastname: nameParts.slice(1).join(' ') || 'Sin apellido',
+      phone: '',
+      email: `pendiente_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 10)}@clinicflow.temp`,
+      address: 'Sin configurar',
+      dob: new Date(new Date().getFullYear() - 30, new Date().getMonth(), new Date().getDate()),
+      gender: 'No especificado',
+      emergencyContact: '',
+      clinicIds: [clinicId],
+    };
+
+    this.creating = true;
+    this.patientService.addPatient(patientPayload).subscribe({
+      next: (created) => {
+        if (created?.id) {
+          createAppointment(created.id);
+        } else {
+          this.creating = false;
+          this.snackBar.open('No se pudo crear el paciente para la cita.', 'OK', {
+            duration: 5000,
+            panelClass: 'cf-toast-error',
+          });
+        }
       },
       error: (err) => {
-        console.error('[OMNIBAR DEBUG] Error en la petición:', err);
-      }
+        this.creating = false;
+        console.error('[OMNIBAR DEBUG] Error al crear el paciente:', err);
+        this.snackBar.open('No se pudo crear el paciente para la cita. Verifica e inténtalo de nuevo.', 'OK', {
+          duration: 5000,
+          panelClass: 'cf-toast-error',
+        });
+      },
     });
   }
 

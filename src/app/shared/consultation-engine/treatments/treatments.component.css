@@ -1,0 +1,103 @@
+.treatments {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.treatments-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.treatments-title mat-icon {
+  color: #5b6cff;
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.treatments-form {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.treatment-name-field {
+  flex: 2;
+  min-width: 220px;
+}
+
+.treatment-desc-field {
+  flex: 1;
+  min-width: 160px;
+}
+
+.treatment-dose-field,
+.treatment-frequency-field,
+.treatment-duration-field {
+  flex: 1;
+  min-width: 130px;
+}
+
+.treatment-add-btn {
+  height: 48px;
+  border-radius: 10px;
+}
+
+.treatments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.treatment-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.treatment-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.treatment-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.treatment-desc {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.treatment-posology {
+  font-size: 12px;
+  color: #5b6cff;
+  font-weight: 500;
+}
+
+.treatment-remove {
+  width: 32px;
+  height: 32px;
+  line-height: 32px;
+}
+
+.treatments-empty p {
+  margin: 0;
+  font-size: 12px;
+  color: #9ca3af;
+}

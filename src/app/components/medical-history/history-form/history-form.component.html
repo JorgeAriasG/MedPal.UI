@@ -7,22 +7,6 @@
       <h3>{{ 'MEDICAL_HISTORY.FORM_GENERAL_INFO' | translate }}</h3>
 
       <mat-form-field appearance="outline" class="w-100">
-        <mat-label>{{ 'MEDICAL_HISTORY.FORM_DIAGNOSIS' | translate }}</mat-label>
-        <input
-          matInput
-          formControlName="diagnosis"
-          [placeholder]="'MEDICAL_HISTORY.FORM_DIAGNOSIS_PLACEHOLDER_SHORT' | translate"
-        />
-        <mat-error *ngIf="historyForm.get('diagnosis')?.hasError('required')">
-          {{ 'MEDICAL_HISTORY.FORM_DIAGNOSIS_REQUIRED' | translate }}
-        </mat-error>
-      </mat-form-field>
-
-      <div *ngIf="config.usesCie10">
-        <app-cie10-search formControlName="cie10Codes"></app-cie10-search>
-      </div>
-
-      <mat-form-field appearance="outline" class="w-100">
         <mat-label>{{ 'MEDICAL_HISTORY.FORM_DATE_LABEL' | translate }}</mat-label>
         <input
           matInput
@@ -31,21 +15,6 @@
         />
         <mat-error *ngIf="historyForm.get('diagnosisDate')?.hasError('required')">
           {{ 'MEDICAL_HISTORY.FORM_DATE_REQUIRED' | translate }}
-        </mat-error>
-      </mat-form-field>
-
-      <mat-form-field appearance="outline" class="w-100">
-        <mat-label>{{ 'MEDICAL_HISTORY.FORM_CLINICAL_NOTES' | translate }}</mat-label>
-        <textarea
-          matInput
-          formControlName="clinicalNotes"
-          rows="4"
-          [placeholder]="'MEDICAL_HISTORY.FORM_CLINICAL_NOTES_PLACEHOLDER' | translate"
-        ></textarea>
-        <mat-error
-          *ngIf="historyForm.get('clinicalNotes')?.hasError('required')"
-        >
-          {{ 'MEDICAL_HISTORY.FORM_CLINICAL_NOTES_REQUIRED' | translate }}
         </mat-error>
       </mat-form-field>
 
