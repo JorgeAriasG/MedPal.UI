@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { AuthService } from '../../services/auth.service';
+import { PermissionService } from '../../services/permission.service';
 import {
   login,
   loginSuccess,
@@ -26,6 +27,7 @@ export class AuthEffects {
     private router: Router,
     private store: Store,
     private clinicService: ClinicService,
+    private permissionService: PermissionService,
   ) {}
 
   login$ = createEffect(() =>
@@ -55,6 +57,7 @@ export class AuthEffects {
     this.actions$.pipe(
       ofType(loginSuccess),
       switchMap(() => {
+        this.permissionService.refreshPermissions();
         return of(loadUserProfile());
       }),
     ),
@@ -96,36 +99,18 @@ export class AuthEffects {
     ),
   );
 
-  // After clinic selection, handle clinic assignment intelligently
-  // Always ensure clinic hours are loaded when we have a clinic ID
+  // After login, ensure a valid clinic is always assigned.
+  // If clinicId is valid, find that specific clinic.
+  // If clinicId is 0/null/missing, assign the first available clinic.
   loginSuccessClinic$ = createEffect(
     () =>
       this.actions$.pipe(
         ofType(loginSuccess),
-        switchMap(({ clinicId, userRole }) => {
-          // Roles that are clinic-based and may need clinic assignment
-          const CLINIC_REQUIRING_ROLES = [
-            'HealthProfessional',
-            'Receptionist',
-            'Patient',
-            'ClinicAdmin',
-          ];
-
-          // Always load clinic hours if we have a clinicId
-          // OR if we need to assign a clinic for clinic-requiring roles (no ID set)
-          const shouldLoadClinicHours =
+        switchMap(({ clinicId }) => {
+          const hasValidClinicId =
             clinicId !== null &&
             clinicId !== undefined &&
             clinicId !== 0;
-
-          const needsClinicAssignment =
-            !shouldLoadClinicHours &&
-            CLINIC_REQUIRING_ROLES.includes(userRole);
-
-          if (!shouldLoadClinicHours && !needsClinicAssignment) {
-            // No clinic ID needed and not a clinic-requiring role
-            return of({ type: '[Clinic] No Clinic Action Needed' });
-          }
 
           return this.clinicService.getClinics().pipe(
             map((clinics) => {
@@ -136,12 +121,12 @@ export class AuthEffects {
 
               let clinic = null;
 
-              // If we have a specific clinicId, find that clinic
-              if (shouldLoadClinicHours) {
+              // If we have a specific clinicId, try to find that exact clinic
+              if (hasValidClinicId) {
                 clinic = clinics.find((c: { id: number | null }) => c.id === clinicId);
               }
 
-              // Otherwise, use the first clinic (for role-based assignment)
+              // Fallback: use the first available clinic
               if (!clinic) {
                 clinic = clinics[0];
               }
@@ -154,7 +139,6 @@ export class AuthEffects {
             }),
             catchError((err) => {
               console.warn('Could not load clinic hours:', err);
-              // Return neutral action on error
               return of({ type: '[Clinic] Load Clinic Hours Error' });
             }),
           );
