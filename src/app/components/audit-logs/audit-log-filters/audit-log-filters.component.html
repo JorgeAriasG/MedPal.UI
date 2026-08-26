@@ -11,7 +11,7 @@
     </button>
   </mat-card-header>
 
-  <div [@.disabled]="isExpanded" *ngIf="isExpanded" class="filters-content">
+  <div *ngIf="isExpanded" class="filters-content">
     <form [formGroup]="filterForm" (ngSubmit)="onSubmit()">
       <!-- Date Range Section -->
       <fieldset formGroupName="dateRange" class="filter-group">
@@ -26,13 +26,6 @@
               formControlName="dateFrom"
               [disabled]="isLoading"
             />
-            <mat-error
-              *ngIf="
-                dateRangeGroup.get('dateFrom')?.hasError('required')
-              "
-            >
-              {{ 'VALIDATION.DATE_REQUIRED' | translate }}
-            </mat-error>
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="date-field">
@@ -43,13 +36,6 @@
               formControlName="dateTo"
               [disabled]="isLoading"
             />
-            <mat-error
-              *ngIf="
-                dateRangeGroup.get('dateTo')?.hasError('required')
-              "
-            >
-              {{ 'VALIDATION.DATE_REQUIRED' | translate }}
-            </mat-error>
           </mat-form-field>
         </div>
       </fieldset>

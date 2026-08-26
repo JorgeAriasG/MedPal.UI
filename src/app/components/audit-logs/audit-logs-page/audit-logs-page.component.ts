@@ -130,7 +130,9 @@ export class AuditLogsPageComponent implements OnInit, OnDestroy {
    * Clears all filters and loads default audit logs
    */
   onFilterReset(): void {
-    this.store.dispatch(AuditActions.setAuditFilter({ filter: undefined as any }));
+    this.store.dispatch(
+      AuditActions.setAuditFilter({ filter: { page: 1, pageSize: 25 } })
+    );
     this.store.dispatch(
       AuditActions.loadAuditLogs({
         filter: {

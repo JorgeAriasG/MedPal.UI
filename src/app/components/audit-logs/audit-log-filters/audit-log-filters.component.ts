@@ -19,7 +19,7 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -97,8 +97,8 @@ export class AuditLogFiltersComponent implements OnInit {
   private createFilterForm(): FormGroup {
     return this.fb.group({
       dateRange: this.fb.group({
-        dateFrom: ['', [Validators.required]],
-        dateTo: ['', [Validators.required]],
+        dateFrom: [''],
+        dateTo: [''],
       }),
       userId: [''],
       clinicId: [''],

@@ -16,6 +16,8 @@ import {
   EventEmitter,
   ChangeDetectionStrategy,
   OnInit,
+  OnChanges,
+  SimpleChanges,
   ViewChild,
   AfterViewInit,
 } from '@angular/core';
@@ -53,7 +55,7 @@ import { IMedicalRecordAccessLog } from '../../../entities';
   ],
 })
 export class AuditLogTableComponent
-  implements OnInit, AfterViewInit {
+  implements OnInit, AfterViewInit, OnChanges {
   /**
    * Input: Audit logs to display
    */
@@ -106,6 +108,18 @@ export class AuditLogTableComponent
    */
   ngOnInit(): void {
     // Additional initialization if needed
+  }
+
+  /**
+   * Component lifecycle: On Changes
+   * Re-sync paginator when pagination input changes
+   */
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['pagination'] && this.paginator && this.pagination) {
+      this.paginator.pageIndex = this.pagination.page - 1;
+      this.paginator.pageSize = this.pagination.pageSize;
+      this.paginator.length = this.pagination.totalItems;
+    }
   }
 
   /**

@@ -71,7 +71,12 @@ export class PermissionService {
 
       // Extract permissions from claims
       const permissions = decodedPayload?.permissions || [];
-      const roles = decodedPayload?.roles || [];
+      // Roles may be under 'roles', 'role' (singular), or the Microsoft claim URI
+      const msRoles = decodedPayload?.['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
+      const roles = decodedPayload?.roles
+        || (decodedPayload?.role ? [decodedPayload.role] : null)
+        || msRoles
+        || [];
 
       // Build permission set from both explicit permissions and role-based permissions
       this.cachedPermissions = new Set([
@@ -146,6 +151,16 @@ export class PermissionService {
         Permission.APPROVE_CONSENT,
         Permission.VIEW_MEDICAL_HISTORY,
       ],
+      ACCOUNT_ADMIN: [
+        Permission.VIEW_AUDIT_LOGS,
+        Permission.MANAGE_AUDIT_LOGS,
+        Permission.EXPORT_AUDIT_LOGS,
+        Permission.GENERATE_AUDIT_REPORTS,
+        Permission.VIEW_CONSENT,
+        Permission.APPROVE_CONSENT,
+        Permission.VIEW_MEDICAL_HISTORY,
+        Permission.MANAGE_MEDICAL_HISTORY,
+      ],
       HEALTH_PROFESSIONAL: [
         Permission.VIEW_MEDICAL_HISTORY,
         Permission.VIEW_CONSENT,
@@ -154,6 +169,56 @@ export class PermissionService {
         Permission.VIEW_MEDICAL_HISTORY,
       ],
       PATIENT: [
+        Permission.VIEW_CONSENT,
+        Permission.REVOKE_CONSENT,
+      ],
+      // Actual JWT role names from the backend (PascalCase / camelCase)
+      SuperAdmin: [
+        Permission.VIEW_AUDIT_LOGS,
+        Permission.MANAGE_AUDIT_LOGS,
+        Permission.EXPORT_AUDIT_LOGS,
+        Permission.GENERATE_AUDIT_REPORTS,
+        Permission.VIEW_CONSENT,
+        Permission.APPROVE_CONSENT,
+        Permission.REVOKE_CONSENT,
+        Permission.VIEW_MEDICAL_HISTORY,
+        Permission.MANAGE_MEDICAL_HISTORY,
+      ],
+      Admin: [
+        Permission.VIEW_AUDIT_LOGS,
+        Permission.MANAGE_AUDIT_LOGS,
+        Permission.EXPORT_AUDIT_LOGS,
+        Permission.GENERATE_AUDIT_REPORTS,
+        Permission.VIEW_CONSENT,
+        Permission.APPROVE_CONSENT,
+        Permission.VIEW_MEDICAL_HISTORY,
+        Permission.MANAGE_MEDICAL_HISTORY,
+      ],
+      AccountAdmin: [
+        Permission.VIEW_AUDIT_LOGS,
+        Permission.MANAGE_AUDIT_LOGS,
+        Permission.EXPORT_AUDIT_LOGS,
+        Permission.GENERATE_AUDIT_REPORTS,
+        Permission.VIEW_CONSENT,
+        Permission.APPROVE_CONSENT,
+        Permission.VIEW_MEDICAL_HISTORY,
+        Permission.MANAGE_MEDICAL_HISTORY,
+      ],
+      ClinicAdmin: [
+        Permission.VIEW_AUDIT_LOGS,
+        Permission.EXPORT_AUDIT_LOGS,
+        Permission.VIEW_CONSENT,
+        Permission.APPROVE_CONSENT,
+        Permission.VIEW_MEDICAL_HISTORY,
+      ],
+      HealthProfessional: [
+        Permission.VIEW_MEDICAL_HISTORY,
+        Permission.VIEW_CONSENT,
+      ],
+      Nurse: [
+        Permission.VIEW_MEDICAL_HISTORY,
+      ],
+      Patient: [
         Permission.VIEW_CONSENT,
         Permission.REVOKE_CONSENT,
       ],
