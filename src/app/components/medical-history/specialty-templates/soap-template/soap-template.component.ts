@@ -1,4 +1,4 @@
-import { Component, forwardRef } from '@angular/core';
+import { Component, forwardRef, Input } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import {
   MeasurementData,
@@ -32,6 +32,8 @@ export interface SoapData {
   ],
 })
 export class SoapTemplateComponent implements ControlValueAccessor {
+  @Input() hideEngine = false;
+
   soapData: SoapData = {
     subjective: '',
     objective: '',

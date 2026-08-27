@@ -1,4 +1,4 @@
-import { Component, forwardRef, OnInit } from '@angular/core';
+import { Component, forwardRef, Input, OnInit } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import {
   DentalData,
@@ -23,6 +23,8 @@ import {
   ],
 })
 export class DentalTemplateComponent implements ControlValueAccessor, OnInit {
+  @Input() hideEngine = false;
+
   dentalData: DentalData = {
     teeth: {},
     observations: '',

@@ -5,7 +5,6 @@ import { Observable } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 import { AuthState } from '../store/reducers/auth.reducer';
 import { userToken } from '../store/selectors/auth.selectors';
-import { PermissionService } from '../services/permission.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +13,6 @@ export class AuthGuard implements CanActivate {
   constructor(
     private store: Store<{ auth: AuthState }>,
     private router: Router,
-    private permissionService: PermissionService,
   ) {}
 
   canActivate(): Observable<boolean> {
@@ -25,12 +23,24 @@ export class AuthGuard implements CanActivate {
           this.router.navigate(['/login']);
           return false;
         }
-        if (this.permissionService.isTokenExpired()) {
+        if (this.isTokenExpired(token)) {
           this.router.navigate(['/login']);
           return false;
         }
         return true;
       })
     );
+  }
+
+  private isTokenExpired(token: string): boolean {
+    try {
+      const payload = JSON.parse(
+        atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/'))
+      );
+      const exp = payload?.exp;
+      return !exp || exp < Math.floor(Date.now() / 1000);
+    } catch {
+      return true;
+    }
   }
 }

@@ -1,10 +1,10 @@
 <link href="https://fonts.googleapis.com/css?family=Muli:400,700" rel="stylesheet">
 <mat-sidenav-container class="sidenav-container" autosize>
-  <mat-sidenav #sidenav mode="side" [opened]="isLoggedIn$ | async" class="sidenav" [class.collapsed]="isCollapsed">
+  <mat-sidenav #sidenav mode="side" [opened]="(isLoggedIn$ | async) && showChrome" class="sidenav" [class.collapsed]="isCollapsed">
     <app-menu></app-menu>
   </mat-sidenav>
   <mat-sidenav-content class="sidenav-content">
-    <mat-toolbar *ngIf="isLoggedIn$ | async" class="app-toolbar">
+    <mat-toolbar *ngIf="(isLoggedIn$ | async) && showChrome" class="app-toolbar">
       
       <div class="header-search-container" (click)="openOmnibar()">
         <mat-icon>search</mat-icon>
@@ -22,7 +22,7 @@
   </mat-sidenav-content>
 </mat-sidenav-container>
 
-<app-omnibar></app-omnibar>
+<app-omnibar *ngIf="(isLoggedIn$ | async) && showChrome"></app-omnibar>
 
 <app-timeout-warning
   *ngIf="showTimeoutWarning"

@@ -63,17 +63,17 @@
     </mat-form-field>
   </div>
 
+  <app-measurements
+    [ngModel]="soapData.measurements"
+    (ngModelChange)="onMeasurementsChange($event)"
+  ></app-measurements>
+
   <!-- Consultation Engine compartidos -->
-  <div class="engine-section">
+  <div class="engine-section" *ngIf="!hideEngine">
     <app-diagnoses
       [ngModel]="diagnosisValue"
       (ngModelChange)="onDiagnosisChange($event)"
     ></app-diagnoses>
-
-    <app-measurements
-      [ngModel]="soapData.measurements"
-      (ngModelChange)="onMeasurementsChange($event)"
-    ></app-measurements>
 
     <app-treatments
       [ngModel]="soapData.treatments"

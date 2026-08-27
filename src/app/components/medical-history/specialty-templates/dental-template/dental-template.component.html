@@ -75,8 +75,13 @@
     ></textarea>
   </mat-form-field>
 
+  <app-measurements
+    [ngModel]="dentalData.measurements"
+    (ngModelChange)="onMeasurementsChange($event)"
+  ></app-measurements>
+
   <!-- Consultation Engine compartidos -->
-  <div class="engine-section">
+  <div class="engine-section" *ngIf="!hideEngine">
     <app-clinical-notes
       [ngModel]="dentalData.clinicalNotes || ''"
       (ngModelChange)="onClinicalNotesChange($event)"
@@ -86,11 +91,6 @@
       [ngModel]="diagnosisValue"
       (ngModelChange)="onDiagnosisChange($event)"
     ></app-diagnoses>
-
-    <app-measurements
-      [ngModel]="dentalData.measurements"
-      (ngModelChange)="onMeasurementsChange($event)"
-    ></app-measurements>
 
     <app-treatments
       [ngModel]="dentalData.treatments"

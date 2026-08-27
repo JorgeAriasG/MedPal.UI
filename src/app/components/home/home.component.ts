@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subject, forkJoin } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { AppointmensService } from '../appointments/services/appointmens.service';
+import { AppointmentsService } from '../appointments/services/appointments.service';
 import { PatientsService } from '../patients/services/patients.service';
 import { MatDialog } from '@angular/material/dialog';
 import { NewAppointmentComponent } from '../appointments/new-appointment/new-appointment.component';
@@ -55,7 +55,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   constructor(
-    private appointmentService: AppointmensService,
+    private appointmentService: AppointmentsService,
     private patientService: PatientsService,
     private clinicContextService: ClinicContextService,
     private shortcutService: KeyboardShortcutService,

@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable, Subject } from 'rxjs';
-import { takeUntil, distinctUntilChanged } from 'rxjs/operators';
-import { Router } from '@angular/router';
+import { takeUntil, distinctUntilChanged, filter } from 'rxjs/operators';
+import { Router, NavigationEnd } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthState } from './store/reducers/auth.reducer';
 import { selectIsLoggedIn } from './store/selectors/auth.selectors';
@@ -23,7 +23,15 @@ export class AppComponent implements OnInit, OnDestroy {
   isCollapsed = false;
   showTimeoutWarning = false;
   timeoutRemainingSeconds = 0;
+  showChrome = false;
   private destroy$ = new Subject<void>();
+  private readonly publicPathPrefixes = [
+    '/login',
+    '/signup',
+    '/bienvenido',
+    '/unauthorized',
+    '/validate-prescription',
+  ];
 
   constructor(
     private store: Store<{ auth: AuthState }>,
@@ -46,9 +54,19 @@ export class AppComponent implements OnInit, OnDestroy {
         this.isCollapsed = state;
       });
 
+    this.router.events
+      .pipe(
+        filter((event) => event instanceof NavigationEnd),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(() => {
+        this.updateShowChrome();
+      });
+
     this.isLoggedIn$
       .pipe(takeUntil(this.destroy$), distinctUntilChanged())
       .subscribe(loggedIn => {
+        this.updateShowChrome();
         if (loggedIn) {
           this.idleService.start();
         } else {
@@ -84,6 +102,14 @@ export class AppComponent implements OnInit, OnDestroy {
 
   openOmnibar() {
     this.shortcutService.triggerOmnibar();
+  }
+
+  private updateShowChrome(): void {
+    const path = this.router.url.split('?')[0];
+    const isPublicRoute = this.publicPathPrefixes.some(
+      (prefix) => path === prefix || path.startsWith(prefix + '/')
+    );
+    this.showChrome = !isPublicRoute;
   }
 
   toggleSidebar() {

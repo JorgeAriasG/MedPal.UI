@@ -23,7 +23,7 @@ import {
   MatAutocompleteActivatedEvent,
   MatAutocompleteSelectedEvent,
 } from '@angular/material/autocomplete';
-import { AppointmensService } from '../services/appointmens.service';
+import { AppointmentsService } from '../services/appointments.service';
 import {
   toDateOnlyObject,
   toTimeObject,
@@ -66,7 +66,7 @@ export class NewAppointmentComponent implements OnInit, OnDestroy {
     @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: any,
     private fb: FormBuilder,
     private patientService: PatientsService,
-    private appointmentService: AppointmensService,
+    private appointmentService: AppointmentsService,
     private store: Store,
     private snackBar: MatSnackBar,
     private translate: TranslateService

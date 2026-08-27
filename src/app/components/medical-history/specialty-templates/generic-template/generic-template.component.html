@@ -14,8 +14,13 @@
     <mat-hint>{{ 'MEDICAL_HISTORY.TEMPLATE_GENERIC_HINT' | translate }}</mat-hint>
   </mat-form-field>
 
+  <app-measurements
+    [ngModel]="genericData.measurements"
+    (ngModelChange)="onMeasurementsChange($event)"
+  ></app-measurements>
+
   <!-- Consultation Engine compartidos -->
-  <div class="engine-section">
+  <div class="engine-section" *ngIf="!hideEngine">
     <app-clinical-notes
       [ngModel]="genericData.clinicalNotes || ''"
       (ngModelChange)="onClinicalNotesChange($event)"
@@ -25,11 +30,6 @@
       [ngModel]="diagnosisValue"
       (ngModelChange)="onDiagnosisChange($event)"
     ></app-diagnoses>
-
-    <app-measurements
-      [ngModel]="genericData.measurements"
-      (ngModelChange)="onMeasurementsChange($event)"
-    ></app-measurements>
 
     <app-treatments
       [ngModel]="genericData.treatments"

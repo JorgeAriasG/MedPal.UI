@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, from, of } from 'rxjs';
 import { concatMap, takeUntil } from 'rxjs/operators';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { AppointmensService } from '../services/appointmens.service';
+import { AppointmentsService } from '../services/appointments.service';
 import { PatientsService } from 'src/app/components/patients/services/patients.service';
 import { Store } from '@ngrx/store';
 import { selectUserSpecialty } from 'src/app/store/selectors/auth.selectors';
@@ -11,10 +11,12 @@ import { SPECIALTY_CONFIG, SoapConfig, resolveSpecialty } from 'src/app/config/s
 import { SpecialtyType, TreatmentItem } from 'src/app/entities/specialty-templates.model';
 import { MedicalHistoryService } from 'src/app/services/medical-history.service';
 import { MedicalHistoryAttachmentsService } from 'src/app/services/medical-history-attachments.service';
-import { MedicalHistoryWriteDTO } from 'src/app/entities/medical-history.model';
+import { MedicalHistoryWriteDTO, MedicalHistoryReadDTO } from 'src/app/entities/medical-history.model';
 import { PendingAttachment } from 'src/app/entities/specialty-templates.model';
 import { PrescriptionService } from 'src/app/services/prescription.service';
 import { IPrescription, IPrescriptionItem } from 'src/app/entities/IPrescription';
+import { IPatientDetail } from 'src/app/entities/IMedicalHistory';
+import { ClinicalDataService } from 'src/app/services/clinical-data.service';
 
 @Component({
   selector: 'app-consultation',
@@ -33,17 +35,24 @@ export class ConsultationComponent implements OnInit, OnDestroy {
   consultationData: any = {};
   patientDetailsId: number | null = null;
   antecedentsData: string | null = null;
+  patient: IPatientDetail | null = null;
+  medicalHistory: MedicalHistoryReadDTO[] = [];
+  prescriptions: IPrescription[] = [];
+  allergies: any[] = [];
+  lastWeight = 0;
+  lastHeight = 0;
 
   private destroy$ = new Subject<void>();
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private appointmentService: AppointmensService,
+    private appointmentService: AppointmentsService,
     private patientsService: PatientsService,
     private medicalHistoryService: MedicalHistoryService,
     private attachmentsService: MedicalHistoryAttachmentsService,
     private prescriptionService: PrescriptionService,
+    private clinicalDataService: ClinicalDataService,
     private snackBar: MatSnackBar,
     private store: Store,
   ) {}
@@ -123,6 +132,51 @@ export class ConsultationComponent implements OnInit, OnDestroy {
         error: () => {
           this.loadingDetails = false;
         },
+      });
+
+    this.patientsService.getPatientDetails(patientId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          this.patientDetailsId = response.id ?? this.patientDetailsId;
+          if (response.patient) {
+            this.patient = response.patient;
+          }
+          if (response.medicalHistories) {
+            this.medicalHistory = response.medicalHistories;
+          }
+          if (response.allergies) {
+            this.allergies = response.allergies;
+          }
+          if (this.patientDetailsId) {
+            this.loadLatestVitals(this.patientDetailsId);
+          }
+          this.loadPrescriptions(patientId);
+        },
+        error: (err) => console.error(err),
+      });
+  }
+
+  private loadLatestVitals(patientDetailsId: number): void {
+    this.clinicalDataService.getVitalSigns(patientDetailsId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (vitals) => {
+          if (vitals.length > 0) {
+            const latest = vitals[vitals.length - 1];
+            this.lastWeight = latest.weight || 0;
+            if (latest.height) this.lastHeight = latest.height;
+          }
+        },
+      });
+  }
+
+  private loadPrescriptions(patientId: number): void {
+    this.prescriptionService.getPrescriptionsByPatient(patientId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (data) => this.prescriptions = data,
+        error: (err) => console.error(err),
       });
   }
 

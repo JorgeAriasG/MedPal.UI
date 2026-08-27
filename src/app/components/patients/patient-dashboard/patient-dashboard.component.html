@@ -1,0 +1,206 @@
+<div class="patient-dashboard-container">
+  <!-- Loading State -->
+  <div class="loading-overlay" *ngIf="loading">
+    <mat-spinner diameter="48"></mat-spinner>
+    <p class="mt-md text-muted">{{ 'PATIENTS.LOADING_DETAIL' | translate }}</p>
+  </div>
+
+  <!-- Main Content -->
+  <div class="patient-dashboard-content" *ngIf="!loading && patient">
+    <!-- Header -->
+    <div class="patient-header" [@slideDown]>
+      <div class="header-content">
+        <div class="patient-info">
+          <div class="avatar-container">
+            <mat-icon class="avatar-icon">account_circle</mat-icon>
+          </div>
+          <div class="patient-details">
+            <h1 class="patient-name">{{ patient.name }} {{ patient.middlename }} {{ patient.lastname }}</h1>
+            <p class="patient-contact">
+              <mat-icon class="icon-small">email</mat-icon>
+              {{ patient.email }}
+              <span class="divider-dot">•</span>
+              <mat-icon class="icon-small">phone</mat-icon>
+              {{ patient.phone }}
+            </p>
+            <p class="patient-meta text-small">
+              <mat-icon class="icon-small">calendar_today</mat-icon>
+              DOB: {{ patient.dob | date: 'MMM dd, yyyy' }}
+            </p>
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <button
+            mat-raised-button
+            color="primary"
+            (click)="openNewConsultation()"
+            class="action-button"
+          >
+            <mat-icon>add_circle</mat-icon>
+            <span>{{ 'PATIENTS.NEW_CONSULTATION' | translate }}</span>
+          </button>
+          <button
+            mat-raised-button
+            color="primary"
+            routerLink="/prescriptions/new"
+            [queryParams]="{ patientId: patient.id }"
+            class="action-button"
+          >
+            <mat-icon>post_add</mat-icon>
+            <span>{{ 'PATIENTS.NEW_PRESCRIPTION' | translate }}</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Allergies Banner -->
+    <div class="alerts-section" *ngIf="allergies.length > 0" [@fadeIn]>
+      <div class="allergy-banner">
+        <div class="alert-icon">
+          <mat-icon>warning</mat-icon>
+        </div>
+        <div class="alert-content">
+          <h3>{{ 'PATIENTS.KNOWN_ALLERGIES' | translate }}</h3>
+          <div class="allergy-chips">
+            <mat-chip-set>
+              <mat-chip *ngFor="let allergy of allergies" class="allergy-chip">
+                <mat-icon>priority_high</mat-icon>
+                {{ allergy.allergyName || allergy }}
+              </mat-chip>
+            </mat-chip-set>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats Row -->
+    <div class="stats-row" [@fadeIn]>
+      <div class="stat-card">
+        <mat-icon class="stat-icon">monitor_heart</mat-icon>
+        <div class="stat-info">
+          <span class="stat-value">{{ lastWeight || '—' }}</span>
+          <span class="stat-label">Peso (kg)</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <mat-icon class="stat-icon">height</mat-icon>
+        <div class="stat-info">
+          <span class="stat-value">{{ lastHeight || '—' }}</span>
+          <span class="stat-label">Talla (cm)</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <mat-icon class="stat-icon">calculate</mat-icon>
+        <div class="stat-info">
+          <span class="stat-value">{{ lastBmi || '—' }}</span>
+          <span class="stat-label">IMC</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <mat-icon class="stat-icon">history</mat-icon>
+        <div class="stat-info">
+          <span class="stat-value">{{ medicalHistoryCount }}</span>
+          <span class="stat-label">{{ 'PATIENTS.STAT_CONSULTATIONS' | translate }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Demographics -->
+    <div class="card" [@fadeIn]>
+      <div class="card-header">
+        <h3 class="card-title">
+          <mat-icon>info</mat-icon>
+          {{ 'PATIENTS.DEMOGRAPHICS' | translate }}
+        </h3>
+      </div>
+      <div class="card-body">
+        <div class="info-grid">
+          <div class="info-row">
+            <span class="label">{{ 'PATIENTS.FORM_GENDER' | translate }}</span>
+            <span class="value">{{ patient.gender }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">{{ 'PATIENTS.CURP' | translate }}</span>
+            <span class="value">{{ patient.curp || '—' }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">{{ 'PATIENTS.FORM_ADDRESS' | translate }}</span>
+            <span class="value">{{ patient.address }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">{{ 'PATIENTS.EMERGENCY_CONTACT' | translate }}</span>
+            <span class="value">{{ patient.emergencyContact }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Citas: Próximas -->
+    <div class="card" [@fadeIn]>
+      <div class="card-header">
+        <h3 class="card-title">
+          <mat-icon>event_available</mat-icon>
+          Próximas citas
+        </h3>
+      </div>
+      <div class="card-body">
+        <div class="appointments-list" *ngIf="upcomingAppointments.length > 0; else noUpcoming">
+          <div class="appointment-row" *ngFor="let app of upcomingAppointments">
+            <div class="appointment-when">
+              <span class="appointment-date">{{ app.date }}</span>
+              <span class="appointment-time">{{ app.time }}</span>
+            </div>
+            <span class="appointment-status" [attr.data-status]="app.status">
+              {{ statusLabel(app.status) }}
+            </span>
+          </div>
+        </div>
+        <ng-template #noUpcoming>
+          <p class="empty-text">No hay citas próximas.</p>
+        </ng-template>
+      </div>
+    </div>
+
+    <!-- Citas: Historial -->
+    <div class="card" [@fadeIn]>
+      <div class="card-header">
+        <h3 class="card-title">
+          <mat-icon>event_note</mat-icon>
+          Historial de citas
+        </h3>
+      </div>
+      <div class="card-body">
+        <div class="appointments-list" *ngIf="pastAppointments.length > 0; else noPast">
+          <div class="appointment-row" *ngFor="let app of pastAppointments">
+            <div class="appointment-when">
+              <span class="appointment-date">{{ app.date }}</span>
+              <span class="appointment-time">{{ app.time }}</span>
+            </div>
+            <span class="appointment-status" [attr.data-status]="app.status">
+              {{ statusLabel(app.status) }}
+            </span>
+          </div>
+        </div>
+        <ng-template #noPast>
+          <p class="empty-text">No hay citas pasadas.</p>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+
+  <!-- Error State -->
+  <div class="error-container" *ngIf="error && !loading">
+    <mat-card class="error-card">
+      <div class="error-content">
+        <mat-icon class="error-icon">error_outline</mat-icon>
+        <h3>{{ 'PATIENTS.ERROR_LOADING_PATIENT' | translate }}</h3>
+        <p>{{ error }}</p>
+        <button mat-raised-button color="primary" routerLink="/patients">
+          <mat-icon>arrow_back</mat-icon>
+          {{ 'PATIENTS.DETAIL_BACK' | translate }}
+        </button>
+      </div>
+    </mat-card>
+  </div>
+</div>

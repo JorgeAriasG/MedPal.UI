@@ -75,7 +75,7 @@
   </div>
 
   <!-- Consultation Engine compartidos -->
-  <div class="engine-section">
+  <div class="engine-section" *ngIf="!hideEngine">
     <app-clinical-notes
       [ngModel]="nutritionData.clinicalNotes || ''"
       (ngModelChange)="onClinicalNotesChange($event)"

@@ -25,9 +25,12 @@ describe('AuditLogService', () => {
 
   const mockPagedResult: PagedResult<IMedicalRecordAccessLog> = {
     data: [mockAuditLog],
-    totalCount: 1,
-    pageNumber: 1,
-    pageSize: 10,
+    pagination: {
+      page: 1,
+      pageSize: 10,
+      totalItems: 1,
+      totalPages: 1,
+    },
   };
 
   beforeEach(() => {
@@ -138,6 +141,7 @@ describe('AuditLogService', () => {
         accessesByClinic: [],
         accessesByDate: [],
         consentViolations: 5,
+        generatedAt: new Date(),
       };
 
       service.generateReport().subscribe((result) => {
@@ -160,6 +164,7 @@ describe('AuditLogService', () => {
         accessesByClinic: [],
         accessesByDate: [],
         consentViolations: 2,
+        generatedAt: new Date(),
       };
 
       service.generateReport(filter).subscribe((result) => {

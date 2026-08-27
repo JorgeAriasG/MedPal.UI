@@ -1,0 +1,308 @@
+<mat-tab-group class="patient-tabs" animationDuration="300">
+  <!-- Overview Tab -->
+  <mat-tab *ngIf="config.tabs.includes('overview')">
+    <ng-template mat-tab-label>
+      <mat-icon class="tab-icon">person</mat-icon>
+      <span>{{ 'PATIENTS.TAB_OVERVIEW' | translate }}</span>
+    </ng-template>
+
+    <div class="tab-content">
+      <div class="overview-grid">
+        <div class="card card-demographics">
+          <div class="card-header">
+            <h3 class="card-title">
+              <mat-icon>info</mat-icon>
+              {{ 'PATIENTS.DEMOGRAPHICS' | translate }}
+            </h3>
+          </div>
+          <div class="card-body">
+            <div class="info-row">
+              <span class="label">{{ 'PATIENTS.FORM_DOB' | translate }}</span>
+              <span class="value">{{ patient?.dob | date: 'MMM dd, yyyy' }}</span>
+            </div>
+            <div class="info-row">
+              <span class="label">{{ 'PATIENTS.FORM_GENDER' | translate }}</span>
+              <span class="value">{{ patient?.gender }}</span>
+            </div>
+            <div class="info-row">
+              <span class="label">{{ 'PATIENTS.CURP' | translate }}</span>
+              <span class="value">{{ patient?.curp || '—' }}</span>
+            </div>
+            <div class="info-row">
+              <span class="label">{{ 'PATIENTS.FORM_ADDRESS' | translate }}</span>
+              <span class="value">{{ patient?.address }}</span>
+            </div>
+            <div class="info-row">
+              <span class="label">{{ 'PATIENTS.EMERGENCY_CONTACT' | translate }}</span>
+              <span class="value">{{ patient?.emergencyContact }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card card-stats">
+          <div class="card-header">
+            <h3 class="card-title">
+              <mat-icon>assessment</mat-icon>
+              {{ 'PATIENTS.QUICK_STATS' | translate }}
+            </h3>
+          </div>
+          <div class="card-body stats-layout">
+            <div class="stat">
+              <span class="stat-value">{{ medicalHistory.length }}</span>
+              <span class="stat-label">{{ 'PATIENTS.STAT_CONSULTATIONS' | translate }}</span>
+            </div>
+            <div class="divider"></div>
+            <div class="stat">
+              <span class="stat-value">{{ prescriptions.length }}</span>
+              <span class="stat-label">{{ 'PATIENTS.STAT_PRESCRIPTIONS' | translate }}</span>
+            </div>
+            <div class="divider"></div>
+            <div class="stat">
+              <span class="stat-value">{{ allergies.length }}</span>
+              <span class="stat-label">{{ 'PATIENTS.STAT_ALLERGIES' | translate }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </mat-tab>
+
+  <!-- Medical History Tab -->
+  <mat-tab *ngIf="config.tabs.includes('history')">
+    <ng-template mat-tab-label>
+      <mat-icon class="tab-icon">history</mat-icon>
+      <span>{{ 'PATIENTS.SECTION_HISTORY' | translate }}</span>
+    </ng-template>
+
+    <div class="tab-content">
+      <app-history-timeline
+        [patientId]="patient?.id!"
+        [historyEntries]="medicalHistory"
+      >
+      </app-history-timeline>
+    </div>
+  </mat-tab>
+
+  <!-- Antecedents Tab -->
+  <mat-tab *ngIf="config.tabs.includes('antecedents')">
+    <ng-template mat-tab-label>
+      <mat-icon class="tab-icon">assignment</mat-icon>
+      <span>{{ 'PATIENTS.SECTION_ANTECEDENTS' | translate }}</span>
+    </ng-template>
+
+    <div class="tab-content">
+      <app-patient-antecedents
+        *ngIf="patientDetailsId"
+        [patientDetailsId]="patientDetailsId">
+      </app-patient-antecedents>
+    </div>
+  </mat-tab>
+
+  <!-- Vital Signs Tab -->
+  <mat-tab *ngIf="config.tabs.includes('vitals')">
+    <ng-template mat-tab-label>
+      <mat-icon class="tab-icon">monitor_heart</mat-icon>
+      <span>{{ 'PATIENTS.SECTION_VITAL_SIGNS' | translate }}</span>
+    </ng-template>
+
+    <div class="tab-content">
+      <app-patient-vital-signs
+        *ngIf="patientDetailsId"
+        [patientDetailsId]="patientDetailsId">
+      </app-patient-vital-signs>
+    </div>
+  </mat-tab>
+
+  <!-- Consentimientos Tab -->
+  <mat-tab *ngIf="config.tabs.includes('consents')">
+    <ng-template mat-tab-label>
+      <mat-icon class="tab-icon">verified_user</mat-icon>
+      <span>{{ 'PATIENTS.SECTION_CONSENTS' | translate }}</span>
+    </ng-template>
+
+    <div class="tab-content">
+      <app-patient-consents
+        *ngIf="patientDetailsId"
+        [patientDetailsId]="patientDetailsId"
+        [patientName]="patient?.name || ''">
+      </app-patient-consents>
+    </div>
+  </mat-tab>
+
+  <!-- Prescriptions Tab -->
+  <mat-tab *ngIf="config.tabs.includes('prescriptions')">
+    <ng-template mat-tab-label>
+      <mat-icon class="tab-icon">medication</mat-icon>
+      <span>{{ 'PATIENTS.TAB_PRESCRIPTIONS' | translate }}</span>
+    </ng-template>
+
+    <div class="tab-content">
+      <div class="prescriptions-container">
+        <div class="prescriptions-header" *ngIf="prescriptions.length > 0">
+          <h3>{{ 'PATIENTS.ACTIVE_PRESCRIPTIONS' | translate }}</h3>
+          <p class="text-small text-muted">{{ 'PATIENTS.PRESCRIPTIONS_COUNT' | translate:{count: prescriptions.length} }}</p>
+        </div>
+
+        <div class="prescriptions-list" *ngIf="prescriptions.length > 0; else noPrescriptions">
+          <div class="prescription-card" *ngFor="let p of prescriptions">
+            <div class="prescription-header">
+              <div class="prescription-info">
+                <h4 class="prescription-date">{{ p.createdAt | date: 'MMM dd, yyyy' }}</h4>
+                <p class="prescription-doctor">
+                  <mat-icon>person</mat-icon>
+                  {{ p.doctorName }}
+                </p>
+              </div>
+              <div class="prescription-actions">
+                <button
+                  mat-icon-button
+                  [matTooltip]="'COMMON.VIEW_DETAILS' | translate"
+                  [routerLink]="['/prescriptions/detail', p.id]"
+                >
+                  <mat-icon>visibility</mat-icon>
+                </button>
+                <button
+                  mat-icon-button
+                  [matTooltip]="'COMMON.PRINT' | translate"
+                >
+                  <mat-icon>print</mat-icon>
+                </button>
+              </div>
+            </div>
+            <div class="prescription-body">
+              <div class="diagnosis">
+                <span class="label">{{ 'COMMON.DIAGNOSIS' | translate }}</span>
+                <p class="diagnosis-text">{{ p.diagnosis }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <ng-template #noPrescriptions>
+          <div class="empty-state">
+            <div class="empty-icon">
+              <mat-icon>medication</mat-icon>
+            </div>
+            <h3>{{ 'PATIENTS.NO_PRESCRIPTIONS_TITLE' | translate }}</h3>
+            <p>{{ 'PATIENTS.NO_PRESCRIPTIONS_MESSAGE' | translate }}</p>
+            <button
+              mat-raised-button
+              color="primary"
+              routerLink="/prescriptions/new"
+              [queryParams]="{ patientId: patient?.id }"
+              class="mt-lg"
+            >
+              <mat-icon>add</mat-icon>
+              {{ 'PATIENTS.CREATE_FIRST_PRESCRIPTION' | translate }}
+            </button>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+  </mat-tab>
+
+  <!-- Specialty Tab (protocolo) -->
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <mat-icon class="tab-icon">{{ specialtyTabIcon }}</mat-icon>
+      <span>{{ config.label }}</span>
+    </ng-template>
+
+    <div class="tab-content">
+      <ng-container *ngIf="config.modules.length === 0; else moduleTabs">
+        <ng-container [ngSwitch]="config.template">
+          <app-soap-template *ngSwitchCase="'soap'" [hideEngine]="true" [(ngModel)]="data"></app-soap-template>
+          <app-dental-template *ngSwitchCase="'dental'" [hideEngine]="true" [(ngModel)]="data"></app-dental-template>
+          <app-nutrition-template *ngSwitchCase="'nutrition'" [hideEngine]="true" [(ngModel)]="data"></app-nutrition-template>
+          <app-generic-template *ngSwitchDefault [hideEngine]="true" [(ngModel)]="data"></app-generic-template>
+        </ng-container>
+      </ng-container>
+
+      <ng-template #moduleTabs>
+        <mat-tab-group class="nutrition-subtabs" animationDuration="300">
+          <mat-tab>
+            <ng-template mat-tab-label>
+              <mat-icon>edit_note</mat-icon>
+              <span>Registro</span>
+            </ng-template>
+            <div class="nutrition-tab-content">
+              <ng-container [ngSwitch]="config.template">
+                <app-soap-template *ngSwitchCase="'soap'" [hideEngine]="true" [(ngModel)]="data"></app-soap-template>
+                <app-dental-template *ngSwitchCase="'dental'" [hideEngine]="true" [(ngModel)]="data"></app-dental-template>
+                <app-nutrition-template *ngSwitchCase="'nutrition'" [hideEngine]="true" [(ngModel)]="data"></app-nutrition-template>
+                <app-generic-template *ngSwitchDefault [hideEngine]="true" [(ngModel)]="data"></app-generic-template>
+              </ng-container>
+            </div>
+          </mat-tab>
+
+          <mat-tab *ngFor="let module of config.modules">
+            <ng-template mat-tab-label>
+              <mat-icon>{{ moduleIcon(module) }}</mat-icon>
+              <span>{{ moduleLabel(module) | translate }}</span>
+            </ng-template>
+            <div class="nutrition-tab-content">
+              <app-body-composition
+                *ngIf="module === 'bodyComposition' && patientDetailsId"
+                [patientDetailsId]="patientDetailsId">
+              </app-body-composition>
+              <app-anthropometry
+                *ngIf="module === 'anthropometry' && patientDetailsId"
+                [patientDetailsId]="patientDetailsId">
+              </app-anthropometry>
+              <app-assessment-calculator
+                *ngIf="module === 'assessment' && patientDetailsId"
+                [patientDetailsId]="patientDetailsId"
+                [weight]="lastWeight"
+                [height]="lastHeight">
+              </app-assessment-calculator>
+              <app-diet-plan-list
+                *ngIf="module === 'dietPlans' && patientDetailsId"
+                [patientDetailsId]="patientDetailsId">
+              </app-diet-plan-list>
+              <app-supplement-list
+                *ngIf="module === 'supplements' && patientDetailsId"
+                [patientDetailsId]="patientDetailsId">
+              </app-supplement-list>
+              <app-progress-tracking
+                *ngIf="module === 'progress' && patientDetailsId"
+                [patientDetailsId]="patientDetailsId">
+              </app-progress-tracking>
+            </div>
+          </mat-tab>
+        </mat-tab-group>
+      </ng-template>
+    </div>
+  </mat-tab>
+
+  <!-- Diagnóstico y Cierre -->
+  <mat-tab *ngIf="showClosure">
+    <ng-template mat-tab-label>
+      <mat-icon class="tab-icon">assignment_turned_in</mat-icon>
+      <span>Diagnóstico y Cierre</span>
+    </ng-template>
+
+    <div class="tab-content">
+      <div class="engine-section">
+        <app-clinical-notes
+          [ngModel]="data.clinicalNotes || ''"
+          (ngModelChange)="onClinicalNotesChange($event)"
+        ></app-clinical-notes>
+
+        <app-diagnoses
+          [ngModel]="diagnosisValue"
+          (ngModelChange)="onDiagnosisChange($event)"
+        ></app-diagnoses>
+
+        <app-treatments
+          [ngModel]="data.treatments"
+          (ngModelChange)="onTreatmentsChange($event)"
+        ></app-treatments>
+
+        <app-clinical-attachments
+          [attachments]="data.attachments || []"
+          (attachmentsChange)="onAttachmentsChange($event)"
+        ></app-clinical-attachments>
+      </div>
+    </div>
+  </mat-tab>
+</mat-tab-group>

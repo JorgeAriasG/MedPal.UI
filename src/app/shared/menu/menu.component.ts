@@ -3,10 +3,8 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { MatSidenav } from '@angular/material/sidenav';
 import { Router } from '@angular/router';
-import { Store } from '@ngrx/store';
-import { AuthState } from 'src/app/store/reducers/auth.reducer';
-import { logout } from 'src/app/store/actions/auth.actions';
 import { UiService } from 'src/app/services/ui.service';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
     selector: 'app-menu',
@@ -19,10 +17,10 @@ export class MenuComponent implements OnInit, OnDestroy {
   isCollapsed = false;
   private destroy$ = new Subject<void>();
 
-  constructor( 
-    private router: Router, 
-    private store: Store<{ auth: AuthState }>,
-    private uiService: UiService
+  constructor(
+    private router: Router,
+    private uiService: UiService,
+    private authService: AuthService,
   ) {}
 
   ngOnInit() {
@@ -47,6 +45,6 @@ export class MenuComponent implements OnInit, OnDestroy {
   }
 
   logout(): void {
-    this.store.dispatch(logout());
+    this.authService.logout();
   }
 }

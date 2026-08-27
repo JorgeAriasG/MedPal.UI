@@ -5,6 +5,7 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 import { logout } from '../store/actions/auth.actions';
+import { PermissionService } from './permission.service';
 import { ApiService } from './api.service';
 import {
   LoginResponse,
@@ -58,6 +59,7 @@ export class AuthService {
     private http: HttpClient,
     private store: Store,
     private apiService: ApiService,
+    private permissionService: PermissionService,
   ) {}
 
   /**
@@ -205,6 +207,9 @@ export class AuthService {
     localStorage.removeItem(this.ROLE_KEY);
     localStorage.removeItem(this.PERMISSIONS_KEY);
     localStorage.removeItem(this.USER_KEY);
+
+    // Clear cached JWT claims and permissions
+    this.permissionService.clearPermissions();
 
     // Update observable
     this.currentUserSubject.next(null);

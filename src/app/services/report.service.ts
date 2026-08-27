@@ -4,7 +4,7 @@ import { map, catchError } from 'rxjs/operators';
 import { IAppointment } from '../entities/IAppointment';
 import { IPatient } from '../entities/IPatient';
 
-import { AppointmensService } from '../components/appointments/services/appointmens.service';
+import { AppointmentsService } from '../components/appointments/services/appointments.service';
 import { PatientsService } from '../components/patients/services/patients.service';
 import { UserService } from '../components/user/services/user.service';
 import { ReportData, AppointmentSummary, DoctorPerformance } from '../models/report.models';
@@ -12,7 +12,7 @@ import { ReportData, AppointmentSummary, DoctorPerformance } from '../models/rep
 @Injectable({ providedIn: 'root' })
 export class ReportService {
   constructor(
-    private appointmensService: AppointmensService,
+    private appointmentsService: AppointmentsService,
     private patientsService: PatientsService,
     private userService: UserService,
   ) {}
@@ -21,7 +21,7 @@ export class ReportService {
     const toEnd = new Date(to);
     toEnd.setHours(23, 59, 59, 999);
 
-    const appointments$ = this.appointmensService.getAppointments(clinicId).pipe(
+    const appointments$ = this.appointmentsService.getAppointments(clinicId).pipe(
       catchError(() => of([])),
     );
     const patients$ = this.patientsService.getPatients(clinicId).pipe(

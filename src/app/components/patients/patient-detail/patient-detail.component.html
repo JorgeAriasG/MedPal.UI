@@ -50,6 +50,16 @@
             <mat-icon>post_add</mat-icon>
             <span>{{ 'PATIENTS.NEW_PRESCRIPTION' | translate }}</span>
           </button>
+          <button
+            mat-stroked-button
+            color="accent"
+            (click)="sendReminder()"
+            class="action-button"
+            title="{{ 'PATIENTS.SEND_REMINDER_TOOLTIP' | translate }}"
+          >
+            <mat-icon>chat</mat-icon>
+            <span>{{ 'PATIENTS.SEND_REMINDER' | translate }}</span>
+          </button>
         </div>
       </div>
     </div>

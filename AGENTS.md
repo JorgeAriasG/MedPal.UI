@@ -1,4 +1,4 @@
-# AGENTS.md — ClinicFlow UI
+# AGENTS.md — ClinicFlow
 
 ## Context
 
@@ -7,8 +7,16 @@ Angular 19.2 app | NgRx state | NgModule architecture | Material Design | Karma+
 
 ## Critical Rules
 
-**ONLY modify** UI / UX / styling / layout consistency.
-**NEVER modify** backend logic, API calls, business logic, routes, workflows, forms behavior, auth, permissions, state management.
+**Authorized to modify** UI / UX / styling / layout consistency **and**
+backend/API code (controllers, repositories, services, authorization,
+business logic) following the repo conventions. Still flag breaking changes,
+permission/security impact, and DB migrations rather than applying them silently.
+
+## Specialized agents
+
+`.opencode/agents/` defines subagents that can be delegated to in parallel:
+`architect`, `backend`, `frontend`, `qa`. Delegate domain-specific work to them
+instead of doing it inline when parallel or focused expertise is useful.
 
 ## Design Vision
 

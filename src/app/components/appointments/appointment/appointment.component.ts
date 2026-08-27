@@ -1,7 +1,7 @@
 import { IAppointment } from './../../../entities/IAppointment';
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
-import { AppointmensService } from '../services/appointmens.service';
+import { AppointmentsService } from '../services/appointments.service';
 import { MatDialog } from '@angular/material/dialog';
 import { NewAppointmentComponent } from '../new-appointment/new-appointment.component';
 import { EditModalComponent } from 'src/app/shared/edit-modal/edit-modal.component';
@@ -49,7 +49,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   constructor(
-    private appointmentService: AppointmensService,
+    private appointmentService: AppointmentsService,
     private dialog: MatDialog,
     private clinicService: ClinicService,
     private store: Store,

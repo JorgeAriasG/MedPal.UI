@@ -7,7 +7,7 @@ import { ApiService } from 'src/app/services/api.service';
 @Injectable({
   providedIn: 'root',
 })
-export class AppointmensService {
+export class AppointmentsService {
   private readonly endpoint = 'appointments';
 
   constructor(private http: HttpClient, private apiService: ApiService) {}
@@ -22,6 +22,10 @@ export class AppointmensService {
       url += `&date=${date}`;
     }
     return this.apiService.get(url);
+  }
+
+  getAppointmentsByPatient(patientId: number): Observable<any> {
+    return this.apiService.get(`${this.endpoint}/patient/${patientId}`);
   }
 
   saveAppointment(appointment: IAppointment): Observable<any> {
@@ -51,5 +55,9 @@ export class AppointmensService {
 
   rescheduleAppointment(id: number, data: any): Observable<any> {
     return this.apiService.put(`${this.endpoint}/${id}/reschedule`, data);
+  }
+
+  sendReminder(appointmentId: number): Observable<any> {
+    return this.apiService.post(`${this.endpoint}/${appointmentId}/reminder`, {});
   }
 }

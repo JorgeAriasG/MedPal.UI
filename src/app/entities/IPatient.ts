@@ -17,5 +17,6 @@ export interface IPatient {
   clinic?: IClinic,
   clinics?: IClinic[],
   weight?: number | null,
-  height?: number | null
+  height?: number | null,
+  isWhatsAppConsented?: boolean
 }

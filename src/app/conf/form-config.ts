@@ -74,6 +74,11 @@ export const patientFormConfig: Record<string, FormFieldConfig> = {
     type: 'select',
     options: [], // Will be populated dynamically by EditModalComponent
     label: 'PATIENTS.FORM_CLINIC',
+  },
+  isWhatsAppConsented: {
+    value: false,
+    type: 'checkbox',
+    label: 'PATIENTS.FORM_WHATSAPP_CONSENT',
   }
 };
 

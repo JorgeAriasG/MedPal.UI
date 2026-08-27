@@ -1,9 +1,22 @@
 import { TestBed } from '@angular/core/testing';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { provideMockStore } from '@ngrx/store/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { TranslateModule } from '@ngx-translate/core';
+
 import { AppComponent } from './app.component';
 
 describe('AppComponent', () => {
   beforeEach(() => TestBed.configureTestingModule({
-    declarations: [AppComponent]
+    declarations: [AppComponent],
+    imports: [
+      RouterTestingModule,
+      HttpClientTestingModule,
+      TranslateModule.forRoot(),
+    ],
+    providers: [provideMockStore()],
+    schemas: [NO_ERRORS_SCHEMA],
   }));
 
   it('should create the app', () => {
@@ -18,10 +31,10 @@ describe('AppComponent', () => {
     expect(app.title).toEqual('scheduling.ui');
   });
 
-  it('should render title', () => {
+  it('should not show chrome while on a public route (BUG-006 regression)', () => {
     const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.componentInstance;
     fixture.detectChanges();
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.content span')?.textContent).toContain('scheduling.ui app is running!');
+    expect(app.showChrome).toBeFalse();
   });
 });

@@ -33,7 +33,8 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { NewPatientComponent } from '../patients/new-patient/new-patient.component';
-import { PatientDetailComponent } from '../patients/patient-detail/patient-detail.component';
+import { PatientDashboardComponent } from '../patients/patient-dashboard/patient-dashboard.component';
+import { SpecialtyTabsComponent } from '../patients/specialty-tabs/specialty-tabs.component';
 import { AddClinicComponent } from '../clinics/add-clinic/add-clinic.component';
 import { QuickactionMenuComponent } from '../quickaction-menu/quickaction-menu.component';
 import { AppointmentComponent } from '../appointments/appointment/appointment.component';
@@ -61,9 +62,6 @@ import { PatientAntecedentsComponent } from '../patients/patient-antecedents/pat
 import { PatientVitalSignsComponent } from '../patients/patient-vital-signs/patient-vital-signs.component';
 import { VitalSignDialogComponent } from '../patients/patient-vital-signs/vital-sign-dialog.component';
 import { PatientConsentsComponent } from '../patients/patient-consents/patient-consents.component';
-import { PatientGeneralComponent } from '../patients/patient-general/patient-general.component';
-import { PatientDentalComponent } from '../patients/patient-dental/patient-dental.component';
-import { NutritionPatientComponent } from '../patients/nutrition-patient/nutrition-patient.component';
 import { SettingsComponent } from '../settings/settings.component';
 import { CheckoutSuccessComponent } from '../checkout/checkout-success/checkout-success.component';
 import { CheckoutRequiredComponent } from '../checkout/checkout-required/checkout-required.component';
@@ -77,14 +75,12 @@ import { MatExpansionModule } from '@angular/material/expansion';
     PatientsComponent,
     ClinicListComponent,
     NewPatientComponent,
-    PatientDetailComponent,
+    PatientDashboardComponent,
+    SpecialtyTabsComponent,
     PatientAntecedentsComponent,
     PatientVitalSignsComponent,
     VitalSignDialogComponent,
     PatientConsentsComponent,
-    PatientGeneralComponent,
-    PatientDentalComponent,
-    NutritionPatientComponent,
     AddClinicComponent,
     QuickactionMenuComponent,
     AppointmentComponent,
@@ -163,7 +159,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
         path: 'appointments/new-appointment',
         component: NewAppointmentComponent,
       },
-      { path: 'patients/detail/:id', component: PatientDetailComponent },
+      { path: 'patients/detail/:id', component: PatientDashboardComponent },
       { path: 'clinics', component: ClinicListComponent },
       { path: 'users', component: ListComponent },
       { path: 'checkout/success', component: CheckoutSuccessComponent },
@@ -216,36 +212,34 @@ import { MatExpansionModule } from '@angular/material/expansion';
           },
         ],
       },
-      // Audit Reports Route - Phase 3b
-      // @note Uncomment when audit-reports module is fully implemented
-      // {
-      //   path: 'audit-reports',
-      //   canActivate: [AuditAdminGuard],
-      //   children: [
-      //     {
-      //       path: '',
-      //       loadChildren: () =>
-      //         import('../audit-logs/audit-reports.module').then(
-      //           (m) => m.AuditReportsModule
-      //         ),
-      //     },
-      //   ],
-      // },
+      // Audit Reports Route
+      {
+        path: 'audit-reports',
+        canActivate: [AuditAdminGuard],
+        children: [
+          {
+            path: '',
+            loadChildren: () =>
+              import('../audit-logs/audit-reports.module').then(
+                (m) => m.AuditReportsModule
+              ),
+          },
+        ],
+      },
       // Consent routes (protected with guards)
-      // @note Phase 3a: Consent modules not yet created
-      // {
-      //   path: 'consent',
-      //   canActivate: [ConsentAccessGuard],
-      //   children: [
-      //     {
-      //       path: '',
-      //       loadChildren: () =>
-      //         import('../consent/consent.module').then(
-      //           (m) => m.ConsentModule
-      //         ),
-      //     },
-      //   ],
-      // },
+      {
+        path: 'consent',
+        canActivate: [ConsentAccessGuard],
+        children: [
+          {
+            path: '',
+            loadChildren: () =>
+              import('../consent/consent.module').then(
+                (m) => m.ConsentModule
+              ),
+          },
+        ],
+      },
     ]),
   ],
   providers: [MatNativeDateModule, provideHttpClient(withInterceptorsFromDi())],

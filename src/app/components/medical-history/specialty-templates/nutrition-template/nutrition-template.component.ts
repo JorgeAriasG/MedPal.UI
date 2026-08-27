@@ -1,4 +1,4 @@
-import { Component, forwardRef } from '@angular/core';
+import { Component, forwardRef, Input } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import {
   NutritionData,
@@ -21,6 +21,8 @@ import {
   ],
 })
 export class NutritionTemplateComponent implements ControlValueAccessor {
+  @Input() hideEngine = false;
+
   nutritionData: NutritionData = {
     peso: 0,
     altura: 0,
@@ -38,13 +40,21 @@ export class NutritionTemplateComponent implements ControlValueAccessor {
 
   writeValue(value: NutritionData): void {
     if (value) {
-      this.nutritionData = value;
-      if (!value.measurements && value.peso > 0 && value.altura > 0) {
-        const heightCm = value.altura > 3 ? value.altura : value.altura * 100;
+      this.nutritionData = {
+        ...value,
+        peso: value.peso ?? 0,
+        altura: value.altura ?? 0,
+        imc: value.imc ?? 0,
+        objetivo: value.objetivo ?? '',
+        restricciones: Array.isArray(value.restricciones) ? value.restricciones : [],
+        caloriasDiarias: value.caloriasDiarias ?? 0,
+      };
+      if (!this.nutritionData.measurements && this.nutritionData.peso > 0 && this.nutritionData.altura > 0) {
+        const heightCm = this.nutritionData.altura > 3 ? this.nutritionData.altura : this.nutritionData.altura * 100;
         this.nutritionData.measurements = {
-          weight: value.peso,
+          weight: this.nutritionData.peso,
           height: heightCm,
-          bmi: value.imc || 0,
+          bmi: this.nutritionData.imc || 0,
         };
       }
     }
@@ -140,3 +150,4 @@ export class NutritionTemplateComponent implements ControlValueAccessor {
     this.onTouched();
   }
 }
+

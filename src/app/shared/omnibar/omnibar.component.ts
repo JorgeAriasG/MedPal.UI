@@ -4,7 +4,7 @@ import { KeyboardShortcutService } from '../../services/keyboard-shortcut.servic
 import { Subscription, of } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, switchMap, map } from 'rxjs/operators';
 import { PatientsService } from '../../components/patients/services/patients.service';
-import { AppointmensService } from '../../components/appointments/services/appointmens.service';
+import { AppointmentsService } from '../../components/appointments/services/appointments.service';
 import { Router } from '@angular/router';
 import { IAppointment } from 'src/app/entities/IAppointment';
 import { IPatient } from 'src/app/entities/IPatient';
@@ -50,7 +50,7 @@ export class OmnibarComponent implements OnInit, OnDestroy {
   constructor(
     private shortcutService: KeyboardShortcutService,
     private patientService: PatientsService,
-    private appointmentService: AppointmensService,
+    private appointmentService: AppointmentsService,
     private authService: AuthService,
     private snackBar: MatSnackBar,
     public router: Router

@@ -14,87 +14,70 @@
 
   <!-- Content -->
   <div class="consultation-body" *ngIf="!loading && !error && appointment">
-    <!-- Column 1: Patient Info -->
-    <aside class="col-patient">
-      <div class="sidebar-header">
-        <button mat-icon-button class="back-btn" (click)="goBack()">
-          <mat-icon>arrow_back</mat-icon>
-        </button>
-        <h3 class="sidebar-title">Paciente</h3>
-      </div>
+    <div class="consultation-content">
+      <!-- Header -->
+      <div class="consultation-header">
+        <div class="header-content">
+          <div class="header-left">
+            <button mat-icon-button class="back-btn" (click)="goBack()">
+              <mat-icon>arrow_back</mat-icon>
+            </button>
+          </div>
 
-      <div class="patient-avatar-section">
-        <div class="avatar-circle">
-          <span class="avatar-initials">
-            {{ appointment.patient?.name?.charAt(0) || '?' }}{{ appointment.patient?.lastname?.charAt(0) || '' }}
-          </span>
+          <div class="patient-info">
+            <div class="avatar-container">
+              <mat-icon class="avatar-icon">account_circle</mat-icon>
+            </div>
+            <div class="patient-details">
+              <h1 class="patient-name">
+                {{ patient?.name || appointment.patient?.name || '' }} {{ patient?.middlename || '' }} {{ patient?.lastname || appointment.patient?.lastname || '' }}
+              </h1>
+              <p class="patient-contact">
+                <mat-icon class="icon-small">email</mat-icon>
+                {{ patient?.email || appointment.patient?.email || '—' }}
+                <span class="divider-dot">•</span>
+                <mat-icon class="icon-small">phone</mat-icon>
+                {{ patient?.phone || appointment.patient?.phone || '—' }}
+                <span class="divider-dot">•</span>
+                <mat-icon class="icon-small">calendar_today</mat-icon>
+                {{ appointment.date }} {{ appointment.time }}
+              </p>
+              <p class="patient-meta">
+                <mat-icon class="icon-small">star</mat-icon>
+                {{ specialtyConfig.label }}
+              </p>
+            </div>
+          </div>
+
+          <div class="header-actions">
+            <span class="status-badge" [attr.data-status]="appointment.status">
+              {{ appointment.status }}
+            </span>
+          </div>
         </div>
-        <h2 class="patient-name">
-          {{ appointment.patient?.name || '' }} {{ appointment.patient?.lastname || '' }}
-        </h2>
       </div>
 
-      <div class="info-section">
-        <h4 class="section-label">Información</h4>
-        <div class="info-row">
-          <mat-icon class="info-icon">phone</mat-icon>
-          <span>{{ appointment.patient?.phone || '—' }}</span>
-        </div>
-        <div class="info-row">
-          <mat-icon class="info-icon">email</mat-icon>
-          <span>{{ appointment.patient?.email || '—' }}</span>
-        </div>
-        <div class="info-row">
-          <mat-icon class="info-icon">calendar_today</mat-icon>
-          <span>{{ appointment.date }} {{ appointment.time }}</span>
-        </div>
+      <!-- Alerts banner -->
+      <div class="alerts-section" *ngIf="patientDetailsId">
+        <app-alerts [patientDetailsId]="patientDetailsId" [antecedentsData]="antecedentsData"></app-alerts>
       </div>
 
-      <div class="info-section">
-        <h4 class="section-label">Especialidad</h4>
-        <p class="info-value">{{ specialtyConfig.label }}</p>
-      </div>
-
-      <div class="info-section">
-        <app-alerts [patientDetailsId]="patientDetailsId!" [antecedentsData]="antecedentsData"></app-alerts>
-      </div>
-    </aside>
-
-    <!-- Column 2: Stepper / Workspace -->
-    <main class="col-workspace">
-      <div class="workspace-header">
-        <h2>Notas de Consulta</h2>
-        <span class="status-badge" [attr.data-status]="appointment.status">
-          {{ appointment.status }}
-        </span>
-      </div>
-
+      <!-- Protocolo por especialidad -->
       <div class="workspace-content">
-        <ng-container [ngSwitch]="specialtyConfig.template">
-          <app-soap-template *ngSwitchCase="'soap'" [(ngModel)]="consultationData.specialtyData"></app-soap-template>
-          <app-dental-template *ngSwitchCase="'dental'" [(ngModel)]="consultationData.specialtyData"></app-dental-template>
-          <app-nutrition-template *ngSwitchCase="'nutrition'" [(ngModel)]="consultationData.specialtyData"></app-nutrition-template>
-          <app-generic-template *ngSwitchDefault [(ngModel)]="consultationData.specialtyData"></app-generic-template>
-        </ng-container>
-      </div>
-    </main>
-
-    <!-- Column 3: Last Consultation Reference -->
-    <aside class="col-reference">
-      <div class="reference-header">
-        <h3 class="reference-title">Consultas Anteriores</h3>
-      </div>
-      <div class="reference-body">
-        <app-previous-consultations
-          *ngIf="patientDetailsId"
+        <app-specialty-tabs
+          [patient]="patient"
           [patientDetailsId]="patientDetailsId"
-        ></app-previous-consultations>
-        <div *ngIf="!patientDetailsId" class="reference-empty">
-          <mat-icon class="ref-empty-icon">history</mat-icon>
-          <p>No hay consultas previas disponibles</p>
-        </div>
+          [medicalHistory]="medicalHistory"
+          [prescriptions]="prescriptions"
+          [allergies]="allergies"
+          [lastWeight]="lastWeight"
+          [lastHeight]="lastHeight"
+          [specialty]="userSpecialty"
+          [showClosure]="true"
+          [(ngModel)]="consultationData.specialtyData"
+        ></app-specialty-tabs>
       </div>
-    </aside>
+    </div>
   </div>
 
   <!-- Bottom Action Bar -->

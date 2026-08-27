@@ -1,4 +1,4 @@
-import { Component, forwardRef } from '@angular/core';
+import { Component, forwardRef, Input } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import {
   GenericData,
@@ -21,6 +21,8 @@ import {
   ],
 })
 export class GenericTemplateComponent implements ControlValueAccessor {
+  @Input() hideEngine = false;
+
   genericData: GenericData = {
     customData: '',
   };
