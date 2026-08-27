@@ -1,24 +1,63 @@
 <div class="audit-reports-container cf-page-container">
+  <!-- Error Banner -->
+  <div *ngIf="error$ | async as error" class="error-banner">
+    <div class="cf-alert cf-alert-error">
+      <mat-icon>error</mat-icon>
+      <p>{{ 'AUDIT.REPORTS.REPORT_ERROR' | translate }}: {{ error }}</p>
+      <button mat-icon-button (click)="closeError()" class="close-btn">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- Page Header -->
   <div class="cf-page-header">
     <div class="cf-header-content">
       <div class="cf-page-title">
         <mat-icon class="cf-title-icon">assessment</mat-icon>
-        <span>Audit Reports</span>
+        <span>{{ 'AUDIT.REPORTS.TITLE' | translate }}</span>
       </div>
-      <p class="cf-page-subtitle">Generate and view audit report analytics</p>
+      <p class="cf-page-subtitle">{{ 'AUDIT.REPORTS.SUBTITLE' | translate }}</p>
     </div>
   </div>
-  <mat-card>
-    <mat-card-content>
-      <mat-icon style="font-size: 3rem; width: 3rem; height: 3rem; color: var(--color-text-disabled);">
-        construction
-      </mat-icon>
-      <p style="font-size: 1.125rem; font-weight: 500; color: var(--color-text-secondary);">
-        Audit Reports coming soon
-      </p>
-      <p style="font-size: 0.875rem; color: var(--color-text-disabled);">
-        Report generation, analytics, and export features are under development.
-      </p>
-    </mat-card-content>
-  </mat-card>
+
+  <!-- Filters -->
+  <app-audit-report-filters
+    [isLoading]="(loading$ | async) ?? false"
+    (filterApply)="onFilterApply($event)"
+    (filterReset)="onFilterReset()"
+  ></app-audit-report-filters>
+
+  <!-- Loading State -->
+  <div *ngIf="loading$ | async" class="cf-loading-container">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p class="loading-text">{{ 'COMMON.LOADING' | translate }}</p>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!(loading$ | async) && !(report$ | async)" class="empty-state">
+    <div class="empty-content">
+      <mat-icon class="empty-icon">analytics</mat-icon>
+      <p class="empty-text">{{ 'AUDIT.REPORTS.EMPTY_STATE' | translate }}</p>
+    </div>
+  </div>
+
+  <!-- Report Dashboard -->
+  <app-audit-report-dashboard
+    *ngIf="report$ | async as report"
+    [report]="report"
+  ></app-audit-report-dashboard>
+
+  <!-- Export Button -->
+  <div *ngIf="(report$ | async) && !(loading$ | async)" class="export-actions">
+    <button
+      mat-stroked-button
+      (click)="onExportCSV()"
+      [disabled]="!currentFilter"
+      class="export-btn"
+    >
+      <mat-icon>download</mat-icon>
+      {{ 'AUDIT.REPORTS.EXPORT_CSV' | translate }}
+    </button>
+  </div>
 </div>

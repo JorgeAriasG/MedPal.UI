@@ -26,4 +26,24 @@ export class ConsentService {
   revokeConsent(consentId: number): Observable<any> {
     return this.apiService.post(`${this.consentEndpoint}/${consentId}/revoke`, {});
   }
+
+  getActiveConsents(patientDetailsId: number): Observable<IPatientConsent[]> {
+    return this.apiService.get<IPatientConsent[]>(`${this.consentEndpoint}/patient/${patientDetailsId}/active`);
+  }
+
+  getAllConsents(): Observable<IPatientConsent[]> {
+    return this.apiService.get<IPatientConsent[]>(`${this.consentEndpoint}`);
+  }
+
+  approveConsent(consentId: number, notes?: string): Observable<IPatientConsent> {
+    return this.apiService.post<IPatientConsent>(`${this.consentEndpoint}/${consentId}/approve`, { notes });
+  }
+
+  rejectConsent(consentId: number, notes?: string): Observable<any> {
+    return this.apiService.post(`${this.consentEndpoint}/${consentId}/reject`, { notes });
+  }
+
+  checkConsent(dto: { patientDetailsId: number; requestingClinicId: number; ownerClinicId: number }): Observable<boolean> {
+    return this.apiService.post<boolean>(`${this.consentEndpoint}/check`, dto);
+  }
 }

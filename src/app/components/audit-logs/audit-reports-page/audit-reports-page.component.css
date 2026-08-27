@@ -3,3 +3,110 @@
   flex-direction: column;
   gap: 1.5rem;
 }
+
+/* Error Banner */
+.error-banner {
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.error-banner .cf-alert {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.error-banner .cf-alert mat-icon {
+  flex-shrink: 0;
+}
+
+.error-banner .cf-alert p {
+  flex: 1;
+  margin: 0;
+  font-weight: 500;
+}
+
+.error-banner .close-btn {
+  flex-shrink: 0;
+}
+
+/* Loading State */
+.loading-text {
+  color: var(--color-text-secondary);
+  font-size: 1rem;
+  margin: 0;
+}
+
+/* Empty State */
+.empty-state {
+  display: flex;
+  justify-content: center;
+  padding: 3rem 1.5rem;
+}
+
+.empty-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  text-align: center;
+}
+
+.empty-icon {
+  font-size: 3rem;
+  width: 3rem;
+  height: 3rem;
+  color: var(--color-text-disabled);
+}
+
+.empty-text {
+  font-size: 1rem;
+  color: var(--color-text-secondary);
+  margin: 0;
+  max-width: 360px;
+}
+
+/* Export Actions */
+.export-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.export-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.export-btn:hover:not(:disabled) {
+  background-color: rgba(44, 62, 80, 0.06);
+}
+
+.export-btn:disabled {
+  border-color: #d1d5db;
+  color: #9ca3af;
+}
+
+@media (max-width: 768px) {
+  .audit-reports-container {
+    gap: 1rem;
+  }
+
+  .empty-icon {
+    font-size: 2.25rem;
+    width: 2.25rem;
+    height: 2.25rem;
+  }
+}

@@ -102,8 +102,8 @@ export class AuditLogService {
    */
   exportLogs(filter: AuditLogFilter = {}, format: string = 'csv'): Observable<Blob> {
     const queryParams = this.buildQueryString(filter);
-    // Note: This may need special handling in ApiService for blob response
-    const url = `${this.endpoint}/export${queryParams}&format=${format}`;
+    const separator = queryParams ? '&' : '?';
+    const url = `${this.endpoint}/export${queryParams}${separator}format=${format}`;
     return this.apiService.get<Blob>(url);
   }
 

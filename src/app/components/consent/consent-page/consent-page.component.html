@@ -3,22 +3,258 @@
     <div class="cf-header-content">
       <div class="cf-page-title">
         <mat-icon class="cf-title-icon">verified_user</mat-icon>
-        <span>Patient Consent</span>
+        <span>{{ 'CONSENTS.TITLE' | translate }}</span>
       </div>
-      <p class="cf-page-subtitle">View and manage patient consent for medical record access</p>
+      <p class="cf-page-subtitle">{{ 'CONSENTS.SUBTITLE' | translate }}</p>
+    </div>
+    <button mat-flat-button color="primary" (click)="openGrantDialog()">
+      <mat-icon>add</mat-icon>
+      {{ 'CONSENTS.GRANT_BUTTON' | translate }}
+    </button>
+  </div>
+
+  <!-- KPI Cards -->
+  <div class="kpi-row">
+    <div class="kpi-card">
+      <div class="kpi-icon kpi-icon--total">
+        <mat-icon>folder_open</mat-icon>
+      </div>
+      <div class="kpi-content">
+        <span class="kpi-value">{{ (allConsents$ | async)?.length ?? 0 }}</span>
+        <span class="kpi-label">{{ 'CONSENTS.TOTAL' | translate }}</span>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon kpi-icon--pending">
+        <mat-icon>pending</mat-icon>
+      </div>
+      <div class="kpi-content">
+        <span class="kpi-value">{{ (pendingCount$ | async) ?? 0 }}</span>
+        <span class="kpi-label">{{ 'CONSENTS.PENDING_COUNT' | translate }}</span>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon kpi-icon--active">
+        <mat-icon>check_circle</mat-icon>
+      </div>
+      <div class="kpi-content">
+        <span class="kpi-value">{{ (approvedCount$ | async) ?? 0 }}</span>
+        <span class="kpi-label">{{ 'CONSENTS.ACTIVE_COUNT' | translate }}</span>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon kpi-icon--revoked">
+        <mat-icon>cancel</mat-icon>
+      </div>
+      <div class="kpi-content">
+        <span class="kpi-value">{{ (revokedCount$ | async) ?? 0 }}</span>
+        <span class="kpi-label">{{ 'CONSENTS.REVOKED_COUNT' | translate }}</span>
+      </div>
     </div>
   </div>
-  <mat-card>
-    <mat-card-content>
-      <mat-icon style="font-size: 3rem; width: 3rem; height: 3rem; color: var(--color-text-disabled);">
-        construction
-      </mat-icon>
-      <p style="font-size: 1.125rem; font-weight: 500; color: var(--color-text-secondary);">
-        Consent management coming soon
-      </p>
-      <p style="font-size: 0.875rem; color: var(--color-text-disabled);">
-        Patient consent approval, revocation, and management features are under development.
-      </p>
-    </mat-card-content>
-  </mat-card>
+
+  <!-- Filter Bar -->
+  <div class="filter-bar">
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-icon matPrefix>search</mat-icon>
+      <input matInput placeholder="{{ 'CONSENTS.FILTER_PLACEHOLDER' | translate }}"
+        [(ngModel)]="searchTerm">
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="scope-filter">
+      <mat-label>{{ 'CONSENTS.SCOPE' | translate }}</mat-label>
+      <mat-select [(ngModel)]="scopeFilter">
+        <mat-option value="">{{ 'COMMON.ALL' | translate }}</mat-option>
+        <mat-option value="AllRecords">{{ 'CONSENTS.SCOPE_ALL_RECORDS' | translate }}</mat-option>
+        <mat-option value="LabsOnly">{{ 'CONSENTS.SCOPE_LABS_ONLY' | translate }}</mat-option>
+        <mat-option value="SpecificDateRange">{{ 'CONSENTS.SCOPE_DATE_RANGE' | translate }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading$ | async" class="cf-loading-container">
+    <mat-spinner diameter="36"></mat-spinner>
+    <span>{{ 'COMMON.LOADING' | translate }}</span>
+  </div>
+
+  <!-- Tabs -->
+  <mat-tab-group *ngIf="!(loading$ | async)" [(selectedIndex)]="selectedTab" class="consent-tabs">
+    <!-- Pending Tab -->
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <span class="tab-label">
+          {{ 'CONSENTS.PENDING' | translate }}
+          <span class="tab-count" *ngIf="(pendingCount$ | async) as count">{{ count }}</span>
+        </span>
+      </ng-template>
+      <div class="tab-content">
+        <div *ngIf="(pendingConsents$ | async)?.length === 0" class="empty-state">
+          <mat-icon class="empty-icon">pending_actions</mat-icon>
+          <h3>{{ 'CONSENTS.EMPTY_PENDING' | translate }}</h3>
+        </div>
+        <div class="table-wrapper" *ngIf="(pendingConsents$ | async)?.length as count">
+          <table mat-table [dataSource]="(pendingConsents$ | async) || []" class="consent-table">
+            <ng-container matColumnDef="patientName">
+              <th mat-header-cell *matHeaderCellDef>{{ 'CONSENTS.PATIENT' | translate }}</th>
+              <td mat-cell *matCellDef="let row">{{ row.patientName || row.patientDetailsId }}</td>
+            </ng-container>
+            <ng-container matColumnDef="requestingClinicName">
+              <th mat-header-cell *matHeaderCellDef>{{ 'CONSENTS.REQUESTING_CLINIC' | translate }}</th>
+              <td mat-cell *matCellDef="let row">{{ row.requestingClinicName || row.requestingClinicId }}</td>
+            </ng-container>
+            <ng-container matColumnDef="ownerClinicName">
+              <th mat-header-cell *matHeaderCellDef>{{ 'CONSENTS.OWNER_CLINIC' | translate }}</th>
+              <td mat-cell *matCellDef="let row">{{ row.ownerClinicName || row.ownerClinicId }}</td>
+            </ng-container>
+            <ng-container matColumnDef="consentScope">
+              <th mat-header-cell *matHeaderCellDef>{{ 'CONSENTS.SCOPE' | translate }}</th>
+              <td mat-cell *matCellDef="let row">{{ getScopeLabel(row.consentScope) }}</td>
+            </ng-container>
+            <ng-container matColumnDef="consentDate">
+              <th mat-header-cell *matHeaderCellDef>{{ 'CONSENTS.DATE' | translate }}</th>
+              <td mat-cell *matCellDef="let row">{{ row.consentDate | date:'dd/MM/yyyy' }}</td>
+            </ng-container>
+            <ng-container matColumnDef="expiryDate">
+              <th mat-header-cell *matHeaderCellDef>{{ 'CONSENTS.EXPIRY_DATE' | translate }}</th>
+              <td mat-cell *matCellDef="let row">
+                <span [class.expired-badge]="isExpired(row.expiryDate)">
+                  {{ row.expiryDate ? (row.expiryDate | date:'dd/MM/yyyy') : '—' }}
+                </span>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef>{{ 'CONSENTS.ACTIONS' | translate }}</th>
+              <td mat-cell *matCellDef="let row" class="actions-cell">
+                <button *ngIf="canApprove" mat-icon-button color="primary" matTooltip="{{ 'CONSENTS.APPROVE' | translate }}"
+                  (click)="approveConsent(row.id)" [disabled]="(submitting$ | async)">
+                  <mat-icon>check</mat-icon>
+                </button>
+                <button *ngIf="canApprove" mat-icon-button color="warn" matTooltip="{{ 'CONSENTS.REJECT' | translate }}"
+                  (click)="rejectConsent(row.id)" [disabled]="(submitting$ | async)">
+                  <mat-icon>close</mat-icon>
+                </button>
+              </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+        </div>
+      </div>
+    </mat-tab>
+
+    <!-- Active Tab -->
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <span class="tab-label">
+          {{ 'CONSENTS.ACTIVE' | translate }}
+          <span class="tab-count tab-count--active" *ngIf="(approvedCount$ | async) as count">{{ count }}</span>
+        </span>
+      </ng-template>
+      <div class="tab-content">
+        <div *ngIf="(approvedConsents$ | async)?.length === 0" class="empty-state">
+          <mat-icon class="empty-icon">check_circle_outline</mat-icon>
+          <h3>{{ 'CONSENTS.EMPTY_ACTIVE' | translate }}</h3>
+        </div>
+        <div class="table-wrapper" *ngIf="(approvedConsents$ | async)?.length">
+          <table mat-table [dataSource]="(approvedConsents$ | async) || []" class="consent-table">
+            <ng-container matColumnDef="patientName">
+              <th mat-header-cell *matHeaderCellDef>{{ 'CONSENTS.PATIENT' | translate }}</th>
+              <td mat-cell *matCellDef="let row">{{ row.patientName || row.patientDetailsId }}</td>
+            </ng-container>
+            <ng-container matColumnDef="requestingClinicName">
+              <th mat-header-cell *matHeaderCellDef>{{ 'CONSENTS.REQUESTING_CLINIC' | translate }}</th>
+              <td mat-cell *matCellDef="let row">{{ row.requestingClinicName || row.requestingClinicId }}</td>
+            </ng-container>
+            <ng-container matColumnDef="ownerClinicName">
+              <th mat-header-cell *matHeaderCellDef>{{ 'CONSENTS.OWNER_CLINIC' | translate }}</th>
+              <td mat-cell *matCellDef="let row">{{ row.ownerClinicName || row.ownerClinicId }}</td>
+            </ng-container>
+            <ng-container matColumnDef="consentScope">
+              <th mat-header-cell *matHeaderCellDef>{{ 'CONSENTS.SCOPE' | translate }}</th>
+              <td mat-cell *matCellDef="let row">{{ getScopeLabel(row.consentScope) }}</td>
+            </ng-container>
+            <ng-container matColumnDef="consentDate">
+              <th mat-header-cell *matHeaderCellDef>{{ 'CONSENTS.DATE' | translate }}</th>
+              <td mat-cell *matCellDef="let row">{{ row.consentDate | date:'dd/MM/yyyy' }}</td>
+            </ng-container>
+            <ng-container matColumnDef="expiryDate">
+              <th mat-header-cell *matHeaderCellDef>{{ 'CONSENTS.EXPIRY_DATE' | translate }}</th>
+              <td mat-cell *matCellDef="let row">
+                <span [class.expired-badge]="isExpired(row.expiryDate)">
+                  {{ row.expiryDate ? (row.expiryDate | date:'dd/MM/yyyy') : '—' }}
+                </span>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef>{{ 'CONSENTS.ACTIONS' | translate }}</th>
+              <td mat-cell *matCellDef="let row" class="actions-cell">
+                <button *ngIf="canRevoke" mat-icon-button color="warn" matTooltip="{{ 'CONSENTS.REVOKE' | translate }}"
+                  (click)="revokeConsent(row.id)" [disabled]="(submitting$ | async)">
+                  <mat-icon>block</mat-icon>
+                </button>
+              </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+        </div>
+      </div>
+    </mat-tab>
+
+    <!-- Revoked Tab -->
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <span class="tab-label">
+          {{ 'CONSENTS.REVOKED' | translate }}
+          <span class="tab-count tab-count--revoked" *ngIf="(revokedCount$ | async) as count">{{ count }}</span>
+        </span>
+      </ng-template>
+      <div class="tab-content">
+        <div *ngIf="(revokedConsents$ | async)?.length === 0" class="empty-state">
+          <mat-icon class="empty-icon">block</mat-icon>
+          <h3>{{ 'CONSENTS.EMPTY_REVOKED' | translate }}</h3>
+        </div>
+        <div class="table-wrapper" *ngIf="(revokedConsents$ | async)?.length">
+          <table mat-table [dataSource]="(revokedConsents$ | async) || []" class="consent-table">
+            <ng-container matColumnDef="patientName">
+              <th mat-header-cell *matHeaderCellDef>{{ 'CONSENTS.PATIENT' | translate }}</th>
+              <td mat-cell *matCellDef="let row">{{ row.patientName || row.patientDetailsId }}</td>
+            </ng-container>
+            <ng-container matColumnDef="requestingClinicName">
+              <th mat-header-cell *matHeaderCellDef>{{ 'CONSENTS.REQUESTING_CLINIC' | translate }}</th>
+              <td mat-cell *matCellDef="let row">{{ row.requestingClinicName || row.requestingClinicId }}</td>
+            </ng-container>
+            <ng-container matColumnDef="ownerClinicName">
+              <th mat-header-cell *matHeaderCellDef>{{ 'CONSENTS.OWNER_CLINIC' | translate }}</th>
+              <td mat-cell *matCellDef="let row">{{ row.ownerClinicName || row.ownerClinicId }}</td>
+            </ng-container>
+            <ng-container matColumnDef="consentScope">
+              <th mat-header-cell *matHeaderCellDef>{{ 'CONSENTS.SCOPE' | translate }}</th>
+              <td mat-cell *matCellDef="let row">{{ getScopeLabel(row.consentScope) }}</td>
+            </ng-container>
+            <ng-container matColumnDef="consentDate">
+              <th mat-header-cell *matHeaderCellDef>{{ 'CONSENTS.DATE' | translate }}</th>
+              <td mat-cell *matCellDef="let row">{{ row.consentDate | date:'dd/MM/yyyy' }}</td>
+            </ng-container>
+            <ng-container matColumnDef="expiryDate">
+              <th mat-header-cell *matHeaderCellDef>{{ 'CONSENTS.EXPIRY_DATE' | translate }}</th>
+              <td mat-cell *matCellDef="let row">
+                <span [class.expired-badge]="isExpired(row.expiryDate)">
+                  {{ row.expiryDate ? (row.expiryDate | date:'dd/MM/yyyy') : '—' }}
+                </span>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef>{{ 'CONSENTS.ACTIONS' | translate }}</th>
+              <td mat-cell *matCellDef="let row" class="actions-cell">
+                <span class="revoked-label">{{ 'CONSENTS.REVOKED' | translate }}</span>
+              </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+        </div>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
 </div>

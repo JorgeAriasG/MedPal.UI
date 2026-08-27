@@ -15,6 +15,7 @@ import { CommonModule, AsyncPipe } from '@angular/common';
 import { Store } from '@ngrx/store';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { MatDialog } from '@angular/material/dialog';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -33,6 +34,8 @@ import {
 } from '../../../store/audit/audit.selectors';
 import { AuditLogFiltersComponent } from '../audit-log-filters/audit-log-filters.component';
 import { AuditLogTableComponent } from '../audit-log-table/audit-log-table.component';
+import { AuditLogDetailModule } from '../audit-log-detail/audit-log-detail.module';
+import { AuditLogDetailComponent } from '../audit-log-detail/audit-log-detail.component';
 
 /**
  * Audit Logs Page Component
@@ -53,6 +56,7 @@ import { AuditLogTableComponent } from '../audit-log-table/audit-log-table.compo
     TranslateModule,
     AuditLogFiltersComponent,
     AuditLogTableComponent,
+    AuditLogDetailModule,
   ],
 })
 export class AuditLogsPageComponent implements OnInit, OnDestroy {
@@ -70,7 +74,7 @@ export class AuditLogsPageComponent implements OnInit, OnDestroy {
    */
   private destroy$ = new Subject<void>();
 
-  constructor(private store: Store) {
+  constructor(private store: Store, private dialog: MatDialog) {
     // Select observables from store
     this.logs$ = this.store.select(selectAuditLogs);
     this.pagination$ = this.store.select(selectAuditPagination);
@@ -177,8 +181,12 @@ export class AuditLogsPageComponent implements OnInit, OnDestroy {
     this.store.dispatch(
       AuditActions.selectAuditLog({ log })
     );
-    // In Phase 3b, open detail modal here
-    // this.matDialog.open(AuditLogDetailComponent, { data: log });
+    this.dialog.open(AuditLogDetailComponent, {
+      data: { log },
+      panelClass: 'custom-dialog',
+      width: '560px',
+      maxHeight: '80vh',
+    });
   }
 
   /**

@@ -137,21 +137,6 @@ export class AuditEffects {
     )
   );
 
-  /**
-   * Debug effect for development
-   * Logs successful operations to console
-   */
-  auditLogsLoaded$ = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType(AuditActions.loadAuditLogsSuccess),
-        tap((action) =>
-          console.debug('[Audit Effect] Logs loaded:', action.logs.length)
-        )
-      ),
-    { dispatch: false }
-  );
-
   constructor(
     private actions$: Actions,
     private auditLogService: AuditLogService,

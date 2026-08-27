@@ -6,13 +6,10 @@
  * Patient consent approval/revocation UI will be implemented in mobile app
  */
 
-/**
- * Enum for consent scope levels
- */
 export enum ConsentScope {
-  FULL_ACCESS = 'FULL_ACCESS',
-  LIMITED_ACCESS = 'LIMITED_ACCESS',
-  EMERGENCY_ONLY = 'EMERGENCY_ONLY'
+  AllRecords = 'AllRecords',
+  LabsOnly = 'LabsOnly',
+  SpecificDateRange = 'SpecificDateRange',
 }
 
 /**
@@ -73,6 +70,31 @@ export interface IPatientConsent {
    * Additional notes or conditions on the consent
    */
   notes?: string;
+
+  /**
+   * Display name of the requesting clinic
+   */
+  requestingClinicName?: string;
+
+  /**
+   * Display name of the owner clinic
+   */
+  ownerClinicName?: string;
+
+  /**
+   * Display name of the patient
+   */
+  patientName?: string;
+
+  /**
+   * Display name of the user who approved the consent
+   */
+  approvedByUserName?: string;
+
+  /**
+   * Display name of the target doctor
+   */
+  targetDoctorName?: string;
 
   /**
    * Soft delete flag

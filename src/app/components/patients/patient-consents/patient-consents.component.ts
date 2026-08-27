@@ -66,8 +66,8 @@ export class PatientConsentsComponent implements OnInit, OnDestroy {
   getScopeLabel(scope: string): string {
     const map: Record<string, string> = {
       AllRecords: 'PATIENTS.SCOPE_ALL_RECORDS',
-      LimitedAccess: 'PATIENTS.SCOPE_LIMITED',
-      EmergencyOnly: 'PATIENTS.SCOPE_EMERGENCY',
+      LabsOnly: 'PATIENTS.SCOPE_LABS_ONLY',
+      SpecificDateRange: 'PATIENTS.SCOPE_DATE_RANGE',
     };
     return this.translate.instant(map[scope] || scope);
   }

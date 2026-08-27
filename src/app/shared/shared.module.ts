@@ -23,6 +23,7 @@ import { Cie10SearchComponent } from './cie10-search/cie10-search.component';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { TranslateModule } from '@ngx-translate/core';
+import { ConfirmDialogModule } from './confirm-dialog/confirm-dialog.module';
 
 @NgModule({
   declarations: [
@@ -60,6 +61,7 @@ import { TranslateModule } from '@ngx-translate/core';
     OmnibarComponent,
     TimeoutWarningComponent,
     Cie10SearchComponent,
+    ConfirmDialogModule,
     MatTooltipModule,
     TranslateModule,
   ],

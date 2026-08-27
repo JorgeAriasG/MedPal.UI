@@ -94,6 +94,9 @@ export const exportAuditLogsFailure = createAction(
   props<{ error: string }>()
 );
 
+// Clear Report Error
+export const clearAuditReportError = createAction('[Audit] Clear Report Error');
+
 // Reset Audit State
 export const resetAuditState = createAction(
   '[Audit] Reset Audit State'

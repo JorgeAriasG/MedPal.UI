@@ -1,0 +1,28 @@
+.consent-dialog-form {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.dialog-title-icon {
+  color: var(--color-accent);
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+.btn-spinner {
+  display: inline-block;
+  margin-right: 8px;
+}
+
+@media (max-width: 560px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}

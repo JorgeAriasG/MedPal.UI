@@ -84,6 +84,14 @@ export const selectAuditReportError = createSelector(
 );
 
 /**
+ * Select generated audit report
+ */
+export const selectAuditReport = createSelector(
+  selectAuditState,
+  (state: AuditState) => state.report
+);
+
+/**
  * Select combined loading state (logs or report)
  */
 export const selectAuditIsLoading = createSelector(
