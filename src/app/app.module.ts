@@ -18,6 +18,8 @@ import { LoginComponent } from './components/user/login/login.component';
 import { SharedModule } from './shared/shared.module';
 import { SignupComponent } from './components/user/signup/signup.component';
 import { WelcomeComponent } from './components/user/welcome/welcome.component';
+import { BookingComponent } from './components/public/booking/booking.component';
+import { CompleteRegistrationComponent } from './components/public/complete-registration/complete-registration.component';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
@@ -49,7 +51,7 @@ export function localStorageSyncReducer(
 export const metaReducers: MetaReducer<any>[] = [localStorageSyncReducer];
 
 @NgModule({
-  declarations: [AppComponent, LoginComponent, SignupComponent, WelcomeComponent],
+  declarations: [AppComponent, LoginComponent, SignupComponent, WelcomeComponent, BookingComponent, CompleteRegistrationComponent],
   bootstrap: [AppComponent],
   imports: [
     BrowserModule,

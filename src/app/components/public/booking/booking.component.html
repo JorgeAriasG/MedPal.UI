@@ -1,0 +1,84 @@
+<div class="booking-container">
+  <mat-card class="booking-card">
+    <mat-card-header>
+      <mat-card-title>Agendar Cita</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <div *ngIf="!sr" class="error-message">
+        <p>Enlace de reserva inválido. Por favor solicita un nuevo enlace.</p>
+      </div>
+
+      <div *ngIf="sr" class="booking-steps">
+        <mat-stepper [linear]="true" [selectedIndex]="step - 1">
+          <mat-step label="Fecha y hora">
+            <div class="date-section">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Fecha de la cita</mat-label>
+                <input matInput [matDatepicker]="picker" (dateChange)="onDateSelect($event.value)" placeholder="Elige fecha" />
+                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+              </mat-form-field>
+            </div>
+
+            <div *ngIf="loadingSlots" class="loading">
+              <mat-progress-spinner diameter="40" mode="indeterminate"></mat-progress-spinner>
+            </div>
+
+            <div *ngIf="availableSlots.length > 0" class="slots-grid">
+              <button
+                *ngFor="let slot of availableSlots"
+                mat-button
+                [color]="selectedTime === slot.time ? 'primary' : 'basic'"
+                [disabled]="!slot.isAvailable"
+                (click)="onTimeSelect(slot.time)"
+                class="slot-button"
+              >
+                {{ slot.time }}
+              </button>
+            </div>
+          </mat-step>
+
+          <mat-step label="Tus datos">
+            <form [formGroup]="patientForm" class="patient-form">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Nombre completo</mat-label>
+                <input matInput formControlName="patientName" placeholder="Juan Pérez" />
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Teléfono</mat-label>
+                <input matInput formControlName="patientPhone" placeholder="5512345678" />
+                <mat-hint>10 dígitos</mat-hint>
+              </mat-form-field>
+            </form>
+          </mat-step>
+
+          <mat-step label="Confirmar">
+            <form [formGroup]="consentForm" class="consent-form">
+              <p class="consent-title">Para completar tu cita, acepta los siguientes términos:</p>
+
+              <mat-checkbox formControlName="consentMedicalRecords" color="primary">
+                Autorizo el uso de mi información médica para mi atención
+              </mat-checkbox>
+
+              <mat-checkbox formControlName="consentWhatsapp" color="primary">
+                Acepto recibir notificaciones por WhatsApp
+              </mat-checkbox>
+
+              <button
+                mat-raised-button
+                color="primary"
+                class="submit-button"
+                [disabled]="consentForm.invalid"
+                (click)="onSubmit()"
+              >
+                Confirmar Cita
+              </button>
+            </form>
+          </mat-step>
+        </mat-stepper>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

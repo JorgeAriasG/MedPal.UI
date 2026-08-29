@@ -6,12 +6,16 @@ import { WelcomeComponent } from './components/user/welcome/welcome.component';
 import { AuthGuard } from './guards/auth.guard';
 import { ValidatePrescriptionComponent } from './components/public/validate-prescription/validate-prescription.component';
 import { UnauthorizedComponent } from './components/public/unauthorized/unauthorized.component';
+import { BookingComponent } from './components/public/booking/booking.component';
+import { CompleteRegistrationComponent } from './components/public/complete-registration/complete-registration.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'signup', component: SignupComponent },
   { path: 'bienvenido', component: WelcomeComponent },
   { path: 'unauthorized', component: UnauthorizedComponent },
+  { path: 'booking', component: BookingComponent },
+  { path: 'complete', component: CompleteRegistrationComponent },
   {
     path: '',
     loadChildren: () =>
@@ -22,7 +26,7 @@ const routes: Routes = [
     path: 'validate-prescription/:code',
     component: ValidatePrescriptionComponent,
   },
-  { path: '**', redirectTo: 'login' }, // Redirect unknown routes to login
+  { path: '**', redirectTo: 'login' },
 ];
 
 @NgModule({
