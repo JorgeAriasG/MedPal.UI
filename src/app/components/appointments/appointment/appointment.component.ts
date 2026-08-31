@@ -18,6 +18,8 @@ import { toHourMinute } from 'src/app/shared/utils/date-utils';
 import { AuthService } from 'src/app/services/auth.service';
 import { ConfirmStartConsultationComponent } from './confirm-start-consultation/confirm-start-consultation.component';
 import { ConfirmDialogData, ConfirmDialogResult } from './confirm-start-consultation/confirm-start-consultation.component';
+import { ConfirmDialogComponent as SharedConfirmDialog, ConfirmDialogData as SharedConfirmDialogData } from 'src/app/shared/confirm-dialog/confirm-dialog.component';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-appointment',
@@ -55,6 +57,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
     private store: Store,
     private router: Router,
     private authService: AuthService,
+    private translate: TranslateService,
   ) {}
 
   ngOnInit() {
@@ -156,7 +159,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
               : start;
             const pad = (n: number) => n.toString().padStart(2, '0');
             const timeStr = `${pad(start.getHours())}:${pad(start.getMinutes())} - ${pad(end.getHours())}:${pad(end.getMinutes())}`;
-            const fullName = `${appointment.patient?.name || ''} ${appointment.patient?.lastname || ''}`.trim() || 'No Name';
+            const fullName = `${appointment.patient?.name || ''} ${appointment.patient?.lastname || ''}`.trim() || this.translate.instant('APPOINTMENTS.TITLE_NO_NAME');
 
             return {
               start,
@@ -329,13 +332,26 @@ export class AppointmentComponent implements OnInit, OnDestroy {
     const name = appointment.patient?.name
       ? `${appointment.patient.name} ${appointment.patient.lastname || ''}`.trim()
       : 'esta cita';
-    if (!window.confirm(`¿Cancelar la cita de ${name}?`)) return;
-    this.appointmentService.cancelAppointment(appointment.id)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: () => this.getAllAppointmentsById(),
-        error: (err) => console.error('Error cancelling appointment:', err),
-      });
+    const dialogRef = this.dialog.open(SharedConfirmDialog, {
+      data: {
+        title: 'Cancelar cita',
+        message: `¿Cancelar la cita de ${name}?`,
+        confirmText: 'Cancelar cita',
+        cancelText: 'Volver',
+        confirmColor: 'warn',
+      } as SharedConfirmDialogData,
+      panelClass: 'custom-dialog',
+      width: '420px',
+    });
+    dialogRef.afterClosed().subscribe((confirmed) => {
+      if (!confirmed) return;
+      this.appointmentService.cancelAppointment(appointment.id)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: () => this.getAllAppointmentsById(),
+          error: (err) => console.error('Error cancelling appointment:', err),
+        });
+    });
   }
 
   trackByAppointment(_index: number, appointment: any): number {

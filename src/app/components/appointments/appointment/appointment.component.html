@@ -38,7 +38,7 @@
           <mat-icon>chevron_right</mat-icon>
         </button>
       </div>
-      <h2 class="current-date-label">{{ viewDate | calendarDate:(view + 'ViewTitle'):'en' }}</h2>
+      <h2 class="current-date-label">{{ viewDate | calendarDate:(view + 'ViewTitle'):'es' }}</h2>
     </div>
 
     <div class="calendar-view-toggle">
@@ -200,7 +200,7 @@
                 <button mat-icon-button class="action-btn" (click)="openEditModal(appointment)" [matTooltip]="'APPOINTMENTS.TOOLTIP_EDIT' | translate">
                   <mat-icon>edit</mat-icon>
                 </button>
-                <button mat-icon-button class="action-btn cancel-btn" (click)="cancelAppointment(appointment)" *ngIf="appointment.status === 'Scheduled' || appointment.status === 'Confirmed'" matTooltip="Cancelar cita">
+                <button mat-icon-button class="action-btn cancel-btn" (click)="cancelAppointment(appointment)" *ngIf="appointment.status === 'Scheduled' || appointment.status === 'Confirmed'" [matTooltip]="'APPOINTMENTS.TOOLTIP_CANCEL' | translate">
                   <mat-icon>cancel</mat-icon>
                 </button>
               </div>

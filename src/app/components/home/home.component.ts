@@ -13,6 +13,7 @@ import { IPatient } from 'src/app/entities/IPatient';
 import { selectUserId } from 'src/app/store/selectors/auth.selectors';
 import { ClinicContextService } from 'src/app/services/clinic-context.service';
 import { KeyboardShortcutService } from 'src/app/services/keyboard-shortcut.service';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-home',
@@ -27,6 +28,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   clinicId: number | null | undefined;
   userId: number | null | undefined;
   currentUser: any = null;
+  userName = '';
+  loading = true;
 
   // KPIs
   appointmentsTodayCount: number = 0;
@@ -59,12 +62,20 @@ export class HomeComponent implements OnInit, OnDestroy {
     private patientService: PatientsService,
     private clinicContextService: ClinicContextService,
     private shortcutService: KeyboardShortcutService,
+    private authService: AuthService,
     private store: Store,
     private router: Router,
     private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
+    this.authService.currentUser$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((user) => {
+        this.currentUser = user;
+        this.userName = user?.name || '';
+      });
+
     this.clinicContextService
       .getClinicContext()
       .pipe(takeUntil(this.destroy$))
@@ -107,9 +118,11 @@ export class HomeComponent implements OnInit, OnDestroy {
           });
           this.calculatePatientMetrics(patients);
           this.calculateAppointmentMetrics(appointments);
+          this.loading = false;
         },
         error: (err) => {
           console.error('Error loading dashboard data:', err);
+          this.loading = false;
         },
       });
   }
@@ -254,10 +267,10 @@ export class HomeComponent implements OnInit, OnDestroy {
     const diffTime = date.getTime() - now.getTime();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-    if (diffDays === 0) return 'Today';
-    if (diffDays === 1) return 'Tomorrow';
-    if (diffDays > 1 && diffDays <= 7) return `In ${diffDays} days`;
-    return diffDays > 7 ? 'Next week' : 'Overdue';
+    if (diffDays === 0) return 'Hoy';
+    if (diffDays === 1) return 'Mañana';
+    if (diffDays > 1 && diffDays <= 7) return `En ${diffDays} días`;
+    return diffDays > 7 ? 'Siguiente semana' : 'Atrasado';
   }
 
   openOmnibar(): void {

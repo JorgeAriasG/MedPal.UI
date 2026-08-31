@@ -1,4 +1,8 @@
 {
+  "APP": {
+    "GREETING": "Hola",
+    "SEARCH_PLACEHOLDER": "Buscar pacientes o acciones..."
+  },
   "COMMON": {
     "SAVE": "Guardar",
     "SAVING": "Guardando...",
@@ -70,7 +74,8 @@
     "TIME_REQUIRED": "La hora es requerida",
     "DIAGNOSIS_REQUIRED": "El diagnóstico es requerido para el registro médico",
     "TERMS_REQUIRED": "Debes aceptar los términos y condiciones",
-    "CONSENT_REQUIRED": "Debes aceptar el consentimiento de datos"
+    "CONSENT_REQUIRED": "Debes aceptar el consentimiento de datos",
+    "PHONE_REQUIRED": "El teléfono es requerido"
   },
   "AUTH": {
     "LOGIN": {
@@ -170,7 +175,16 @@
     "NAVIGATE": "Navegar",
     "SELECT": "Seleccionar",
     "CLOSE": "Cerrar",
-    "ACTIONS": "Acciones"
+    "ACTIONS": "Acciones",
+    "NAME_MIN_CHARS": "Escribe al menos 2 caracteres para el nombre del paciente",
+    "APPOINTMENT_SUCCESS": "Cita agendada para {{name}}",
+    "APPOINTMENT_ERROR": "No se pudo agendar la cita. Verifica los datos e inténtalo de nuevo.",
+    "PATIENT_CREATE_ERROR": "No se pudo crear el paciente para la cita.",
+    "PATIENT_CREATE_RETRY_ERROR": "No se pudo crear el paciente para la cita. Verifica e inténtalo de nuevo.",
+    "FALLBACK_LASTNAME": "Sin apellido",
+    "FALLBACK_ADDRESS": "Sin configurar",
+    "FALLBACK_GENDER": "No especificado",
+    "FALLBACK_NOTES": "Creado vía Comando Central"
   },
   "TIMEOUT": {
     "TITLE": "Sesión por expirar",
@@ -226,6 +240,7 @@
     "RECENT_PATIENTS": "Pacientes recientes",
     "VIEW_ALL_PATIENTS": "Ver todos",
     "NO_PATIENTS_YET": "Sin pacientes aún",
+    "UNKNOWN_PATIENT": "Paciente",
     "TOTAL_PATIENTS": "Total pacientes",
     "TOTAL_CLINICS": "Total Clínicas",
     "ACTIVE_USERS": "Usuarios Activos"
@@ -355,6 +370,8 @@
     "TABLE_TIME": "Hora",
     "TABLE_STATUS": "Estado",
     "TOOLTIP_EDIT": "Editar cita",
+    "TOOLTIP_CANCEL": "Cancelar cita",
+    "TITLE_NO_NAME": "Sin nombre",
     "EMPTY_TITLE": "No hay Citas",
     "EMPTY_MESSAGE": "Aún no tienes citas agendadas. Crea una para comenzar.",
     "EMPTY_BUTTON": "Crear Primera Cita",
@@ -1047,8 +1064,97 @@
     "EMPTY_REVOKED": "No hay consentimientos revocados",
     "CONFIRM_REVOKE": "¿Está seguro de revocar este consentimiento?",
     "GRANT_SUCCESS": "Consentimiento registrado exitosamente",
+    "APPROVE_SUCCESS": "Consentimiento aprobado",
+    "REJECT_SUCCESS": "Consentimiento rechazado",
     "REVOKE_SUCCESS": "Consentimiento revocado",
+    "REVOKE_SUCCESS_MESSAGE": "Consentimiento revocado",
     "ERROR": "Error al procesar el consentimiento",
     "FILTER_PLACEHOLDER": "Buscar por nombre de paciente..."
+  },
+  "CONSULTATION": {
+    "DIAGNOSIS_REQUIRED": "Escribe un diagnóstico para poder guardar la consulta",
+    "CLINICAL_NOTES_REQUIRED": "Completa las Notas Clínicas para poder guardar la consulta",
+    "SAVE_SUCCESS": "Consulta guardada con éxito",
+    "SAVE_ERROR": "No se pudo guardar la consulta. Verifica que todos los campos requeridos estén completos.",
+    "PRESCRIPTION_DIAGNOSIS_REQUIRED": "Escribe un diagnóstico para poder generar la receta",
+    "PRESCRIPTION_TREATMENTS_REQUIRED": "Agrega al menos un tratamiento para poder generar la receta",
+    "PRESCRIPTION_PATIENT_NOT_FOUND": "No se pudo identificar al paciente para la receta",
+    "PRESCRIPTION_INCOMPLETE_ITEMS": "Completa la dosis, frecuencia y duración de todos los tratamientos para generar la receta",
+    "PRESCRIPTION_SUCCESS": "Receta generada con éxito",
+    "PRESCRIPTION_ERROR": "No se pudo generar la receta. Verifica los datos e inténtalo de nuevo."
+  },
+  "BOOKING": {
+    "TITLE": "Agendar Cita",
+    "INVALID_LINK": "Enlace de reserva inválido. Por favor solicita un nuevo enlace.",
+    "STEP_DATETIME": "Fecha y hora",
+    "STEP_DATA": "Tus datos",
+    "STEP_CONFIRM": "Confirmar",
+    "DATE_LABEL": "Fecha de la cita",
+    "DATE_PLACEHOLDER": "Elige fecha",
+    "NO_SLOTS": "No hay horarios disponibles para esta fecha",
+    "SLOT_ARIA": "Horario {{time}}, {{state}}",
+    "NAME_LABEL": "Nombre completo",
+    "NAME_PLACEHOLDER": "Juan Pérez",
+    "PHONE_LABEL": "Teléfono",
+    "PHONE_PLACEHOLDER": "5512345678",
+    "PHONE_INVALID": "Ingresa un teléfono de 10 dígitos",
+    "CONSENT_TITLE": "Para completar tu cita, acepta los siguientes términos:",
+    "CONSENT_RECORDS": "Autorizo el uso de mi información médica para mi atención",
+    "CONSENT_WHATSAPP": "Acepto recibir notificaciones por WhatsApp",
+    "CONSENT_REQUIRED": "Debes aceptar ambos términos para continuar",
+    "CONFIRM": "Confirmar Cita",
+    "SNACKBAR_INVALID_LINK": "Enlace de reserva inválido",
+    "SNACKBAR_LOAD_ERROR": "Error al cargar disponibilidad",
+    "SNACKBAR_PENDING": "Cita agendada. Revisa WhatsApp para completar tu registro.",
+    "SNACKBAR_SUCCESS": "Cita agendada exitosamente",
+    "SNACKBAR_ERROR": "Error al agendar cita"
+  },
+  "COMPLETE_REGISTRATION": {
+    "TITLE": "Completar Registro",
+    "INVALID_TOKEN": "Token inválido. Solicita un nuevo enlace de registro.",
+    "SUCCESS": "¡Registro completado! Serás redirigido...",
+    "EMAIL_LABEL": "Correo electrónico",
+    "EMAIL_PLACEHOLDER": "tu@email.com",
+    "PASSWORD_LABEL": "Contraseña",
+    "PASSWORD_HINT": "Mínimo 6 caracteres",
+    "CONFIRM_PASSWORD_LABEL": "Confirmar contraseña",
+    "NAME_LABEL": "Nombre (opcional)",
+    "LASTNAME_LABEL": "Apellido (opcional)",
+    "SUBMIT": "Completar Registro",
+    "PROCESSING": "Procesando...",
+    "SHOW_PASSWORD": "Mostrar contraseña",
+    "HIDE_PASSWORD": "Ocultar contraseña",
+    "SNACKBAR_INVALID_TOKEN": "Token inválido",
+    "SNACKBAR_SUCCESS": "Registro completado exitosamente",
+    "SNACKBAR_ERROR": "Error al completar registro"
+  },
+  "UNAUTHORIZED": {
+    "TITLE": "Acceso Denegado",
+    "MESSAGE": "No tienes permiso para acceder a este recurso. Contacta a tu administrador si crees que es un error.",
+    "CODE": "Error 403 - Prohibido",
+    "GO_BACK": "Regresar",
+    "GO_HOME": "Inicio",
+    "BACK_TITLE": "Volver a la página anterior",
+    "HOME_TITLE": "Ir a la página de inicio",
+    "HELP_TEXT": "Si necesitas acceso a este recurso, solicita permiso a tu administrador."
+  },
+  "VALIDATE_PRESCRIPTION": {
+    "LOADING_TITLE": "Verificando Receta...",
+    "LOADING_SUBTITLE": "Esto solo tomará un segundo.",
+    "VERIFIED_BADGE": "SISTEMA VERIFICADO",
+    "VALID_TITLE": "Receta Válida",
+    "VALID_SUBTITLE": "Esta receta ha sido emitida por un médico colegiado.",
+    "PATIENT": "Paciente",
+    "PATIENT_FALLBACK": "Paciente Verificado",
+    "DOCTOR": "Médico",
+    "ISSUED": "Emisión",
+    "EXPIRATION": "Vencimiento",
+    "CLINIC": "Clínica",
+    "MEDICATIONS": "Medicamentos",
+    "PRINT": "Imprimir Receta",
+    "INVALID_TITLE": "Receta No Válida",
+    "INVALID_FALLBACK": "El código de receta es incorrecto o ha expirado.",
+    "CONTACT_SUPPORT": "Contactar Soporte",
+    "POWERED_BY": "Powered by ClinicFlow — Plataforma de Gestión Médica"
   }
 }

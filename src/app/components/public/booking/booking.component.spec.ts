@@ -3,6 +3,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { BookingComponent } from './booking.component';
 import { BookingService } from 'src/app/services/booking.service';
@@ -14,7 +15,7 @@ describe('BookingComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [BookingComponent],
-      imports: [ReactiveFormsModule, MatCardModule],
+      imports: [ReactiveFormsModule, MatCardModule, TranslateModule.forRoot()],
       providers: [
         {
           provide: ActivatedRoute,

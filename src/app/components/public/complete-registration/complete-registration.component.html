@@ -1,45 +1,53 @@
 <div class="complete-registration-container">
   <mat-card class="complete-registration-card">
     <mat-card-header>
-      <mat-card-title>Completar Registro</mat-card-title>
+      <mat-card-title>{{ 'COMPLETE_REGISTRATION.TITLE' | translate }}</mat-card-title>
     </mat-card-header>
 
     <mat-card-content>
-      <div *ngIf="!token" class="error-message">
-        <p>Token inválido. Solicita un nuevo enlace de registro.</p>
+      <div *ngIf="!token" class="error-message" role="alert">
+        <p>{{ 'COMPLETE_REGISTRATION.INVALID_TOKEN' | translate }}</p>
       </div>
 
-      <div *ngIf="success" class="success-message">
-        <p>¡Registro completado! Serás redirigido...</p>
+      <div *ngIf="success" class="success-message" role="status" aria-live="polite">
+        <p>{{ 'COMPLETE_REGISTRATION.SUCCESS' | translate }}</p>
       </div>
 
       <form *ngIf="token && !success" [formGroup]="registrationForm" class="registration-form" (ngSubmit)="onSubmit()">
         <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Correo electrónico</mat-label>
-          <input matInput formControlName="email" type="email" placeholder="tu@email.com" />
+          <mat-label>{{ 'COMPLETE_REGISTRATION.EMAIL_LABEL' | translate }}</mat-label>
+          <input matInput formControlName="email" type="email" [placeholder]="'COMPLETE_REGISTRATION.EMAIL_PLACEHOLDER' | translate" />
+          <mat-error *ngIf="registrationForm.get('email')?.hasError('required')">{{ 'VALIDATION.EMAIL_REQUIRED' | translate }}</mat-error>
+          <mat-error *ngIf="registrationForm.get('email')?.hasError('email')">{{ 'VALIDATION.EMAIL_INVALID' | translate }}</mat-error>
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Contraseña</mat-label>
-          <input matInput formControlName="password" type="password" />
-          <mat-hint>Mínimo 6 caracteres</mat-hint>
+          <mat-label>{{ 'COMPLETE_REGISTRATION.PASSWORD_LABEL' | translate }}</mat-label>
+          <input matInput formControlName="password" [type]="hidePassword ? 'password' : 'text'" />
+          <button mat-icon-button matSuffix type="button" (click)="hidePassword = !hidePassword" [attr.aria-label]="(hidePassword ? 'COMPLETE_REGISTRATION.SHOW_PASSWORD' : 'COMPLETE_REGISTRATION.HIDE_PASSWORD') | translate" tabindex="-1">
+            <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+          <mat-hint>{{ 'COMPLETE_REGISTRATION.PASSWORD_HINT' | translate }}</mat-hint>
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Confirmar contraseña</mat-label>
-          <input matInput formControlName="confirmPassword" type="password" />
+          <mat-label>{{ 'COMPLETE_REGISTRATION.CONFIRM_PASSWORD_LABEL' | translate }}</mat-label>
+          <input matInput formControlName="confirmPassword" [type]="hideConfirmPassword ? 'password' : 'text'" />
+          <button mat-icon-button matSuffix type="button" (click)="hideConfirmPassword = !hideConfirmPassword" [attr.aria-label]="(hideConfirmPassword ? 'COMPLETE_REGISTRATION.SHOW_PASSWORD' : 'COMPLETE_REGISTRATION.HIDE_PASSWORD') | translate" tabindex="-1">
+            <mat-icon>{{ hideConfirmPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
           <mat-error *ngIf="registrationForm.hasError('mismatch')">
-            Las contraseñas no coinciden
+            {{ 'ERRORS.PASSWORDS_MISMATCH' | translate }}
           </mat-error>
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Nombre (opcional)</mat-label>
+          <mat-label>{{ 'COMPLETE_REGISTRATION.NAME_LABEL' | translate }}</mat-label>
           <input matInput formControlName="name" />
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Apellido (opcional)</mat-label>
+          <mat-label>{{ 'COMPLETE_REGISTRATION.LASTNAME_LABEL' | translate }}</mat-label>
           <input matInput formControlName="lastname" />
         </mat-form-field>
 
@@ -50,8 +58,8 @@
           [disabled]="registrationForm.invalid || loading"
           type="submit"
         >
-          <span *ngIf="!loading">Completar Registro</span>
-          <span *ngIf="loading">Procesando...</span>
+          <span *ngIf="!loading">{{ 'COMPLETE_REGISTRATION.SUBMIT' | translate }}</span>
+          <span *ngIf="loading">{{ 'COMPLETE_REGISTRATION.PROCESSING' | translate }}</span>
         </button>
       </form>
     </mat-card-content>

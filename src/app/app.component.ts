@@ -10,6 +10,7 @@ import { UiService } from './services/ui.service';
 import { KeyboardShortcutService } from './services/keyboard-shortcut.service';
 import { IdleService } from './services/idle.service';
 import { AuthService } from './services/auth.service';
+import { User } from './entities/auth.models';
 
 @Component({
   selector: 'app-root',
@@ -24,6 +25,7 @@ export class AppComponent implements OnInit, OnDestroy {
   showTimeoutWarning = false;
   timeoutRemainingSeconds = 0;
   showChrome = false;
+  userName = '';
   private destroy$ = new Subject<void>();
   private readonly publicPathPrefixes = [
     '/login',
@@ -48,6 +50,12 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.authService.currentUser$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(user => {
+        this.userName = user?.name || '';
+      });
+
     this.uiService.isCollapsed$
       .pipe(takeUntil(this.destroy$))
       .subscribe(state => {

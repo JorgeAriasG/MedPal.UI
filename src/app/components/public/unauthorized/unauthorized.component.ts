@@ -10,13 +10,14 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-unauthorized',
   templateUrl: './unauthorized.component.html',
   styleUrls: ['./unauthorized.component.css'],
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
 })
 export class UnauthorizedComponent implements OnInit, OnDestroy {
   returnUrl: string | null = null;

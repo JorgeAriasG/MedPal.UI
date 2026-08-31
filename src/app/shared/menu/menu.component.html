@@ -3,7 +3,7 @@
     <div class="menu-logo">
       <img src="assets/logo-240-invert.png" alt="ClinicFlow" class="logo-img">
     </div>
-    <button mat-icon-button class="toggle-btn" (click)="toggleSidebar()">
+    <button mat-icon-button class="toggle-btn" (click)="toggleSidebar()" [attr.aria-label]="'MENU.TOGGLE_SIDEBAR' | translate">
       <mat-icon>{{ isCollapsed ? 'chevron_right' : 'chevron_left' }}</mat-icon>
     </button>
   </div>
@@ -81,7 +81,7 @@
 
   <div class="menu-footer">
     <mat-divider class="menu-divider"></mat-divider>
-    <button mat-button class="logout-btn" (click)="logout()">
+    <button mat-button class="logout-btn" (click)="logout()" [attr.aria-label]="'MENU.LOGOUT' | translate">
       <mat-icon class="menu-icon">logout</mat-icon>
       <span class="menu-text" *ngIf="!isCollapsed">{{ 'MENU.LOGOUT' | translate }}</span>
     </button>

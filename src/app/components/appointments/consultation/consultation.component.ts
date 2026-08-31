@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, from, of } from 'rxjs';
 import { concatMap, takeUntil } from 'rxjs/operators';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { TranslateService } from '@ngx-translate/core';
 import { AppointmentsService } from '../services/appointments.service';
 import { PatientsService } from 'src/app/components/patients/services/patients.service';
 import { Store } from '@ngrx/store';
@@ -55,6 +56,7 @@ export class ConsultationComponent implements OnInit, OnDestroy {
     private clinicalDataService: ClinicalDataService,
     private snackBar: MatSnackBar,
     private store: Store,
+    private translate: TranslateService,
   ) {}
 
   ngOnInit(): void {
@@ -245,7 +247,7 @@ export class ConsultationComponent implements OnInit, OnDestroy {
 
     if (!dto.diagnosis) {
       this.saving = false;
-      this.snackBar.open('Escribe un diagnóstico para poder guardar la consulta', 'OK', {
+      this.snackBar.open(this.translate.instant('CONSULTATION.DIAGNOSIS_REQUIRED'), 'OK', {
         duration: 4000,
         panelClass: 'cf-toast-warn',
       });
@@ -254,7 +256,7 @@ export class ConsultationComponent implements OnInit, OnDestroy {
 
     if (!dto.clinicalNotes) {
       this.saving = false;
-      this.snackBar.open('Completa las Notas Clínicas para poder guardar la consulta', 'OK', {
+      this.snackBar.open(this.translate.instant('CONSULTATION.CLINICAL_NOTES_REQUIRED'), 'OK', {
         duration: 4000,
         panelClass: 'cf-toast-warn',
       });
@@ -276,7 +278,7 @@ export class ConsultationComponent implements OnInit, OnDestroy {
         next: () => {
           localStorage.removeItem(this.draftKey);
           this.saving = false;
-          this.snackBar.open('Consulta guardada con éxito', 'OK', {
+          this.snackBar.open(this.translate.instant('CONSULTATION.SAVE_SUCCESS'), 'OK', {
             duration: 3000,
             panelClass: 'cf-toast-success',
           });
@@ -285,7 +287,7 @@ export class ConsultationComponent implements OnInit, OnDestroy {
           console.error('Error al completar la consulta:', err);
           this.saving = false;
           this.snackBar.open(
-            'No se pudo guardar la consulta. Verifica que todos los campos requeridos estén completos.',
+            this.translate.instant('CONSULTATION.SAVE_ERROR'),
             'OK',
             { duration: 5000, panelClass: 'cf-toast-error' }
           );
@@ -300,7 +302,7 @@ export class ConsultationComponent implements OnInit, OnDestroy {
     const patientId = this.appointment?.patient?.id ?? this.appointment?.patientId;
 
     if (!diagnosis) {
-      this.snackBar.open('Escribe un diagnóstico para poder generar la receta', 'OK', {
+      this.snackBar.open(this.translate.instant('CONSULTATION.PRESCRIPTION_DIAGNOSIS_REQUIRED'), 'OK', {
         duration: 4000,
         panelClass: 'cf-toast-warn',
       });
@@ -308,7 +310,7 @@ export class ConsultationComponent implements OnInit, OnDestroy {
     }
 
     if (!treatments.length) {
-      this.snackBar.open('Agrega al menos un tratamiento para poder generar la receta', 'OK', {
+      this.snackBar.open(this.translate.instant('CONSULTATION.PRESCRIPTION_TREATMENTS_REQUIRED'), 'OK', {
         duration: 4000,
         panelClass: 'cf-toast-warn',
       });
@@ -316,7 +318,7 @@ export class ConsultationComponent implements OnInit, OnDestroy {
     }
 
     if (!patientId) {
-      this.snackBar.open('No se pudo identificar al paciente para la receta', 'OK', {
+      this.snackBar.open(this.translate.instant('CONSULTATION.PRESCRIPTION_PATIENT_NOT_FOUND'), 'OK', {
         duration: 4000,
         panelClass: 'cf-toast-error',
       });
@@ -334,7 +336,7 @@ export class ConsultationComponent implements OnInit, OnDestroy {
     const incomplete = items.filter((i) => !i.medicationName || !i.dosage || !i.frequency || !i.duration);
     if (incomplete.length) {
       this.snackBar.open(
-        'Completa la dosis, frecuencia y duración de todos los tratamientos para generar la receta',
+        this.translate.instant('CONSULTATION.PRESCRIPTION_INCOMPLETE_ITEMS'),
         'OK',
         { duration: 5000, panelClass: 'cf-toast-warn' }
       );
@@ -354,14 +356,14 @@ export class ConsultationComponent implements OnInit, OnDestroy {
 
     this.prescriptionService.createPrescription(payload).subscribe({
       next: () => {
-        this.snackBar.open('Receta generada con éxito', 'OK', {
+        this.snackBar.open(this.translate.instant('CONSULTATION.PRESCRIPTION_SUCCESS'), 'OK', {
           duration: 3000,
           panelClass: 'cf-toast-success',
         });
       },
       error: (err) => {
         console.error('Error al generar la receta:', err);
-        this.snackBar.open('No se pudo generar la receta. Verifica los datos e inténtalo de nuevo.', 'OK', {
+        this.snackBar.open(this.translate.instant('CONSULTATION.PRESCRIPTION_ERROR'), 'OK', {
           duration: 5000,
           panelClass: 'cf-toast-error',
         });

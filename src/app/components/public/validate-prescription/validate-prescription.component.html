@@ -3,17 +3,17 @@
     
     <!-- Loading State -->
     <div *ngIf="loading" class="status-section">
-      <mat-spinner diameter="50" class="mx-auto mb-4"></mat-spinner>
-      <h3>Verificando Receta...</h3>
-      <p class="text-muted">Esto solo tomará un segundo.</p>
+      <mat-spinner diameter="50"></mat-spinner>
+      <h3>{{ 'VALIDATE_PRESCRIPTION.LOADING_TITLE' | translate }}</h3>
+      <p class="loading-subtitle">{{ 'VALIDATE_PRESCRIPTION.LOADING_SUBTITLE' | translate }}</p>
     </div>
 
     <ng-container *ngIf="!loading">
       <!-- Header Branding -->
       <div class="card-header">
         <div class="brand-badge">
-          <mat-icon style="font-size: 16px; width: 16px; height: 16px;">verified_user</mat-icon>
-          SISTEMA VERIFICADO
+          <mat-icon>verified_user</mat-icon>
+          {{ 'VALIDATE_PRESCRIPTION.VERIFIED_BADGE' | translate }}
         </div>
         <div class="brand-title"><img src="assets/logo-240.png" alt="ClinicFlow" class="brand-logo"> <strong>Pro</strong></div>
       </div>
@@ -24,18 +24,18 @@
           <div class="status-icon-wrapper">
             <mat-icon>check_circle</mat-icon>
           </div>
-          <h2 class="section-heading">Receta Válida</h2>
-          <p class="text-muted">Esta receta ha sido emitida por un médico colegiado.</p>
+          <h2 class="section-heading">{{ 'VALIDATE_PRESCRIPTION.VALID_TITLE' | translate }}</h2>
+          <p class="loading-subtitle">{{ 'VALIDATE_PRESCRIPTION.VALID_SUBTITLE' | translate }}</p>
         </div>
 
         <div class="prescription-details">
           <div class="detail-row">
-            <span class="detail-label">Paciente</span>
-            <span class="detail-value">{{ prescriptionData?.patientName || 'Paciente Verificado' }}</span>
+            <span class="detail-label">{{ 'VALIDATE_PRESCRIPTION.PATIENT' | translate }}</span>
+            <span class="detail-value">{{ prescriptionData?.patientName || ('VALIDATE_PRESCRIPTION.PATIENT_FALLBACK' | translate) }}</span>
           </div>
           <div class="detail-row">
-            <span class="detail-label">Médico</span>
-            <div class="detail-value text-end">
+            <span class="detail-label">{{ 'VALIDATE_PRESCRIPTION.DOCTOR' | translate }}</span>
+            <div class="detail-value">
               <div>{{ prescriptionData?.doctorName }}</div>
               <div class="sub-text">
                 {{ prescriptionData?.doctorSpecialty }} | Céd. {{ prescriptionData?.doctorLicense }}
@@ -43,16 +43,16 @@
             </div>
           </div>
           <div class="detail-row">
-            <span class="detail-label">Emisión</span>
+            <span class="detail-label">{{ 'VALIDATE_PRESCRIPTION.ISSUED' | translate }}</span>
             <span class="detail-value">{{ (prescriptionData?.issuedAt || prescriptionData?.createdAt) | date : "mediumDate" }}</span>
           </div>
           <div class="detail-row">
-            <span class="detail-label">Vencimiento</span>
+            <span class="detail-label">{{ 'VALIDATE_PRESCRIPTION.EXPIRATION' | translate }}</span>
             <span class="detail-value primary-text">{{ prescriptionData?.expiresAt | date : "mediumDate" }}</span>
           </div>
           <div class="detail-row">
-            <span class="detail-label">Clínica</span>
-            <div class="detail-value text-end">
+            <span class="detail-label">{{ 'VALIDATE_PRESCRIPTION.CLINIC' | translate }}</span>
+            <div class="detail-value">
               <div>{{ prescriptionData?.clinicName }}</div>
               <div class="sub-text">
                 {{ prescriptionData?.clinicAddress }}
@@ -61,7 +61,7 @@
           </div>
 
           <div class="medications-section">
-            <h5 class="med-label" style="margin: 0 0 12px;">Medicamentos</h5>
+            <h5 class="med-label">{{ 'VALIDATE_PRESCRIPTION.MEDICATIONS' | translate }}</h5>
             <div class="med-item" *ngFor="let item of prescriptionData?.items">
               <mat-icon class="primary-text">medication</mat-icon>
               <div class="med-info">
@@ -72,7 +72,7 @@
           </div>
 
           <button mat-flat-button color="primary" class="btn-action" (click)="window.print()">
-            <mat-icon>print</mat-icon> Imprimir Receta
+            <mat-icon>print</mat-icon> {{ 'VALIDATE_PRESCRIPTION.PRINT' | translate }}
           </button>
         </div>
       </div>
@@ -82,12 +82,12 @@
         <div class="status-icon-wrapper error">
           <mat-icon>error</mat-icon>
         </div>
-        <h2 style="color: #ef4444;">Receta No Válida</h2>
-        <p class="text-muted mt-2">{{ errorMessage || 'El código de receta es incorrecto o ha expirado.' }}</p>
+        <h2 class="error-heading">{{ 'VALIDATE_PRESCRIPTION.INVALID_TITLE' | translate }}</h2>
+        <p class="loading-subtitle">{{ errorMessage || ('VALIDATE_PRESCRIPTION.INVALID_FALLBACK' | translate) }}</p>
         
-        <div style="padding: 0 24px;">
+        <div class="error-actions">
           <button mat-stroked-button class="btn-action" routerLink="/login">
-            Contactar Soporte
+            {{ 'VALIDATE_PRESCRIPTION.CONTACT_SUPPORT' | translate }}
           </button>
         </div>
       </div>
@@ -95,7 +95,7 @@
       <!-- Footer Branding -->
       <div class="card-footer">
         <p class="powered-by">
-          Powered by <strong>ClinicFlow</strong> — Plataforma de Gestión Médica
+          {{ 'VALIDATE_PRESCRIPTION.POWERED_BY' | translate }}
         </p>
       </div>
     </ng-container>

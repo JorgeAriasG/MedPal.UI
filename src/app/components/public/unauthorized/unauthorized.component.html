@@ -18,16 +18,15 @@
     </div>
 
     <!-- Heading -->
-    <h1>Access Denied</h1>
+    <h1>{{ 'UNAUTHORIZED.TITLE' | translate }}</h1>
 
     <!-- Error Message -->
     <p class="error-message">
-      You do not have permission to access this resource. Please contact your
-      administrator if you believe this is an error.
+      {{ 'UNAUTHORIZED.MESSAGE' | translate }}
     </p>
 
     <!-- Error Code -->
-    <p class="error-code">Error 403 - Forbidden</p>
+    <p class="error-code">{{ 'UNAUTHORIZED.CODE' | translate }}</p>
 
     <!-- Action Buttons -->
     <div class="action-buttons">
@@ -35,23 +34,22 @@
         (click)="goBack()"
         class="btn btn-primary"
         *ngIf="returnUrl"
-        title="Go back to previous page"
+        [attr.title]="'UNAUTHORIZED.BACK_TITLE' | translate"
       >
-        Go Back
+        {{ 'UNAUTHORIZED.GO_BACK' | translate }}
       </button>
       <button
         (click)="goHome()"
         class="btn btn-secondary"
-        title="Go to home page"
+        [attr.title]="'UNAUTHORIZED.HOME_TITLE' | translate"
       >
-        Go Home
+        {{ 'UNAUTHORIZED.GO_HOME' | translate }}
       </button>
     </div>
 
     <!-- Help Text -->
     <p class="help-text">
-      If you need access to this resource, please request permission from your
-      administrator.
+      {{ 'UNAUTHORIZED.HELP_TEXT' | translate }}
     </p>
   </div>
 </div>

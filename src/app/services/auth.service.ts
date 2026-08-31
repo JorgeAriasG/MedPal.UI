@@ -189,6 +189,19 @@ export class AuthService {
   }
 
   /**
+   * Persist authenticated user state (token, role, permissions, user data).
+   * Used by external flows (e.g. patient complete-registration) to keep auth
+   * state consistent with the normal login flow.
+   */
+  persistAuth(user: User, token: string, role: string, permissions: string[] = []): void {
+    localStorage.setItem(this.TOKEN_KEY, token);
+    localStorage.setItem(this.ROLE_KEY, role);
+    localStorage.setItem(this.PERMISSIONS_KEY, JSON.stringify(permissions));
+    localStorage.setItem(this.USER_KEY, JSON.stringify(user));
+    this.currentUserSubject.next(user);
+  }
+
+  /**
    * Get current user profile data from backend
    *
    * @returns Observable<User>

@@ -6,15 +6,15 @@
   <mat-sidenav-content class="sidenav-content">
     <mat-toolbar *ngIf="(isLoggedIn$ | async) && showChrome" class="app-toolbar">
       
-      <div class="header-search-container" (click)="openOmnibar()">
+      <div class="header-search-container" role="button" tabindex="0" (click)="openOmnibar()" (keydown.enter)="openOmnibar()">
         <mat-icon>search</mat-icon>
-        <span>Buscar pacientes o acciones...</span>
+        <span>{{ 'APP.SEARCH_PLACEHOLDER' | translate }}</span>
         <span class="header-shortcut">Ctrl K</span>
       </div>
 
       <div class="spacer"></div>
       
-      <span class="user-welcome">Hola, Dr.</span>
+      <span class="user-welcome" *ngIf="userName">{{ 'APP.GREETING' | translate }}, {{ userName }}</span>
     </mat-toolbar>
     <div class="main-content-scrollable">
       <router-outlet></router-outlet>

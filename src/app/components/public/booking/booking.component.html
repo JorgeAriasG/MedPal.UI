@@ -1,28 +1,35 @@
 <div class="booking-container">
   <mat-card class="booking-card">
     <mat-card-header>
-      <mat-card-title>Agendar Cita</mat-card-title>
+      <mat-card-title>{{ 'BOOKING.TITLE' | translate }}</mat-card-title>
+      <mat-card-subtitle *ngIf="doctorName">{{ doctorName }}</mat-card-subtitle>
     </mat-card-header>
 
     <mat-card-content>
-      <div *ngIf="!sr" class="error-message">
-        <p>Enlace de reserva inválido. Por favor solicita un nuevo enlace.</p>
+      <div *ngIf="!sr" class="error-message" role="alert">
+        <p>{{ 'BOOKING.INVALID_LINK' | translate }}</p>
       </div>
 
       <div *ngIf="sr" class="booking-steps">
         <mat-stepper [linear]="true" [selectedIndex]="step - 1">
-          <mat-step label="Fecha y hora">
+          <mat-step label="{{ 'BOOKING.STEP_DATETIME' | translate }}">
             <div class="date-section">
               <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Fecha de la cita</mat-label>
-                <input matInput [matDatepicker]="picker" (dateChange)="onDateSelect($event.value)" placeholder="Elige fecha" />
+                <mat-label>{{ 'BOOKING.DATE_LABEL' | translate }}</mat-label>
+                <input matInput [matDatepicker]="picker" (dateChange)="onDateSelect($event.value)" [placeholder]="'BOOKING.DATE_PLACEHOLDER' | translate" />
                 <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-datepicker #picker></mat-datepicker>
               </mat-form-field>
             </div>
 
-            <div *ngIf="loadingSlots" class="loading">
+            <div *ngIf="loadingSlots" class="loading" role="status" aria-live="polite">
               <mat-progress-spinner diameter="40" mode="indeterminate"></mat-progress-spinner>
+              <span class="loading-text">{{ 'COMMON.LOADING' | translate }}</span>
+            </div>
+
+            <div *ngIf="!loadingSlots && selectedDate && availableSlots.length === 0" class="empty-slots">
+              <mat-icon>event_busy</mat-icon>
+              <p>{{ 'BOOKING.NO_SLOTS' | translate }}</p>
             </div>
 
             <div *ngIf="availableSlots.length > 0" class="slots-grid">
@@ -33,47 +40,59 @@
                 [disabled]="!slot.isAvailable"
                 (click)="onTimeSelect(slot.time)"
                 class="slot-button"
+                [attr.aria-label]="'BOOKING.SLOT_ARIA' | translate: { time: slot.time, state: slot.isAvailable ? 'available' : 'unavailable' }"
               >
                 {{ slot.time }}
               </button>
             </div>
           </mat-step>
 
-          <mat-step label="Tus datos">
-            <form [formGroup]="patientForm" class="patient-form">
+          <mat-step label="{{ 'BOOKING.STEP_DATA' | translate }}">
+            <form [formGroup]="patientForm" class="patient-form" (ngSubmit)="onTimeSelect(selectedTime)">
               <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Nombre completo</mat-label>
-                <input matInput formControlName="patientName" placeholder="Juan Pérez" />
+                <mat-label>{{ 'BOOKING.NAME_LABEL' | translate }}</mat-label>
+                <input matInput formControlName="patientName" [placeholder]="'BOOKING.NAME_PLACEHOLDER' | translate" />
+                <mat-error *ngIf="patientForm.get('patientName')?.hasError('required')">{{ 'VALIDATION.FIRST_NAME_REQUIRED' | translate }}</mat-error>
               </mat-form-field>
 
               <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Teléfono</mat-label>
-                <input matInput formControlName="patientPhone" placeholder="5512345678" />
+                <mat-label>{{ 'BOOKING.PHONE_LABEL' | translate }}</mat-label>
+                <input matInput formControlName="patientPhone" [placeholder]="'BOOKING.PHONE_PLACEHOLDER' | translate" />
                 <mat-hint>10 dígitos</mat-hint>
+                <mat-error *ngIf="patientForm.get('patientPhone')?.hasError('required')">{{ 'VALIDATION.PHONE_REQUIRED' | translate }}</mat-error>
+                <mat-error *ngIf="patientForm.get('patientPhone')?.hasError('pattern')">{{ 'BOOKING.PHONE_INVALID' | translate }}</mat-error>
               </mat-form-field>
+
+              <button mat-raised-button color="primary" class="submit-button" type="submit" [disabled]="patientForm.invalid">
+                {{ 'COMMON.NEXT' | translate }}
+              </button>
             </form>
           </mat-step>
 
-          <mat-step label="Confirmar">
-            <form [formGroup]="consentForm" class="consent-form">
-              <p class="consent-title">Para completar tu cita, acepta los siguientes términos:</p>
+          <mat-step label="{{ 'BOOKING.STEP_CONFIRM' | translate }}">
+            <form [formGroup]="consentForm" class="consent-form" (ngSubmit)="onSubmit()">
+              <p class="consent-title">{{ 'BOOKING.CONSENT_TITLE' | translate }}</p>
 
               <mat-checkbox formControlName="consentMedicalRecords" color="primary">
-                Autorizo el uso de mi información médica para mi atención
+                {{ 'BOOKING.CONSENT_RECORDS' | translate }}
               </mat-checkbox>
 
               <mat-checkbox formControlName="consentWhatsapp" color="primary">
-                Acepto recibir notificaciones por WhatsApp
+                {{ 'BOOKING.CONSENT_WHATSAPP' | translate }}
               </mat-checkbox>
+
+              <mat-error *ngIf="consentForm.hasError('required')" class="consent-error">
+                {{ 'BOOKING.CONSENT_REQUIRED' | translate }}
+              </mat-error>
 
               <button
                 mat-raised-button
                 color="primary"
                 class="submit-button"
                 [disabled]="consentForm.invalid"
-                (click)="onSubmit()"
+                type="submit"
               >
-                Confirmar Cita
+                {{ 'BOOKING.CONFIRM' | translate }}
               </button>
             </form>
           </mat-step>

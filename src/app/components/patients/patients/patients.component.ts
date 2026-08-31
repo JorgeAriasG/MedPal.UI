@@ -146,12 +146,6 @@ export class PatientsComponent implements OnInit, OnDestroy {
       });
   }
 
-  // editPatient(patient: IPatient): void {
-  //   this.editPatientData = { ...patient };
-  //   console.log('EditPatientData: ', this.editPatientData);
-  //   this.editPatientId = this.editPatientData.id;
-  // }
-
   editPatient(patient: IPatient): void {
     // Normalizar clinicIds para el formulario (array → scalar para dropdown single-select)
     const modalData = {

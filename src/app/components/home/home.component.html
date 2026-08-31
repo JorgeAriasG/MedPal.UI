@@ -1,5 +1,11 @@
 <div class="dashboard">
 
+  <div *ngIf="loading" class="dashboard-loading">
+    <mat-progress-spinner diameter="48" mode="indeterminate"></mat-progress-spinner>
+  </div>
+
+  <ng-container *ngIf="!loading">
+
   <!-- Onboarding -->
   <div class="onboarding" *ngIf="totalPatientsThisMonth < 5">
     <div class="onboarding-body">
@@ -29,7 +35,7 @@
   <!-- Greeting -->
   <div class="greeting">
     <div>
-      <h1 class="greeting-text">{{ greeting }}, Dr.</h1>
+      <h1 class="greeting-text">{{ greeting }}<ng-container *ngIf="userName">, {{ userName }}</ng-container></h1>
       <p class="greeting-date">{{ todayDate }}</p>
     </div>
     <button mat-stroked-button class="new-appt-btn" (click)="openNewAppointmentDialog()">
@@ -43,7 +49,7 @@
     <div class="timeline-next" *ngIf="nextAppointment">
       <div class="next-label">{{ 'HOME.NEXT' | translate }}</div>
       <div class="next-time">{{ nextAppointment.time }}</div>
-      <div class="next-patient">{{ nextAppointment.patient?.name || patientMap.get(nextAppointment.patientId)?.name || 'Paciente' }} {{ nextAppointment.patient?.lastname || patientMap.get(nextAppointment.patientId)?.lastname || '' }}</div>
+      <div class="next-patient">{{ nextAppointment.patient?.name || patientMap.get(nextAppointment.patientId)?.name || ('HOME.UNKNOWN_PATIENT' | translate) }} {{ nextAppointment.patient?.lastname || patientMap.get(nextAppointment.patientId)?.lastname || '' }}</div>
       <span class="next-status" [ngClass]="'status-' + (nextAppointment.status | lowercase)">{{ 'APPOINTMENTS.STATUS_' + nextAppointment.status | translate }}</span>
     </div>
     <div class="timeline-next empty-next" *ngIf="!nextAppointment">
@@ -138,5 +144,7 @@
       </button>
     </aside>
   </div>
+
+  </ng-container>
 
 </div>

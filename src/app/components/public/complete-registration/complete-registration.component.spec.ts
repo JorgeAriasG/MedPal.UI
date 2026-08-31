@@ -3,9 +3,12 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
+import { Store } from '@ngrx/store';
 
 import { CompleteRegistrationComponent } from './complete-registration.component';
 import { BookingService } from 'src/app/services/booking.service';
+import { AuthService } from 'src/app/services/auth.service';
 
 describe('CompleteRegistrationComponent', () => {
   let component: CompleteRegistrationComponent;
@@ -14,7 +17,7 @@ describe('CompleteRegistrationComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [CompleteRegistrationComponent],
-      imports: [ReactiveFormsModule, MatCardModule],
+      imports: [ReactiveFormsModule, MatCardModule, TranslateModule.forRoot()],
       providers: [
         {
           provide: ActivatedRoute,
@@ -25,8 +28,10 @@ describe('CompleteRegistrationComponent', () => {
           },
         },
         { provide: Router, useValue: { navigate: jasmine.createSpy('navigate') } },
-        { provide: BookingService, useValue: {} },
+        { provide: BookingService, useValue: { completeRegistration: jasmine.createSpy('completeRegistration') } },
         { provide: MatSnackBar, useValue: { open: jasmine.createSpy('open') } },
+        { provide: AuthService, useValue: { persistAuth: jasmine.createSpy('persistAuth') } },
+        { provide: Store, useValue: { dispatch: jasmine.createSpy('dispatch') } },
       ],
     }).compileComponents();
 

@@ -10,6 +10,7 @@ import { IAppointment } from 'src/app/entities/IAppointment';
 import { IPatient } from 'src/app/entities/IPatient';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from '../../services/auth.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-omnibar',
@@ -53,7 +54,8 @@ export class OmnibarComponent implements OnInit, OnDestroy {
     private appointmentService: AppointmentsService,
     private authService: AuthService,
     private snackBar: MatSnackBar,
-    public router: Router
+    public router: Router,
+    private translate: TranslateService,
   ) {}
 
   ngOnInit() {
@@ -196,7 +198,7 @@ export class OmnibarComponent implements OnInit, OnDestroy {
 
     const name = smartData.name.trim();
     if (name.length < 2) {
-      this.snackBar.open('Escribe al menos 2 caracteres para el nombre del paciente', 'OK', {
+      this.snackBar.open(this.translate.instant('OMNIBAR.NAME_MIN_CHARS'), 'OK', {
         duration: 4000,
         panelClass: 'cf-toast-warn',
       });
@@ -212,13 +214,13 @@ export class OmnibarComponent implements OnInit, OnDestroy {
         date: smartData.date,
         time: smartData.time,
         durationMinutes: 30,
-        notes: 'Creado vía Comando Central',
+        notes: this.translate.instant('OMNIBAR.FALLBACK_NOTES'),
       };
 
       this.appointmentService.saveAppointment(appointment).subscribe({
         next: () => {
           this.creating = false;
-          this.snackBar.open(`Cita agendada para ${name}`, 'OK', {
+          this.snackBar.open(this.translate.instant('OMNIBAR.APPOINTMENT_SUCCESS', { name }), 'OK', {
             duration: 3000,
             panelClass: 'cf-toast-success',
           });
@@ -228,7 +230,7 @@ export class OmnibarComponent implements OnInit, OnDestroy {
         error: (err) => {
           this.creating = false;
           console.error('[OMNIBAR DEBUG] Error en la petición:', err);
-          this.snackBar.open('No se pudo agendar la cita. Verifica los datos e inténtalo de nuevo.', 'OK', {
+          this.snackBar.open(this.translate.instant('OMNIBAR.APPOINTMENT_ERROR'), 'OK', {
             duration: 5000,
             panelClass: 'cf-toast-error',
           });
@@ -251,12 +253,12 @@ export class OmnibarComponent implements OnInit, OnDestroy {
     const patientPayload: IPatient = {
       name: nameParts[0],
       middlename: '',
-      lastname: nameParts.slice(1).join(' ') || 'Sin apellido',
+      lastname: nameParts.slice(1).join(' ') || this.translate.instant('OMNIBAR.FALLBACK_LASTNAME'),
       phone: '',
       email: `pendiente_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 10)}@clinicflow.temp`,
-      address: 'Sin configurar',
+      address: this.translate.instant('OMNIBAR.FALLBACK_ADDRESS'),
       dob: new Date(new Date().getFullYear() - 30, new Date().getMonth(), new Date().getDate()),
-      gender: 'No especificado',
+      gender: this.translate.instant('OMNIBAR.FALLBACK_GENDER'),
       emergencyContact: '',
       clinicIds: [clinicId],
     };
@@ -268,7 +270,7 @@ export class OmnibarComponent implements OnInit, OnDestroy {
           createAppointment(created.id);
         } else {
           this.creating = false;
-          this.snackBar.open('No se pudo crear el paciente para la cita.', 'OK', {
+          this.snackBar.open(this.translate.instant('OMNIBAR.PATIENT_CREATE_ERROR'), 'OK', {
             duration: 5000,
             panelClass: 'cf-toast-error',
           });
@@ -277,7 +279,7 @@ export class OmnibarComponent implements OnInit, OnDestroy {
       error: (err) => {
         this.creating = false;
         console.error('[OMNIBAR DEBUG] Error al crear el paciente:', err);
-        this.snackBar.open('No se pudo crear el paciente para la cita. Verifica e inténtalo de nuevo.', 'OK', {
+        this.snackBar.open(this.translate.instant('OMNIBAR.PATIENT_CREATE_RETRY_ERROR'), 'OK', {
           duration: 5000,
           panelClass: 'cf-toast-error',
         });

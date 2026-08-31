@@ -3,6 +3,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs';
 import { switchMap, map, catchError, tap } from 'rxjs/operators';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { TranslateService } from '@ngx-translate/core';
 import * as ConsentActions from './consent.actions';
 import { ConsentService } from '../../services/consent.service';
 
@@ -11,6 +12,7 @@ export class ConsentEffects {
   private actions$ = inject(Actions);
   private consentService = inject(ConsentService);
   private snackBar = inject(MatSnackBar);
+  private translate = inject(TranslateService);
 
   loadAllConsents$ = createEffect(() =>
     this.actions$.pipe(
@@ -88,7 +90,7 @@ export class ConsentEffects {
     () =>
       this.actions$.pipe(
         ofType(ConsentActions.requestConsentSuccess),
-        tap(() => this.snackBar.open('Consentimiento registrado exitosamente', 'Cerrar', { duration: 3000, panelClass: 'cf-toast-success' }))
+        tap(() => this.snackBar.open(this.translate.instant('CONSENTS.GRANT_SUCCESS'), 'Cerrar', { duration: 3000, panelClass: 'cf-toast-success' }))
       ),
     { dispatch: false }
   );
@@ -97,7 +99,7 @@ export class ConsentEffects {
     () =>
       this.actions$.pipe(
         ofType(ConsentActions.approveConsentSuccess),
-        tap(() => this.snackBar.open('Consentimiento aprobado', 'Cerrar', { duration: 3000, panelClass: 'cf-toast-success' }))
+        tap(() => this.snackBar.open(this.translate.instant('CONSENTS.APPROVE_SUCCESS'), 'Cerrar', { duration: 3000, panelClass: 'cf-toast-success' }))
       ),
     { dispatch: false }
   );
@@ -106,7 +108,7 @@ export class ConsentEffects {
     () =>
       this.actions$.pipe(
         ofType(ConsentActions.rejectConsentSuccess),
-        tap(() => this.snackBar.open('Consentimiento rechazado', 'Cerrar', { duration: 3000, panelClass: 'cf-toast-warn' }))
+        tap(() => this.snackBar.open(this.translate.instant('CONSENTS.REJECT_SUCCESS'), 'Cerrar', { duration: 3000, panelClass: 'cf-toast-warn' }))
       ),
     { dispatch: false }
   );
@@ -115,7 +117,7 @@ export class ConsentEffects {
     () =>
       this.actions$.pipe(
         ofType(ConsentActions.revokeConsentSuccess),
-        tap(() => this.snackBar.open('Consentimiento revocado', 'Cerrar', { duration: 3000, panelClass: 'cf-toast-warn' }))
+        tap(() => this.snackBar.open(this.translate.instant('CONSENTS.REVOKE_SUCCESS_MESSAGE'), 'Cerrar', { duration: 3000, panelClass: 'cf-toast-warn' }))
       ),
     { dispatch: false }
   );
