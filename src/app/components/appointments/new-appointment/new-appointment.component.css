@@ -7,6 +7,7 @@
 .dialog-header {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: var(--spacing-md);
   margin: 0;
   padding: var(--spacing-lg);
@@ -18,6 +19,12 @@
   font-size: var(--font-size-title);
   font-weight: var(--font-weight-bold);
   color: var(--color-text-primary);
+}
+
+.link-btn mat-spinner {
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: var(--spacing-xs);
 }
 
 .dialog-content {

@@ -34,6 +34,7 @@ import {
   selectAuthContext,
 } from 'src/app/store/selectors/auth.selectors';
 import { HttpErrorResponse } from '@angular/common/http';
+import { BookingService, BookingLinkResponse } from 'src/app/services/booking.service';
 
 @Component({
   selector: 'app-new-appointment',
@@ -52,6 +53,7 @@ export class NewAppointmentComponent implements OnInit, OnDestroy {
   clinicId: number | null | undefined;
   isEditMode = false;
   isLoading = false;
+  linkLoading = false;
   appointmentId: number | undefined;
   statusOptions: any[] = [];
   clinicOpen: { hour: number; minute: number } | null = null;
@@ -67,6 +69,7 @@ export class NewAppointmentComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private patientService: PatientsService,
     private appointmentService: AppointmentsService,
+    private bookingService: BookingService,
     private store: Store,
     private snackBar: MatSnackBar,
     private translate: TranslateService
@@ -329,6 +332,43 @@ export class NewAppointmentComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe((patients: IPatient[]) => {
         this.patients = patients;
+      });
+  }
+
+  generateBookingLink(): void {
+    if (!this.clinicId || !this.userId) {
+      this.snackBar.open(
+        this.translate.instant('APPOINTMENTS.LINK_REQUIRED_CONTEXT'),
+        this.translate.instant('COMMON.CLOSE'),
+        { duration: 3000 }
+      );
+      return;
+    }
+
+    this.linkLoading = true;
+    this.bookingService
+      .generateStaffLink(this.clinicId, this.userId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (res: BookingLinkResponse) => {
+          this.linkLoading = false;
+          if (navigator.clipboard) {
+            navigator.clipboard.writeText(res.url).catch(() => undefined);
+          }
+          this.snackBar.open(
+            this.translate.instant('APPOINTMENTS.LINK_COPIED'),
+            this.translate.instant('COMMON.ACCEPT'),
+            { duration: 4000 }
+          );
+        },
+        error: () => {
+          this.linkLoading = false;
+          this.snackBar.open(
+            this.translate.instant('APPOINTMENTS.LINK_ERROR'),
+            this.translate.instant('COMMON.CLOSE'),
+            { duration: 4000, panelClass: ['error-snackbar'] }
+          );
+        },
       });
   }
 }

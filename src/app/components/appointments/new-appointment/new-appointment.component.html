@@ -2,6 +2,11 @@
   <!-- Header -->
   <div class="dialog-header">
     <h2 class="dialog-title">{{ isEditMode ? ('APPOINTMENTS.DIALOG_EDIT_TITLE' | translate) : ('APPOINTMENTS.DIALOG_NEW_TITLE' | translate) }}</h2>
+    <button mat-stroked-button class="link-btn" (click)="generateBookingLink()" [disabled]="linkLoading" [matTooltip]="'APPOINTMENTS.LINK_TOOLTIP' | translate">
+      <mat-icon *ngIf="!linkLoading">link</mat-icon>
+      <mat-spinner *ngIf="linkLoading" diameter="18"></mat-spinner>
+      <span>{{ 'APPOINTMENTS.SHARE_LINK' | translate }}</span>
+    </button>
   </div>
 
   <!-- Content -->

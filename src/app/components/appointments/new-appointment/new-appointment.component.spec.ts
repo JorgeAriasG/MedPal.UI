@@ -15,6 +15,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { NewAppointmentComponent } from './new-appointment.component';
+import { BookingService } from 'src/app/services/booking.service';
 
 describe('NewAppointmentComponent', () => {
   let component: NewAppointmentComponent;
@@ -40,6 +41,7 @@ describe('NewAppointmentComponent', () => {
         { provide: MatDialogRef, useValue: { close: jasmine.createSpy('close') } },
         { provide: MAT_DIALOG_DATA, useValue: {} },
         { provide: MatSnackBar, useValue: { open: jasmine.createSpy('open') } },
+        { provide: BookingService, useValue: { generateStaffLink: jasmine.createSpy('generateStaffLink') } },
         provideMockStore(),
       ],
     });
