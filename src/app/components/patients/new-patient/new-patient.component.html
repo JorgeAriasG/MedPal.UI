@@ -19,7 +19,8 @@
   <div class="form-row">
     <mat-form-field appearance="outline">
       <mat-label>{{ 'PATIENTS.FORM_EMAIL' | translate }}</mat-label>
-      <input matInput [(ngModel)]="newPatient.email" name="email" type="email" required />
+      <input matInput [(ngModel)]="newPatient.email" name="email" type="email" />
+      <mat-hint>{{ 'PATIENTS.FORM_EMAIL_OPTIONAL_HINT' | translate }}</mat-hint>
       <mat-error *ngIf="emailError">{{ emailError }}</mat-error>
     </mat-form-field>
 

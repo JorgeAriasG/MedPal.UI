@@ -13,6 +13,7 @@ import { ClinicalDataService } from 'src/app/services/clinical-data.service';
 import { AppointmentsService } from '../../appointments/services/appointments.service';
 import { HistoryFormComponent } from '../../medical-history/history-form/history-form.component';
 import { fadeIn, slideDown } from 'src/app/shared/animations';
+import { displayEmail } from 'src/app/utils/patient-utils';
 
 @Component({
   selector: 'app-patient-dashboard',
@@ -154,6 +155,10 @@ export class PatientDashboardComponent implements OnInit, OnDestroy {
     const time = app?.time ? `${app.time}` : '';
     const dt = new Date(time ? `${iso}T${time}` : iso);
     return isNaN(dt.getTime()) ? null : dt;
+  }
+
+  displayEmail(email?: string | null): string {
+    return displayEmail(email);
   }
 
   statusLabel(status: string): string {

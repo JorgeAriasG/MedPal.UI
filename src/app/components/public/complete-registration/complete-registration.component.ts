@@ -33,7 +33,7 @@ export class CompleteRegistrationComponent implements OnInit {
     private snackBar: MatSnackBar
   ) {
     this.registrationForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
+      email: ['', [Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', Validators.required],
       name: [''],

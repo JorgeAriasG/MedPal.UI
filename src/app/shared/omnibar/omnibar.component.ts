@@ -8,6 +8,7 @@ import { AppointmentsService } from '../../components/appointments/services/appo
 import { Router } from '@angular/router';
 import { IAppointment } from 'src/app/entities/IAppointment';
 import { IPatient } from 'src/app/entities/IPatient';
+import { displayEmail } from 'src/app/utils/patient-utils';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from '../../services/auth.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -45,6 +46,15 @@ export class OmnibarComponent implements OnInit, OnDestroy {
   searchTerm = '';
   loading = false;
   creating = false;
+
+  ghostJustCreated = false;
+  lastCreatedPatient: IPatient | null = null;
+
+  promptMode = false;
+  promptPatientId: number | null = null;
+  promptPhone = '';
+  promptConsent = false;
+  promptSaving = false;
   
   private sub = new Subscription();
 
@@ -73,6 +83,10 @@ export class OmnibarComponent implements OnInit, OnDestroy {
       this.selectedIndex = 0;
       this.searchTerm = '';
       this.results = [];
+      this.promptMode = false;
+      this.promptPatientId = null;
+      this.promptPhone = '';
+      this.promptConsent = false;
     }
   }
 
@@ -224,8 +238,11 @@ export class OmnibarComponent implements OnInit, OnDestroy {
             duration: 3000,
             panelClass: 'cf-toast-success',
           });
-          this.close();
-          this.router.navigate(['/appointments']);
+          if (this.ghostJustCreated && this.lastCreatedPatient?.id) {
+            this.openPhonePrompt(this.lastCreatedPatient.id);
+          } else {
+            this.closeAndGo();
+          }
         },
         error: (err) => {
           this.creating = false;
@@ -245,6 +262,8 @@ export class OmnibarComponent implements OnInit, OnDestroy {
     );
 
     if (existing?.id) {
+      this.ghostJustCreated = false;
+      this.lastCreatedPatient = null;
       createAppointment(existing.id);
       return;
     }
@@ -263,12 +282,15 @@ export class OmnibarComponent implements OnInit, OnDestroy {
       clinicIds: [clinicId],
     };
 
+    this.ghostJustCreated = true;
     this.creating = true;
     this.patientService.addPatient(patientPayload).subscribe({
       next: (created) => {
         if (created?.id) {
+          this.lastCreatedPatient = { ...patientPayload, id: created.id };
           createAppointment(created.id);
         } else {
+          this.ghostJustCreated = false;
           this.creating = false;
           this.snackBar.open(this.translate.instant('OMNIBAR.PATIENT_CREATE_ERROR'), 'OK', {
             duration: 5000,
@@ -277,6 +299,7 @@ export class OmnibarComponent implements OnInit, OnDestroy {
         }
       },
       error: (err) => {
+        this.ghostJustCreated = false;
         this.creating = false;
         console.error('[OMNIBAR DEBUG] Error al crear el paciente:', err);
         this.snackBar.open(this.translate.instant('OMNIBAR.PATIENT_CREATE_RETRY_ERROR'), 'OK', {
@@ -285,6 +308,77 @@ export class OmnibarComponent implements OnInit, OnDestroy {
         });
       },
     });
+  }
+
+  private openPhonePrompt(patientId: number): void {
+    this.promptMode = true;
+    this.promptPatientId = patientId;
+    this.promptPhone = '';
+    this.promptConsent = false;
+    this.promptSaving = false;
+    this.searchMode = false;
+    this.results = [];
+  }
+
+  private closeAndGo(): void {
+    this.close();
+    this.router.navigate(['/appointments']);
+  }
+
+  dismissPhonePrompt(): void {
+    this.promptMode = false;
+    this.promptPatientId = null;
+    this.lastCreatedPatient = null;
+    this.closeAndGo();
+  }
+
+  savePhonePrompt(): void {
+    if (!this.promptPatientId || !this.lastCreatedPatient) {
+      this.dismissPhonePrompt();
+      return;
+    }
+
+    this.promptSaving = true;
+    const base = this.lastCreatedPatient;
+    const payload: any = {
+      name: base.name,
+      middlename: base.middlename || '',
+      lastname: base.lastname,
+      phone: (this.promptPhone || '').trim(),
+      email: base.email,
+      address: base.address || '',
+      dob: base.dob,
+      gender: base.gender || '',
+      emergencyContact: base.emergencyContact || '',
+      clinicIds: Array.isArray(base.clinicIds) ? base.clinicIds : [],
+      isWhatsAppConsented: this.promptConsent,
+    };
+
+    this.patientService.editPatient({ id: this.promptPatientId, ...payload }).subscribe({
+      next: () => {
+        this.promptSaving = false;
+        this.promptMode = false;
+        this.promptPatientId = null;
+        this.lastCreatedPatient = null;
+        this.snackBar.open(this.translate.instant('OMNIBAR.PHONE_SAVED'), 'OK', {
+          duration: 3000,
+          panelClass: 'cf-toast-success',
+        });
+        this.closeAndGo();
+      },
+      error: (err) => {
+        this.promptSaving = false;
+        console.error('[OMNIBAR DEBUG] Error al guardar el teléfono:', err);
+        this.snackBar.open(this.translate.instant('OMNIBAR.PHONE_SAVE_ERROR'), 'OK', {
+          duration: 5000,
+          panelClass: 'cf-toast-error',
+        });
+      },
+    });
+  }
+
+  displayEmail(email?: string | null): string {
+    return displayEmail(email);
   }
 
   selectPatient(patient: any) {

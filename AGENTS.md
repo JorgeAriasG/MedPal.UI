@@ -1,5 +1,13 @@
 # AGENTS.md — ClinicFlow
 
+## AI Operating Model
+
+- The human owner approves architecture, security, public contracts, migrations, provider choices, and production actions.
+- Codex acts as architect/orchestrator and prepares or reviews specs, ADRs, task boundaries, and evidence.
+- OpenCode owns product development, testing, and deployment execution from accepted tasks.
+- Cross-cutting architecture is canonical in the core API under `Docs/Architecture`; this UI must not redefine backend domain rules.
+- Work on one accepted task at a time and report files changed, commands run, results, risks, and contract impact.
+
 ## Context
 
 ClinicFlow is a healthcare SaaS for clinics, specialists, nutritionists, private practices.
@@ -12,11 +20,17 @@ backend/API code (controllers, repositories, services, authorization,
 business logic) following the repo conventions. Still flag breaking changes,
 permission/security impact, and DB migrations rather than applying them silently.
 
+**Producción (PRD):** ninguna acción sobre PRD (acceso directo a BD, escritura/limpieza de datos, endpoints que muten, creación de registros de prueba) sin aprobación explícita del owner **antes de ejecutar**. Sin conexiones directas a la BD de PRD salvo autorización read-only pendiente por consulta. El smoke de aceptación se realiza por API pública y reporta resultados; para cualquier limpieza o mutación se solicita OK explícito.
+
 ## Specialized agents
 
 `.opencode/agents/` defines subagents that can be delegated to in parallel:
 `architect`, `backend`, `frontend`, `qa`. Delegate domain-specific work to them
 instead of doing it inline when parallel or focused expertise is useful.
+
+Additional platform agents are available for `frontend-staff`, `geolocation`,
+and `payments-billing`. The existing `cfdev` skill remains the UI-only visual
+refactor skill; use `clinicflow-platform` for cross-cutting platform work.
 
 ## Design Vision
 
@@ -82,7 +96,7 @@ No `lint`, `typecheck`, or `format` scripts exist.
 - **All components use `standalone: false`** — NgModule-based, not Angular standalone
 - **CSS:** Scoped `.component.css` files. Global tokens in `src/styles.css`.
 - **NgRx** for `auth`, `audit`, `consent` only. Appointments/patients/prescriptions/clinics use services directly.
-- **Auth persistence:** `localStorage` via `ngrx-store-localstorage` (key prefix: `ngrx_`). Token key: `token`.
+- **Auth persistence:** NgRx state is persisted with the `ngrx_` prefix; the direct JWT fallback key used by `AuthService` is `auth_token`.
 - **Routing:** All authenticated routes defined in `home.module.ts` under `AuthGuard`.
 - **Icons:** FontAwesome (`@fortawesome/*`), not Material Icons.
 - **Imports order:** `@angular/*` → third-party → local (`../../` or `src/app/` paths).

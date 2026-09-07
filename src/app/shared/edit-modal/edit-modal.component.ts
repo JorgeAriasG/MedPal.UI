@@ -184,6 +184,15 @@ export class EditModalComponent implements OnInit, OnDestroy {
 
         let fieldValue =
           data && data[key] !== undefined ? data[key] : initialValue;
+        // Ocultar emails placeholder en la edición: el staff ve el campo vacío
+        // y solo se persiste si escribe un email real.
+        if (
+          key === 'email' &&
+          typeof fieldValue === 'string' &&
+          fieldValue.endsWith('@clinicflow.temp')
+        ) {
+          fieldValue = '';
+        }
         if (
           isClinicLocked &&
           (fieldValue === null || fieldValue === undefined || fieldValue === '')

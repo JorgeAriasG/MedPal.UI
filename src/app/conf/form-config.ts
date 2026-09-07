@@ -35,7 +35,7 @@ export const patientFormConfig: Record<string, FormFieldConfig> = {
   },
   email: {
     value: '',
-    validators: [Validators.required, Validators.email],
+    validators: [Validators.email],
     type: 'email',
     label: 'PATIENTS.FORM_EMAIL',
   },

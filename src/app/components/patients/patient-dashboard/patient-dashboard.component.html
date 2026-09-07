@@ -18,7 +18,7 @@
             <h1 class="patient-name">{{ patient.name }} {{ patient.middlename }} {{ patient.lastname }}</h1>
             <p class="patient-contact">
               <mat-icon class="icon-small">email</mat-icon>
-              {{ patient.email }}
+              {{ displayEmail(patient.email) }}
               <span class="divider-dot">•</span>
               <mat-icon class="icon-small">phone</mat-icon>
               {{ patient.phone }}

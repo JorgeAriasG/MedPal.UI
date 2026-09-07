@@ -17,6 +17,7 @@ import { MedicalHistoryReadDTO } from 'src/app/entities/medical-history.model';
 import { SpecialtyType } from 'src/app/entities/specialty-templates.model';
 import { selectUserSpecialty } from 'src/app/store/selectors/auth.selectors';
 import { fadeIn, slideDown } from 'src/app/shared/animations';
+import { displayEmail } from 'src/app/utils/patient-utils';
 
 @Component({
   selector: 'app-patient-detail',
@@ -67,6 +68,10 @@ export class PatientDetailComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  displayEmail(email?: string | null): string {
+    return displayEmail(email);
   }
 
   loadData(id: number) {

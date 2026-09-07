@@ -16,7 +16,7 @@
       <kbd class="shortcut-hint">ESC</kbd>
     </div>
 
-    <div class="omnibar-results">
+    <div class="omnibar-results" *ngIf="!promptMode">
       <!-- MODO SUGERENCIAS (Cuando está vacío) -->
       <div class="result-group" *ngIf="!searchTerm">
         <div class="group-label">{{ 'OMNIBAR.SUGGESTED_ACTIONS' | translate }}</div>
@@ -71,13 +71,42 @@
           </span>
           <div class="item-content">
             <span class="item-title">{{ res.name }} {{ res.lastname }}</span>
-            <span class="item-desc">{{ res.email || ('OMNIBAR.NO_EMAIL' | translate) }}</span>
+            <span class="item-desc">{{ displayEmail(res.email) }}</span>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="omnibar-footer">
+    <!-- PANEL NO-BLOQUEANTE: completar teléfono + consentimiento WhatsApp -->
+    <div class="omnibar-prompt" *ngIf="promptMode" [@scaleIn]>
+      <span class="prompt-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      </span>
+      <div class="prompt-content">
+        <div class="prompt-title">{{ 'OMNIBAR.PHONE_PROMPT_TITLE' | translate }}</div>
+        <div class="prompt-desc">{{ 'OMNIBAR.PHONE_PROMPT_DESC' | translate }}</div>
+        <input 
+          class="prompt-phone"
+          type="tel"
+          [(ngModel)]="promptPhone"
+          [placeholder]="'OMNIBAR.PHONE_PLACEHOLDER' | translate"
+          (keydown.enter)="savePhonePrompt()"
+        >
+        <label class="prompt-consent">
+          <input type="checkbox" [(ngModel)]="promptConsent" />
+          <span>{{ 'OMNIBAR.PHONE_CONSENT' | translate }}</span>
+        </label>
+        <div class="prompt-hint">{{ 'OMNIBAR.PHONE_HINT' | translate }}</div>
+        <div class="prompt-actions">
+          <button class="prompt-skip" (click)="dismissPhonePrompt()">{{ 'OMNIBAR.PHONE_SKIP' | translate }}</button>
+          <button class="prompt-save" (click)="savePhonePrompt()" [disabled]="promptSaving">
+            {{ promptSaving ? ('OMNIBAR.PHONE_SAVING' | translate) : ('OMNIBAR.PHONE_SAVE' | translate) }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="omnibar-footer" *ngIf="!promptMode">
       <span><kbd>↑↓</kbd> {{ 'OMNIBAR.NAVIGATE' | translate }}</span>
       <span><kbd>Enter</kbd> {{ 'OMNIBAR.SELECT' | translate }}</span>
       <span><kbd>Esc</kbd> {{ 'OMNIBAR.CLOSE' | translate }}</span>

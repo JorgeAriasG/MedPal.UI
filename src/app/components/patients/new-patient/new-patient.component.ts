@@ -80,7 +80,15 @@ export class NewPatientComponent implements OnInit, OnDestroy {
     }
 
     this.isSubmitting = true;
-    this.patientsService.checkEmail(this.newPatient.email).subscribe({
+
+    const email = (this.newPatient.email || '').trim();
+    if (!email) {
+      // Email opcional: el backend asigna placeholder único al crear.
+      this.savePatient();
+      return;
+    }
+
+    this.patientsService.checkEmail(email).subscribe({
       next: (exists) => {
         if (exists) {
           this.emailError = this.translate.instant('PATIENTS.ERROR_EMAIL_EXISTS');

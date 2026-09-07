@@ -63,7 +63,7 @@ export class BookingService {
     doctorId: number,
     date: string
   ): Observable<TimeSlot[]> {
-    let url = `${this.baseUrl}/booking/availability?sr=${encodeURIComponent(sr)}&date=${date}`;
+    let url = `${this.baseUrl}booking/availability?sr=${encodeURIComponent(sr)}&date=${date}`;
     if (clinicId) url += `&clinicId=${clinicId}`;
     if (doctorId) url += `&doctorId=${doctorId}`;
     return this.http.get<TimeSlot[]>(url);
@@ -71,7 +71,7 @@ export class BookingService {
 
   completeBooking(request: BookingCompleteRequest): Observable<BookingResult> {
     return this.http.post<BookingResult>(
-      `${this.baseUrl}/booking/complete`,
+      `${this.baseUrl}booking/complete`,
       request
     );
   }
@@ -80,14 +80,14 @@ export class BookingService {
     request: CompleteRegistrationRequest
   ): Observable<PatientLoginResponse> {
     return this.http.post<PatientLoginResponse>(
-      `${this.baseUrl}/booking/registration/complete`,
+      `${this.baseUrl}booking/registration/complete`,
       request
     );
   }
 
   resendRegistration(phone: string): Observable<{ message: string }> {
     return this.http.post<{ message: string }>(
-      `${this.baseUrl}/booking/registration/resend`,
+      `${this.baseUrl}booking/registration/resend`,
       { phone }
     );
   }
@@ -97,7 +97,7 @@ export class BookingService {
     doctorId: number
   ): Observable<BookingLinkResponse> {
     return this.http.post<BookingLinkResponse>(
-      `${this.baseUrl}/booking/staff/link`,
+      `${this.baseUrl}booking/staff/link`,
       { clinicId, doctorId }
     );
   }

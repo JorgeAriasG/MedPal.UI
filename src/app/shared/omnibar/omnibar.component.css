@@ -155,6 +155,132 @@
   margin-right: 4px;
 }
 
+/* Prompt no-bloqueante: teléfono + consentimiento WhatsApp */
+.omnibar-prompt {
+  display: flex;
+  gap: 14px;
+  padding: 24px 20px;
+  align-items: flex-start;
+}
+
+.prompt-icon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: rgba(37, 211, 102, 0.12);
+  color: #25D366;
+  flex-shrink: 0;
+}
+
+.prompt-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.prompt-title {
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--color-text-primary);
+}
+
+.prompt-desc {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  margin-bottom: 12px;
+}
+
+.prompt-phone {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  font-size: 15px;
+  outline: none;
+  background: var(--color-bg-surface);
+  color: var(--color-text-primary);
+  font-family: 'Outfit', sans-serif;
+  transition: all 0.2s ease;
+}
+
+.prompt-phone:focus {
+  border-color: #5B6CFF;
+  box-shadow: 0 0 0 4px rgba(91, 108, 255, 0.12);
+}
+
+.prompt-consent {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  font-size: 13px;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  user-select: none;
+}
+
+.prompt-consent input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #25D366;
+  cursor: pointer;
+}
+
+.prompt-hint {
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  line-height: 1.45;
+}
+
+.prompt-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.prompt-skip {
+  background: transparent;
+  border: none;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.prompt-skip:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.prompt-save {
+  background: #1976D2;
+  color: white;
+  border: none;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.prompt-save:hover {
+  background: #1565C0;
+}
+
+.prompt-save:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
 /* Animations */
 @keyframes fadeIn {
   from { opacity: 0; }

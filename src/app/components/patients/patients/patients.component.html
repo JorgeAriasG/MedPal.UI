@@ -59,7 +59,7 @@
           </div>
         </th>
         <td mat-cell *matCellDef="let patient" class="column-lg">
-          <span class="text-secondary">{{ patient.email }}</span>
+          <span class="text-secondary">{{ displayEmail(patient.email) }}</span>
         </td>
       </ng-container>
 

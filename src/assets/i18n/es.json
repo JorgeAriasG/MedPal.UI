@@ -184,7 +184,17 @@
     "FALLBACK_LASTNAME": "Sin apellido",
     "FALLBACK_ADDRESS": "Sin configurar",
     "FALLBACK_GENDER": "No especificado",
-    "FALLBACK_NOTES": "Creado vía Comando Central"
+    "FALLBACK_NOTES": "Creado vía Comando Central",
+    "PHONE_PROMPT_TITLE": "¿Completar contacto para avisos por WhatsApp?",
+    "PHONE_PROMPT_DESC": "El paciente fue creado solo con nombre. Agrega su teléfono para habilitar notificaciones.",
+    "PHONE_PLACEHOLDER": "Teléfono (ej. 5551234567)",
+    "PHONE_CONSENT": "Quiero recibir notificaciones por WhatsApp de mis citas",
+    "PHONE_HINT": "Al guardar se enviará el mensaje de confirmación de la cita. Podrás cambiarlo después desde el expediente del paciente.",
+    "PHONE_SKIP": "Omitir",
+    "PHONE_SAVE": "Guardar",
+    "PHONE_SAVING": "Guardando...",
+    "PHONE_SAVED": "Teléfono guardado. Aviso de WhatsApp programado.",
+    "PHONE_SAVE_ERROR": "No se pudo guardar el teléfono. Verifica e inténtalo de nuevo."
   },
   "TIMEOUT": {
     "TITLE": "Sesión por expirar",
@@ -612,6 +622,7 @@
     "GENDER_FEMALE": "Femenino",
     "GENDER_OTHER": "Otro",
     "FORM_EMAIL": "Correo Electrónico",
+    "FORM_EMAIL_OPTIONAL_HINT": "Opcional. Si lo dejas vacío se completará después con el expediente.",
     "FORM_PHONE": "Teléfono",
     "FORM_DOCUMENT": "Documento de Identidad",
     "FORM_ADDRESS": "Dirección",

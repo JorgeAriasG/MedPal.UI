@@ -8,6 +8,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { fadeIn } from 'src/app/shared/animations';
 import { Store } from '@ngrx/store';
 import { selectClinicId } from 'src/app/store/selectors/auth.selectors';
+import { displayEmail } from 'src/app/utils/patient-utils';
 import { Subject } from 'rxjs';
 import { takeUntil, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { trigger, transition, style, animate } from '@angular/animations';
@@ -195,6 +196,10 @@ export class PatientsComponent implements OnInit, OnDestroy {
   cancelEdit(): void {
     this.editPatientId = null;
     this.editPatientData = {};
+  }
+
+  displayEmail(email?: string | null): string {
+    return displayEmail(email);
   }
 
   trackByPatient(index: number, patient: IPatient): string {
