@@ -8,13 +8,17 @@ export const login = createAction(
 export const loginSuccess = createAction(
   '[Auth] Login Success',
   props<{
-    userId: number;
+    userId: number | null;
     userToken: string;
     clinicId: number | null;
-    userRole: string;
-    specialty?: string;
+    userRole: string | null;
+    specialty?: string | null;
     clinicOpen?: { hour: number; minute: number } | null;
     clinicClose?: { hour: number; minute: number } | null;
+    accountId?: number | null;
+    userType?: string | null;
+    patientId?: number | null;
+    roles?: string[];
   }>(),
 );
 
@@ -59,4 +63,18 @@ export const setClinic = createAction(
 export const setLoading = createAction(
   '[Auth] Set Loading',
   props<{ loading: boolean }>(),
+);
+
+export const setAuthClaims = createAction(
+  '[Auth] Set Claims',
+  props<{
+    claims: {
+      userId: number | null;
+      accountId: number | null;
+      clinicId: number | null;
+      roles: string[];
+      userType: string | null;
+      patientId: number | null;
+    };
+  }>(),
 );

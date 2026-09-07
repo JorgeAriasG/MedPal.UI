@@ -8,6 +8,26 @@ export const selectUserId = createSelector(
   (state: AuthState) => state.userId,
 );
 
+export const selectUserType = createSelector(
+  selectAuthState,
+  (state: AuthState) => state.userType,
+);
+
+export const selectUserRoles = createSelector(
+  selectAuthState,
+  (state: AuthState) => state.roles,
+);
+
+export const selectAccountId = createSelector(
+  selectAuthState,
+  (state: AuthState) => state.accountId,
+);
+
+export const selectPatientId = createSelector(
+  selectAuthState,
+  (state: AuthState) => state.patientId,
+);
+
 export const userToken = createSelector(
   selectAuthState,
   (state: AuthState) => state.userToken,

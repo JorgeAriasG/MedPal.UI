@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { AuthService } from '../../services/auth.service';
 import { PermissionService } from '../../services/permission.service';
+import { decodeTokenClaims } from '../../utils/token-utils';
 import {
   login,
   loginSuccess,
@@ -35,12 +36,19 @@ export class AuthEffects {
       ofType(login),
       mergeMap((action) => {
         return this.authService.login(action.email, action.password).pipe(
-          map((response) => {
+          map((response: any) => {
+            // Decode token claims using centralized helper
+            const claims = decodeTokenClaims(response.token);
+
             return loginSuccess({
-              userId: response.id,
+              userId: claims.userId,
               userToken: response.token,
-              userRole: response.role,
-              clinicId: response.clinicId,
+              userRole: claims.role || null,
+              clinicId: claims.clinicId,
+              accountId: claims.accountId,
+              userType: claims.userType,
+              patientId: claims.patientId,
+              roles: claims.roles,
             });
           }),
           catchError((error) => {

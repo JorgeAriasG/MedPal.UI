@@ -8,6 +8,7 @@
 
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
+import { decodeTokenClaims, hasValidRoles, isStaff, isPatient } from '../utils/token-utils';
 
 /**
  * Tenant Context Service
@@ -36,6 +37,7 @@ export class TenantContextService {
   /**
    * Load tenant context from JWT token
    * Called on service initialization and after login
+   * Now uses centralized token-utils decoder aligned with Jwt-Claims-Contract.md
    */
   private loadContextFromToken(): void {
     try {
@@ -49,7 +51,7 @@ export class TenantContextService {
         return;
       }
 
-      // Parse auth state from JSON
+      // Parse auth state from JSON to get the JWT token
       const authState = JSON.parse(token);
       const jwtToken = authState?.userToken;
 
@@ -58,57 +60,31 @@ export class TenantContextService {
         return;
       }
 
-      // Extract and decode JWT payload
-      const decodedPayload = this.decodeJWT(jwtToken);
+      // Use centralized decoder aligned with new snake_case contract
+      const claims = decodeTokenClaims(jwtToken);
 
-      if (!decodedPayload) {
+      // Critical security: if token has no valid roles[], treat as unauthenticated
+      if (!hasValidRoles(claims)) {
         this.clearContext();
         return;
       }
 
-      // Extract tenant context from claims
-      this.accountId = decodedPayload?.accountId || null;
-      this.clinicId = decodedPayload?.clinicId || null;
-      this.clinicIds = Array.isArray(decodedPayload?.clinicIds)
-        ? decodedPayload.clinicIds
-        : [];
-      this.userId = decodedPayload?.userId || decodedPayload?.sub || null;
-      this.role = decodedPayload?.role || null;
-      this.roles = Array.isArray(decodedPayload?.roles)
-        ? decodedPayload.roles
-        : [];
+      // Extract tenant context from claims using new snake_case names
+      this.accountId = claims.accountId || null;
+      this.clinicId = claims.clinicId || null;
+      this.userId = claims.userId || null;
+      this.role = claims.role || null;
+      this.roles = claims.roles;
 
-      // If primary clinicId not set but clinicIds available, use first one
-      if (!this.clinicId && this.clinicIds.length > 0) {
-        this.clinicId = this.clinicIds[0];
+      // Set clinicIds from clinicId if available
+      if (claims.clinicId !== null) {
+        this.clinicIds = [claims.clinicId];
       }
 
       this.contextChange$.next();
     } catch (error) {
       console.warn('Failed to load tenant context from token:', error);
       this.clearContext();
-    }
-  }
-
-  /**
-   * Decode JWT token payload
-   * @param token JWT token string
-   * @returns Decoded payload object or null if invalid
-   */
-  private decodeJWT(token: string): any {
-    try {
-      const parts = token.split('.');
-      if (parts.length !== 3) {
-        throw new Error('Invalid JWT format');
-      }
-
-      const decoded = JSON.parse(
-        atob(parts[1].replace(/-/g, '+').replace(/_/g, '/'))
-      );
-      return decoded;
-    } catch (error) {
-      console.error('Failed to decode JWT:', error);
-      return null;
     }
   }
 
