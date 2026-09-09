@@ -135,45 +135,107 @@
 }
 
 .meal-foods {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
   gap: 8px;
 }
 
-.chip {
-  display: inline-flex;
+.food-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 84px 110px auto 28px;
   align-items: center;
-  gap: 6px;
-  background: rgba(14, 165, 168, 0.12);
-  color: var(--cf-primary-dark, #087b85);
-  border: 1px solid rgba(14, 165, 168, 0.2);
-  border-radius: 999px;
-  padding: 6px 10px 6px 12px;
-  font-size: 13px;
-  font-weight: 600;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(14, 165, 168, 0.15);
+  border-radius: 12px;
+  padding: 6px 10px;
 }
 
-.chip-remove {
+.food-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--cf-text, #123456);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.food-amount {
+  min-width: 0;
+  height: 32px;
+  padding: 0 8px;
+  font-size: 13px;
+}
+
+.food-unit {
+  min-width: 0;
+  height: 32px;
+  font-size: 13px;
+}
+
+.food-kcal {
+  font-size: 12px;
+  color: var(--cf-muted, #6b7c93);
+  white-space: nowrap;
+  text-align: right;
+}
+
+.food-remove {
   display: grid;
   place-items: center;
-  width: 18px;
-  height: 18px;
+  width: 26px;
+  height: 26px;
   border: 0;
-  border-radius: 50%;
-  background: rgba(14, 165, 168, 0.18);
+  border-radius: 8px;
+  background: rgba(14, 165, 168, 0.12);
   color: var(--cf-primary-dark, #087b85);
   cursor: pointer;
   transition: background 0.15s ease;
 }
 
-.chip-remove:hover {
-  background: rgba(14, 165, 168, 0.34);
+.food-remove:hover {
+  background: rgba(14, 165, 168, 0.3);
 }
 
-.chip-remove mat-icon {
+.food-remove mat-icon {
+  font-size: 15px;
+  width: 15px;
+  height: 15px;
+}
+
+.meal-total {
+  margin-left: auto;
+  flex-shrink: 0;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--cf-primary-dark, #087b85);
+  background: rgba(14, 165, 168, 0.1);
+  border-radius: 999px;
+  padding: 3px 10px;
+}
+
+.meals-daily {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+  background: rgba(14, 165, 168, 0.08);
+  border: 1px solid rgba(14, 165, 168, 0.15);
+  border-radius: 12px;
+  padding: 8px 14px;
   font-size: 13px;
-  width: 13px;
-  height: 13px;
+  color: var(--cf-text, #123456);
+}
+
+.meals-daily mat-icon {
+  font-size: 17px;
+  width: 17px;
+  height: 17px;
+  color: var(--cf-primary, #0ea5a8);
+}
+
+.meals-daily strong {
+  margin-left: auto;
+  color: var(--cf-primary-dark, #087b85);
 }
 
 .meal-empty {

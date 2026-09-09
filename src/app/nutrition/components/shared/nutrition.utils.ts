@@ -1,3 +1,5 @@
+export const STANDARD_UNITS = ['g', 'ml', 'pieza', 'rebanada', 'taza', 'cucharada', 'unidad'];
+
 export function getBmiColor(bmi: number): string {
   if (!bmi || bmi === 0) return '#9e9e9e';
   if (bmi < 18.5) return '#ff9800';

@@ -337,10 +337,23 @@ export class ConsultationComponent implements OnInit, OnDestroy {
       );
     }
     if (Array.isArray(d.planComidas) && d.planComidas.length) {
-      lines.push('Comidas del plan: ' + d.planComidas
-        .map((m: any) => `${m.momento}: ${Array.isArray(m.alimentos) ? m.alimentos.join(', ') : ''}`)
+      const momentSpan = d.planComidas
+        .map((m: any) => {
+          const foods = Array.isArray(m.alimentos)
+            ? m.alimentos
+                .map((f: any) => {
+                  if (typeof f === 'string') return f;
+                  const amount = Number(f.cantidad) || 0;
+                  return amount > 0 ? `${f.name} (${amount} ${f.unidad})` : f.name;
+                })
+                .filter(Boolean)
+                .join(', ')
+            : '';
+          return foods ? `${m.momento}: ${foods}` : '';
+        })
         .filter((s: string) => s.trim().length > 0)
-        .join(' · '));
+        .join(' · ');
+      if (momentSpan) lines.push(`Comidas del plan: ${momentSpan}`);
     }
     if (d.planIndicaciones) lines.push(`Indicaciones: ${d.planIndicaciones}`);
 

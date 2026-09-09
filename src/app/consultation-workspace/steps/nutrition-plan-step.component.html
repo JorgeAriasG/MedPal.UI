@@ -72,11 +72,18 @@
     </div>
     <p class="up-muted plan-subtitle">{{ 'CONSULTATION_WORKSPACE.PLAN_MEALS_SUBTITLE' | translate }}</p>
 
+    <div class="meals-daily" *ngIf="totalKcal > 0">
+      <mat-icon>local_fire_department</mat-icon>
+      <span>{{ 'CONSULTATION_WORKSPACE.PLAN_MEAL_DAILY_TOTAL' | translate }}</span>
+      <strong>{{ totalKcal }} kcal</strong>
+    </div>
+
     <div class="meals-list">
       <section class="meal-card" *ngFor="let meal of meals">
         <div class="meal-header">
           <span class="meal-icon"><mat-icon>{{ momentInfo(meal.momento).icon }}</mat-icon></span>
           <h4 class="meal-name">{{ momentInfo(meal.momento).labelKey | translate }}</h4>
+          <span class="meal-total">{{ mealKcal(meal) }} kcal</span>
         </div>
 
         <div class="meal-picker">
@@ -109,12 +116,28 @@
         </div>
 
         <div class="meal-foods" *ngIf="meal.alimentos.length > 0">
-          <span class="chip" *ngFor="let food of meal.alimentos; let fi = index">
-            {{ food }}
-            <button type="button" class="chip-remove" (click)="removeFood(meal.momento, fi)" [attr.aria-label]="'CONSULTATION_WORKSPACE.PLAN_MEAL_REMOVE' | translate">
+          <div class="food-row" *ngFor="let food of meal.alimentos; let fi = index">
+            <span class="food-name" [title]="food.name">{{ food.name }}</span>
+            <input
+              class="up-input food-amount"
+              type="number"
+              min="0"
+              step="0.5"
+              [ngModel]="food.cantidad"
+              (ngModelChange)="updateCantidad(food, $event)"
+              [attr.aria-label]="('CONSULTATION_WORKSPACE.PLAN_MEAL_CANTIDAD' | translate) + ' ' + food.name">
+            <select
+              class="up-select food-unit"
+              [ngModel]="food.unidad"
+              (ngModelChange)="updateUnidad(food, $event)"
+              [attr.aria-label]="('CONSULTATION_WORKSPACE.PLAN_MEAL_UNIDAD' | translate) + ' ' + food.name">
+              <option *ngFor="let u of standardUnits" [value]="u">{{ u }}</option>
+            </select>
+            <span class="food-kcal">{{ foodKcal(food) }} kcal</span>
+            <button type="button" class="food-remove" (click)="removeFood(meal.momento, fi)" [attr.aria-label]="'CONSULTATION_WORKSPACE.PLAN_MEAL_REMOVE' | translate">
               <mat-icon>close</mat-icon>
             </button>
-          </span>
+          </div>
         </div>
         <div class="meal-empty" *ngIf="meal.alimentos.length === 0">
           {{ 'CONSULTATION_WORKSPACE.PLAN_MEAL_EMPTY' | translate }}

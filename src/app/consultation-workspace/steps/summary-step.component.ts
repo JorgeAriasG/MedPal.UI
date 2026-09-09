@@ -8,6 +8,11 @@ import {
   PendingAttachment,
   TreatmentItem,
 } from 'src/app/entities/specialty-templates.model';
+import {
+  PlanFood,
+  computeFoodKcal,
+  normalizePlanFoods,
+} from './nutrition-plan.utils';
 
 interface Cie10Entry {
   code: string;
@@ -113,12 +118,24 @@ export class SummaryStepComponent {
     return Array.isArray(this.data.restricciones) ? this.data.restricciones : [];
   }
 
-  get planComidas(): { momento: string; alimentos: string[]; racion?: string }[] {
+  get planComidas(): { momento: string; alimentos: PlanFood[]; racion?: string }[] {
     return Array.isArray(this.data.planComidas)
-      ? (this.data.planComidas as any[]).filter(
-          (m) => Array.isArray(m.alimentos) && m.alimentos.length > 0
-        )
+      ? (this.data.planComidas as any[])
+          .map((m: any) => ({
+            momento: m.momento,
+            alimentos: normalizePlanFoods(m.alimentos),
+            racion: (m.racion as string) || '',
+          }))
+          .filter((m) => m.alimentos.length > 0)
       : [];
+  }
+
+  foodLabel(food: PlanFood): string {
+    const cantidad = Number(food.cantidad) || 0;
+    const kcal = computeFoodKcal(food);
+    const base = food.name;
+    const portion = cantidad > 0 ? `${cantidad} ${food.unidad}` : food.unidad;
+    return kcal ? `${base} · ${portion} · ${kcal} kcal` : `${base} · ${portion}`;
   }
 
   mealLabel(momento: string): string {
@@ -128,6 +145,7 @@ export class SummaryStepComponent {
       lunch: 'CONSULTATION_WORKSPACE.PLAN_MEAL_LUNCH',
       'afternoon-snack': 'CONSULTATION_WORKSPACE.PLAN_MEAL_AFTERNOON_SNACK',
       dinner: 'CONSULTATION_WORKSPACE.PLAN_MEAL_DINNER',
+      supper: 'CONSULTATION_WORKSPACE.PLAN_MEAL_SUPPER',
     };
     return map[momento] || 'CONSULTATION_WORKSPACE.PLAN_MEAL_LUNCH';
   }

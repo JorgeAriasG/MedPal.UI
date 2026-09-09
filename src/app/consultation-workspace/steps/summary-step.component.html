@@ -109,7 +109,8 @@
       <li class="su-item" *ngFor="let meal of planComidas">
         <span class="su-item-name">{{ mealLabel(meal.momento) | translate }}</span>
         <span class="su-item-detail">
-          {{ meal.alimentos.join(', ') }}<ng-container *ngIf="meal.racion"> · {{ meal.racion }}</ng-container>
+          <span *ngFor="let food of meal.alimentos" class="su-food">{{ foodLabel(food) }}</span>
+          <ng-container *ngIf="meal.racion"> · {{ meal.racion }}</ng-container>
         </span>
       </li>
     </ul>

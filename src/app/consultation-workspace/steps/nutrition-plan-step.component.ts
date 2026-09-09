@@ -7,10 +7,17 @@ import {
 } from '../consultation-workspace.models';
 import { NutritionService } from 'src/app/nutrition/services/nutrition.service';
 import { IFoodItem } from 'src/app/nutrition/models/food-item.model';
+import { STANDARD_UNITS } from 'src/app/nutrition/components/shared/nutrition.utils';
+import {
+  PlanFood,
+  computeFoodKcal,
+  mealMomentsFor,
+  normalizePlanFoods,
+} from './nutrition-plan.utils';
 
 export interface PlanMeal {
   momento: string;
-  alimentos: string[];
+  alimentos: PlanFood[];
   racion?: string;
 }
 
@@ -20,6 +27,7 @@ const MEAL_MOMENTS: { key: string; icon: string; labelKey: string }[] = [
   { key: 'lunch', icon: 'lunch_dining', labelKey: 'CONSULTATION_WORKSPACE.PLAN_MEAL_LUNCH' },
   { key: 'afternoon-snack', icon: 'wb_twilight', labelKey: 'CONSULTATION_WORKSPACE.PLAN_MEAL_AFTERNOON_SNACK' },
   { key: 'dinner', icon: 'nightlight', labelKey: 'CONSULTATION_WORKSPACE.PLAN_MEAL_DINNER' },
+  { key: 'supper', icon: 'bedtime', labelKey: 'CONSULTATION_WORKSPACE.PLAN_MEAL_SUPPER' },
 ];
 
 @Component({
@@ -30,7 +38,7 @@ const MEAL_MOMENTS: { key: string; icon: string; labelKey: string }[] = [
 })
 export class NutritionPlanStepComponent implements OnDestroy {
   data: any = {};
-  mealMoments = MEAL_MOMENTS;
+  standardUnits = STANDARD_UNITS;
   queries: Record<string, string> = {};
   results: Record<string, IFoodItem[]> = {};
   loading: Record<string, boolean> = {};
@@ -51,13 +59,23 @@ export class NutritionPlanStepComponent implements OnDestroy {
   }
 
   private seedMeals(): void {
-    if (!Array.isArray(this.data.planComidas) || this.data.planComidas.length === 0) {
-      this.data.planComidas = MEAL_MOMENTS.map((m) => ({
-        momento: m.key,
-        alimentos: [],
-        racion: '',
-      }));
-    }
+    const raw = Array.isArray(this.data.planComidas) ? this.data.planComidas : [];
+    this.data.planComidas = raw.map((m: any) => ({
+      momento: m.momento,
+      alimentos: normalizePlanFoods(m.alimentos),
+      racion: (m.racion as string) || '',
+    }));
+    this.reconcileMeals();
+  }
+
+  private reconcileMeals(): void {
+    const existing = this.data.planComidas as PlanMeal[];
+    const byMoment = new Map(existing.map((m) => [m.momento, m]));
+    this.data.planComidas = mealMomentsFor(this.comidasDia).map((key) => {
+      return (
+        byMoment.get(key) || { momento: key, alimentos: [] as PlanFood[], racion: '' }
+      );
+    });
   }
 
   get meals(): PlanMeal[] {
@@ -71,6 +89,18 @@ export class NutritionPlanStepComponent implements OnDestroy {
         labelKey: 'CONSULTATION_WORKSPACE.PLAN_MEAL_LUNCH',
       }
     );
+  }
+
+  foodKcal(food: PlanFood): number {
+    return computeFoodKcal(food);
+  }
+
+  mealKcal(meal: PlanMeal): number {
+    return meal.alimentos.reduce((sum, food) => sum + this.foodKcal(food), 0);
+  }
+
+  get totalKcal(): number {
+    return this.meals.reduce((sum, meal) => sum + this.mealKcal(meal), 0);
   }
 
   get energia(): number {
@@ -102,6 +132,7 @@ export class NutritionPlanStepComponent implements OnDestroy {
 
   setComidasDia(value: number): void {
     this.data.planComidasDia = Number(value);
+    this.reconcileMeals();
   }
 
   get indicaciones(): string {
@@ -137,14 +168,28 @@ export class NutritionPlanStepComponent implements OnDestroy {
   selectFood(momento: string, food: IFoodItem): void {
     const meal = this.meals.find((m) => m.momento === momento);
     if (!meal) return;
-    const label = food.servingSize
-      ? `${food.name} · ${food.servingSize} ${food.servingUnit}`
-      : food.name;
-    if (!meal.alimentos.includes(label)) {
-      meal.alimentos.push(label);
-    }
+    const unidad = STANDARD_UNITS.includes(food.servingUnit) ? food.servingUnit : 'unidad';
+    meal.alimentos.push({
+      name: food.name,
+      cantidad: food.servingSize,
+      unidad,
+      kcalBase: food.calories,
+      proteinBase: food.protein,
+      carbsBase: food.carbs,
+      fatBase: food.fat,
+      servingSize: food.servingSize,
+      servingUnit: food.servingUnit,
+    });
     this.queries[momento] = '';
     this.results[momento] = [];
+  }
+
+  updateCantidad(food: PlanFood, value: number): void {
+    food.cantidad = Number(value) || 0;
+  }
+
+  updateUnidad(food: PlanFood, value: string): void {
+    food.unidad = value;
   }
 
   removeFood(momento: string, index: number): void {
