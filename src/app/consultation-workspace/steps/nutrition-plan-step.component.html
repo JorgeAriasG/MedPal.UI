@@ -64,4 +64,67 @@
       </div>
     </div>
   </div>
+
+  <div class="up-card">
+    <div class="up-card-header">
+      <mat-icon>restaurant_menu</mat-icon>
+      <h3 class="up-card-title">{{ 'CONSULTATION_WORKSPACE.PLAN_MEALS_TITLE' | translate }}</h3>
+    </div>
+    <p class="up-muted plan-subtitle">{{ 'CONSULTATION_WORKSPACE.PLAN_MEALS_SUBTITLE' | translate }}</p>
+
+    <div class="meals-list">
+      <section class="meal-card" *ngFor="let meal of meals">
+        <div class="meal-header">
+          <span class="meal-icon"><mat-icon>{{ momentInfo(meal.momento).icon }}</mat-icon></span>
+          <h4 class="meal-name">{{ momentInfo(meal.momento).labelKey | translate }}</h4>
+        </div>
+
+        <div class="meal-picker">
+          <div class="picker-field">
+            <mat-icon class="picker-search-icon">search</mat-icon>
+            <input
+              class="up-input picker-input"
+              type="text"
+              [ngModel]="queries[meal.momento]"
+              (ngModelChange)="search(meal.momento, $event)"
+              [placeholder]="'CONSULTATION_WORKSPACE.PLAN_MEAL_SEARCH_PLACEHOLDER' | translate"
+              [attr.aria-label]="momentInfo(meal.momento).labelKey | translate">
+
+            <div class="picker-results" *ngIf="(results[meal.momento] || []).length > 0">
+              <button
+                type="button"
+                class="picker-result"
+                *ngFor="let food of results[meal.momento]"
+                (mousedown)="selectFood(meal.momento, food)">
+                <span class="picker-result-name">{{ food.name }}</span>
+                <span class="picker-result-meta">
+                  {{ food.servingSize }} {{ food.servingUnit }} · {{ food.calories }} kcal
+                </span>
+              </button>
+              <div class="picker-loading" *ngIf="loading[meal.momento]">
+                {{ 'CONSULTATION_WORKSPACE.PLAN_MEAL_SEARCHING' | translate }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="meal-foods" *ngIf="meal.alimentos.length > 0">
+          <span class="chip" *ngFor="let food of meal.alimentos; let fi = index">
+            {{ food }}
+            <button type="button" class="chip-remove" (click)="removeFood(meal.momento, fi)" [attr.aria-label]="'CONSULTATION_WORKSPACE.PLAN_MEAL_REMOVE' | translate">
+              <mat-icon>close</mat-icon>
+            </button>
+          </span>
+        </div>
+        <div class="meal-empty" *ngIf="meal.alimentos.length === 0">
+          {{ 'CONSULTATION_WORKSPACE.PLAN_MEAL_EMPTY' | translate }}
+        </div>
+
+        <textarea
+          class="up-textarea meal-notes"
+          [(ngModel)]="meal.racion"
+          [placeholder]="'CONSULTATION_WORKSPACE.PLAN_MEAL_RACION' | translate"></textarea>
+      </section>
+    </div>
+  </div>
 </div>

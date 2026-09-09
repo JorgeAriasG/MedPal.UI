@@ -6,6 +6,7 @@ import {
   SpecialtyWorkspaceConfig,
 } from './consultation-workspace.models';
 import { resolveWorkspaceConfig } from './consultation-step-registry';
+import { canGeneratePrescription } from 'src/app/config/specialty-config';
 
 const SPECIALTY_EMOJIS: Record<string, string> = {
   General: '🩺',
@@ -138,7 +139,7 @@ export class ConsultationWorkspaceComponent {
       return;
     }
     this.nextStep();
-    if (isPlanStep) {
+    if (isPlanStep && canGeneratePrescription(this.config.specialty)) {
       this.generatePrescription.emit();
     }
   }

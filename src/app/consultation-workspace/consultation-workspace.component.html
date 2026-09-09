@@ -75,7 +75,7 @@
           <mat-icon>arrow_back</mat-icon>
           {{ 'CONSULTATION_WORKSPACE.PREV_STEP' | translate }}
         </button>
-        <button class="primary-btn" (click)="onPrimaryAction()" [disabled]="isLastStep">
+        <button class="primary-btn" (click)="onPrimaryAction()">
           {{ primaryCtaKey | translate }}
           <mat-icon *ngIf="!isLastStep">arrow_forward</mat-icon>
           <mat-icon *ngIf="isLastStep">check_circle</mat-icon>
@@ -87,7 +87,8 @@
       <app-consultation-context-panel
         [steps]="config.steps"
         [selectedIndex]="selectedStepIndex"
-        [specialty]="config.specialty">
+        [objectives]="config.objectives"
+        [deliverables]="config.deliverables">
       </app-consultation-context-panel>
     </aside>
   </div>

@@ -112,4 +112,23 @@ export class SummaryStepComponent {
   get restricciones(): string[] {
     return Array.isArray(this.data.restricciones) ? this.data.restricciones : [];
   }
+
+  get planComidas(): { momento: string; alimentos: string[]; racion?: string }[] {
+    return Array.isArray(this.data.planComidas)
+      ? (this.data.planComidas as any[]).filter(
+          (m) => Array.isArray(m.alimentos) && m.alimentos.length > 0
+        )
+      : [];
+  }
+
+  mealLabel(momento: string): string {
+    const map: Record<string, string> = {
+      breakfast: 'CONSULTATION_WORKSPACE.PLAN_MEAL_BREAKFAST',
+      'morning-snack': 'CONSULTATION_WORKSPACE.PLAN_MEAL_MORNING_SNACK',
+      lunch: 'CONSULTATION_WORKSPACE.PLAN_MEAL_LUNCH',
+      'afternoon-snack': 'CONSULTATION_WORKSPACE.PLAN_MEAL_AFTERNOON_SNACK',
+      dinner: 'CONSULTATION_WORKSPACE.PLAN_MEAL_DINNER',
+    };
+    return map[momento] || 'CONSULTATION_WORKSPACE.PLAN_MEAL_LUNCH';
+  }
 }

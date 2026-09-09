@@ -19,6 +19,9 @@ export interface SpecialtyWorkspaceConfig {
   title: string;
   subtitleKey: string;
   steps: ConsultationStepConfig[];
+  /** i18n label keys shown in the contextual panel. */
+  objectives: string[];
+  deliverables: string[];
 }
 
 /** Read-only patient/consultation context shared by every step. */

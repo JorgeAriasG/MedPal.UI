@@ -83,6 +83,8 @@ describe('consultation-step-registry', () => {
       expect(config.title.length).toBeGreaterThan(0);
       expect(config.subtitleKey.startsWith('CONSULTATION_WORKSPACE.SUBTITLE_')).toBeTrue();
       expect(config.steps.length).toBeGreaterThanOrEqual(3);
+      expect(config.objectives.length).toBeGreaterThan(0);
+      expect(config.deliverables.length).toBeGreaterThan(0);
 
       config.steps.forEach((step) => {
         expect(step.key.length).toBeGreaterThan(0);
@@ -90,6 +92,22 @@ describe('consultation-step-registry', () => {
         expect(step.icon.length).toBeGreaterThan(0);
       });
     });
+  });
+
+  it('defines Nutrition objectives and deliverables from the registry (data-driven panel)', () => {
+    const config = resolveWorkspaceConfig('Nutrition');
+
+    expect(config.objectives).toEqual([
+      'CONSULTATION_WORKSPACE.OBJ_1_NUTRITION',
+      'CONSULTATION_WORKSPACE.OBJ_2_NUTRITION',
+      'CONSULTATION_WORKSPACE.OBJ_3_NUTRITION',
+      'CONSULTATION_WORKSPACE.OBJ_4_NUTRITION',
+    ]);
+    expect(config.deliverables).toEqual([
+      'CONSULTATION_WORKSPACE.DEL_1_NUTRITION',
+      'CONSULTATION_WORKSPACE.DEL_2_NUTRITION',
+      'CONSULTATION_WORKSPACE.DEL_3_NUTRITION',
+    ]);
   });
 
   it('assigns a renderable component to every step of every specialty', () => {

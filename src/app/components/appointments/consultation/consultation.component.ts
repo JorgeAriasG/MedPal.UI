@@ -8,7 +8,7 @@ import { AppointmentsService } from '../services/appointments.service';
 import { PatientsService } from 'src/app/components/patients/services/patients.service';
 import { Store } from '@ngrx/store';
 import { selectUserSpecialty } from 'src/app/store/selectors/auth.selectors';
-import { SPECIALTY_CONFIG, SoapConfig, resolveSpecialty } from 'src/app/config/specialty-config';
+import { SPECIALTY_CONFIG, SoapConfig, resolveSpecialty, canGeneratePrescription } from 'src/app/config/specialty-config';
 import { SpecialtyType, TreatmentItem } from 'src/app/entities/specialty-templates.model';
 import { MedicalHistoryService } from 'src/app/services/medical-history.service';
 import { MedicalHistoryAttachmentsService } from 'src/app/services/medical-history-attachments.service';
@@ -262,22 +262,30 @@ export class ConsultationComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (!dto.diagnosis) {
-      this.saving = false;
-      this.snackBar.open(this.translate.instant('CONSULTATION.DIAGNOSIS_REQUIRED'), 'OK', {
-        duration: 4000,
-        panelClass: 'cf-toast-warn',
-      });
-      return;
-    }
+    const prescriptionCapable = canGeneratePrescription(this.userSpecialty);
+    if (prescriptionCapable) {
+      if (!dto.diagnosis) {
+        this.saving = false;
+        this.snackBar.open(this.translate.instant('CONSULTATION.DIAGNOSIS_REQUIRED'), 'OK', {
+          duration: 4000,
+          panelClass: 'cf-toast-warn',
+        });
+        return;
+      }
 
-    if (!dto.clinicalNotes) {
-      this.saving = false;
-      this.snackBar.open(this.translate.instant('CONSULTATION.CLINICAL_NOTES_REQUIRED'), 'OK', {
-        duration: 4000,
-        panelClass: 'cf-toast-warn',
-      });
-      return;
+      if (!dto.clinicalNotes) {
+        this.saving = false;
+        this.snackBar.open(this.translate.instant('CONSULTATION.CLINICAL_NOTES_REQUIRED'), 'OK', {
+          duration: 4000,
+          panelClass: 'cf-toast-warn',
+        });
+        return;
+      }
+    } else {
+      dto.diagnosis = dto.diagnosis || dto.clinicalNotes || '';
+      dto.clinicalNotes = (dto.clinicalNotes || '').trim()
+        ? dto.clinicalNotes
+        : this.buildNutritionClinicalNotes();
     }
 
     const pendingAttachments = (this.consultationData.specialtyData?.attachments || []).filter(
@@ -299,6 +307,7 @@ export class ConsultationComponent implements OnInit, OnDestroy {
             duration: 3000,
             panelClass: 'cf-toast-success',
           });
+          setTimeout(() => this.router.navigate(['/appointments']), 800);
         },
         error: (err) => {
           console.error('Error al completar la consulta:', err);
@@ -312,7 +321,35 @@ export class ConsultationComponent implements OnInit, OnDestroy {
       });
   }
 
+  private buildNutritionClinicalNotes(): string {
+    const d = this.consultationData.specialtyData || {};
+    const lines: string[] = [];
+
+    if (d.objetivo) lines.push(`Objetivo: ${d.objetivo}`);
+    if (d.caloriasDiarias) lines.push(`Energía diaria: ${d.caloriasDiarias} kcal`);
+    const hydra = d.planHidratacionL ?? (d.waterMl ? Math.round(d.waterMl / 1000 * 10) / 10 : null);
+    if (hydra) lines.push(`Hidratación: ${hydra} L`);
+    const macros = d.macros;
+    if (macros) {
+      lines.push(
+        `Macronutrientes: ${macros.carbsTargetPercentage ?? '-'}% carbohidratos / ` +
+          `${macros.proteinTargetPercentage ?? '-'}% proteína / ${macros.fatTargetPercentage ?? '-'}% grasas`
+      );
+    }
+    if (Array.isArray(d.planComidas) && d.planComidas.length) {
+      lines.push('Comidas del plan: ' + d.planComidas
+        .map((m: any) => `${m.momento}: ${Array.isArray(m.alimentos) ? m.alimentos.join(', ') : ''}`)
+        .filter((s: string) => s.trim().length > 0)
+        .join(' · '));
+    }
+    if (d.planIndicaciones) lines.push(`Indicaciones: ${d.planIndicaciones}`);
+
+    return lines.join('\n');
+  }
+
   generatePrescription(): void {
+    if (!canGeneratePrescription(this.userSpecialty)) return;
+
     const specialtyData = this.consultationData.specialtyData || {};
     const diagnosis = (specialtyData.diagnosis || '').trim();
     const treatments = Array.isArray(specialtyData.treatments) ? specialtyData.treatments : [];

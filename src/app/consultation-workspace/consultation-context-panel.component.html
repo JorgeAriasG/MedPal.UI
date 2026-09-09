@@ -18,7 +18,7 @@
     <div class="check-list">
       <div *ngFor="let objective of objectives">
         <mat-icon>check</mat-icon>
-        {{ objective.labelKey | translate }}
+        {{ objective | translate }}
       </div>
     </div>
   </section>
@@ -29,7 +29,7 @@
     <div class="check-list">
       <div *ngFor="let deliverable of deliverables">
         <mat-icon>check</mat-icon>
-        {{ deliverable.labelKey | translate }}
+        {{ deliverable | translate }}
       </div>
     </div>
   </section>

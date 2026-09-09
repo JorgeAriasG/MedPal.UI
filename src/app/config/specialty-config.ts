@@ -137,3 +137,15 @@ export function resolveSpecialty(value: string | null | undefined): SpecialtyTyp
   const key = normalizeSpecialty(value);
   return SPECIALTY_ALIASES[key] || 'General';
 }
+
+/**
+ * Capacidades de generación de recetas de medicamento.
+ * Solo las especialidades SOAP (Medicina General y similares) generan recetas;
+ * Nutrición y Odontología las tienen deshabilitadas por regla.
+ */
+export function canGeneratePrescription(
+  specialty: SpecialtyType | string | null | undefined
+): boolean {
+  const resolved = resolveSpecialty(specialty);
+  return SPECIALTY_CONFIG[resolved]?.template === 'soap';
+}

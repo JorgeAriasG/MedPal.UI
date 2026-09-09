@@ -69,6 +69,12 @@ const PHYSICAL_THERAPY_STEPS: ConsultationStepConfig[] = [
 ];
 
 const SUBTITLE_KEY = 'CONSULTATION_WORKSPACE.SUBTITLE_';
+const OBJ_KEY = 'CONSULTATION_WORKSPACE.OBJ_';
+const DEL_KEY = 'CONSULTATION_WORKSPACE.DEL_';
+
+function itemKeys(prefix: string, keys: string[]): string[] {
+  return keys.map((k) => prefix + k);
+}
 
 /**
  * Fase 2 mapping: assign the reusable base components to semantically
@@ -115,10 +121,17 @@ const SPECIALTY_STEP_COMPONENTS: Record<
   },
 };
 
+const GENERAL_OBJECTIVES = itemKeys(OBJ_KEY, ['1_GENERAL', '2_GENERAL', '3_GENERAL', '4_GENERAL']);
+const GENERAL_DELIVERABLES = itemKeys(DEL_KEY, ['1_GENERAL', '2_GENERAL', '3_GENERAL']);
+const NUTRITION_OBJECTIVES = itemKeys(OBJ_KEY, ['1_NUTRITION', '2_NUTRITION', '3_NUTRITION', '4_NUTRITION']);
+const NUTRITION_DELIVERABLES = itemKeys(DEL_KEY, ['1_NUTRITION', '2_NUTRITION', '3_NUTRITION']);
+
 function buildConfig(
   specialty: SpecialtyType,
   subtitleKey: string,
-  steps: ConsultationStepConfig[]
+  steps: ConsultationStepConfig[],
+  objectives: string[] = GENERAL_OBJECTIVES,
+  deliverables: string[] = GENERAL_DELIVERABLES
 ): SpecialtyWorkspaceConfig {
   const label = SPECIALTY_CONFIG[specialty]?.label || SPECIALTY_CONFIG.General.label;
   const specialtyOverrides = SPECIALTY_STEP_COMPONENTS[specialty] || {};
@@ -126,6 +139,8 @@ function buildConfig(
     specialty,
     title: label,
     subtitleKey,
+    objectives,
+    deliverables,
     steps: steps.map((step) => ({
       ...step,
       component: specialtyOverrides[step.key] ?? STEP_COMPONENT_BY_KEY[step.key] ?? undefined,
@@ -139,7 +154,13 @@ export const SPECIALTY_WORKSPACE_REGISTRY: Record<SpecialtyType, SpecialtyWorksp
   Pediatrics: buildConfig('Pediatrics', `${SUBTITLE_KEY}GENERAL`, BASE_STEPS),
   Dermatology: buildConfig('Dermatology', `${SUBTITLE_KEY}GENERAL`, BASE_STEPS),
   Dental: buildConfig('Dental', `${SUBTITLE_KEY}DENTAL`, DENTAL_STEPS),
-  Nutrition: buildConfig('Nutrition', `${SUBTITLE_KEY}NUTRITION`, NUTRITION_STEPS),
+  Nutrition: buildConfig(
+    'Nutrition',
+    `${SUBTITLE_KEY}NUTRITION`,
+    NUTRITION_STEPS,
+    NUTRITION_OBJECTIVES,
+    NUTRITION_DELIVERABLES
+  ),
 };
 
 const LABEL_TO_KEY: Record<string, SpecialtyType> = Object.entries(SPECIALTY_CONFIG).reduce(

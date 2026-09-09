@@ -37,20 +37,27 @@ refactor skill; use `clinicflow-platform` for cross-cutting platform work.
 UI must feel: modern, minimal, calm, premium, lightweight, operational, intuitive.
 Reference: Linear, Stripe Dashboard, Apple-level simplicity.
 
-## Color System (Aspirational)
+> **Regla general (rollout progresivo):** Todo requerimiento visual nuevo aplica el
+> **ClinicFlow Visual Contract v1** — tokens en `src/styles.css` (`--cf-*`), recetas en
+> `Docs/DESIGN_SYSTEM.md §0`. Piloto canónico: consulta de Nutrición (glass teal,
+> sidebar light, stepper pills, panel contextual). Los estilos se adoptan módulo a
+> módulo sin romper comportamiento. Capacidades por especialidad (ej. recetas solo SOAP)
+> van en `specialty-config` / el registry del workspace, nunca hardcodeadas en UI.
 
-| Token | Value |
-|-------|-------|
-| Primary | `#5B6CFF` |
-| Secondary | `#A7F3D0` |
-| Background | `#F6F8FC` |
-| Surface | `#FFFFFF` |
-| Border | `rgba(0,0,0,0.06)` |
-| Text Primary | `#111827` |
-| Text Secondary | `#6B7280` |
+## Color System (Contract v1 — teal glass)
 
-> **Note:** Actual `styles.css` uses `#1976D2` primary, `#F5F7FA` bg, Roboto/Outfit/Muli fonts.
-> If aligning code to these tokens, update `styles.css` accordingly.
+| Token | Value | Use |
+|-------|-------|-----|
+| `--cf-primary` | `#0ea5a8` | accents, focus, chips, active links |
+| `--cf-primary-dark` | `#087b85` | hover / text on teal |
+| `--cf-navy` | `#0c2d57` | headings, card values |
+| `--cf-text` | `#123456` | body text |
+| `--cf-muted` | `#6b7c93` | secondary text |
+| `--cf-card` | `rgba(255,255,255,0.72)` | glass card bg |
+| `--cf-gradient` | radial + `linear-gradient(135deg,#e9fbff,#f8fdff 50%,#d8f5f7)` | app background (fixed) |
+
+> Legacy `styles.css` pre-piloto usaba `#1976D2` primary y `#F5F7FA` bg. Migración
+> progresiva al contrato; nuevos componentes usan los `--cf-*` desde el inicio.
 
 ## Typography Scale
 
@@ -68,12 +75,13 @@ Prefer: 4, 8, 12, 16, 24, 32. Favor whitespace over density.
 
 ## Component Styles
 
-- **Cards:** `background: white; border-radius: 16px; padding: 24px; border: 1px solid rgba(0,0,0,0.05); box-shadow: 0 4px 20px rgba(0,0,0,0.04);`
-- **Buttons primary:** rounded, subtle blue palette, medium weight, soft hover
-- **Buttons secondary:** ghost style, low contrast, subtle borders
-- **Inputs:** spacious, `border-color: #5B6CFF` on focus, `box-shadow: 0 0 0 4px rgba(91,108,255,0.12)`
-- **Tables:** soft separators, spacious rows, rounded containers
-- **Sidebar:** slim, icon-oriented, softly elevated, rounded active states
+- **Cards:** glass — `background: var(--cf-card); border-radius: 24–32px; padding: 24px; border: 1px solid rgba(255,255,255,0.85); box-shadow: 0 18px 45px rgba(31,117,140,0.16); backdrop-filter: blur(22px);`
+- **Buttons primary:** gradiente `#18c5c8→#058897`, texto blanco, radius 16px, peso 800, soft hover
+- **Buttons secondary (ghost):** `rgba(255,255,255,0.72)`, bajo contraste, borde blanco sutil
+- **Inputs:** espaciosos, radius 14px, `border-color: #0ea5a8` on focus, `box-shadow: 0 0 0 4px rgba(14,165,168,0.14)`
+- **Tables:** separadores suaves, filas espaciosas, contenedores redondeados
+- **Sidebar:** light glass, icon-oriented, `nav-pill` active con gradiente teal + barra inset 4px
+- **Stepper de consulta:** pills conectadas con círculos numerados (ver `consultation-stepper.*`)
 - **Microinteractions:** `transition: all 0.2s ease;` — no bounce/flash
 
 ---

@@ -100,6 +100,21 @@
     </div>
   </div>
 
+  <div class="up-card" *ngIf="planComidas.length > 0">
+    <div class="up-card-header">
+      <mat-icon>restaurant_menu</mat-icon>
+      <h3 class="up-card-title">{{ 'CONSULTATION_WORKSPACE.SUMMARY_MEALS_TITLE' | translate }}</h3>
+    </div>
+    <ul class="su-list">
+      <li class="su-item" *ngFor="let meal of planComidas">
+        <span class="su-item-name">{{ mealLabel(meal.momento) | translate }}</span>
+        <span class="su-item-detail">
+          {{ meal.alimentos.join(', ') }}<ng-container *ngIf="meal.racion"> · {{ meal.racion }}</ng-container>
+        </span>
+      </li>
+    </ul>
+  </div>
+
   <div class="up-card">
     <div class="up-card-header">
       <mat-icon>medication</mat-icon>

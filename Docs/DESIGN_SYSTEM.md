@@ -1,5 +1,62 @@
 # Design System & UI/UX Guidelines
 
+## 0. ClinicFlow Visual Contract v1 (CANONICAL)
+
+> **Regla general:** todo requerimiento visual nuevo DEBE seguir este contrato.
+> Se adopta progresivamente módulo a módulo a partir del piloto de consulta de
+> Nutrición. Los tokens viven en `src/styles.css` (`--cf-*`) como fuente única.
+
+### 0.1 Tokens de color
+
+| Token | Valor | Uso |
+|-------|-------|-----|
+| `--cf-primary` | `#0ea5a8` | Acentos, foco, chips, enlaces activos |
+| `--cf-primary-dark` | `#087b85` | Hover, texto sobre teal |
+| `--cf-navy` | `#0c2d57` | Títulos y valores |
+| `--cf-text` | `#123456` | Texto principal |
+| `--cf-muted` | `#6b7c93` | Texto secundario |
+| `--cf-card` | `rgba(255,255,255,0.72)` | Fondo de cards/glass |
+| `--cf-gradient` | `radial-gradient(...) + linear-gradient(135deg,#e9fbff,#f8fdff 50%,#d8f5f7)` | Fondo de app |
+
+### 0.2 Superficies glass
+
+- Cards: `background: var(--cf-card)`, `border-radius: 24–32px`, borde
+  `1px solid rgba(255,255,255,0.85)`, blur `22–24px`,
+  sombra `0 18px 45px rgba(31,117,140,0.16)`.
+- El fondo de la app es un gradiente teal claro fijo (`background-attachment: fixed`).
+
+### 0.3 Recetas de componentes
+
+- **Sidebar**: light glass, icon-orientada, `nav-pill` con estado activo
+  (gradiente `rgba(22,189,202,.22)` + barra inset 4px teal).
+- **Botones**: `primary-btn` = gradiente `#18c5c8→#058897`, texto blanco;
+  `ghost-btn` = `rgba(255,255,255,.72)` + borde blanco. Radius 16px, peso 800,
+  `transition: all 0.2s ease`.
+- **Inputs**: `border-radius 14px`, foco `border-color: #0ea5a8` +
+  `box-shadow: 0 0 0 4px rgba(14,165,168,.14)`.
+- **Stepper de consulta**: pills conectadas en bandeja glass `repeat(6,1fr)`,
+  círculos numerados 28px, paso hecho = check sobre gradiente teal.
+- **Chips**: teal transparente `rgba(14,165,168,.12)`, texto `#087b85`,
+  radius 999px, removibles.
+- **Tables**: separadores suaves (`rgba(0,0,0,0.06)`), filas espaciosas,
+  contenedores redondeados.
+- **Toasts**: colores de estado estándar; class `cf-toast-*`.
+
+### 0.4 Tipografía
+
+`Dashboard Title 28px/700 · Section Title 18px/600 · Card Metric 24px/700 ·
+Body 14–15px · Labels 12–13px`. Headings en `--cf-navy` con `letter-spacing: -0.02em`.
+
+### 0.5 Reglas de rollout
+
+- Nuevas UI DEBEN implementar este contrato desde el inicio.
+- Refactors visuales existentes se van migrando módulo a módulo sin romper
+  comportamiento.
+- Capacidades por especialidad (ej. recetas solo SOAP) van en `specialty-config`
+  o el registry del workspace, no hardcodeadas en componentes.
+
+---
+
 ## 1. Design Principles
 
 ### 1.1 Core Values
