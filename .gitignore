@@ -40,3 +40,15 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+# Local scratch / debugging output (never commit)
+/api_patients.txt
+/build.log
+/detailed.txt
+/err2.txt
+/null
+/temp_output.txt
+/test_output.txt
+/test_result.txt
+/test_result2.txt
+/tmp.txt

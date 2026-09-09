@@ -43,12 +43,14 @@ export class AuthEffects {
             return loginSuccess({
               userId: claims.userId,
               userToken: response.token,
-              userRole: claims.role || null,
+              userRole: claims.role || response.role || null,
               clinicId: claims.clinicId,
               accountId: claims.accountId,
               userType: claims.userType,
               patientId: claims.patientId,
               roles: claims.roles,
+              name: response.name,
+              email: response.email,
             });
           }),
           catchError((error) => {

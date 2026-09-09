@@ -56,10 +56,11 @@ export class AnthropometryDialogComponent implements OnInit {
   ngOnInit(): void {
     if (this.isEdit && this.data.entry) {
       const e = this.data.entry;
+      const legacyHeightInMeters = e.height > 0 && e.height <= 3;
       this.form.patchValue({
         recordedAt: new Date(e.recordedAt),
         weight: e.weight,
-        height: e.height,
+        height: legacyHeightInMeters ? e.height! * 100 : e.height,
         waist: e.waist,
         hip: e.hip,
         neck: e.neck,
@@ -78,7 +79,8 @@ export class AnthropometryDialogComponent implements OnInit {
 
   private calculateBmi(weight: number, height: number): number {
     if (!weight || !height) return 0;
-    return +(weight / (height * height)).toFixed(1);
+    const heightInMeters = height / 100;
+    return +(weight / (heightInMeters * heightInMeters)).toFixed(1);
   }
 
   private calculateWaistHipRatio(waist: number, hip: number): number {
@@ -88,7 +90,7 @@ export class AnthropometryDialogComponent implements OnInit {
 
   private calculateWaistHeightRatio(waist: number, height: number): number {
     if (!waist || !height) return 0;
-    return +(waist / (height * 100)).toFixed(2);
+    return +(waist / height).toFixed(2);
   }
 
   private estimateBodyFat(): number | undefined {

@@ -7,7 +7,11 @@
  */
 
 import { Injectable } from '@angular/core';
+import { take } from 'rxjs/operators';
+import { Store } from '@ngrx/store';
 import { decodeTokenClaims, hasValidRoles } from '../utils/token-utils';
+import { AuthState, initialState } from '../store/reducers/auth.reducer';
+import { selectAuthState } from '../store/selectors/auth.selectors';
 
 /**
  * Available permissions in the system
@@ -30,6 +34,7 @@ export enum Permission {
  *
  * @note Caches permissions to avoid repeated token parsing
  * @note Uses centralized token-utils decoder for snake_case claims
+ * @note Sourced from the NgRx auth store (single source of truth)
  */
 @Injectable({
   providedIn: 'root',
@@ -38,31 +43,27 @@ export class PermissionService {
   private cachedPermissions: Set<string> = new Set();
   private cachedClaims: Map<string, any> = new Map();
 
-  constructor() {
-    this.loadPermissionsFromToken();
+  constructor(private store: Store<{ auth: AuthState }>) {
+    this.watchAuthState();
   }
 
   /**
-   * Load permissions from JWT token in storage
-   * Called on service initialization and after login
-   * Now uses centralized token-utils decoder aligned with Jwt-Claims-Contract.md
+   * Sync permissions/claims with the NgRx auth store.
+   * The store rehydrates from ngrx_auth on boot via ngrx-store-localstorage,
+   * so no direct localStorage reads are needed.
    */
-  private loadPermissionsFromToken(): void {
+  private watchAuthState(): void {
+    this.store.select(selectAuthState).subscribe((state) => {
+      this.applyAuthState(state ?? initialState);
+    });
+  }
+
+  /**
+   * Apply an auth state snapshot to the cached claims/permissions.
+   */
+  private applyAuthState(s: AuthState): void {
     try {
-      // Try sessionStorage first (more secure), then localStorage
-      const token =
-        sessionStorage.getItem('ngrx_auth') ||
-        localStorage.getItem('ngrx_auth');
-
-      if (!token) {
-        this.cachedPermissions.clear();
-        this.cachedClaims.clear();
-        return;
-      }
-
-      // Parse auth state from JSON to get the JWT token
-      const authState = JSON.parse(token);
-      const jwtToken = authState?.userToken || localStorage.getItem('auth_token');
+      const jwtToken = s.userToken;
 
       if (!jwtToken) {
         this.cachedPermissions.clear();
@@ -227,11 +228,14 @@ export class PermissionService {
   }
 
   /**
-   * Refresh permissions from token
+   * Refresh permissions from the auth store
    * Call this after login or token refresh
    */
   public refreshPermissions(): void {
-    this.loadPermissionsFromToken();
+    this.store
+      .select(selectAuthState)
+      .pipe(take(1))
+      .subscribe((state) => this.applyAuthState(state ?? initialState));
   }
 
   /**
@@ -484,7 +488,7 @@ export class PermissionService {
    */
   public isTokenExpired(): boolean {
     if (this.cachedClaims.size === 0) {
-      this.loadPermissionsFromToken();
+      this.refreshPermissions();
     }
     const exp = this.cachedClaims.get('exp');
     if (!exp) {

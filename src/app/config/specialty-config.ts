@@ -46,7 +46,7 @@ const BASE_TABS_DENTAL: SpecialtyBaseTab[] = [
 
 const BASE_TABS_NUTRITION: SpecialtyBaseTab[] = [
   'overview',
-  'history',
+  // 'history',
   'antecedents',
   'consents',
 ];

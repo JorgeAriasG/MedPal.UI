@@ -20,19 +20,19 @@ export class NutritionalAssessmentService {
   ): number {
     switch (method) {
       case 'mifflin-st-jeor': {
-        const base = 10 * weight + 6.25 * height * 100 - 5 * age;
+        const base = 10 * weight + 6.25 * height - 5 * age;
         return gender === 'male' ? Math.round(base + 5) : Math.round(base - 161);
       }
       case 'harris-benedict': {
-        const base = 13.397 * weight + 4.799 * height * 100 - 5.677 * age;
+        const base = 13.397 * weight + 4.799 * height - 5.677 * age;
         return gender === 'male'
           ? Math.round(base + 88.362)
-          : Math.round(9.247 * weight + 3.098 * height * 100 - 4.33 * age + 447.593);
+          : Math.round(9.247 * weight + 3.098 * height - 4.33 * age + 447.593);
       }
       case 'world-health-org': {
         return gender === 'male'
-          ? Math.round(11.3 * weight + 16 * height * 100 + 901)
-          : Math.round(8.7 * weight + 25 * height * 100 + 865);
+          ? Math.round(11.3 * weight + 16 * height + 901)
+          : Math.round(8.7 * weight + 25 * height + 865);
       }
     }
   }

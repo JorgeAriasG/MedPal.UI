@@ -31,6 +31,12 @@ export interface AuthState {
   patientId: number | null;
   /** Array of roles from JWT claims (snake_case) */
   roles: string[];
+  /** Display name from LoginResponse (NgRx single source of truth) */
+  name: string | null;
+  /** Email from LoginResponse */
+  email: string | null;
+  /** Primary role (single, from userRole prop) */
+  role: string | null;
 }
 
 export const initialState: AuthState = {
@@ -47,6 +53,9 @@ export const initialState: AuthState = {
   userType: null,
   patientId: null,
   roles: [],
+  name: null,
+  email: null,
+  role: null,
 };
 
 export const authReducer = createReducer(
@@ -67,6 +76,9 @@ export const authReducer = createReducer(
         userType,
         patientId,
         roles,
+        userRole,
+        name,
+        email,
       }: {
         userId: number | null;
         userToken: string;
@@ -78,6 +90,9 @@ export const authReducer = createReducer(
         userType?: string | null | undefined;
         patientId?: number | null | undefined;
         roles?: string[] | undefined;
+        userRole?: string | null | undefined;
+        name?: string | null | undefined;
+        email?: string | null | undefined;
       }
     ) => ({
       ...state,
@@ -92,6 +107,9 @@ export const authReducer = createReducer(
       userType: userType || null,
       patientId: patientId || null,
       roles: roles || [],
+      role: userRole || null,
+      name: name || null,
+      email: email || null,
       error: null,
       loading: false,
     }),

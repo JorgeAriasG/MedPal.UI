@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { TranslateModule } from '@ngx-translate/core';
 import { ReportService } from 'src/app/services/report.service';
 import { TenantContextService } from 'src/app/services/tenant-context.service';
+import { AuthService } from 'src/app/services/auth.service';
 import { ClinicService } from 'src/app/components/clinics/services/clinic.service';
 import { UserService } from 'src/app/components/user/services/user.service';
 import { ReportFilters, ReportData } from 'src/app/models/report.models';
@@ -106,6 +107,7 @@ export class ReportsPageComponent implements OnInit, OnDestroy {
   constructor(
     private reportService: ReportService,
     private tenantContext: TenantContextService,
+    private authService: AuthService,
     private clinicService: ClinicService,
     private userService: UserService,
     private cdr: ChangeDetectorRef,
@@ -166,15 +168,8 @@ export class ReportsPageComponent implements OnInit, OnDestroy {
       ).subscribe(onUsers);
     } else {
       const ctx = this.tenantContext.getContext();
-      let doctorName = '';
-      try {
-        const raw = localStorage.getItem('user_data');
-        if (raw) {
-          const u = JSON.parse(raw);
-          doctorName = u.name || '';
-        }
-      } catch { /* ignore */ }
-      const user = ctx?.userId ? [{ id: ctx.userId, name: doctorName, clinicId }] : [];
+      const currentUser = this.authService.getAuthContext().user;
+      const user = ctx?.userId ? [{ id: ctx.userId, name: currentUser?.name || '', clinicId }] : [];
       onUsers(user);
     }
   }

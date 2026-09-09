@@ -1,10 +1,10 @@
 /**
  * Token Utils
  * Centralized JWT claims decoder aligned with Jwt-Claims-Contract.md
- * 
+ *
  * Backend (TokenService.GenerateToken) now emits claims in snake_case:
  *   sub, user_id, email, user_type, account_id, clinic_id, roles[], role, jti, patient_id
- * 
+ *
  * Rules:
  * - Token sin roles[] → tratar como no autenticado (logout/redirect), NUNCA como Patient
  * - Tokens de paciente NO deben llevar account_id/clinic_id (viola el contrato)
@@ -42,7 +42,7 @@ export function decodeTokenClaims(token: string): TokenClaims {
     }
 
     const decoded = JSON.parse(
-      atob(parts[1].replace(/-/g, '+').replace(/_/g, '/'))
+      atob(parts[1].replace(/-/g, '+').replace(/_/g, '/')),
     );
 
     if (!decoded || !decoded.roles) {
@@ -54,13 +54,19 @@ export function decodeTokenClaims(token: string): TokenClaims {
     const userId = decoded.sub || decoded.user_id || null;
 
     // accountId: solo staff; null para patient
-    const accountId = decoded.account_id !== undefined ? decoded.account_id : null;
+    const accountId =
+      decoded.account_id !== undefined ? decoded.account_id : null;
 
     // clinicId: solo staff; >0; null para patient
     const clinicId = decoded.clinic_id !== undefined ? decoded.clinic_id : null;
 
     // roles: array canónico (siempre existirá por la validación anterior)
-    const roles: string[] = Array.isArray(decoded.roles) ? decoded.roles : [];
+    const roles: string[] =
+      typeof decoded.roles === 'string'
+        ? [decoded.roles] // wrap string in array
+        : Array.isArray(decoded.roles)
+          ? decoded.roles
+          : [];
 
     // role: legacy render - solo primer rol de la lista (NO usar para decisiones)
     const role = roles.length > 0 ? roles[0] : undefined;
@@ -69,7 +75,8 @@ export function decodeTokenClaims(token: string): TokenClaims {
     const userType = decoded.user_type || null;
 
     // patientId: solo en tokens de paciente
-    const patientId = decoded.patient_id !== undefined ? decoded.patient_id : null;
+    const patientId =
+      decoded.patient_id !== undefined ? decoded.patient_id : null;
 
     return { userId, accountId, clinicId, roles, role, userType, patientId };
   } catch (error) {

@@ -19,6 +19,8 @@ export const loginSuccess = createAction(
     userType?: string | null;
     patientId?: number | null;
     roles?: string[];
+    name?: string | null;
+    email?: string | null;
   }>(),
 );
 

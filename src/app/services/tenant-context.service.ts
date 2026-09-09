@@ -8,13 +8,17 @@
 
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
+import { take } from 'rxjs/operators';
+import { Store } from '@ngrx/store';
 import { decodeTokenClaims, hasValidRoles, isStaff, isPatient } from '../utils/token-utils';
+import { AuthState, initialState } from '../store/reducers/auth.reducer';
+import { selectAuthState } from '../store/selectors/auth.selectors';
 
 /**
  * Tenant Context Service
  * Extracts and maintains tenant/organization context from JWT claims
  *
- * @note Context updates when user logs in/out or token is refreshed
+ * @note Context updates with the NgRx auth store (single source of truth)
  */
 @Injectable({
   providedIn: 'root',
@@ -30,38 +34,34 @@ export class TenantContextService {
   // Subject for context changes
   private contextChange$ = new Subject<void>();
 
-  constructor() {
-    this.loadContextFromToken();
+  constructor(private store: Store<{ auth: AuthState }>) {
+    this.watchAuthState();
   }
 
   /**
-   * Load tenant context from JWT token
-   * Called on service initialization and after login
-   * Now uses centralized token-utils decoder aligned with Jwt-Claims-Contract.md
+   * Keep tenant context in sync with the NgRx auth store.
+   * The store is the single source of truth; it rehydrates from
+   * ngrx_auth on boot via ngrx-store-localstorage.
    */
-  private loadContextFromToken(): void {
+  private watchAuthState(): void {
+    this.store.select(selectAuthState).subscribe((state) => {
+      this.applyAuthState(state ?? initialState);
+    });
+  }
+
+  /**
+   * Apply an auth state snapshot to the tenant context fields.
+   */
+  private applyAuthState(s: AuthState): void {
     try {
-      // Try sessionStorage first (more secure), then localStorage
-      const token =
-        sessionStorage.getItem('ngrx_auth') ||
-        localStorage.getItem('ngrx_auth');
-
-      if (!token) {
+      // No token → no context
+      if (!s.userToken) {
         this.clearContext();
         return;
       }
 
-      // Parse auth state from JSON to get the JWT token
-      const authState = JSON.parse(token);
-      const jwtToken = authState?.userToken;
-
-      if (!jwtToken) {
-        this.clearContext();
-        return;
-      }
-
-      // Use centralized decoder aligned with new snake_case contract
-      const claims = decodeTokenClaims(jwtToken);
+      // Use centralized decoder aligned with Jwt-Claims-Contract.md
+      const claims = decodeTokenClaims(s.userToken);
 
       // Critical security: if token has no valid roles[], treat as unauthenticated
       if (!hasValidRoles(claims)) {
@@ -69,7 +69,7 @@ export class TenantContextService {
         return;
       }
 
-      // Extract tenant context from claims using new snake_case names
+      // Extract tenant context from claims using snake_case names
       this.accountId = claims.accountId || null;
       this.clinicId = claims.clinicId || null;
       this.userId = claims.userId || null;
@@ -83,17 +83,20 @@ export class TenantContextService {
 
       this.contextChange$.next();
     } catch (error) {
-      console.warn('Failed to load tenant context from token:', error);
+      console.warn('Failed to apply tenant context:', error);
       this.clearContext();
     }
   }
 
   /**
-   * Refresh context from token
+   * Refresh context from store
    * Call this after login or token refresh
    */
   public refreshContext(): void {
-    this.loadContextFromToken();
+    this.store
+      .select(selectAuthState)
+      .pipe(take(1))
+      .subscribe((state) => this.applyAuthState(state ?? initialState));
   }
 
   /**
