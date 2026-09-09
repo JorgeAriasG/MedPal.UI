@@ -20,6 +20,7 @@ import { IPatientDetail } from 'src/app/entities/IMedicalHistory';
 import { ClinicalDataService } from 'src/app/services/clinical-data.service';
 import { environment } from 'src/environments/environment';
 import { ConsultationWorkspaceContext } from 'src/app/consultation-workspace/consultation-workspace.models';
+import { buildDentalClinicalNotes } from 'src/app/consultation-workspace/steps/dental-exploration.utils';
 
 @Component({
   selector: 'app-consultation',
@@ -285,8 +286,10 @@ export class ConsultationComponent implements OnInit, OnDestroy {
       dto.diagnosis = dto.diagnosis || dto.clinicalNotes || '';
       dto.clinicalNotes = (dto.clinicalNotes || '').trim()
         ? dto.clinicalNotes
-        : this.buildNutritionClinicalNotes();
+        : this.buildSpecialtyClinicalNotes();
     }
+
+    this.syncDentalAttachments();
 
     const pendingAttachments = (this.consultationData.specialtyData?.attachments || []).filter(
       (a: PendingAttachment) => a.file
@@ -319,6 +322,46 @@ export class ConsultationComponent implements OnInit, OnDestroy {
           );
         },
       });
+  }
+
+  private buildSpecialtyClinicalNotes(): string {
+    const d = this.consultationData.specialtyData || {};
+    if (this.specialtyConfig.template === 'nutrition') {
+      return this.buildNutritionClinicalNotes();
+    }
+    if (this.specialtyConfig.template === 'dental') {
+      return buildDentalClinicalNotes(d);
+    }
+    return '';
+  }
+
+  /** Adjunta las imágenes del tab "Imágenes" (Odontología) al DTO de adjuntos antes de subir. */
+  private syncDentalAttachments(): void {
+    if (this.specialtyConfig.template !== 'dental') return;
+    const specialtyData = this.consultationData.specialtyData || {};
+    const images = Array.isArray(specialtyData.imagenes) ? specialtyData.imagenes : [];
+    const withFile = images.filter((img: any) => img && img.file);
+    if (!withFile.length) return;
+
+    const radioCategories = [
+      'CONSULTATION_WORKSPACE.IMG_TYPE_RADIO_PERIAPICAL',
+      'CONSULTATION_WORKSPACE.IMG_TYPE_BITEWING',
+      'CONSULTATION_WORKSPACE.IMG_TYPE_PANORAMICA',
+      'CONSULTATION_WORKSPACE.IMG_TYPE_CBCT',
+    ];
+    const existing = Array.isArray(specialtyData.attachments) ? specialtyData.attachments : [];
+    specialtyData.attachments = [
+      ...existing,
+      ...withFile.map((img: any) => ({
+        id: img.id,
+        name: img.name || 'imagen',
+        size: img.size || 0,
+        type: radioCategories.includes(img.type) ? ('radio' as PendingAttachment['type']) : ('photo' as PendingAttachment['type']),
+        mimeType: img.mimeType || 'image/*',
+        file: img.file,
+        objectUrl: img.objectUrl,
+      })),
+    ];
   }
 
   private buildNutritionClinicalNotes(): string {

@@ -64,11 +64,21 @@ describe('consultation-step-registry', () => {
     ]);
     expect(resolveWorkspaceConfig('Dental').steps.map((s) => s.key)).toEqual([
       'general',
+      'antecedents',
       'exploration',
       'diagnosis',
-      'treatment',
+      'plan',
       'summary',
     ]);
+  });
+
+  it('maps the dental exploration step to its specialty component', () => {
+    const exploration = resolveWorkspaceConfig('Dental').steps.find((s) => s.key === 'exploration');
+
+    expect(exploration?.component?.name).toBe('DentalExplorationStepComponent');
+    expect(
+      resolveWorkspaceConfig('Dental').steps.find((s) => s.key === 'antecedents')?.labelKey
+    ).toBe('CONSULTATION_WORKSPACE.STEP_DENTAL_HISTORY');
   });
 
   it('falls back to General for unknown or empty specialties', () => {

@@ -14,6 +14,7 @@ import { SummaryStepComponent } from './steps/summary-step.component';
 import { NutritionAnamnesisStepComponent } from './steps/nutrition-anamnesis-step.component';
 import { NutritionAnthropometryStepComponent } from './steps/nutrition-anthropometry-step.component';
 import { NutritionPlanStepComponent } from './steps/nutrition-plan-step.component';
+import { DentalExplorationStepComponent } from './steps/dental-exploration-step.component';
 
 const GENERAL = 'CONSULTATION_WORKSPACE.STEP_';
 
@@ -54,9 +55,10 @@ const PSYCHOLOGY_STEPS: ConsultationStepConfig[] = [
 
 const DENTAL_STEPS: ConsultationStepConfig[] = [
   { key: 'general', labelKey: `${GENERAL}GENERAL`, icon: 'badge' },
+  { key: 'antecedents', labelKey: `${GENERAL}DENTAL_HISTORY`, icon: 'history' },
   { key: 'exploration', labelKey: `${GENERAL}EXPLORATION`, icon: 'face' },
   { key: 'diagnosis', labelKey: `${GENERAL}DIAGNOSIS`, icon: 'assignment_turned_in' },
-  { key: 'treatment', labelKey: `${GENERAL}TREATMENT`, icon: 'medical_services' },
+  { key: 'plan', labelKey: `${GENERAL}PLAN_TREATMENT`, icon: 'medication' },
   { key: 'summary', labelKey: `${GENERAL}SUMMARY`, icon: 'summarize' },
 ];
 
@@ -113,7 +115,9 @@ const SPECIALTY_STEP_COMPONENTS: Record<
   Cardiology: {},
   Pediatrics: {},
   Dermatology: {},
-  Dental: {},
+  Dental: {
+    exploration: DentalExplorationStepComponent,
+  },
   Nutrition: {
     anamnesis: NutritionAnamnesisStepComponent,
     anthropometry: NutritionAnthropometryStepComponent,

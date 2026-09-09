@@ -12,25 +12,52 @@
     </div>
   </section>
 
-  <!-- Objectives -->
-  <section class="side-card">
-    <div class="side-title">{{ 'CONSULTATION_WORKSPACE.OBJECTIVES' | translate }}</div>
-    <div class="check-list">
-      <div *ngFor="let objective of objectives">
-        <mat-icon>check</mat-icon>
-        {{ objective | translate }}
+  <!-- Exploración dental: resumen dinámico + alertas clínicas -->
+  <ng-container *ngIf="isDentalExploration; else generalPanel">
+    <section class="side-card">
+      <div class="side-title">{{ 'CONSULTATION_WORKSPACE.PANEL_SUMMARY_TITLE' | translate }}</div>
+      <div class="metric-list">
+        <div class="metric-item" *ngFor="let metric of explorationMetrics">
+          <span class="metric-label">{{ metric.labelKey | translate }}</span>
+          <strong class="metric-value">{{ metric.value }}<ng-container *ngIf="metric.of">/{{ metric.of }}</ng-container></strong>
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- Deliverables -->
-  <section class="side-card">
-    <div class="side-title">{{ 'CONSULTATION_WORKSPACE.DELIVERABLES' | translate }}</div>
-    <div class="check-list">
-      <div *ngFor="let deliverable of deliverables">
-        <mat-icon>check</mat-icon>
-        {{ deliverable | translate }}
+    <section class="side-card">
+      <div class="side-title">{{ 'CONSULTATION_WORKSPACE.PANEL_ALERTS_TITLE' | translate }}</div>
+      <div class="alert-list" *ngIf="explorationAlerts.length">
+        <div class="alert-item" *ngFor="let alert of explorationAlerts">
+          <mat-icon>priority_high</mat-icon>
+          <span>{{ alert.key | translate: alert.params }}</span>
+        </div>
       </div>
-    </div>
-  </section>
+      <div class="subtitle alert-empty" *ngIf="!explorationAlerts.length">
+        {{ 'CONSULTATION_WORKSPACE.PANEL_NO_ALERTS' | translate }}
+      </div>
+    </section>
+  </ng-container>
+
+  <!-- Panel general (Objetivos / Entregables) para el resto de pasos y especialidades -->
+  <ng-template #generalPanel>
+    <section class="side-card">
+      <div class="side-title">{{ 'CONSULTATION_WORKSPACE.OBJECTIVES' | translate }}</div>
+      <div class="check-list">
+        <div *ngFor="let objective of objectives">
+          <mat-icon>check</mat-icon>
+          {{ objective | translate }}
+        </div>
+      </div>
+    </section>
+
+    <section class="side-card">
+      <div class="side-title">{{ 'CONSULTATION_WORKSPACE.DELIVERABLES' | translate }}</div>
+      <div class="check-list">
+        <div *ngFor="let deliverable of deliverables">
+          <mat-icon>check</mat-icon>
+          {{ deliverable | translate }}
+        </div>
+      </div>
+    </section>
+  </ng-template>
 </aside>

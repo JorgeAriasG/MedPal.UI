@@ -1,0 +1,476 @@
+<div class="up-step de-step">
+  <!-- Encabezado del paso -->
+  <div class="de-header">
+    <h2 class="de-title">{{ 'CONSULTATION_WORKSPACE.EXPLO_TITLE' | translate }}</h2>
+    <p class="up-muted de-subtitle">{{ 'CONSULTATION_WORKSPACE.EXPLO_SUBTITLE' | translate }}</p>
+  </div>
+
+  <!-- Tabs internas del paso -->
+  <nav class="de-tabs" role="tablist" aria-label="Exploración">
+    <button
+      class="de-tab"
+      *ngFor="let t of tabs"
+      [class.active]="tab === t.key"
+      [attr.aria-selected]="tab === t.key"
+      (click)="tab = t.key">
+      <mat-icon>{{ t.icon }}</mat-icon>
+      <span>{{ t.labelKey | translate }}</span>
+    </button>
+  </nav>
+
+  <!-- ============================ ODONTOGRAMA ============================ -->
+  <div *ngIf="tab === 'odontograma'" class="de-tab-body">
+    <div class="de-soft-warning" *ngIf="!hasAnyFinding">
+      <mat-icon>info_outline</mat-icon>
+      <span>{{ 'CONSULTATION_WORKSPACE.EXPLO_EMPTY_HINT' | translate }}</span>
+    </div>
+
+    <div class="de-odo-layout">
+      <!-- Arcadas FDI -->
+      <div class="de-chart up-card">
+        <div class="de-legend">
+          <span class="de-legend-title">{{ 'CONSULTATION_WORKSPACE.ODO_LEGEND' | translate }}</span>
+          <span class="de-legend-item" *ngFor="let st of statusOptions">
+            <i [style.background]="st.color"></i>{{ st.labelKey | translate }}
+          </span>
+        </div>
+
+        <div class="de-arch">
+          <span class="de-arch-label">{{ 'CONSULTATION_WORKSPACE.ODO_ARCH_UPPER' | translate }}</span>
+          <div class="de-arch-row">
+            <button
+              class="de-tooth"
+              *ngFor="let tooth of upperTeeth"
+              type="button"
+              [class.selected]="selectedTooth === tooth"
+              [class.has-finding]="hasFinding(tooth)"
+              [ngStyle]="toothStyle(tooth)"
+              (click)="onSelectTooth(tooth)">
+              <span class="de-tooth-num">{{ tooth }}</span>
+              <span class="de-tooth-surfaces" *ngIf="toothSurfaces(tooth).length">
+                <i *ngFor="let s of toothSurfaces(tooth)">{{ surfaceShort(s) }}</i>
+              </span>
+            </button>
+          </div>
+        </div>
+
+        <div class="de-arch">
+          <span class="de-arch-label">{{ 'CONSULTATION_WORKSPACE.ODO_ARCH_LOWER' | translate }}</span>
+          <div class="de-arch-row">
+            <button
+              class="de-tooth"
+              *ngFor="let tooth of lowerTeeth"
+              type="button"
+              [class.selected]="selectedTooth === tooth"
+              [class.has-finding]="hasFinding(tooth)"
+              [ngStyle]="toothStyle(tooth)"
+              (click)="onSelectTooth(tooth)">
+              <span class="de-tooth-num">{{ tooth }}</span>
+              <span class="de-tooth-surfaces" *ngIf="toothSurfaces(tooth).length">
+                <i *ngFor="let s of toothSurfaces(tooth)">{{ surfaceShort(s) }}</i>
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel contextual por pieza -->
+      <aside class="de-odo-side" *ngIf="selectedTooth; else noTooth">
+        <div class="up-card de-side-card">
+          <h4 class="de-side-title">{{ 'CONSULTATION_WORKSPACE.ODO_TOOTH_LABEL' | translate:{ tooth: selectedTooth } }}</h4>
+
+          <label class="up-label">{{ 'CONSULTATION_WORKSPACE.ODO_STATE' | translate }}</label>
+          <select class="up-select" [(ngModel)]="toothForm.status" name="tooth-status">
+            <option value="" disabled>{{ 'CONSULTATION_WORKSPACE.ODO_SELECT_STATE' | translate }}</option>
+            <option *ngFor="let st of statusOptions" [value]="st.value">{{ st.labelKey | translate }}</option>
+          </select>
+
+          <fieldset class="de-surfaces">
+            <legend class="up-label">{{ 'CONSULTATION_WORKSPACE.ODO_SURFACES' | translate }}</legend>
+            <label class="de-surface" *ngFor="let s of surfaceOptions">
+              <input type="checkbox" [checked]="isSurfaceToggled(s.value)" (change)="toggleSurface(s.value)" />
+              <span>{{ s.short }}</span>
+              <em>{{ s.labelKey | translate }}</em>
+            </label>
+          </fieldset>
+
+          <label class="up-label">{{ 'CONSULTATION_WORKSPACE.ODO_OBSERVATIONS' | translate }}</label>
+          <textarea
+            class="up-textarea"
+            rows="3"
+            [(ngModel)]="toothForm.observations"
+            [placeholder]="'CONSULTATION_WORKSPACE.ODO_OBSERVATIONS_PLACEHOLDER' | translate"></textarea>
+
+          <div class="de-side-actions">
+            <button class="de-btn de-btn-primary" (click)="saveFinding()">
+              {{ 'CONSULTATION_WORKSPACE.ODO_SAVE' | translate }}
+            </button>
+            <button class="de-btn de-btn-ghost" type="button" (click)="clearToothForm()">
+              {{ 'CONSULTATION_WORKSPACE.ODO_CLEAR' | translate }}
+            </button>
+            <button
+              class="de-btn de-btn-danger"
+              type="button"
+              *ngIf="hasFinding(selectedTooth)"
+              (click)="removeFinding(selectedTooth)">
+              {{ 'CONSULTATION_WORKSPACE.ODO_REMOVE' | translate }}
+            </button>
+          </div>
+        </div>
+      </aside>
+
+      <ng-template #noTooth>
+        <aside class="de-odo-side">
+          <div class="up-card de-placeholder">
+            <mat-icon>touch_app</mat-icon>
+            {{ 'CONSULTATION_WORKSPACE.ODO_NO_SELECTED' | translate }}
+          </div>
+        </aside>
+      </ng-template>
+    </div>
+  </div>
+
+  <!-- ============================ NOTAS CLÍNICAS ============================ -->
+  <div *ngIf="tab === 'notas'" class="de-tab-body">
+    <div class="up-card">
+      <div class="up-card-header">
+        <mat-icon>spa</mat-icon>
+        <h3 class="up-card-title">{{ 'CONSULTATION_WORKSPACE.NOTE_SOFT_TISSUES' | translate }}</h3>
+      </div>
+      <div class="up-form-grid">
+        <div class="up-field" *ngFor="let zone of tissueZones">
+          <label class="up-label">{{ zone.labelKey | translate }}</label>
+          <select class="up-select" [(ngModel)]="notas.tejidosBlandos[zone.key].estado" [name]="'tissue-' + zone.key">
+            <option *ngFor="let state of tissueStates" [value]="state">{{ tissueStateLabelKey(state) | translate }}</option>
+          </select>
+          <input
+            class="up-input"
+            [(ngModel)]="notas.tejidosBlandos[zone.key].observaciones"
+            [name]="'tissue-obs-' + zone.key"
+            [placeholder]="'CONSULTATION_WORKSPACE.NOTE_TJ_OBS_LABEL' | translate" />
+        </div>
+      </div>
+    </div>
+
+    <div class="up-card">
+      <div class="up-card-header">
+        <mat-icon>psychology</mat-icon>
+        <h3 class="up-card-title">{{ 'CONSULTATION_WORKSPACE.NOTE_OCLUSION' | translate }}</h3>
+      </div>
+      <div class="up-form-grid">
+        <div class="up-field">
+          <label class="up-label">{{ 'CONSULTATION_WORKSPACE.NOTE_OCLUSION_MORDIDA' | translate }}</label>
+          <select class="up-select" [(ngModel)]="notas.oclusion.mordida" name="mordida">
+            <option value="" disabled>—</option>
+            <option *ngFor="let m of mordidaTypes" [value]="m">{{ mordidaLabelKey(m) | translate }}</option>
+          </select>
+        </div>
+        <div class="up-field">
+          <label class="up-label">{{ 'CONSULTATION_WORKSPACE.NOTE_OCLUSION_ANGLE' | translate }}</label>
+          <select class="up-select" [(ngModel)]="notas.oclusion.claseAngle" name="angle">
+            <option value="" disabled>—</option>
+            <option *ngFor="let c of angleClasses" [value]="c">{{ angleLabelKey(c) | translate }}</option>
+          </select>
+        </div>
+        <div class="up-field">
+          <label class="up-label">{{ 'CONSULTATION_WORKSPACE.NOTE_OCLUSION_OVERBITE' | translate }}</label>
+          <input
+            class="up-input"
+            type="number"
+            min="0"
+            step="0.5"
+            [ngModel]="asNum(notas.oclusion.overbite)"
+            name="overbite"
+            (ngModelChange)="notas.oclusion.overbite = numOrNull($event)" />
+        </div>
+        <div class="up-field">
+          <label class="up-label">{{ 'CONSULTATION_WORKSPACE.NOTE_OCLUSION_OVERJET' | translate }}</label>
+          <input
+            class="up-input"
+            type="number"
+            min="0"
+            step="0.5"
+            [ngModel]="asNum(notas.oclusion.overjet)"
+            name="overjet"
+            (ngModelChange)="notas.oclusion.overjet = numOrNull($event)" />
+        </div>
+        <div class="up-field">
+          <label class="up-label">{{ 'CONSULTATION_WORKSPACE.NOTE_OCLUSION_BRUXISMO' | translate }}</label>
+          <select class="up-select" [(ngModel)]="notas.oclusion.bruxismo" name="bruxismo">
+            <option value="" disabled>—</option>
+            <option *ngFor="let v of yesNo" [value]="v">{{ yesNoLabelKey(v) | translate }}</option>
+          </select>
+        </div>
+        <div class="up-field wide">
+          <label class="up-label">{{ 'CONSULTATION_WORKSPACE.NOTE_OCLUSION_ATM' | translate }}</label>
+          <div class="de-check-row">
+            <label class="de-check" *ngFor="let a of atmOptions">
+              <input type="checkbox" [checked]="notas.oclusion.atm.includes(a)" (change)="toggleAtm(a)" />
+              <span>{{ atmLabelKey(a) | translate }}</span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="up-card">
+      <div class="up-card-header">
+        <mat-icon>cleaning_services</mat-icon>
+        <h3 class="up-card-title">{{ 'CONSULTATION_WORKSPACE.NOTE_HIGIENE' | translate }}</h3>
+      </div>
+      <div class="up-form-grid">
+        <div class="up-field">
+          <label class="up-label">{{ 'CONSULTATION_WORKSPACE.NOTE_HIGIENE_LABEL' | translate }}</label>
+          <select class="up-select" [(ngModel)]="notas.higiene.higiene" name="higiene">
+            <option value="" disabled>—</option>
+            <option *ngFor="let h of higieneLevels" [value]="h">{{ higieneLabelKey(h) | translate }}</option>
+          </select>
+        </div>
+        <div class="up-field">
+          <label class="up-label">{{ 'CONSULTATION_WORKSPACE.NOTE_HIGIENE_PLACA' | translate }}</label>
+          <select class="up-select" [(ngModel)]="notas.higiene.placa" name="placa">
+            <option value="" disabled>—</option>
+            <option *ngFor="let l of severityLevels" [value]="l">{{ severityLabelKey(l) | translate }}</option>
+          </select>
+        </div>
+        <div class="up-field">
+          <label class="up-label">{{ 'CONSULTATION_WORKSPACE.NOTE_HIGIENE_CALCULO' | translate }}</label>
+          <select class="up-select" [(ngModel)]="notas.higiene.calculo" name="calculo">
+            <option value="" disabled>—</option>
+            <option *ngFor="let l of severityLevels" [value]="l">{{ severityLabelKey(l) | translate }}</option>
+          </select>
+        </div>
+        <div class="up-field">
+          <label class="up-label">{{ 'CONSULTATION_WORKSPACE.NOTE_HIGIENE_HALITOSIS' | translate }}</label>
+          <select class="up-select" [(ngModel)]="notas.higiene.halitosis" name="halitosis">
+            <option value="" disabled>—</option>
+            <option *ngFor="let l of severityLevels" [value]="l">{{ severityLabelKey(l) | translate }}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="up-card">
+      <div class="up-card-header">
+        <mat-icon>notes</mat-icon>
+        <h3 class="up-card-title">{{ 'CONSULTATION_WORKSPACE.NOTE_GENERAL_FINDINGS' | translate }}</h3>
+      </div>
+      <textarea
+        class="up-textarea"
+        rows="5"
+        [(ngModel)]="notas.hallazgosGenerales"
+        [placeholder]="'CONSULTATION_WORKSPACE.NOTE_GENERAL_FINDINGS_PLACEHOLDER' | translate"></textarea>
+    </div>
+  </div>
+
+  <!-- ============================ IMÁGENES ============================ -->
+  <div *ngIf="tab === 'imagenes'" class="de-tab-body">
+    <div class="de-imgs-toolbar">
+      <div>
+        <h3 class="up-card-title">{{ 'CONSULTATION_WORKSPACE.IMG_TITLE' | translate }}</h3>
+        <p class="up-muted">{{ 'CONSULTATION_WORKSPACE.IMG_SUBTITLE' | translate }}</p>
+      </div>
+      <button class="de-btn de-btn-primary" type="button" (click)="fileInput.click()">
+        <mat-icon>add</mat-icon>
+        {{ 'CONSULTATION_WORKSPACE.IMG_ADD' | translate }}
+      </button>
+      <input
+        #fileInput
+        class="de-file-input"
+        type="file"
+        accept="image/*"
+        multiple
+        (change)="addImages(fileInput.files); fileInput.value = ''" />
+    </div>
+
+    <div class="de-img-grid" *ngIf="imagenes.length">
+      <div class="de-img-card up-card" *ngFor="let img of imagenes; index as i">
+        <button class="de-img-thumb" type="button" (click)="previewImage = img">
+          <img *ngIf="img.objectUrl" [src]="img.objectUrl" [alt]="img.description || img.name" />
+          <mat-icon *ngIf="!img.objectUrl">image_not_supported</mat-icon>
+        </button>
+
+        <div class="de-img-fields">
+          <select class="up-select" [(ngModel)]="img.type" [name]="'img-type-' + img.id">
+            <option *ngFor="let t of imageTypes" [value]="t">{{ t | translate }}</option>
+          </select>
+          <div class="de-img-row">
+            <input class="up-input" type="date" [(ngModel)]="img.date" [name]="'img-date-' + img.id" />
+            <input
+              class="up-input"
+              [(ngModel)]="img.tooth"
+              [name]="'img-tooth-' + img.id"
+              [placeholder]="'CONSULTATION_WORKSPACE.IMG_TOOTH' | translate" />
+          </div>
+          <textarea
+            class="up-textarea de-img-desc"
+            rows="2"
+            [(ngModel)]="img.description"
+            [placeholder]="'CONSULTATION_WORKSPACE.IMG_DESC' | translate"></textarea>
+        </div>
+
+        <div class="de-img-actions">
+          <button class="de-btn de-btn-ghost" type="button" (click)="previewImage = img">
+            <mat-icon>zoom_in</mat-icon>
+            {{ 'CONSULTATION_WORKSPACE.IMG_ACTION_VIEW' | translate }}
+          </button>
+          <button class="de-btn de-btn-danger" type="button" (click)="removeImage(i)">
+            <mat-icon>delete</mat-icon>
+            {{ 'CONSULTATION_WORKSPACE.IMG_ACTION_REMOVE' | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="up-empty" *ngIf="!imagenes.length">
+      <mat-icon>image_not_supported</mat-icon>
+      {{ 'CONSULTATION_WORKSPACE.IMG_EMPTY' | translate }}
+    </div>
+  </div>
+
+  <!-- ============================ PERIODONCIA ============================ -->
+  <div *ngIf="tab === 'periodoncia'" class="de-tab-body">
+    <div class="up-card">
+      <div class="up-card-header">
+        <mat-icon>monitor_heart</mat-icon>
+        <h3 class="up-card-title">{{ 'CONSULTATION_WORKSPACE.PERIO_TITLE' | translate }}</h3>
+      </div>
+      <p class="up-muted de-perio-subtitle">{{ 'CONSULTATION_WORKSPACE.PERIO_SUBTITLE' | translate }}</p>
+      <div class="up-form-grid">
+        <div class="up-field">
+          <label class="up-label">{{ 'CONSULTATION_WORKSPACE.PERIO_STATE' | translate }}</label>
+          <select class="up-select" [(ngModel)]="periodoncia.estado" name="perio-state">
+            <option *ngFor="let s of periodonciaStates" [value]="s">{{ periodonciaStateLabelKey(s) | translate }}</option>
+          </select>
+        </div>
+        <div class="up-field">
+          <label class="up-label">{{ 'CONSULTATION_WORKSPACE.PERIO_PLACA' | translate }} (%)</label>
+          <input
+            class="up-input"
+            type="number"
+            min="0"
+            max="100"
+            [ngModel]="asNum(periodoncia.indicePlaca)"
+            name="perio-placa"
+            (ngModelChange)="periodoncia.indicePlaca = setPercent($event)" />
+        </div>
+        <div class="up-field">
+          <label class="up-label">{{ 'CONSULTATION_WORKSPACE.PERIO_SANGRADO' | translate }} (%)</label>
+          <input
+            class="up-input"
+            type="number"
+            min="0"
+            max="100"
+            [ngModel]="asNum(periodoncia.sangradoSondaje)"
+            name="perio-sangrado"
+            (ngModelChange)="periodoncia.sangradoSondaje = setPercent($event)" />
+        </div>
+      </div>
+    </div>
+
+    <div class="de-perio-layout">
+      <div class="de-perio-chart up-card">
+        <div class="de-perio-row" *ngFor="let row of [upperTeeth, lowerTeeth]">
+          <button
+            class="de-perio-tooth"
+            type="button"
+            *ngFor="let tooth of row"
+            [class.selected]="selectedPerioTooth === tooth"
+            [class.has-data]="perioHasData(tooth)"
+            (click)="onSelectPerioTooth(tooth)">
+            {{ tooth }}
+          </button>
+        </div>
+        <p class="up-muted de-perio-hint">{{ 'CONSULTATION_WORKSPACE.PERIO_SELECT_HINT' | translate }}</p>
+      </div>
+
+      <div class="de-perio-panel" *ngIf="selectedPerioTooth; else noPerioTooth">
+        <div class="up-card de-side-card">
+          <h4 class="de-side-title">{{ 'CONSULTATION_WORKSPACE.ODO_TOOTH_LABEL' | translate:{ tooth: selectedPerioTooth } }}</h4>
+
+          <div class="de-perio-slots" *ngFor="let row of [perioVestibular, perioPalatino]; let ri = index">
+            <span class="de-perio-side">
+              {{ (ri === 0 ? 'CONSULTATION_WORKSPACE.PERIO_ROW_VESTIBULAR' : 'CONSULTATION_WORKSPACE.PERIO_ROW_PALATINO') | translate }}
+            </span>
+            <div class="de-perio-slot" *ngFor="let s of row">
+              <span class="de-perio-surface">{{ s }}</span>
+              <input
+                class="up-input de-perio-depth"
+                type="number"
+                min="0"
+                max="15"
+                [ngModel]="num(perioSelectedTooth, s)"
+                [name]="'depth-' + selectedPerioTooth + '-' + s"
+                (ngModelChange)="setDepth(perioSelectedTooth, s, $event)" />
+            </div>
+          </div>
+
+          <div class="up-form-grid de-perio-extra">
+            <div class="up-field">
+              <label class="up-label">{{ 'CONSULTATION_WORKSPACE.PERIO_MARGEN' | translate }}</label>
+              <input class="up-input" [(ngModel)]="perioSelectedTooth.margenGingival" [name]="'margen-' + selectedPerioTooth" />
+            </div>
+            <div class="up-field">
+              <label class="up-label">{{ 'CONSULTATION_WORKSPACE.PERIO_NIC' | translate }}</label>
+              <input class="up-input" [(ngModel)]="perioSelectedTooth.nivelInsercion" [name]="'nic-' + selectedPerioTooth" />
+            </div>
+            <div class="up-field">
+              <label class="up-label">{{ 'CONSULTATION_WORKSPACE.PERIO_MOVILIDAD' | translate }}</label>
+              <select class="up-select" [(ngModel)]="perioSelectedTooth.movilidad" [name]="'mov-' + selectedPerioTooth">
+                <option value="" disabled>—</option>
+                <option *ngFor="let m of movementLevels" [value]="m">{{ movementLabelKey(m) | translate }}</option>
+              </select>
+            </div>
+            <div class="up-field">
+              <label class="up-label">{{ 'CONSULTATION_WORKSPACE.PERIO_FURCACION' | translate }}</label>
+              <select class="up-select" [(ngModel)]="perioSelectedTooth.furcacion" [name]="'furc-' + selectedPerioTooth">
+                <option value="" disabled>—</option>
+                <option *ngFor="let f of furcationLevels" [value]="f">{{ furcationLabelKey(f) | translate }}</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="de-check-row de-perio-checks">
+            <label class="de-check">
+              <input type="checkbox" [(ngModel)]="perioSelectedTooth.sangrado" [name]="'sangrado-' + selectedPerioTooth" />
+              <span>{{ 'CONSULTATION_WORKSPACE.PERIO_SANGRADO_CHK' | translate }}</span>
+            </label>
+            <label class="de-check">
+              <input type="checkbox" [(ngModel)]="perioSelectedTooth.supuracion" [name]="'supuracion-' + selectedPerioTooth" />
+              <span>{{ 'CONSULTATION_WORKSPACE.PERIO_SUPURACION' | translate }}</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <ng-template #noPerioTooth>
+        <div class="de-perio-panel">
+          <div class="up-card de-placeholder">
+            <mat-icon>monitor_heart</mat-icon>
+            {{ 'CONSULTATION_WORKSPACE.PERIO_SELECT_HINT' | translate }}
+          </div>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+
+  <!-- Visor ampliado de imagen (overlay dentro de la consulta) -->
+  <div class="de-preview" *ngIf="previewImage" (click)="closePreview()">
+    <div class="de-preview-box" (click)="$event.stopPropagation()">
+      <button class="de-btn de-btn-ghost de-preview-close" type="button" (click)="closePreview()">
+        {{ 'CONSULTATION_WORKSPACE.IMG_CLOSE' | translate }}
+      </button>
+      <img
+        *ngIf="previewImage.objectUrl"
+        [src]="previewImage.objectUrl"
+        [alt]="previewImage.description || previewImage.name" />
+      <mat-icon class="de-preview-empty" *ngIf="!previewImage.objectUrl">image_not_supported</mat-icon>
+      <div class="de-preview-meta" *ngIf="previewImage.description || previewImage.tooth">
+        <span>{{ previewImage.description }}</span>
+        <span *ngIf="previewImage.tooth">
+          {{ 'CONSULTATION_WORKSPACE.IMG_TOOTH' | translate }}: {{ previewImage.tooth }}
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
