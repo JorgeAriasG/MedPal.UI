@@ -15,8 +15,8 @@
   <!-- Content -->
   <div class="consultation-body" *ngIf="!loading && !error && appointment">
     <div class="consultation-content">
-      <!-- Header -->
-      <div class="consultation-header">
+      <!-- Header (legacy; el workspace nuevo trae su propio encabezado) -->
+      <div class="consultation-header" *ngIf="!useNewWorkspace">
         <div class="header-content">
           <div class="header-left">
             <button mat-icon-button class="back-btn" (click)="goBack()">
@@ -63,7 +63,7 @@
       </div>
 
       <!-- Protocolo por especialidad -->
-      <div class="workspace-content">
+      <div class="workspace-content" [class.cw-mode]="useNewWorkspace">
         <ng-container *ngIf="useNewWorkspace; else legacyTabs">
           <app-consultation-workspace
             [specialty]="userSpecialty"
@@ -94,8 +94,8 @@
     </div>
   </div>
 
-  <!-- Bottom Action Bar -->
-  <div class="action-bar" *ngIf="!loading && appointment">
+  <!-- Bottom Action Bar (legacy; el workspace nuevo usa acciones en flujo) -->
+  <div class="action-bar" *ngIf="!loading && appointment && !useNewWorkspace">
     <button mat-button class="draft-btn" (click)="saveDraft()" [disabled]="saving">
       <mat-icon>save</mat-icon>
       Guardar borrador

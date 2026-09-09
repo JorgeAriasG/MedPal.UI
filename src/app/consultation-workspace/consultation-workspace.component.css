@@ -1,141 +1,264 @@
 .cw-shell {
+  border-radius: 32px;
+  background: rgba(255, 255, 255, 0.5);
+  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 18px 45px rgba(31, 117, 140, 0.16);
+  padding: 26px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  padding: 24px 32px 100px;
-  max-width: 1280px;
-  margin: 0 auto;
+  gap: 18px;
 }
 
 /* Header */
-.cw-header {
+.consult-header {
   display: flex;
-  flex-direction: column;
-  gap: 8px;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
 }
 
-.cw-breadcrumb {
+.title-row {
   display: flex;
   align-items: center;
-  gap: 2px;
-  font-size: 13px;
-  color: #6b7280;
-}
-
-.cw-breadcrumb-sep {
-  font-size: 16px;
-  width: 16px;
-  height: 16px;
-}
-
-.cw-breadcrumb-current {
-  color: #111827;
-  font-weight: 500;
-}
-
-.cw-header-main {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
   gap: 16px;
+  min-width: 0;
+}
+
+.cw-back-btn {
+  color: var(--cf-muted, #6b7c93);
+  flex-shrink: 0;
+}
+
+.specialty-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 22px;
+  background: linear-gradient(135deg, #c8f5ea, #3cc7bc);
+  display: grid;
+  place-items: center;
+  font-size: 30px;
+  box-shadow: 0 14px 30px rgba(14, 165, 168, 0.24);
+  flex-shrink: 0;
 }
 
 .cw-title {
   margin: 0;
-  font-size: 24px;
-  font-weight: 700;
-  color: #111827;
+  color: var(--cf-navy, #0c2d57);
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
 }
 
-.cw-subtitle {
-  margin: 4px 0 0;
+.subtitle {
+  color: #4c698c;
+  margin-top: 4px;
   font-size: 14px;
-  color: #6b7280;
 }
 
-.cw-header-actions {
+.actions {
   display: flex;
+  justify-content: flex-end;
   align-items: center;
   gap: 12px;
 }
 
-.cw-back-btn {
-  color: #6b7280;
-}
-
-.cw-status-badge {
-  padding: 6px 12px;
-  border-radius: 999px;
-  font-size: 12px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-  background: rgba(91, 108, 255, 0.1);
-  color: #5b6cff;
-}
-
-.cw-status-badge[data-status] {
-  background: rgba(91, 108, 255, 0.1);
-  color: #5b6cff;
-}
-
-/* Alerts */
-.cw-alerts {
-  margin-bottom: 4px;
-}
-
-/* Body layout */
-.cw-body {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 300px;
-  gap: 20px;
-  align-items: start;
-}
-
-.cw-content {
-  min-width: 0;
-}
-
-.cw-context {
-  position: sticky;
-  top: 16px;
-}
-
-/* Bottom action bar */
-.cw-action-bar {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 5;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 12px 32px;
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(8px);
-  border-top: 1px solid rgba(0, 0, 0, 0.06);
-}
-
-.cw-action-right {
-  display: flex;
+.cw-shell button.ghost-btn,
+.cw-shell button.primary-btn {
+  display: inline-flex;
   align-items: center;
   gap: 8px;
+  border: 0;
+  border-radius: 16px;
+  padding: 13px 20px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
-.cw-action-btn mat-icon {
+.cw-shell button.ghost-btn {
+  background: rgba(255, 255, 255, 0.72);
+  color: #31577a;
+  border: 1px solid rgba(255, 255, 255, 0.85);
+}
+
+.cw-shell button.ghost-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.92);
+}
+
+.cw-shell button.ghost-btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.cw-shell button.primary-btn {
+  background: linear-gradient(135deg, #18c5c8, #058897);
+  color: #ffffff;
+  box-shadow: 0 12px 26px rgba(14, 165, 168, 0.28);
+  border: 0;
+}
+
+.cw-shell button.primary-btn:hover:not(:disabled) {
+  box-shadow: 0 14px 30px rgba(14, 165, 168, 0.36);
+  transform: translateY(-1px);
+}
+
+.cw-shell button mat-icon {
   font-size: 18px;
   width: 18px;
   height: 18px;
 }
 
-@media (max-width: 1024px) {
-  .cw-body {
-    grid-template-columns: 1fr;
+/* Alerts */
+.cw-alerts {
+  margin-top: -4px;
+}
+
+/* Patient strip */
+.patient-card {
+  background: var(--cf-card, rgba(255, 255, 255, 0.72));
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  border-radius: 24px;
+  box-shadow: 0 18px 45px rgba(31, 117, 140, 0.16);
+  padding: 18px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 18px;
+  align-items: center;
+}
+
+.patient-photo {
+  width: 78px;
+  height: 78px;
+  border-radius: 26px;
+  background: linear-gradient(135deg, #ffd6c8, #b8e8ee);
+  color: var(--cf-navy, #0c2d57);
+  display: grid;
+  place-items: center;
+  font-size: 26px;
+  font-weight: 800;
+}
+
+.patient-data {
+  min-width: 0;
+}
+
+.patient-name {
+  font-size: 23px;
+  font-weight: 800;
+  color: var(--cf-navy, #0c2d57);
+  margin-bottom: 8px;
+}
+
+.patient-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  color: #55708f;
+  font-size: 14px;
+  align-items: center;
+}
+
+.meta-status {
+  background: rgba(14, 165, 168, 0.12);
+  color: var(--cf-primary-dark, #087b85);
+  border-radius: 999px;
+  padding: 2px 10px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.metric-row {
+  display: flex;
+  gap: 10px;
+}
+
+.metric {
+  min-width: 82px;
+  padding: 13px;
+  text-align: center;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+}
+
+.metric strong {
+  display: block;
+  color: var(--cf-navy, #0c2d57);
+  font-size: 18px;
+  margin-bottom: 4px;
+}
+
+.metric span {
+  font-size: 12px;
+  color: var(--cf-muted, #6b7c93);
+}
+
+/* Body layout */
+.content-grid {
+  display: grid;
+  grid-template-columns: 1.7fr 0.85fr;
+  gap: 18px;
+  align-items: start;
+}
+
+.cw-content {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.card.main-card {
+  background: var(--cf-card, rgba(255, 255, 255, 0.72));
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  border-radius: 24px;
+  box-shadow: 0 18px 45px rgba(31, 117, 140, 0.16);
+  padding: 20px;
+}
+
+.cw-context {
+  min-width: 0;
+}
+
+.bottom-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+@media (max-width: 1100px) {
+  .cw-shell {
+    padding: 20px;
   }
 
-  .cw-context {
-    position: static;
+  .content-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .patient-card {
+    grid-template-columns: auto 1fr;
+  }
+
+  .metric-row {
+    grid-column: 1 / -1;
+  }
+
+  .specialty-icon {
+    width: 52px;
+    height: 52px;
+    font-size: 24px;
+    border-radius: 18px;
+  }
+
+  .cw-title {
+    font-size: 24px;
   }
 }

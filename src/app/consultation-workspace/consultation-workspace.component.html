@@ -1,26 +1,27 @@
 <div class="cw-shell">
-  <!-- Header -->
-  <header class="cw-header">
-    <div class="cw-breadcrumb">
-      <span class="cw-breadcrumb-item">{{ 'CONSULTATION_WORKSPACE.BREADCRUMB_CONSULTATIONS' | translate }}</span>
-      <mat-icon class="cw-breadcrumb-sep">chevron_right</mat-icon>
-      <span class="cw-breadcrumb-item cw-breadcrumb-current">{{ 'CONSULTATION_WORKSPACE.BREADCRUMB_NEW' | translate }}</span>
+  <!-- Consult header -->
+  <header class="consult-header">
+    <div class="title-row">
+      <button mat-icon-button class="cw-back-btn" (click)="goBack.emit()" [attr.aria-label]="'COMMON.BACK' | translate">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <span class="specialty-icon" aria-hidden="true">{{ specialtyEmoji }}</span>
+      <div>
+        <h1 class="cw-title">{{ 'CONSULTATION_WORKSPACE.NEW_CONSULT_OF' | translate:{ specialty: title } }}</h1>
+        <div class="subtitle">{{ config.subtitleKey | translate }}</div>
+      </div>
     </div>
 
-    <div class="cw-header-main">
-      <div class="cw-header-text">
-        <h1 class="cw-title">{{ config.title }}</h1>
-        <p class="cw-subtitle">{{ config.subtitleKey | translate }}</p>
-      </div>
-
-      <div class="cw-header-actions">
-        <button mat-icon-button class="cw-back-btn" (click)="goBack.emit()" [attr.aria-label]="'COMMON.BACK' | translate">
-          <mat-icon>arrow_back</mat-icon>
-        </button>
-        <span class="cw-status-badge" [attr.data-status]="context.appointment?.status">
-          {{ context.appointment?.status }}
-        </span>
-      </div>
+    <div class="actions">
+      <button class="ghost-btn" (click)="saveDraft.emit()">
+        <mat-icon>save</mat-icon>
+        {{ 'CONSULTATION_WORKSPACE.SAVE_DRAFT' | translate }}
+      </button>
+      <button class="primary-btn" (click)="onPrimaryAction()">
+        {{ primaryCtaKey | translate }}
+        <mat-icon *ngIf="!isLastStep">arrow_forward</mat-icon>
+        <mat-icon *ngIf="isLastStep">check_circle</mat-icon>
+      </button>
     </div>
   </header>
 
@@ -39,48 +40,55 @@
     (selectionChange)="onStepChange($event)">
   </app-consultation-stepper>
 
+  <!-- Patient strip -->
+  <div class="patient-card">
+    <div class="patient-photo">{{ patientInitials }}</div>
+    <div class="patient-data">
+      <div class="patient-name">{{ patientName }}</div>
+      <div class="patient-meta">
+        <span *ngIf="patientAge">{{ patientAge }} años</span>
+        <span>{{ config.title }}</span>
+        <span>{{ patientIdLabel }}</span>
+        <span class="meta-status">{{ 'CONSULTATION_WORKSPACE.PATIENT_IN_PROGRESS' | translate }}</span>
+      </div>
+    </div>
+    <div class="metric-row">
+      <div class="metric"><strong>{{ bmi }}</strong><span>IMC</span></div>
+      <div class="metric"><strong>{{ weightLabel }}</strong><span>Peso</span></div>
+      <div class="metric"><strong>{{ heightLabel }}</strong><span>Talla</span></div>
+    </div>
+  </div>
+
   <!-- Body: content + contextual panel -->
-  <div class="cw-body">
-    <main class="cw-content">
-      <app-consultation-step-outlet
-        [step]="currentStep"
-        [data]="data"
-        [context]="context">
-      </app-consultation-step-outlet>
-    </main>
+  <div class="content-grid">
+    <section class="cw-content">
+      <div class="card main-card">
+        <app-consultation-step-outlet
+          [step]="currentStep"
+          [data]="data"
+          [context]="context">
+        </app-consultation-step-outlet>
+      </div>
+
+      <div class="bottom-actions">
+        <button class="ghost-btn" [disabled]="selectedStepIndex === 0" (click)="prevStep()">
+          <mat-icon>arrow_back</mat-icon>
+          {{ 'CONSULTATION_WORKSPACE.PREV_STEP' | translate }}
+        </button>
+        <button class="primary-btn" (click)="onPrimaryAction()" [disabled]="isLastStep">
+          {{ primaryCtaKey | translate }}
+          <mat-icon *ngIf="!isLastStep">arrow_forward</mat-icon>
+          <mat-icon *ngIf="isLastStep">check_circle</mat-icon>
+        </button>
+      </div>
+    </section>
 
     <aside class="cw-context">
       <app-consultation-context-panel
         [steps]="config.steps"
         [selectedIndex]="selectedStepIndex"
-        [patient]="context.patient"
-        [lastWeight]="context.lastWeight"
-        [lastHeight]="context.lastHeight"
-        [allergies]="context.allergies"
-        [specialty]="config.specialty"
-        [data]="data">
+        [specialty]="config.specialty">
       </app-consultation-context-panel>
     </aside>
-  </div>
-
-  <!-- Bottom action bar -->
-  <div class="cw-action-bar">
-    <button mat-button class="cw-action-btn cw-draft-btn" (click)="saveDraft.emit()">
-      <mat-icon>save</mat-icon>
-      {{ 'CONSULTATION_WORKSPACE.SAVE_DRAFT' | translate }}
-    </button>
-    <div class="cw-action-right">
-      <button mat-stroked-button class="cw-action-btn" (click)="generatePrescription.emit()">
-        <mat-icon>receipt_long</mat-icon>
-        {{ 'CONSULTATION_WORKSPACE.GENERATE_PRESCRIPTION' | translate }}
-      </button>
-      <button mat-stroked-button class="cw-action-btn" (click)="goBack.emit()">
-        {{ 'CONSULTATION_WORKSPACE.CANCEL' | translate }}
-      </button>
-      <button mat-raised-button color="primary" class="cw-action-btn cw-complete-btn" (click)="complete.emit()">
-        <mat-icon>check_circle</mat-icon>
-        {{ 'CONSULTATION_WORKSPACE.COMPLETE' | translate }}
-      </button>
-    </div>
   </div>
 </div>

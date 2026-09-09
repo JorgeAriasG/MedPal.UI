@@ -1,77 +1,94 @@
 .menu-container {
-  height: 100%; /* Cambiado de 100vh a 100% para que lo maneje el sidenav */
-  width: 100%; /* Ocupa todo el mat-sidenav */
-  background: var(--color-primary);
-  color: white;
+  height: 100%;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.55);
+  -webkit-backdrop-filter: blur(22px);
+  backdrop-filter: blur(22px);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 18px 45px rgba(31, 117, 140, 0.16);
+  border-radius: 28px;
+  color: var(--cf-navy, #0c2d57);
   display: flex;
   flex-direction: column;
-  overflow: hidden; /* IMPORTANTE: evita scroll externo */
+  overflow: hidden;
 }
 
+/* Header / Brand */
 .menu-header {
-  padding: 16px;
+  padding: 26px 18px 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 64px;
+  min-height: 64px;
   flex-shrink: 0;
 }
 
 .collapsed .menu-header {
   justify-content: center;
-  padding: 16px 4px;
+  padding: 26px 4px 10px;
 }
 
 .menu-logo {
   display: flex;
   align-items: center;
-  gap: 12px;
-  color: var(--color-primary-light);
+  gap: 14px;
 }
 
-.logo-img {
-  height: 32px;
-  width: auto;
-  transition: all 0.2s ease;
+.brand-mark {
+  width: 46px;
+  height: 46px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #42c6d7, #0ea5a8);
+  box-shadow: 0 10px 25px rgba(14, 165, 168, 0.28);
+  flex-shrink: 0;
 }
 
-.collapsed .logo-img {
-  height: 28px;
-  width: 28px;
+.brand-text {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--cf-navy, #0c2d57);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
+.brand-text small {
+  display: block;
+  font-size: 12px;
+  color: var(--cf-muted, #6b7c93);
+  font-weight: 500;
+  margin-top: 3px;
 }
 
 .toggle-btn {
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--cf-muted, #6b7c93);
 }
 
 /* List Items */
 .menu-list {
   flex: 1;
-  padding: 8px !important;
-  overflow-y: auto; /* Solo la lista puede tener scroll si hay muchos items */
+  padding: 12px !important;
+  overflow-y: auto;
   overflow-x: hidden;
 }
 
-/* Scrollbar estilizada (opcional pero pro) */
 .menu-list::-webkit-scrollbar { width: 4px; }
-.menu-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+.menu-list::-webkit-scrollbar-thumb { background: rgba(14, 165, 168, 0.2); border-radius: 10px; }
 
 .menu-item {
-  height: 48px !important;
+  height: 52px !important;
   margin-bottom: 4px;
   padding: 0 !important;
 }
 
-/* Anulamos el padding interno forzado de Angular Material */
 ::ng-deep .menu-item .mdc-list-item__content,
 ::ng-deep .menu-item .mat-list-item-content {
   padding: 0 !important;
   width: 100% !important;
   display: flex !important;
-  justify-content: flex-start !important; /* Vuelve a alinear a la izquierda por defecto */
+  justify-content: flex-start !important;
 }
 
-/* Solo centramos el contenedor cuando está colapsado */
 ::ng-deep .collapsed .menu-item .mdc-list-item__content,
 ::ng-deep .collapsed .menu-item .mat-list-item-content {
   justify-content: center !important;
@@ -83,31 +100,37 @@
   display: flex !important;
   align-items: center !important;
   justify-content: flex-start !important;
-  padding: 0 12px !important;
-  border-radius: 8px !important;
-  color: rgba(255, 255, 255, 0.7) !important;
+  padding: 0 16px !important;
+  border-radius: 16px !important;
+  color: #3b5f83 !important;
+  font-weight: 600;
   transition: all 0.2s ease;
 }
 
 .collapsed .menu-link {
   justify-content: center !important;
   padding: 0 !important;
-  min-width: 0 !important; /* Material buttons tienen 64px por defecto */
-  width: 48px !important; /* Ancho fijo para centrarlo perfecto */
-  margin: 0 auto !important; /* Centrado en el list item */
+  min-width: 0 !important;
+  width: 48px !important;
+  margin: 0 auto !important;
+}
+
+.menu-link:not(.active):hover {
+  background: rgba(14, 165, 168, 0.08) !important;
+  color: var(--cf-primary-dark, #087b85) !important;
 }
 
 .menu-link.active {
-  background: rgba(255, 255, 255, 0.12) !important;
-  color: var(--color-primary-light) !important;
-  border-left: 3px solid var(--color-primary-light);
+  background: linear-gradient(90deg, rgba(22, 189, 202, 0.22), rgba(255, 255, 255, 0.8)) !important;
+  color: var(--cf-primary-dark, #087b85) !important;
+  box-shadow: inset 4px 0 0 var(--cf-primary, #0ea5a8) !important;
 }
 
 .menu-icon {
-  font-size: 24px;
-  width: 24px;
-  height: 24px;
-  min-width: 24px; /* FIJO: Esto evita que se recorte */
+  font-size: 22px;
+  width: 22px;
+  height: 22px;
+  min-width: 22px;
   margin-right: 12px;
   display: flex;
   align-items: center;
@@ -123,31 +146,45 @@
   white-space: nowrap;
 }
 
+/* Section labels */
+.section-divider {
+  border-color: rgba(12, 45, 87, 0.08) !important;
+  margin-top: 10px !important;
+}
+
+.section-header {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--cf-muted, #6b7c93);
+  padding: 14px 12px 4px;
+  margin: 0;
+}
+
 /* Footer */
 .menu-footer {
   padding: 12px;
   flex-shrink: 0;
 }
 
+.menu-divider {
+  border-color: rgba(12, 45, 87, 0.08) !important;
+  margin-bottom: 8px !important;
+}
+
 .logout-btn {
   width: 100% !important;
-  color: #f87171 !important;
+  color: #526d88 !important;
   justify-content: flex-start !important;
+  border-radius: 16px !important;
+  font-weight: 600;
+}
+
+.logout-btn:hover {
+  background: rgba(248, 113, 113, 0.1) !important;
+  color: #e11d48 !important;
 }
 
 .collapsed .logout-btn {
   justify-content: center !important;
-}
-
-.menu-divider {
-  border-color: rgba(255, 255, 255, 0.1) !important;
-  margin-bottom: 8px !important;
-}
-
-.section-header {
-  font-size: 10px;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.4);
-  padding: 12px 12px 4px;
-  margin: 0;
 }

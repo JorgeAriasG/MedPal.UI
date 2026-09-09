@@ -13,8 +13,14 @@
       </div>
 
       <div class="spacer"></div>
-      
-      <span class="user-welcome" *ngIf="userName">{{ 'APP.GREETING' | translate }}, {{ userName }}</span>
+
+      <div class="doctor-chip">
+        <div class="doctor-avatar">{{ doctorInitials }}</div>
+        <div class="doctor-info">
+          <strong class="doctor-name">{{ userName }}</strong>
+          <small class="doctor-spec">{{ doctorLabel }}</small>
+        </div>
+      </div>
     </mat-toolbar>
     <div class="main-content-scrollable">
       <router-outlet></router-outlet>

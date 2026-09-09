@@ -1,0 +1,67 @@
+<div class="up-step">
+  <div class="up-card">
+    <h2 class="up-card-title plan-title">{{ 'CONSULTATION_WORKSPACE.PLAN_TITLE' | translate }}</h2>
+    <p class="up-muted plan-subtitle">{{ 'CONSULTATION_WORKSPACE.PLAN_SUBTITLE' | translate }}</p>
+
+    <div class="up-form-grid">
+      <div class="up-field">
+        <label class="up-label" for="plan-energia">{{ 'CONSULTATION_WORKSPACE.PLAN_ENERGY' | translate }}</label>
+        <input
+          id="plan-energia"
+          class="up-input"
+          type="number"
+          [ngModel]="energia"
+          disabled
+          aria-describedby="plan-energia-hint">
+        <span id="plan-energia-hint" class="up-muted plan-hint">{{ 'CONSULTATION_WORKSPACE.PLAN_ENERGY_FROM_ASSESSMENT' | translate }}</span>
+      </div>
+
+      <div class="up-field">
+        <label class="up-label" for="plan-hidratacion">{{ 'CONSULTATION_WORKSPACE.PLAN_HYDRATION' | translate }}</label>
+        <input
+          id="plan-hidratacion"
+          class="up-input"
+          type="number"
+          step="0.1"
+          [ngModel]="hidratacionL"
+          (ngModelChange)="setHidratacion($event)">
+      </div>
+
+      <div class="up-field">
+        <label class="up-label" for="plan-comidas">{{ 'CONSULTATION_WORKSPACE.PLAN_MEAL_TIMES' | translate }}</label>
+        <select
+          id="plan-comidas"
+          class="up-select"
+          [ngModel]="comidasDia"
+          (ngModelChange)="setComidasDia($event)">
+          <option [ngValue]="2">2 comidas al día</option>
+          <option [ngValue]="3">3 comidas al día</option>
+          <option [ngValue]="4">4 comidas al día</option>
+          <option [ngValue]="5">4 - 5 comidas al día</option>
+          <option [ngValue]="6">6 comidas al día</option>
+        </select>
+      </div>
+
+      <div class="up-field">
+        <label class="up-label" for="plan-macros">{{ 'CONSULTATION_WORKSPACE.PLAN_MACROS' | translate }}</label>
+        <input
+          id="plan-macros"
+          class="up-input"
+          [ngModel]="macrosLabel"
+          disabled
+          aria-describedby="plan-macros-hint">
+        <span id="plan-macros-hint" class="up-muted plan-hint">{{ 'CONSULTATION_WORKSPACE.PLAN_MACROS_FROM_ASSESSMENT' | translate }}</span>
+      </div>
+
+      <div class="up-field wide">
+        <label class="up-label" for="plan-indicaciones">{{ 'CONSULTATION_WORKSPACE.PLAN_INDICATIONS' | translate }}</label>
+        <textarea
+          id="plan-indicaciones"
+          class="up-textarea"
+          [ngModel]="indicaciones"
+          (ngModelChange)="setIndicaciones($event)"
+          [placeholder]="'CONSULTATION_WORKSPACE.PLAN_INDICATIONS_PLACEHOLDER' | translate"></textarea>
+      </div>
+    </div>
+  </div>
+</div>

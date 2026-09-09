@@ -1,0 +1,15 @@
+.plan-title {
+  margin: 0 0 4px;
+  font-size: 21px;
+  color: var(--cf-navy, #0c2d57);
+  font-weight: 800;
+}
+
+.plan-subtitle {
+  margin: 0 0 18px;
+  font-size: 14px;
+}
+
+.plan-hint {
+  font-size: 12px;
+}

@@ -1,11 +1,38 @@
 import { Component, Input } from '@angular/core';
-import { IPatientDetail } from 'src/app/entities/IMedicalHistory';
 import { ConsultationStepConfig } from './consultation-workspace.models';
+import { SpecialtyType } from 'src/app/entities/specialty-templates.model';
 
-export interface AdviceItem {
-  done: boolean;
+interface ContextItem {
   labelKey: string;
 }
+
+const OBJECTIVES: Record<string, ContextItem[]> = {
+  Nutrition: [
+    { labelKey: 'CONSULTATION_WORKSPACE.OBJ_1_NUTRITION' },
+    { labelKey: 'CONSULTATION_WORKSPACE.OBJ_2_NUTRITION' },
+    { labelKey: 'CONSULTATION_WORKSPACE.OBJ_3_NUTRITION' },
+    { labelKey: 'CONSULTATION_WORKSPACE.OBJ_4_NUTRITION' },
+  ],
+  General: [
+    { labelKey: 'CONSULTATION_WORKSPACE.OBJ_1_GENERAL' },
+    { labelKey: 'CONSULTATION_WORKSPACE.OBJ_2_GENERAL' },
+    { labelKey: 'CONSULTATION_WORKSPACE.OBJ_3_GENERAL' },
+    { labelKey: 'CONSULTATION_WORKSPACE.OBJ_4_GENERAL' },
+  ],
+};
+
+const DELIVERABLES: Record<string, ContextItem[]> = {
+  Nutrition: [
+    { labelKey: 'CONSULTATION_WORKSPACE.DEL_1_NUTRITION' },
+    { labelKey: 'CONSULTATION_WORKSPACE.DEL_2_NUTRITION' },
+    { labelKey: 'CONSULTATION_WORKSPACE.DEL_3_NUTRITION' },
+  ],
+  General: [
+    { labelKey: 'CONSULTATION_WORKSPACE.DEL_1_GENERAL' },
+    { labelKey: 'CONSULTATION_WORKSPACE.DEL_2_GENERAL' },
+    { labelKey: 'CONSULTATION_WORKSPACE.DEL_3_GENERAL' },
+  ],
+};
 
 @Component({
   selector: 'app-consultation-context-panel',
@@ -16,15 +43,14 @@ export interface AdviceItem {
 export class ConsultationContextPanelComponent {
   @Input() steps: ConsultationStepConfig[] = [];
   @Input() selectedIndex = 0;
-  @Input() patient: IPatientDetail | null = null;
-  @Input() lastWeight = 0;
-  @Input() lastHeight = 0;
-  @Input() allergies: any[] = [];
-  @Input() specialty = 'General';
-  @Input() data: any = {};
+  @Input() specialty: SpecialtyType = 'General';
 
   get currentStep(): ConsultationStepConfig | null {
     return this.steps[this.selectedIndex] || null;
+  }
+
+  get isNutrition(): boolean {
+    return this.specialty === 'Nutrition';
   }
 
   get completedSteps(): number {
@@ -32,31 +58,15 @@ export class ConsultationContextPanelComponent {
   }
 
   get progressPercent(): number {
-    if (!this.steps.length) return 0;
+    if (this.steps.length === 0) return 0;
     return Math.round((this.completedSteps / this.steps.length) * 100);
   }
 
-  get remainingSteps(): number {
-    return Math.max(this.steps.length - this.completedSteps, 0);
+  get objectives(): ContextItem[] {
+    return OBJECTIVES[this.specialty] || OBJECTIVES['General'];
   }
 
-  get isNutrition(): boolean {
-    return this.specialty === 'Nutrition';
-  }
-
-  get nutritionChecklist(): AdviceItem[] {
-    const measurements =
-      this.data.measurements && this.data.measurements.weight && this.data.measurements.height;
-    return [
-      { done: !!measurements, labelKey: 'CONSULTATION_WORKSPACE.ADV_MEASUREMENTS' },
-      { done: !!this.data.caloriasDiarias, labelKey: 'CONSULTATION_WORKSPACE.ADV_ASSESSMENT' },
-      { done: !!this.data.waist, labelKey: 'CONSULTATION_WORKSPACE.ADV_ANTHROPOMETRY' },
-      { done: !!this.data.clinicalNotes, labelKey: 'CONSULTATION_WORKSPACE.ADV_EVAL' },
-      { done: !!this.data.diagnosis, labelKey: 'CONSULTATION_WORKSPACE.ADV_DIAGNOSIS' },
-      {
-        done: Array.isArray(this.data.treatments) && this.data.treatments.length > 0,
-        labelKey: 'CONSULTATION_WORKSPACE.ADV_PLAN',
-      },
-    ];
+  get deliverables(): ContextItem[] {
+    return DELIVERABLES[this.specialty] || DELIVERABLES['General'];
   }
 }

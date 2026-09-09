@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  background: var(--color-bg-page, #F6F8FC);
+  background: transparent;
 }
 
 .loading-screen {
@@ -151,6 +151,12 @@
   border-radius: var(--border-radius-lg, 16px);
   border: 1px solid var(--color-border, rgba(0,0,0,0.06));
   padding: var(--spacing-xl, 24px);
+}
+
+.workspace-content.cw-mode {
+  background: transparent;
+  border: 0;
+  padding: 0;
 }
 
 /* ===== Bottom Action Bar ===== */

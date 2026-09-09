@@ -18,8 +18,8 @@
   border-radius: 999px;
   font-size: 12px;
   font-weight: 600;
-  background: rgba(91, 108, 255, 0.1);
-  color: #5b6cff;
+  background: rgba(14, 165, 168, 0.12);
+  color: var(--cf-primary-dark, #087b85);
 }
 
 .su-stats {

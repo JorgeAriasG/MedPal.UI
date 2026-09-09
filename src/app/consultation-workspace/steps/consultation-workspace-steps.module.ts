@@ -17,6 +17,7 @@ import { PlanStepComponent } from './plan-step.component';
 import { SummaryStepComponent } from './summary-step.component';
 import { NutritionAnamnesisStepComponent } from './nutrition-anamnesis-step.component';
 import { NutritionAnthropometryStepComponent } from './nutrition-anthropometry-step.component';
+import { NutritionPlanStepComponent } from './nutrition-plan-step.component';
 
 @NgModule({
   declarations: [
@@ -28,6 +29,7 @@ import { NutritionAnthropometryStepComponent } from './nutrition-anthropometry-s
     SummaryStepComponent,
     NutritionAnamnesisStepComponent,
     NutritionAnthropometryStepComponent,
+    NutritionPlanStepComponent,
   ],
   imports: [
     CommonModule,
@@ -49,6 +51,7 @@ import { NutritionAnthropometryStepComponent } from './nutrition-anthropometry-s
     SummaryStepComponent,
     NutritionAnamnesisStepComponent,
     NutritionAnthropometryStepComponent,
+    NutritionPlanStepComponent,
   ],
 })
 export class ConsultationWorkspaceStepsModule {}

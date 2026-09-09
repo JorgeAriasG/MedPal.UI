@@ -1,178 +1,87 @@
 .cw-context-panel {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
 }
 
-.cp-card {
+.side-card {
+  background: var(--cf-card, rgba(255, 255, 255, 0.72));
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  border-radius: 24px;
+  box-shadow: 0 18px 45px rgba(31, 117, 140, 0.16);
+  padding: 18px;
+}
+
+.progress-card {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 20px;
-  border-radius: 16px;
+  align-items: center;
+  gap: 14px;
+}
+
+.progress-ring {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.progress-ring div {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
   background: #ffffff;
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  display: grid;
+  place-items: center;
+  font-weight: 900;
+  color: var(--cf-navy, #0c2d57);
 }
 
-.cp-card-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-}
-
-.cp-card-title {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin: 0;
-  font-size: 13px;
-  font-weight: 600;
-  color: #6b7280;
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
-}
-
-.cp-card-title mat-icon {
-  font-size: 18px;
-  width: 18px;
-  height: 18px;
-  color: #5b6cff;
-}
-
-.cp-progress-count {
-  font-size: 13px;
-  font-weight: 600;
-  color: #111827;
-}
-
-.cp-progress-hint {
-  margin: 0;
-  font-size: 13px;
-  color: #6b7280;
-}
-
-.cp-next-text {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin: 0;
-  font-size: 14px;
-  color: #111827;
-  font-weight: 500;
-}
-
-.cp-advice-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.cp-advice-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 13px;
-  color: #111827;
-}
-
-.cp-advice-item mat-icon {
-  font-size: 16px;
-  width: 16px;
-  height: 16px;
-  color: #9ca3af;
-}
-
-.cp-advice-item.done mat-icon {
-  color: #4caf50;
-}
-
-.cp-advice-item.done {
-  color: #6b7280;
-  text-decoration: line-through;
-}
-
-.cp-next-text mat-icon {
-  font-size: 18px;
-  width: 18px;
-  height: 18px;
-  color: #5b6cff;
-}
-
-/* Patient summary (shared with consultation-patient-summary) */
-.cw-patient-main {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.cw-patient-avatar {
-  font-size: 44px;
-  width: 44px;
-  height: 44px;
-  color: #5b6cff;
-}
-
-.cw-patient-data {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
+.progress-text {
   min-width: 0;
 }
 
-.cw-patient-name {
-  font-size: 15px;
-  font-weight: 600;
-  color: #111827;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.side-title {
+  color: var(--cf-navy, #0c2d57);
+  font-size: 16px;
+  font-weight: 800;
+  margin-bottom: 6px;
 }
 
-.cw-patient-meta {
+.progress-text .side-title {
+  margin-bottom: 2px;
+}
+
+.subtitle {
+  margin: 0;
+  color: var(--cf-muted, #6b7c93);
   font-size: 13px;
-  color: #6b7280;
+  line-height: 1.4;
 }
 
-.cw-patient-stats {
+.check-list {
+  display: grid;
+  gap: 10px;
+  color: #526d88;
+  font-size: 14px;
+}
+
+.check-list div {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 9px;
 }
 
-.cw-stat {
-  display: flex;
-  flex-direction: column;
+.check-list mat-icon {
+  width: 20px;
+  height: 20px;
+  font-size: 16px;
+  color: #ffffff;
+  background: var(--cf-primary, #0ea5a8);
+  border-radius: 50%;
+  display: inline-flex;
   align-items: center;
-  gap: 2px;
-}
-
-.cw-stat-value {
-  font-size: 18px;
-  font-weight: 700;
-  color: #111827;
-}
-
-.cw-stat-label {
-  font-size: 12px;
-  color: #6b7280;
-}
-
-.cw-consent-hint {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 13px;
-  color: #6b7280;
-}
-
-.cw-consent-hint mat-icon {
-  font-size: 18px;
-  width: 18px;
-  height: 18px;
-  color: #34a853;
+  justify-content: center;
+  flex-shrink: 0;
 }

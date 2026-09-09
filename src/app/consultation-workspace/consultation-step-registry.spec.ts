@@ -2,6 +2,7 @@ import { resolveWorkspaceConfig, SPECIALTY_WORKSPACE_REGISTRY } from './consulta
 import { GeneralStepComponent } from './steps/general-step.component';
 import { NutritionAnamnesisStepComponent } from './steps/nutrition-anamnesis-step.component';
 import { NutritionAnthropometryStepComponent } from './steps/nutrition-anthropometry-step.component';
+import { NutritionPlanStepComponent } from './steps/nutrition-plan-step.component';
 
 describe('consultation-step-registry', () => {
   it('resolves the Nutrition workspace with its specialty-specific steps', () => {
@@ -19,13 +20,26 @@ describe('consultation-step-registry', () => {
     ]);
   });
 
-  it('uses nutrition-specific components for Nutrition anamnesis and anthropometry', () => {
+  it('resolves the Spanish specialty value from the logged-in specialist (Nutrición → Nutrition)', () => {
+    const config = resolveWorkspaceConfig('Nutrición');
+
+    expect(config.specialty).toBe('Nutrition');
+    expect(config.title).toBe('Nutrición');
+  });
+
+  it('keeps InBody / body composition out of the Nutrition consultation flow', () => {
+    const keys = resolveWorkspaceConfig('Nutrition').steps.map((s) => s.key);
+    expect(keys).not.toContain('bodyComposition');
+  });
+
+  it('uses nutrition-specific components for Nutrition steps', () => {
     const byKey = (key: string) =>
       resolveWorkspaceConfig('Nutrition').steps.find((s) => s.key === key);
 
     expect(byKey('general')?.component).toBe(GeneralStepComponent);
     expect(byKey('anamnesis')?.component).toBe(NutritionAnamnesisStepComponent);
     expect(byKey('anthropometry')?.component).toBe(NutritionAnthropometryStepComponent);
+    expect(byKey('diet-plan')?.component).toBe(NutritionPlanStepComponent);
     expect(byKey('summary')?.component?.name).toBe('SummaryStepComponent');
   });
 

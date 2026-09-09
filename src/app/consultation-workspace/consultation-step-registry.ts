@@ -13,6 +13,7 @@ import { PlanStepComponent } from './steps/plan-step.component';
 import { SummaryStepComponent } from './steps/summary-step.component';
 import { NutritionAnamnesisStepComponent } from './steps/nutrition-anamnesis-step.component';
 import { NutritionAnthropometryStepComponent } from './steps/nutrition-anthropometry-step.component';
+import { NutritionPlanStepComponent } from './steps/nutrition-plan-step.component';
 
 const GENERAL = 'CONSULTATION_WORKSPACE.STEP_';
 
@@ -110,6 +111,7 @@ const SPECIALTY_STEP_COMPONENTS: Record<
   Nutrition: {
     anamnesis: NutritionAnamnesisStepComponent,
     anthropometry: NutritionAnthropometryStepComponent,
+    'diet-plan': NutritionPlanStepComponent,
   },
 };
 
@@ -140,12 +142,30 @@ export const SPECIALTY_WORKSPACE_REGISTRY: Record<SpecialtyType, SpecialtyWorksp
   Nutrition: buildConfig('Nutrition', `${SUBTITLE_KEY}NUTRITION`, NUTRITION_STEPS),
 };
 
+const LABEL_TO_KEY: Record<string, SpecialtyType> = Object.entries(SPECIALTY_CONFIG).reduce(
+  (acc, [key, cfg]) => {
+    acc[normalizeSpecialtyLabel(cfg.label)] = key as SpecialtyType;
+    return acc;
+  },
+  {} as Record<string, SpecialtyType>
+);
+
+function normalizeSpecialtyLabel(value: string): string {
+  return value
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase();
+}
+
 export function resolveWorkspaceConfig(
   specialty: SpecialtyType | string | null | undefined
 ): SpecialtyWorkspaceConfig {
-  const key = (specialty === undefined || specialty === null ? '' : specialty) as SpecialtyType;
-  return (
-    SPECIALTY_WORKSPACE_REGISTRY[key] ||
-    SPECIALTY_WORKSPACE_REGISTRY.General
-  );
+  const raw = specialty === undefined || specialty === null ? '' : specialty;
+  if (SPECIALTY_WORKSPACE_REGISTRY[raw as SpecialtyType]) {
+    return SPECIALTY_WORKSPACE_REGISTRY[raw as SpecialtyType];
+  }
+  const byLabel = LABEL_TO_KEY[normalizeSpecialtyLabel(raw)];
+  return byLabel
+    ? SPECIALTY_WORKSPACE_REGISTRY[byLabel]
+    : SPECIALTY_WORKSPACE_REGISTRY.General;
 }

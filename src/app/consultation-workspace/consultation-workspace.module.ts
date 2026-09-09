@@ -4,7 +4,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatDividerModule } from '@angular/material/divider';
-import { MatStepperModule } from '@angular/material/stepper';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
 import { ConsultationEngineModule } from 'src/app/shared/consultation-engine/consultation-engine.module';
@@ -29,7 +28,6 @@ import { ConsultationWorkspaceStepsModule } from './steps/consultation-workspace
     MatIconModule,
     MatProgressBarModule,
     MatDividerModule,
-    MatStepperModule,
     MatTooltipModule,
     TranslateModule,
     ConsultationEngineModule,

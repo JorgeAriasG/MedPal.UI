@@ -5,7 +5,8 @@ import { takeUntil, distinctUntilChanged, filter } from 'rxjs/operators';
 import { Router, NavigationEnd } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthState } from './store/reducers/auth.reducer';
-import { selectIsLoggedIn } from './store/selectors/auth.selectors';
+import { selectIsLoggedIn, selectUserSpecialty } from './store/selectors/auth.selectors';
+import { SPECIALTY_CONFIG, resolveSpecialty } from './config/specialty-config';
 import { UiService } from './services/ui.service';
 import { KeyboardShortcutService } from './services/keyboard-shortcut.service';
 import { IdleService } from './services/idle.service';
@@ -26,6 +27,8 @@ export class AppComponent implements OnInit, OnDestroy {
   timeoutRemainingSeconds = 0;
   showChrome = false;
   userName = '';
+  doctorLabel = 'Nutrición';
+  doctorInitials = '';
   private destroy$ = new Subject<void>();
   private readonly publicPathPrefixes = [
     '/login',
@@ -54,6 +57,15 @@ export class AppComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe(user => {
         this.userName = user?.name || '';
+        this.doctorInitials = this.initials(user?.name || '');
+      });
+
+    this.store
+      .select(selectUserSpecialty)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(specialty => {
+        const resolved = resolveSpecialty(specialty);
+        this.doctorLabel = SPECIALTY_CONFIG[resolved]?.label || SPECIALTY_CONFIG.General.label;
       });
 
     this.uiService.isCollapsed$
@@ -110,6 +122,16 @@ export class AppComponent implements OnInit, OnDestroy {
 
   openOmnibar() {
     this.shortcutService.triggerOmnibar();
+  }
+
+  private initials(name: string): string {
+    const parts = name.trim().split(/\s+/).filter(Boolean);
+    if (parts.length === 0) return '';
+    return parts
+      .slice(0, 2)
+      .map(p => p.charAt(0))
+      .join('')
+      .toUpperCase();
   }
 
   private updateShowChrome(): void {

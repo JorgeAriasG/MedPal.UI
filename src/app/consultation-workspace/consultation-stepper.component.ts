@@ -1,5 +1,4 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { ConsultationStepConfig } from './consultation-workspace.models';
 
 @Component({
@@ -13,7 +12,8 @@ export class ConsultationStepperComponent {
   @Input() selectedIndex = 0;
   @Output() selectionChange = new EventEmitter<number>();
 
-  onSelectionChange(event: StepperSelectionEvent): void {
-    this.selectionChange.emit(event.selectedIndex);
+  select(index: number): void {
+    if (index === this.selectedIndex) return;
+    this.selectionChange.emit(index);
   }
 }

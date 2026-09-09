@@ -3,18 +3,20 @@
 .sidenav-container {
   height: 100vh;
   display: flex;
+  background: var(--cf-gradient);
+  background-attachment: fixed;
 }
 
 .sidenav {
-  width: 260px;
+  width: 280px;
   flex-shrink: 0;
-  background: var(--color-primary);
+  background: transparent;
   transition: width 0.2s ease;
   border-right: none;
 }
 
 .sidenav.collapsed {
-  width: 70px;
+  width: 78px;
 }
 
 .sidenav-content {
@@ -25,57 +27,95 @@
 }
 
 .app-toolbar {
-  background: white;
-  border-bottom: 1px solid var(--color-divider);
+  background: rgba(255, 255, 255, 0.58);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.7);
   flex-shrink: 0;
-  color: var(--color-text-primary);
-  padding: 0 var(--spacing-lg);
-  height: 64px;
+  color: var(--cf-navy);
+  padding: 0 24px;
+  height: 74px;
   display: flex;
   align-items: center;
   z-index: 99;
 }
 
 .header-search-container {
-  flex: 0 1 450px;
-  height: 40px;
-  background: var(--color-bg-page);
-  border-radius: var(--border-radius-sm);
+  flex: 0 1 520px;
+  height: 46px;
+  background: rgba(255, 255, 255, 0.75);
+  border-radius: 18px;
   display: flex;
   align-items: center;
-  padding: 0 16px;
+  padding: 0 18px;
   gap: 12px;
   cursor: pointer;
-  color: var(--color-text-secondary);
+  color: var(--cf-muted);
   font-size: 14px;
   transition: all 0.2s ease;
-  border: 1px solid transparent;
-  margin-left: 20px;
+  border: 1px solid rgba(180, 210, 225, 0.7);
+  margin-left: 8px;
 }
 
 .header-search-container:hover {
-  background: rgba(44, 62, 80, 0.06);
-  border-color: var(--color-border);
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(180, 210, 225, 0.9);
 }
 
 .header-shortcut {
   margin-left: auto;
   font-size: 10px;
   font-weight: 700;
-  background: white;
+  background: rgba(255, 255, 255, 0.85);
   padding: 2px 6px;
-  border-radius: var(--border-radius-xs);
+  border-radius: 8px;
   border: 1px solid var(--color-border);
-  color: var(--color-text-secondary);
+  color: var(--cf-muted);
   text-transform: uppercase;
 }
 
 .spacer { flex: 1; }
 
-.user-welcome {
+.doctor-chip {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: rgba(255, 255, 255, 0.72);
+  border-radius: 24px;
+  padding: 7px 18px 7px 7px;
+  border: 1px solid var(--cf-stroke);
+  box-shadow: var(--cf-shadow);
+  margin-left: 12px;
+}
+
+.doctor-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ffe1d5, #9fdbe6);
+  color: var(--cf-navy);
+  display: grid;
+  place-items: center;
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.doctor-info {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+}
+
+.doctor-name {
   font-size: 14px;
-  font-weight: 500;
-  color: var(--color-text-primary);
+  font-weight: 700;
+  color: var(--cf-navy);
+}
+
+.doctor-spec {
+  font-size: 12px;
+  color: var(--cf-muted);
 }
 
 .app-toolbar button {
@@ -89,7 +129,8 @@ mat-toolbar {
 .main-content-scrollable {
   flex: 1;
   overflow-y: auto;
-  background: var(--color-bg-page);
+  background: var(--cf-gradient);
+  background-attachment: fixed;
 }
 
 @media print {

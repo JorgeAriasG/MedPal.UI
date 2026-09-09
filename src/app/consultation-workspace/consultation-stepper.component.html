@@ -1,16 +1,16 @@
-<mat-horizontal-stepper
-  #stepper
-  class="cw-stepper"
-  [selectedIndex]="selectedIndex"
-  (selectionChange)="onSelectionChange($event)"
-  linear="false"
-  labelPosition="bottom">
-  <mat-step *ngFor="let step of steps" [editable]="true">
-    <ng-template matStepLabel>
-      <span class="cw-step-label">
-        <mat-icon class="cw-step-icon">{{ step.icon }}</mat-icon>
-        <span>{{ step.labelKey | translate }}</span>
-      </span>
-    </ng-template>
-  </mat-step>
-</mat-horizontal-stepper>
+<nav class="cw-stepper">
+  <button
+    *ngFor="let step of steps; let i = index"
+    type="button"
+    class="cw-step"
+    [class.done]="i < selectedIndex"
+    [class.active]="i === selectedIndex"
+    (click)="select(i)"
+    [attr.aria-label]="step.labelKey | translate">
+    <span class="cw-step-num">
+      <mat-icon *ngIf="i < selectedIndex">check</mat-icon>
+      <ng-container *ngIf="i >= selectedIndex">{{ i + 1 }}</ng-container>
+    </span>
+    <span class="cw-step-label">{{ step.labelKey | translate }}</span>
+  </button>
+</nav>

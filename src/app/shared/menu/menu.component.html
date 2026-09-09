@@ -1,7 +1,11 @@
 <nav class="menu-container" [class.collapsed]="isCollapsed">
   <div class="menu-header">
     <div class="menu-logo">
-      <img src="assets/logo-240-invert.png" alt="ClinicFlow" class="logo-img">
+      <div class="brand-mark"></div>
+      <div class="brand-text" *ngIf="!isCollapsed">
+        ClinicFlow
+        <small>Salud en movimiento</small>
+      </div>
     </div>
     <button mat-icon-button class="toggle-btn" (click)="toggleSidebar()" [attr.aria-label]="'MENU.TOGGLE_SIDEBAR' | translate">
       <mat-icon>{{ isCollapsed ? 'chevron_right' : 'chevron_left' }}</mat-icon>
