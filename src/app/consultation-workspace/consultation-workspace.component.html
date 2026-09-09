@@ -1,0 +1,86 @@
+<div class="cw-shell">
+  <!-- Header -->
+  <header class="cw-header">
+    <div class="cw-breadcrumb">
+      <span class="cw-breadcrumb-item">{{ 'CONSULTATION_WORKSPACE.BREADCRUMB_CONSULTATIONS' | translate }}</span>
+      <mat-icon class="cw-breadcrumb-sep">chevron_right</mat-icon>
+      <span class="cw-breadcrumb-item cw-breadcrumb-current">{{ 'CONSULTATION_WORKSPACE.BREADCRUMB_NEW' | translate }}</span>
+    </div>
+
+    <div class="cw-header-main">
+      <div class="cw-header-text">
+        <h1 class="cw-title">{{ config.title }}</h1>
+        <p class="cw-subtitle">{{ config.subtitleKey | translate }}</p>
+      </div>
+
+      <div class="cw-header-actions">
+        <button mat-icon-button class="cw-back-btn" (click)="goBack.emit()" [attr.aria-label]="'COMMON.BACK' | translate">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+        <span class="cw-status-badge" [attr.data-status]="context.appointment?.status">
+          {{ context.appointment?.status }}
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Alerts banner -->
+  <div class="cw-alerts" *ngIf="context.patientDetailsId">
+    <app-alerts
+      [patientDetailsId]="context.patientDetailsId!"
+      [antecedentsData]="context.antecedentsData">
+    </app-alerts>
+  </div>
+
+  <!-- Stepper -->
+  <app-consultation-stepper
+    [steps]="config.steps"
+    [selectedIndex]="selectedStepIndex"
+    (selectionChange)="onStepChange($event)">
+  </app-consultation-stepper>
+
+  <!-- Body: content + contextual panel -->
+  <div class="cw-body">
+    <main class="cw-content">
+      <app-consultation-step-outlet
+        [step]="currentStep"
+        [data]="data"
+        [context]="context">
+      </app-consultation-step-outlet>
+    </main>
+
+    <aside class="cw-context">
+      <app-consultation-context-panel
+        [steps]="config.steps"
+        [selectedIndex]="selectedStepIndex"
+        [patient]="context.patient"
+        [lastWeight]="context.lastWeight"
+        [lastHeight]="context.lastHeight"
+        [allergies]="context.allergies"
+        [specialty]="config.specialty"
+        [data]="data">
+      </app-consultation-context-panel>
+    </aside>
+  </div>
+
+  <!-- Bottom action bar -->
+  <div class="cw-action-bar">
+    <button mat-button class="cw-action-btn cw-draft-btn" (click)="saveDraft.emit()">
+      <mat-icon>save</mat-icon>
+      {{ 'CONSULTATION_WORKSPACE.SAVE_DRAFT' | translate }}
+    </button>
+    <div class="cw-action-right">
+      <button mat-stroked-button class="cw-action-btn" (click)="generatePrescription.emit()">
+        <mat-icon>receipt_long</mat-icon>
+        {{ 'CONSULTATION_WORKSPACE.GENERATE_PRESCRIPTION' | translate }}
+      </button>
+      <button mat-stroked-button class="cw-action-btn" (click)="goBack.emit()">
+        {{ 'CONSULTATION_WORKSPACE.CANCEL' | translate }}
+      </button>
+      <button mat-raised-button color="primary" class="cw-action-btn cw-complete-btn" (click)="complete.emit()">
+        <mat-icon>check_circle</mat-icon>
+        {{ 'CONSULTATION_WORKSPACE.COMPLETE' | translate }}
+      </button>
+    </div>
+  </div>
+</div>

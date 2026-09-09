@@ -52,6 +52,7 @@ import { CreatePrescriptionComponent } from '../prescriptions/create-prescriptio
 import { PrescriptionDetailComponent } from '../prescriptions/prescription-detail/prescription-detail.component';
 import { MedicalHistoryModule } from '../medical-history/medical-history.module';
 import { ConsultationEngineModule } from 'src/app/shared/consultation-engine/consultation-engine.module';
+import { ConsultationWorkspaceModule } from 'src/app/consultation-workspace/consultation-workspace.module';
 import { NutritionModule } from 'src/app/nutrition/nutrition.module';
 import { AuthGuard } from 'src/app/guards/auth.guard';
 import { AuditAccessGuard } from 'src/app/guards/audit-access.guard';
@@ -142,6 +143,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
     MatExpansionModule,
     MedicalHistoryModule,
     ConsultationEngineModule,
+    ConsultationWorkspaceModule,
     NutritionModule,
     CalendarModule.forRoot({
       provide: DateAdapter,

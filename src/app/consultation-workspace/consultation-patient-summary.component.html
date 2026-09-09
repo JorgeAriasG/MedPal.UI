@@ -1,0 +1,43 @@
+<section class="cp-card cw-patient-summary">
+  <div class="cp-card-header">
+    <h4 class="cp-card-title">
+      <mat-icon>person</mat-icon>
+      {{ 'CONSULTATION_WORKSPACE.PATIENT' | translate }}
+    </h4>
+  </div>
+
+  <div class="cw-patient-main">
+    <mat-icon class="cw-patient-avatar">account_circle</mat-icon>
+    <div class="cw-patient-data">
+      <span class="cw-patient-name">{{ fullName }}</span>
+      <span class="cw-patient-meta" *ngIf="patient?.dob">
+        {{ 'CONSULTATION_WORKSPACE.AGE' | translate }}: {{ age }}
+      </span>
+      <span class="cw-patient-meta">{{ patient?.phone || '—' }}</span>
+    </div>
+  </div>
+
+  <mat-divider></mat-divider>
+
+  <div class="cw-patient-stats">
+    <div class="cw-stat" *ngIf="lastWeight > 0">
+      <span class="cw-stat-value">{{ lastWeight }}</span>
+      <span class="cw-stat-label">kg</span>
+    </div>
+    <div class="cw-stat" *ngIf="lastHeight > 0">
+      <span class="cw-stat-value">{{ lastHeight }}</span>
+      <span class="cw-stat-label">cm</span>
+    </div>
+    <div class="cw-stat">
+      <span class="cw-stat-value">{{ allergiesCount }}</span>
+      <span class="cw-stat-label">{{ 'CONSULTATION_WORKSPACE.ALLERGIES' | translate }}</span>
+    </div>
+  </div>
+
+  <mat-divider></mat-divider>
+
+  <div class="cw-consent-hint">
+    <mat-icon>verified_user</mat-icon>
+    <span>{{ 'CONSULTATION_WORKSPACE.CONSENT_HINT' | translate }}</span>
+  </div>
+</section>

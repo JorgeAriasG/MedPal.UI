@@ -1,0 +1,22 @@
+<div class="up-step">
+  <div class="up-card">
+    <div class="up-card-header">
+      <mat-icon>edit_note</mat-icon>
+      <h3 class="up-card-title">{{ 'CONSULTATION_WORKSPACE.SECTION_NOTES' | translate }}</h3>
+    </div>
+    <app-clinical-notes
+      [(ngModel)]="data.clinicalNotes"
+      [rows]="6"
+      [required]="true"
+      [placeholder]="'CONSULTATION_WORKSPACE.NOTES_PLACEHOLDER' | translate">
+    </app-clinical-notes>
+  </div>
+
+  <div class="up-card" *ngIf="patientDetailsId">
+    <div class="up-card-header">
+      <mat-icon>assignment</mat-icon>
+      <h3 class="up-card-title">{{ 'CONSULTATION_WORKSPACE.SECTION_PREVIOUS_CONSULTATIONS' | translate }}</h3>
+    </div>
+    <app-previous-consultations [patientDetailsId]="patientDetailsId"></app-previous-consultations>
+  </div>
+</div>

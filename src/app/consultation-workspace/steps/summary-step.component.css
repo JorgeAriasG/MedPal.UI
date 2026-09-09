@@ -1,0 +1,85 @@
+.su-value {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #111827;
+  white-space: pre-wrap;
+}
+
+.su-codes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.su-chip {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  background: rgba(91, 108, 255, 0.1);
+  color: #5b6cff;
+}
+
+.su-stats {
+  display: flex;
+  gap: 32px;
+}
+
+.su-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.su-stat-value {
+  font-size: 22px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.su-stat-text {
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+.su-macros {
+  font-weight: 600;
+}
+
+.su-stat-label {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.su-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.su-item {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.015);
+}
+
+.su-item-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: #111827;
+}
+
+.su-item-detail {
+  font-size: 12px;
+  color: #6b7280;
+}

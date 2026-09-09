@@ -1,0 +1,105 @@
+<div class="up-step">
+  <div class="up-card">
+    <div class="up-card-header">
+      <mat-icon>straighten</mat-icon>
+      <h3 class="up-card-title">{{ 'NUTRITION.ANTHROPOMETRY_TITLE' | translate }}</h3>
+    </div>
+
+    <p class="na-hint">
+      <mat-icon>info</mat-icon>
+      {{ 'CONSULTATION_WORKSPACE.NUTRITION_SOURCE_HINT' | translate }}
+    </p>
+
+    <div class="na-source-row">
+      <div class="na-source">
+        <span class="na-source-label">{{ 'NUTRITION.WEIGHT' | translate }}</span>
+        <span class="na-source-value">{{ weight ? weight + ' kg' : '—' }}</span>
+      </div>
+      <div class="na-source">
+        <span class="na-source-label">{{ 'NUTRITION.HEIGHT' | translate }}</span>
+        <span class="na-source-value">{{ height ? height + ' cm' : '—' }}</span>
+      </div>
+      <div class="na-source">
+        <span class="na-source-label">{{ 'NUTRITION.BMI' | translate }}</span>
+        <span class="na-source-value" [style.color]="bmiColor">{{ bmi ? bmi : '—' }}</span>
+        <span class="na-source-tag" *ngIf="bmi">{{ bmiCategory }}</span>
+      </div>
+    </div>
+
+    <div class="na-circumference-form">
+      <mat-form-field appearance="outline" class="na-field">
+        <mat-label>{{ 'NUTRITION.WAIST_CIRC' | translate }} (cm)</mat-label>
+        <input matInput type="number" [ngModel]="waist" (ngModelChange)="setWaist($event)" />
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="na-field">
+        <mat-label>{{ 'NUTRITION.HIP_CIRC' | translate }} (cm)</mat-label>
+        <input matInput type="number" [ngModel]="hip" (ngModelChange)="setHip($event)" />
+      </mat-form-field>
+      <div class="na-source" *ngIf="whr">
+        <span class="na-source-label">{{ 'NUTRITION.WAIST_HIP_RATIO' | translate }}</span>
+        <span class="na-source-value">{{ whr }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="up-card">
+    <div class="up-card-header">
+      <mat-icon>calculate</mat-icon>
+      <h3 class="up-card-title">{{ 'NUTRITION.ASSESSMENT_TITLE' | translate }}</h3>
+    </div>
+
+    <div class="na-controls">
+      <mat-form-field appearance="outline" class="na-field">
+        <mat-label>{{ 'NUTRITION.BMR_METHOD' | translate }}</mat-label>
+        <mat-select [ngModel]="method" (ngModelChange)="onMethodChange($event)">
+          <mat-option *ngFor="let m of methods" [value]="m">{{ getMethodLabel(m) }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="na-field">
+        <mat-label>{{ 'NUTRITION.ACTIVITY_FACTOR' | translate }}</mat-label>
+        <mat-select [ngModel]="activityFactor" (ngModelChange)="onActivityChange($event)">
+          <mat-option *ngFor="let a of activities" [value]="a">{{ getActivityLabel(a) }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="na-field">
+        <mat-label>{{ 'NUTRITION.GOAL' | translate }}</mat-label>
+        <mat-select [ngModel]="goal" (ngModelChange)="onGoalChange($event)">
+          <mat-option *ngFor="let g of goals" [value]="g">{{ getGoalLabel(g) }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="na-empty" *ngIf="!hasMeasurements">
+      {{ 'CONSULTATION_WORKSPACE.NUTRITION_NEED_MEASUREMENTS' | translate }}
+    </div>
+
+    <ng-container *ngIf="hasMeasurements && result">
+      <div class="na-results">
+        <div class="na-result">
+          <span class="na-result-label">{{ 'NUTRITION.BMR' | translate }}</span>
+          <span class="na-result-value">{{ bmr }} kcal</span>
+        </div>
+        <div class="na-result">
+          <span class="na-result-label">{{ 'NUTRITION.DAILY_CALORIES' | translate }}</span>
+          <span class="na-result-value">{{ caloriasDiarias }} kcal</span>
+        </div>
+        <div class="na-result" *ngIf="macros">
+          <span class="na-result-label">{{ 'NUTRITION.MACRO_DISTRIBUTION' | translate }}</span>
+          <span class="na-result-value na-macros">
+            {{ 'NUTRITION.PROTEIN' | translate }} {{ macros.proteinTargetGrams }}g ·
+            {{ 'NUTRITION.CARBS' | translate }} {{ macros.carbsTargetGrams }}g ·
+            {{ 'NUTRITION.FAT' | translate }} {{ macros.fatTargetGrams }}g
+          </span>
+        </div>
+        <div class="na-result">
+          <span class="na-result-label">{{ 'NUTRITION.WATER_TARGET' | translate }}</span>
+          <span class="na-result-value">{{ waterMl }} ml</span>
+        </div>
+        <div class="na-result">
+          <span class="na-result-label">{{ 'NUTRITION.FIBER_TARGET' | translate }}</span>
+          <span class="na-result-value">{{ fiber }} g</span>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>

@@ -1,0 +1,55 @@
+<aside class="cw-context-panel">
+  <!-- Progress -->
+  <section class="cp-card cp-progress">
+    <div class="cp-card-header">
+      <h4 class="cp-card-title">
+        <mat-icon>linear_scale</mat-icon>
+        {{ 'CONSULTATION_WORKSPACE.PROGRESS' | translate }}
+      </h4>
+      <span class="cp-progress-count">{{ completedSteps }} / {{ steps.length }}</span>
+    </div>
+    <mat-progress-bar
+      mode="determinate"
+      [value]="progressPercent">
+    </mat-progress-bar>
+    <p class="cp-progress-hint" *ngIf="remainingSteps > 0">{{ 'CONSULTATION_WORKSPACE.PROGRESS_REMAINING' | translate:{n: remainingSteps} }}</p>
+    <p class="cp-progress-hint" *ngIf="remainingSteps === 0">{{ 'CONSULTATION_WORKSPACE.PROGRESS_DONE' | translate }}</p>
+  </section>
+
+  <!-- Patient summary -->
+  <app-consultation-patient-summary
+    [patient]="patient"
+    [lastWeight]="lastWeight"
+    [lastHeight]="lastHeight"
+    [allergiesCount]="allergies.length">
+  </app-consultation-patient-summary>
+
+  <!-- Next best action -->
+  <section class="cp-card cp-next-action">
+    <div class="cp-card-header">
+      <h4 class="cp-card-title">
+        <mat-icon>north_east</mat-icon>
+        {{ 'CONSULTATION_WORKSPACE.NEXT_STEP' | translate }}
+      </h4>
+    </div>
+
+    <ng-container *ngIf="isNutrition; else genericAdvice">
+      <ul class="cp-advice-list">
+        <li
+          class="cp-advice-item"
+          *ngFor="let advice of nutritionChecklist"
+          [class.done]="advice.done">
+          <mat-icon>{{ advice.done ? 'check_circle' : 'radio_button_unchecked' }}</mat-icon>
+          <span>{{ advice.labelKey | translate }}</span>
+        </li>
+      </ul>
+    </ng-container>
+
+    <ng-template #genericAdvice>
+      <p class="cp-next-text">
+        <mat-icon>{{ currentStep?.icon || 'chevron_right' }}</mat-icon>
+        {{ currentStep?.labelKey | translate }}
+      </p>
+    </ng-template>
+  </section>
+</aside>

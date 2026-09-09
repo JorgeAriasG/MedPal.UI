@@ -1,0 +1,12 @@
+<div class="up-step">
+  <div class="up-card">
+    <div class="up-card-header">
+      <mat-icon>assignment_turned_in</mat-icon>
+      <h3 class="up-card-title">{{ 'CONSULTATION_WORKSPACE.SECTION_DIAGNOSIS' | translate }}</h3>
+    </div>
+    <app-diagnoses
+      [ngModel]="diagnosisValue"
+      (ngModelChange)="onDiagnosisChange($event)">
+    </app-diagnoses>
+  </div>
+</div>

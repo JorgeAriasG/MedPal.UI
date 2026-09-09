@@ -1,0 +1,141 @@
+.cw-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 24px 32px 100px;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+/* Header */
+.cw-header {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cw-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.cw-breadcrumb-sep {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+}
+
+.cw-breadcrumb-current {
+  color: #111827;
+  font-weight: 500;
+}
+
+.cw-header-main {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.cw-title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.cw-subtitle {
+  margin: 4px 0 0;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.cw-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.cw-back-btn {
+  color: #6b7280;
+}
+
+.cw-status-badge {
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  background: rgba(91, 108, 255, 0.1);
+  color: #5b6cff;
+}
+
+.cw-status-badge[data-status] {
+  background: rgba(91, 108, 255, 0.1);
+  color: #5b6cff;
+}
+
+/* Alerts */
+.cw-alerts {
+  margin-bottom: 4px;
+}
+
+/* Body layout */
+.cw-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 20px;
+  align-items: start;
+}
+
+.cw-content {
+  min-width: 0;
+}
+
+.cw-context {
+  position: sticky;
+  top: 16px;
+}
+
+/* Bottom action bar */
+.cw-action-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 32px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(8px);
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.cw-action-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cw-action-btn mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+@media (max-width: 1024px) {
+  .cw-body {
+    grid-template-columns: 1fr;
+  }
+
+  .cw-context {
+    position: static;
+  }
+}

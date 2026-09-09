@@ -1,0 +1,56 @@
+.up-step {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.up-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 20px 24px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+}
+
+.up-card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.up-card-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.up-card-header mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  color: #5b6cff;
+}
+
+.up-muted {
+  color: #6b7280;
+}
+
+.up-full-field {
+  width: 100%;
+  display: block;
+}
+
+.up-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 24px;
+  border: 1px dashed rgba(0, 0, 0, 0.12);
+  border-radius: 12px;
+  color: #6b7280;
+  font-size: 13px;
+  background: rgba(0, 0, 0, 0.015);
+}

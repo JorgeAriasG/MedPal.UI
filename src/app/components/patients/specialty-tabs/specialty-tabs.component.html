@@ -209,7 +209,7 @@
     </ng-template>
 
     <div class="tab-content">
-      <ng-container *ngIf="config.modules.length === 0; else moduleTabs">
+      <ng-container *ngIf="modules.length === 0; else moduleTabs">
         <ng-container [ngSwitch]="config.template">
           <app-soap-template *ngSwitchCase="'soap'" [hideEngine]="true" [(ngModel)]="data"></app-soap-template>
           <app-dental-template *ngSwitchCase="'dental'" [hideEngine]="true" [(ngModel)]="data"></app-dental-template>
@@ -235,7 +235,7 @@
             </div>
           </mat-tab>
 
-          <mat-tab *ngFor="let module of config.modules">
+          <mat-tab *ngFor="let module of modules">
             <ng-template mat-tab-label>
               <mat-icon>{{ moduleIcon(module) }}</mat-icon>
               <span>{{ moduleLabel(module) | translate }}</span>

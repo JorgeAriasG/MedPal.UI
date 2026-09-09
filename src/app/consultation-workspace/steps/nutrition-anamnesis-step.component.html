@@ -1,0 +1,41 @@
+<div class="up-step">
+  <div class="up-card">
+    <div class="up-card-header">
+      <mat-icon>forum</mat-icon>
+      <h3 class="up-card-title">{{ 'CONSULTATION_WORKSPACE.STEP_ANAMNESIS' | translate }}</h3>
+    </div>
+
+    <mat-form-field appearance="outline" class="up-full-field">
+      <mat-label>{{ 'CONSULTATION_WORKSPACE.MOTIVO_CONSULTA' | translate }}</mat-label>
+      <textarea
+        matInput
+        rows="3"
+        [ngModel]="motivoConsulta"
+        (ngModelChange)="setMotivoConsulta($event)"
+        [placeholder]="'CONSULTATION_WORKSPACE.MOTIVO_CONSULTA_PLACEHOLDER' | translate">
+      </textarea>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="up-full-field">
+      <mat-label>{{ 'CONSULTATION_WORKSPACE.HABITOS_ALIMENTARIOS' | translate }}</mat-label>
+      <textarea
+        matInput
+        rows="4"
+        [ngModel]="habitosAlimentarios"
+        (ngModelChange)="setHabitosAlimentarios($event)"
+        [placeholder]="'CONSULTATION_WORKSPACE.HABITOS_ALIMENTARIOS_PLACEHOLDER' | translate">
+      </textarea>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="up-full-field">
+      <mat-label>{{ 'CONSULTATION_WORKSPACE.RESTRICCIONES' | translate }}</mat-label>
+      <textarea
+        matInput
+        rows="2"
+        [ngModel]="restricciones"
+        (ngModelChange)="setRestricciones($event)"
+        [placeholder]="'CONSULTATION_WORKSPACE.RESTRICCIONES_PLACEHOLDER' | translate">
+      </textarea>
+    </mat-form-field>
+  </div>
+</div>

@@ -5,6 +5,7 @@ import { MedicalHistoryReadDTO } from 'src/app/entities/medical-history.model';
 import { IPrescription } from 'src/app/entities/IPrescription';
 import { TreatmentItem, PendingAttachment, SpecialtyType } from 'src/app/entities/specialty-templates.model';
 import { SPECIALTY_CONFIG, resolveSpecialty, SpecialtyModuleTab } from 'src/app/config/specialty-config';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-specialty-tabs',
@@ -43,6 +44,13 @@ export class SpecialtyTabsComponent implements ControlValueAccessor {
 
   get config() {
     return SPECIALTY_CONFIG[this.userSpecialty] || SPECIALTY_CONFIG.General;
+  }
+
+  /** Módulos visibles; Body Composition (InBody) se oculta por feature flag. */
+  get modules(): SpecialtyModuleTab[] {
+    return (this.config.modules as SpecialtyModuleTab[]).filter(
+      (module) => module !== 'bodyComposition' || environment.features.inBody
+    );
   }
 
   get specialtyTabIcon(): string {

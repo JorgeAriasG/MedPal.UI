@@ -58,24 +58,38 @@
       </div>
 
       <!-- Alerts banner -->
-      <div class="alerts-section" *ngIf="patientDetailsId">
+      <div class="alerts-section" *ngIf="patientDetailsId && !useNewWorkspace">
         <app-alerts [patientDetailsId]="patientDetailsId" [antecedentsData]="antecedentsData"></app-alerts>
       </div>
 
       <!-- Protocolo por especialidad -->
       <div class="workspace-content">
-        <app-specialty-tabs
-          [patient]="patient"
-          [patientDetailsId]="patientDetailsId"
-          [medicalHistory]="medicalHistory"
-          [prescriptions]="prescriptions"
-          [allergies]="allergies"
-          [lastWeight]="lastWeight"
-          [lastHeight]="lastHeight"
-          [specialty]="userSpecialty"
-          [showClosure]="true"
-          [(ngModel)]="consultationData.specialtyData"
-        ></app-specialty-tabs>
+        <ng-container *ngIf="useNewWorkspace; else legacyTabs">
+          <app-consultation-workspace
+            [specialty]="userSpecialty"
+            [context]="workspaceContext"
+            [data]="consultationData.specialtyData"
+            (saveDraft)="saveDraft()"
+            (complete)="completeConsultation()"
+            (generatePrescription)="generatePrescription()"
+            (goBack)="goBack()">
+          </app-consultation-workspace>
+        </ng-container>
+
+        <ng-template #legacyTabs>
+          <app-specialty-tabs
+            [patient]="patient"
+            [patientDetailsId]="patientDetailsId"
+            [medicalHistory]="medicalHistory"
+            [prescriptions]="prescriptions"
+            [allergies]="allergies"
+            [lastWeight]="lastWeight"
+            [lastHeight]="lastHeight"
+            [specialty]="userSpecialty"
+            [showClosure]="true"
+            [(ngModel)]="consultationData.specialtyData"
+          ></app-specialty-tabs>
+        </ng-template>
       </div>
     </div>
   </div>

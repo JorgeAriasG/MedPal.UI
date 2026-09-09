@@ -1,0 +1,136 @@
+<div class="up-step">
+  <div class="up-card">
+    <div class="up-card-header">
+      <mat-icon>assignment_turned_in</mat-icon>
+      <h3 class="up-card-title">{{ 'CONSULTATION_WORKSPACE.SECTION_DIAGNOSIS' | translate }}</h3>
+    </div>
+
+    <p *ngIf="diagnosis; else noDiagnosis" class="su-value">{{ diagnosis }}</p>
+    <ng-template #noDiagnosis>
+      <div class="up-empty">{{ 'CONSULTATION_WORKSPACE.SUMMARY_NO_DIAGNOSIS' | translate }}</div>
+    </ng-template>
+
+    <div class="su-codes" *ngIf="cie10Codes.length > 0">
+      <span class="su-chip" *ngFor="let code of cie10Codes">{{ code }}</span>
+    </div>
+  </div>
+
+  <div class="up-card">
+    <div class="up-card-header">
+      <mat-icon>edit_note</mat-icon>
+      <h3 class="up-card-title">{{ 'CONSULTATION_WORKSPACE.SECTION_NOTES' | translate }}</h3>
+    </div>
+    <p *ngIf="clinicalNotes; else noNotes" class="su-value">{{ clinicalNotes }}</p>
+    <ng-template #noNotes>
+      <div class="up-empty">{{ 'CONSULTATION_WORKSPACE.SUMMARY_NO_NOTES' | translate }}</div>
+    </ng-template>
+  </div>
+
+  <div class="up-card">
+    <div class="up-card-header">
+      <mat-icon>straighten</mat-icon>
+      <h3 class="up-card-title">{{ 'CONSULTATION_WORKSPACE.SECTION_MEASUREMENTS' | translate }}</h3>
+    </div>
+
+    <ng-container *ngIf="measurements as m">
+      <div class="su-stats">
+        <div class="su-stat">
+          <span class="su-stat-value">{{ m.weight || '—' }}</span>
+          <span class="su-stat-label">kg</span>
+        </div>
+        <div class="su-stat">
+          <span class="su-stat-value">{{ m.height || '—' }} cm</span>
+          <span class="su-stat-label">Altura</span>
+        </div>
+        <div class="su-stat">
+          <span class="su-stat-value">{{ m.bmi || '—' }}</span>
+          <span class="su-stat-label">IMC</span>
+        </div>
+      </div>
+    </ng-container>
+
+    <div class="up-empty" *ngIf="!measurements">
+      {{ 'CONSULTATION_WORKSPACE.SUMMARY_NO_MEASUREMENTS' | translate }}
+    </div>
+  </div>
+
+  <div class="up-card" *ngIf="hasNutritionAssessment">
+    <div class="up-card-header">
+      <mat-icon>calculate</mat-icon>
+      <h3 class="up-card-title">{{ 'NUTRITION.ASSESSMENT_TITLE' | translate }}</h3>
+    </div>
+
+    <div class="su-stats">
+      <div class="su-stat" *ngIf="dailyCalories">
+        <span class="su-stat-value">{{ dailyCalories }}</span>
+        <span class="su-stat-label">{{ 'NUTRITION.DAILY_CALORIES' | translate }}</span>
+      </div>
+      <div class="su-stat" *ngIf="bmr">
+        <span class="su-stat-value">{{ bmr }}</span>
+        <span class="su-stat-label">{{ 'NUTRITION.BMR' | translate }}</span>
+      </div>
+      <div class="su-stat" *ngIf="objetivoLabel">
+        <span class="su-stat-value su-stat-text">{{ objetivoLabel }}</span>
+        <span class="su-stat-label">{{ 'NUTRITION.GOAL' | translate }}</span>
+      </div>
+      <div class="su-stat" *ngIf="whr">
+        <span class="su-stat-value">{{ whr }}</span>
+        <span class="su-stat-label">{{ 'NUTRITION.WAIST_HIP_RATIO' | translate }}</span>
+      </div>
+      <div class="su-stat" *ngIf="macros">
+        <span class="su-stat-value su-stat-text su-macros">
+          {{ 'NUTRITION.PROTEIN' | translate }} {{ macros.proteinTargetGrams }}g<br/>
+          {{ 'NUTRITION.CARBS' | translate }} {{ macros.carbsTargetGrams }}g<br/>
+          {{ 'NUTRITION.FAT' | translate }} {{ macros.fatTargetGrams }}g
+        </span>
+        <span class="su-stat-label">{{ 'NUTRITION.MACRO_DISTRIBUTION' | translate }}</span>
+      </div>
+      <div class="su-stat" *ngIf="waterMl">
+        <span class="su-stat-value">{{ waterMl }} ml</span>
+        <span class="su-stat-label">{{ 'NUTRITION.WATER_TARGET' | translate }}</span>
+      </div>
+      <div class="su-stat" *ngIf="fiber">
+        <span class="su-stat-value">{{ fiber }} g</span>
+        <span class="su-stat-label">{{ 'NUTRITION.FIBER_TARGET' | translate }}</span>
+      </div>
+    </div>
+
+    <div class="su-codes" *ngIf="restricciones.length > 0">
+      <span class="su-chip" *ngFor="let r of restricciones">{{ r }}</span>
+    </div>
+  </div>
+
+  <div class="up-card">
+    <div class="up-card-header">
+      <mat-icon>medication</mat-icon>
+      <h3 class="up-card-title">{{ 'CONSULTATION_WORKSPACE.SECTION_TREATMENTS' | translate }}</h3>
+    </div>
+
+    <ul class="su-list" *ngIf="treatments.length > 0; else noTreatments">
+      <li class="su-item" *ngFor="let t of treatments">
+        <span class="su-item-name">{{ t.name }}</span>
+        <span class="su-item-detail" *ngIf="treatmentDetail(t)">
+          {{ treatmentDetail(t) }}
+        </span>
+      </li>
+    </ul>
+    <ng-template #noTreatments>
+      <div class="up-empty">{{ 'CONSULTATION_WORKSPACE.SUMMARY_NO_TREATMENTS' | translate }}</div>
+    </ng-template>
+  </div>
+
+  <div class="up-card">
+    <div class="up-card-header">
+      <mat-icon>attach_file</mat-icon>
+      <h3 class="up-card-title">{{ 'CONSULTATION_WORKSPACE.SECTION_ATTACHMENTS' | translate }}</h3>
+    </div>
+    <div class="up-empty" *ngIf="attachments.length === 0">
+      {{ 'CONSULTATION_WORKSPACE.SUMMARY_NO_ATTACHMENTS' | translate }}
+    </div>
+    <ul class="su-list" *ngIf="attachments.length > 0">
+      <li class="su-item" *ngFor="let a of attachments">
+        <span class="su-item-name">{{ a.name }}</span>
+      </li>
+    </ul>
+  </div>
+</div>

@@ -1,0 +1,20 @@
+<div class="up-step">
+  <div class="up-card">
+    <div class="up-card-header">
+      <mat-icon>medication</mat-icon>
+      <h3 class="up-card-title">{{ 'CONSULTATION_WORKSPACE.SECTION_TREATMENTS' | translate }}</h3>
+    </div>
+    <app-treatments [(ngModel)]="data.treatments"></app-treatments>
+  </div>
+
+  <div class="up-card">
+    <div class="up-card-header">
+      <mat-icon>attach_file</mat-icon>
+      <h3 class="up-card-title">{{ 'CONSULTATION_WORKSPACE.SECTION_ATTACHMENTS' | translate }}</h3>
+    </div>
+    <app-clinical-attachments
+      [attachments]="attachments"
+      (attachmentsChange)="onAttachmentsChange($event)">
+    </app-clinical-attachments>
+  </div>
+</div>

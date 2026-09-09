@@ -18,6 +18,8 @@ import { PrescriptionService } from 'src/app/services/prescription.service';
 import { IPrescription, IPrescriptionItem } from 'src/app/entities/IPrescription';
 import { IPatientDetail } from 'src/app/entities/IMedicalHistory';
 import { ClinicalDataService } from 'src/app/services/clinical-data.service';
+import { environment } from 'src/environments/environment';
+import { ConsultationWorkspaceContext } from 'src/app/consultation-workspace/consultation-workspace.models';
 
 @Component({
   selector: 'app-consultation',
@@ -42,6 +44,7 @@ export class ConsultationComponent implements OnInit, OnDestroy {
   allergies: any[] = [];
   lastWeight = 0;
   lastHeight = 0;
+  useNewWorkspace = environment.features.consultationWorkspace;
 
   private destroy$ = new Subject<void>();
 
@@ -184,6 +187,20 @@ export class ConsultationComponent implements OnInit, OnDestroy {
 
   private get draftKey(): string {
     return `consultation_draft_${this.appointment?.id || 'new'}`;
+  }
+
+  get workspaceContext(): ConsultationWorkspaceContext {
+    return {
+      patientDetailsId: this.patientDetailsId,
+      patient: this.patient,
+      medicalHistory: this.medicalHistory,
+      prescriptions: this.prescriptions,
+      allergies: this.allergies,
+      antecedentsData: this.antecedentsData,
+      lastWeight: this.lastWeight,
+      lastHeight: this.lastHeight,
+      appointment: this.appointment,
+    };
   }
 
   saveDraft(): void {

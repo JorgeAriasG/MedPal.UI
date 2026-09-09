@@ -1,0 +1,15 @@
+<div class="cw-step-outlet">
+  <ng-container *ngIf="step?.component; else placeholder">
+    <ng-container *ngComponentOutlet="stepComponent; injector: stepInjector"></ng-container>
+  </ng-container>
+
+  <ng-template #placeholder>
+    <div class="cw-step-placeholder">
+      <mat-icon class="cw-placeholder-icon">construction</mat-icon>
+      <h3 class="cw-placeholder-title">{{ step?.labelKey | translate }}</h3>
+      <p class="cw-placeholder-text">
+        {{ 'CONSULTATION_WORKSPACE.STEP_COMING_SOON' | translate }}
+      </p>
+    </div>
+  </ng-template>
+</div>

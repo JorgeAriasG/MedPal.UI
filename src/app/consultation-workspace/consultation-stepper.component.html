@@ -1,0 +1,16 @@
+<mat-horizontal-stepper
+  #stepper
+  class="cw-stepper"
+  [selectedIndex]="selectedIndex"
+  (selectionChange)="onSelectionChange($event)"
+  linear="false"
+  labelPosition="bottom">
+  <mat-step *ngFor="let step of steps" [editable]="true">
+    <ng-template matStepLabel>
+      <span class="cw-step-label">
+        <mat-icon class="cw-step-icon">{{ step.icon }}</mat-icon>
+        <span>{{ step.labelKey | translate }}</span>
+      </span>
+    </ng-template>
+  </mat-step>
+</mat-horizontal-stepper>

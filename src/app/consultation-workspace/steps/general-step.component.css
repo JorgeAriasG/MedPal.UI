@@ -1,0 +1,22 @@
+.gp-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px 24px;
+}
+
+.gp-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.gp-label {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.gp-value {
+  font-size: 14px;
+  font-weight: 500;
+  color: #111827;
+}

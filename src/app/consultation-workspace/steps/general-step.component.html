@@ -1,0 +1,49 @@
+<div class="up-step">
+  <div class="up-card">
+    <div class="up-card-header">
+      <mat-icon>person</mat-icon>
+      <h3 class="up-card-title">{{ 'CONSULTATION_WORKSPACE.PATIENT' | translate }}</h3>
+    </div>
+
+    <ng-container *ngIf="context?.patient as patient">
+      <div class="gp-info-grid">
+        <div class="gp-info">
+          <span class="gp-label">{{ 'CONSULTATION_WORKSPACE.AGE' | translate }}</span>
+          <span class="gp-value">{{ age ?? '—' }}</span>
+        </div>
+        <div class="gp-info">
+          <span class="gp-label">{{ 'PATIENTS.FORM_GENDER' | translate }}</span>
+          <span class="gp-value">{{ patient.gender || '—' }}</span>
+        </div>
+        <div class="gp-info">
+          <span class="gp-label">{{ 'PATIENTS.FORM_DOB' | translate }}</span>
+          <span class="gp-value">{{ patient.dob | date: 'MMM dd, yyyy' }}</span>
+        </div>
+        <div class="gp-info">
+          <span class="gp-label">{{ 'PATIENTS.CURP' | translate }}</span>
+          <span class="gp-value">{{ patient.curp || '—' }}</span>
+        </div>
+        <div class="gp-info">
+          <span class="gp-label">{{ 'PATIENTS.FORM_ADDRESS' | translate }}</span>
+          <span class="gp-value">{{ patient.address || '—' }}</span>
+        </div>
+        <div class="gp-info">
+          <span class="gp-label">{{ 'CONSULTATION_WORKSPACE.PATIENT' | translate }}</span>
+          <span class="gp-value">{{ patientName }}</span>
+        </div>
+      </div>
+    </ng-container>
+
+    <div class="up-empty" *ngIf="!context?.patient">
+      {{ 'CONSULTATION_WORKSPACE.NO_PATIENT_DATA' | translate }}
+    </div>
+  </div>
+
+  <div class="up-card">
+    <div class="up-card-header">
+      <mat-icon>straighten</mat-icon>
+      <h3 class="up-card-title">{{ 'CONSULTATION_WORKSPACE.SECTION_MEASUREMENTS' | translate }}</h3>
+    </div>
+    <app-measurements [(ngModel)]="data.measurements"></app-measurements>
+  </div>
+</div>

@@ -1,0 +1,178 @@
+.cw-context-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.cp-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px;
+  border-radius: 16px;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+}
+
+.cp-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.cp-card-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.cp-card-title mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  color: #5b6cff;
+}
+
+.cp-progress-count {
+  font-size: 13px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.cp-progress-hint {
+  margin: 0;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.cp-next-text {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 14px;
+  color: #111827;
+  font-weight: 500;
+}
+
+.cp-advice-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cp-advice-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #111827;
+}
+
+.cp-advice-item mat-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  color: #9ca3af;
+}
+
+.cp-advice-item.done mat-icon {
+  color: #4caf50;
+}
+
+.cp-advice-item.done {
+  color: #6b7280;
+  text-decoration: line-through;
+}
+
+.cp-next-text mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  color: #5b6cff;
+}
+
+/* Patient summary (shared with consultation-patient-summary) */
+.cw-patient-main {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.cw-patient-avatar {
+  font-size: 44px;
+  width: 44px;
+  height: 44px;
+  color: #5b6cff;
+}
+
+.cw-patient-data {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.cw-patient-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: #111827;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cw-patient-meta {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.cw-patient-stats {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.cw-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.cw-stat-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.cw-stat-label {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.cw-consent-hint {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.cw-consent-hint mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  color: #34a853;
+}
