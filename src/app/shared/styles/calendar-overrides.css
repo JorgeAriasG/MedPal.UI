@@ -1,0 +1,83 @@
+/* Quick action pseudo-elements on event cards */
+.cal-week-view .cal-event[data-status] .cal-event-title::after,
+.cal-day-view .cal-event[data-status] .cal-event-title::after {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 12px;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.cal-week-view .cal-event[data-status="Scheduled"]::after,
+.cal-day-view .cal-event[data-status="Scheduled"]::after {
+  content: "▶";
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 12px;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.cal-week-view .cal-event[data-status="InProgress"]::after,
+.cal-day-view .cal-event[data-status="InProgress"]::after {
+  content: "▶▶";
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 10px;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.cal-week-view .cal-event[data-status="Completed"]::after,
+.cal-day-view .cal-event[data-status="Completed"]::after {
+  content: "✓";
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 14px;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.cal-week-view .cal-event[data-status="Cancelled"]::after,
+.cal-day-view .cal-event[data-status="Cancelled"]::after {
+  content: "✕";
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 12px;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.cal-week-view .cal-event[data-status="NoShow"]::after,
+.cal-day-view .cal-event[data-status="NoShow"]::after {
+  content: "●";
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 14px;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.cal-week-view .cal-event[data-status="Rescheduled"]::after,
+.cal-day-view .cal-event[data-status="Rescheduled"]::after {
+  content: "↻";
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 14px;
+  opacity: 0.7;
+  pointer-events: none;
+}

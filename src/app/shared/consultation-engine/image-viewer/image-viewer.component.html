@@ -1,0 +1,26 @@
+<h2 mat-dialog-title>{{ data.title || 'Imagen' }}</h2>
+
+<mat-dialog-content class="viewer-content">
+  <img
+    [src]="data.url"
+    [style.transform]="'scale(' + zoom + ') rotate(' + rotation + 'deg)'"
+    alt="Vista previa clínica"
+    class="viewer-image"
+  />
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-icon-button (click)="zoomOut()" title="Alejar">
+    <mat-icon>zoom_out</mat-icon>
+  </button>
+  <button mat-icon-button (click)="zoomIn()" title="Acercar">
+    <mat-icon>zoom_in</mat-icon>
+  </button>
+  <button mat-icon-button (click)="rotate()" title="Rotar">
+    <mat-icon>rotate_right</mat-icon>
+  </button>
+  <button mat-icon-button (click)="reset()" title="Restablecer">
+    <mat-icon>restart_alt</mat-icon>
+  </button>
+  <button mat-raised-button mat-dialog-close>Cerrar</button>
+</mat-dialog-actions>

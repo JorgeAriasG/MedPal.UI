@@ -1,0 +1,389 @@
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Subject, from, of } from 'rxjs';
+import { concatMap, takeUntil } from 'rxjs/operators';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { TranslateService } from '@ngx-translate/core';
+import { AppointmentsService } from '../services/appointments.service';
+import { PatientsService } from 'src/app/components/patients/services/patients.service';
+import { Store } from '@ngrx/store';
+import { selectUserSpecialty } from 'src/app/store/selectors/auth.selectors';
+import { SPECIALTY_CONFIG, SoapConfig, resolveSpecialty } from 'src/app/config/specialty-config';
+import { SpecialtyType, TreatmentItem } from 'src/app/entities/specialty-templates.model';
+import { MedicalHistoryService } from 'src/app/services/medical-history.service';
+import { MedicalHistoryAttachmentsService } from 'src/app/services/medical-history-attachments.service';
+import { MedicalHistoryWriteDTO, MedicalHistoryReadDTO } from 'src/app/entities/medical-history.model';
+import { PendingAttachment } from 'src/app/entities/specialty-templates.model';
+import { PrescriptionService } from 'src/app/services/prescription.service';
+import { IPrescription, IPrescriptionItem } from 'src/app/entities/IPrescription';
+import { IPatientDetail } from 'src/app/entities/IMedicalHistory';
+import { ClinicalDataService } from 'src/app/services/clinical-data.service';
+
+@Component({
+  selector: 'app-consultation',
+  templateUrl: './consultation.component.html',
+  styleUrls: ['./consultation.component.css'],
+  standalone: false,
+})
+export class ConsultationComponent implements OnInit, OnDestroy {
+  appointment: any = null;
+  loading = true;
+  loadingDetails = false;
+  saving = false;
+  error = false;
+  specialtyConfig: SoapConfig = SPECIALTY_CONFIG.General;
+  userSpecialty: SpecialtyType = 'General';
+  consultationData: any = {};
+  patientDetailsId: number | null = null;
+  antecedentsData: string | null = null;
+  patient: IPatientDetail | null = null;
+  medicalHistory: MedicalHistoryReadDTO[] = [];
+  prescriptions: IPrescription[] = [];
+  allergies: any[] = [];
+  lastWeight = 0;
+  lastHeight = 0;
+
+  private destroy$ = new Subject<void>();
+
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private appointmentService: AppointmentsService,
+    private patientsService: PatientsService,
+    private medicalHistoryService: MedicalHistoryService,
+    private attachmentsService: MedicalHistoryAttachmentsService,
+    private prescriptionService: PrescriptionService,
+    private clinicalDataService: ClinicalDataService,
+    private snackBar: MatSnackBar,
+    private store: Store,
+    private translate: TranslateService,
+  ) {}
+
+  ngOnInit(): void {
+    this.store.select(selectUserSpecialty)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(specialty => {
+        this.userSpecialty = (specialty as SpecialtyType) || 'General';
+        this.specialtyConfig = SPECIALTY_CONFIG[resolveSpecialty(this.userSpecialty)] || SPECIALTY_CONFIG.General;
+        this.initConsultationData();
+      });
+
+    const id = this.route.snapshot.paramMap.get('id');
+    if (id) {
+      this.loadAppointment(Number(id));
+    } else {
+      this.error = true;
+      this.loading = false;
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  private initConsultationData(): void {
+    switch (this.specialtyConfig.template) {
+      case 'dental':
+        this.consultationData.specialtyData = { teeth: {}, observations: '' };
+        break;
+      case 'nutrition':
+        this.consultationData.specialtyData = { peso: 0, altura: 0, imc: 0, objetivo: '', restricciones: [], caloriasDiarias: 0 };
+        break;
+      case 'soap':
+        this.consultationData.specialtyData = { subjective: '', objective: '', assessment: '', plan: '' };
+        break;
+      default:
+        this.consultationData.specialtyData = { customData: '' };
+    }
+  }
+
+  private loadAppointment(id: number): void {
+    this.loading = true;
+    this.error = false;
+    this.appointmentService
+      .getAppointmentById(id)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (app: any) => {
+          this.appointment = app;
+          this.loading = false;
+          this.restoreDraft();
+          this.loadPatientRelatedData(app);
+        },
+        error: () => {
+          this.error = true;
+          this.loading = false;
+        },
+      });
+  }
+
+  private loadPatientRelatedData(app: any): void {
+    const patientId = app.patient?.id || app.patientId;
+    if (!patientId) return;
+
+    this.loadingDetails = true;
+    this.patientsService.getPatientDetailsSummary(patientId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          this.patientDetailsId = response.id;
+          this.antecedentsData = response.antecedentsData || null;
+          this.loadingDetails = false;
+        },
+        error: () => {
+          this.loadingDetails = false;
+        },
+      });
+
+    this.patientsService.getPatientDetails(patientId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          this.patientDetailsId = response.id ?? this.patientDetailsId;
+          if (response.patient) {
+            this.patient = response.patient;
+          }
+          if (response.medicalHistories) {
+            this.medicalHistory = response.medicalHistories;
+          }
+          if (response.allergies) {
+            this.allergies = response.allergies;
+          }
+          if (this.patientDetailsId) {
+            this.loadLatestVitals(this.patientDetailsId);
+          }
+          this.loadPrescriptions(patientId);
+        },
+        error: (err) => console.error(err),
+      });
+  }
+
+  private loadLatestVitals(patientDetailsId: number): void {
+    this.clinicalDataService.getVitalSigns(patientDetailsId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (vitals) => {
+          if (vitals.length > 0) {
+            const latest = vitals[vitals.length - 1];
+            this.lastWeight = latest.weight || 0;
+            if (latest.height) this.lastHeight = latest.height;
+          }
+        },
+      });
+  }
+
+  private loadPrescriptions(patientId: number): void {
+    this.prescriptionService.getPrescriptionsByPatient(patientId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (data) => this.prescriptions = data,
+        error: (err) => console.error(err),
+      });
+  }
+
+  private get draftKey(): string {
+    return `consultation_draft_${this.appointment?.id || 'new'}`;
+  }
+
+  saveDraft(): void {
+    this.saving = true;
+    try {
+      localStorage.setItem(this.draftKey, JSON.stringify(this.consultationData));
+    } catch {}
+    setTimeout(() => {
+      this.saving = false;
+    }, 300);
+  }
+
+  private restoreDraft(): void {
+    try {
+      const saved = localStorage.getItem(this.draftKey);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed.specialtyData) {
+          parsed.specialtyData.attachments = (parsed.specialtyData.attachments || []).filter(
+            (a: PendingAttachment) => a.file
+          );
+          this.consultationData = parsed;
+        }
+      }
+    } catch {}
+  }
+
+  private buildDto(): MedicalHistoryWriteDTO | null {
+    if (!this.patientDetailsId) return null;
+    const specialtyData = this.consultationData.specialtyData || {};
+
+    let clinicalNotes = specialtyData.clinicalNotes || '';
+    if (this.specialtyConfig.template === 'soap' && specialtyData.plan) {
+      clinicalNotes = specialtyData.plan;
+    }
+
+    return {
+      patientDetailsId: this.patientDetailsId,
+      specialtyType: this.userSpecialty,
+      diagnosis: (specialtyData.diagnosis || '').trim(),
+      diagnosisDate: new Date().toISOString().split('T')[0],
+      clinicalNotes: clinicalNotes || undefined,
+      specialtyData: this.medicalHistoryService.serializeSpecialtyData(specialtyData),
+      cie10Codes: specialtyData.cie10Codes || undefined,
+      treatments: specialtyData.treatments?.length
+        ? JSON.stringify(specialtyData.treatments)
+        : undefined,
+      isConfidential: true,
+    };
+  }
+
+  completeConsultation(): void {
+    if (!this.appointment) return;
+    this.saving = true;
+
+    const dto = this.buildDto();
+    if (!dto) {
+      this.saving = false;
+      return;
+    }
+
+    if (!dto.diagnosis) {
+      this.saving = false;
+      this.snackBar.open(this.translate.instant('CONSULTATION.DIAGNOSIS_REQUIRED'), 'OK', {
+        duration: 4000,
+        panelClass: 'cf-toast-warn',
+      });
+      return;
+    }
+
+    if (!dto.clinicalNotes) {
+      this.saving = false;
+      this.snackBar.open(this.translate.instant('CONSULTATION.CLINICAL_NOTES_REQUIRED'), 'OK', {
+        duration: 4000,
+        panelClass: 'cf-toast-warn',
+      });
+      return;
+    }
+
+    const pendingAttachments = (this.consultationData.specialtyData?.attachments || []).filter(
+      (a: PendingAttachment) => a.file
+    );
+
+    this.medicalHistoryService
+      .createHistory(dto)
+      .pipe(
+        concatMap((record) => this.uploadAttachments(record.id, pendingAttachments)),
+        concatMap(() => this.appointmentService.completeConsultation(this.appointment.id)),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: () => {
+          localStorage.removeItem(this.draftKey);
+          this.saving = false;
+          this.snackBar.open(this.translate.instant('CONSULTATION.SAVE_SUCCESS'), 'OK', {
+            duration: 3000,
+            panelClass: 'cf-toast-success',
+          });
+        },
+        error: (err) => {
+          console.error('Error al completar la consulta:', err);
+          this.saving = false;
+          this.snackBar.open(
+            this.translate.instant('CONSULTATION.SAVE_ERROR'),
+            'OK',
+            { duration: 5000, panelClass: 'cf-toast-error' }
+          );
+        },
+      });
+  }
+
+  generatePrescription(): void {
+    const specialtyData = this.consultationData.specialtyData || {};
+    const diagnosis = (specialtyData.diagnosis || '').trim();
+    const treatments = Array.isArray(specialtyData.treatments) ? specialtyData.treatments : [];
+    const patientId = this.appointment?.patient?.id ?? this.appointment?.patientId;
+
+    if (!diagnosis) {
+      this.snackBar.open(this.translate.instant('CONSULTATION.PRESCRIPTION_DIAGNOSIS_REQUIRED'), 'OK', {
+        duration: 4000,
+        panelClass: 'cf-toast-warn',
+      });
+      return;
+    }
+
+    if (!treatments.length) {
+      this.snackBar.open(this.translate.instant('CONSULTATION.PRESCRIPTION_TREATMENTS_REQUIRED'), 'OK', {
+        duration: 4000,
+        panelClass: 'cf-toast-warn',
+      });
+      return;
+    }
+
+    if (!patientId) {
+      this.snackBar.open(this.translate.instant('CONSULTATION.PRESCRIPTION_PATIENT_NOT_FOUND'), 'OK', {
+        duration: 4000,
+        panelClass: 'cf-toast-error',
+      });
+      return;
+    }
+
+    const items: IPrescriptionItem[] = treatments.map((t: TreatmentItem) => ({
+      medicationName: (t.name || '').trim(),
+      dosage: (t.dose || '').trim(),
+      frequency: (t.frequency || '').trim(),
+      duration: (t.duration || '').trim(),
+      instructions: t.description || '',
+    }));
+
+    const incomplete = items.filter((i) => !i.medicationName || !i.dosage || !i.frequency || !i.duration);
+    if (incomplete.length) {
+      this.snackBar.open(
+        this.translate.instant('CONSULTATION.PRESCRIPTION_INCOMPLETE_ITEMS'),
+        'OK',
+        { duration: 5000, panelClass: 'cf-toast-warn' }
+      );
+      return;
+    }
+
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + 7);
+
+    const payload: IPrescription = {
+      patientId,
+      diagnosis,
+      items,
+      notes: diagnosis,
+      expiresAt,
+    };
+
+    this.prescriptionService.createPrescription(payload).subscribe({
+      next: () => {
+        this.snackBar.open(this.translate.instant('CONSULTATION.PRESCRIPTION_SUCCESS'), 'OK', {
+          duration: 3000,
+          panelClass: 'cf-toast-success',
+        });
+      },
+      error: (err) => {
+        console.error('Error al generar la receta:', err);
+        this.snackBar.open(this.translate.instant('CONSULTATION.PRESCRIPTION_ERROR'), 'OK', {
+          duration: 5000,
+          panelClass: 'cf-toast-error',
+        });
+      },
+    });
+  }
+
+  private uploadAttachments(
+    medicalHistoryId: number,
+    attachments: PendingAttachment[]
+  ) {
+    if (!attachments.length) return of(null);
+    return from(attachments).pipe(
+      concatMap((attachment) =>
+        this.attachmentsService.upload(medicalHistoryId, attachment.file!, attachment.type)
+      )
+    );
+  }
+
+  goBack(): void {
+    this.router.navigate(['/appointments']);
+  }
+}

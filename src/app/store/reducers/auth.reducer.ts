@@ -9,24 +9,53 @@ import {
   loadUserProfileFailure,
   login,
   setLoading,
+  setAuthClaims,
 } from '../actions/auth.actions';
 
 export interface AuthState {
   userId: number | null;
   userToken: string | null;
   error: string | null;
-  principalClinicId: number | null;
+  clinicId: number | null;
+  clinicOpen: { hour: number; minute: number } | null;
+  clinicClose: { hour: number; minute: number } | null;
   specialty: string | null;
   loading: boolean;
+  /** Account ID - multi-tenancy scope (null for patients) */
+  accountId: number | null;
+  /** Clinic ID - clinic-specific scope (null for patients) */
+  clinicIdExtra: number | null;
+  /** User type: "staff" or "patient" */
+  userType: string | null;
+  /** Patient ID - only for patient tokens */
+  patientId: number | null;
+  /** Array of roles from JWT claims (snake_case) */
+  roles: string[];
+  /** Display name from LoginResponse (NgRx single source of truth) */
+  name: string | null;
+  /** Email from LoginResponse */
+  email: string | null;
+  /** Primary role (single, from userRole prop) */
+  role: string | null;
 }
 
 export const initialState: AuthState = {
   userId: null,
   userToken: null,
   error: null,
-  principalClinicId: null,
+  clinicId: null,
+  clinicOpen: null,
+  clinicClose: null,
   specialty: null,
   loading: false,
+  accountId: null,
+  clinicIdExtra: null,
+  userType: null,
+  patientId: null,
+  roles: [],
+  name: null,
+  email: null,
+  role: null,
 };
 
 export const authReducer = createReducer(
@@ -34,12 +63,53 @@ export const authReducer = createReducer(
   on(login, (state) => ({ ...state, loading: true, error: null })),
   on(
     loginSuccess,
-    (state, { userId, userToken, principalClinicId, specialty }) => ({
+    (
+      state,
+      {
+        userId,
+        userToken,
+        clinicId,
+        specialty,
+        clinicOpen,
+        clinicClose,
+        accountId,
+        userType,
+        patientId,
+        roles,
+        userRole,
+        name,
+        email,
+      }: {
+        userId: number | null;
+        userToken: string;
+        clinicId: number | null;
+        specialty?: string | null | undefined;
+        clinicOpen?: { hour: number; minute: number } | null | undefined;
+        clinicClose?: { hour: number; minute: number } | null | undefined;
+        accountId?: number | null | undefined;
+        userType?: string | null | undefined;
+        patientId?: number | null | undefined;
+        roles?: string[] | undefined;
+        userRole?: string | null | undefined;
+        name?: string | null | undefined;
+        email?: string | null | undefined;
+      }
+    ) => ({
       ...state,
       userId,
       userToken,
-      principalClinicId,
+      clinicId: clinicId || null,
       specialty: specialty || null,
+      clinicOpen: clinicOpen ?? null,
+      clinicClose: clinicClose ?? null,
+      accountId: accountId || null,
+      clinicIdExtra: clinicId || null,
+      userType: userType || null,
+      patientId: patientId || null,
+      roles: roles || [],
+      role: userRole || null,
+      name: name || null,
+      email: email || null,
       error: null,
       loading: false,
     }),
@@ -62,18 +132,55 @@ export const authReducer = createReducer(
   })),
   on(
     rehydrateAuthState,
-    (state, { userId, userToken, principalClinicId, specialty }) => ({
+    (
+      state,
+      {
+        userId,
+        userToken,
+        clinicId,
+        specialty,
+        accountId,
+        userType,
+        patientId,
+        roles,
+      }: {
+        userId: number | null;
+        userToken: string | null;
+        clinicId: number | null;
+        specialty?: string | null;
+        accountId?: number | null;
+        userType?: string | null;
+        patientId?: number | null;
+        roles?: string[];
+      }
+    ) => ({
       ...state,
       userId,
       userToken,
-      principalClinicId,
+      clinicId: clinicId || null,
       specialty: specialty || null,
+      accountId: accountId || null,
+      clinicIdExtra: clinicId || null,
+      userType: userType || null,
+      patientId: patientId || null,
+      roles: roles || [],
     }),
   ),
-  on(setClinic, (state, { principalClinicId }) => ({
+  on(setClinic, (state, { clinicId, open, close }) => ({
     ...state,
-    principalClinicId,
+    clinicId: clinicId || null,
+    clinicOpen: open ?? null,
+    clinicClose: close ?? null,
     error: null,
   })),
   on(setLoading, (state, { loading }) => ({ ...state, loading })),
+  on(setAuthClaims, (state, { claims }) => ({
+    ...state,
+    userId: claims.userId,
+    accountId: claims.accountId,
+    clinicIdExtra: claims.clinicId,
+    userType: claims.userType,
+    patientId: claims.patientId,
+    roles: claims.roles,
+  })),
 );

@@ -1,0 +1,82 @@
+<div class="consultation-workspace">
+  <mat-stepper
+    [selectedIndex]="activeStepIndex"
+    (selectionChange)="activeStepIndex = $event.selectedIndex"
+    linear="false"
+    labelPosition="bottom"
+    class="nutrition-stepper">
+
+    <mat-step label="Medición" state="number" editable="true">
+      <ng-template matStepLabel>
+        <mat-icon>straighten</mat-icon>
+        <span>Medición</span>
+      </ng-template>
+      <div class="step-content">
+        <div class="step-grid">
+          <div class="step-section">
+            <h4 class="step-section-title">Composición Corporal</h4>
+            <app-body-composition
+              [patientDetailsId]="patientDetailsId">
+            </app-body-composition>
+          </div>
+          <div class="step-section">
+            <h4 class="step-section-title">Antropometría</h4>
+            <app-anthropometry
+              [patientDetailsId]="patientDetailsId">
+            </app-anthropometry>
+          </div>
+        </div>
+      </div>
+    </mat-step>
+
+    <mat-step label="Evaluación" state="number" editable="true">
+      <ng-template matStepLabel>
+        <mat-icon>calculate</mat-icon>
+        <span>Evaluación</span>
+      </ng-template>
+      <div class="step-content">
+        <app-assessment-calculator
+          [patientDetailsId]="patientDetailsId"
+          [weight]="weight"
+          [height]="height">
+        </app-assessment-calculator>
+      </div>
+    </mat-step>
+
+    <mat-step label="Plan" state="number" editable="true">
+      <ng-template matStepLabel>
+        <mat-icon>restaurant_menu</mat-icon>
+        <span>Plan Alimenticio</span>
+      </ng-template>
+      <div class="step-content">
+        <app-diet-plan-list
+          [patientDetailsId]="patientDetailsId">
+        </app-diet-plan-list>
+      </div>
+    </mat-step>
+
+    <mat-step label="Suplementos" state="number" editable="true">
+      <ng-template matStepLabel>
+        <mat-icon>medication</mat-icon>
+        <span>Suplementos</span>
+      </ng-template>
+      <div class="step-content">
+        <app-supplement-list
+          [patientDetailsId]="patientDetailsId">
+        </app-supplement-list>
+      </div>
+    </mat-step>
+
+    <mat-step label="Revisión" state="number" editable="true">
+      <ng-template matStepLabel>
+        <mat-icon>trending_up</mat-icon>
+        <span>Evolución</span>
+      </ng-template>
+      <div class="step-content">
+        <app-progress-tracking
+          [patientDetailsId]="patientDetailsId">
+        </app-progress-tracking>
+      </div>
+    </mat-step>
+  </mat-stepper>
+</div>

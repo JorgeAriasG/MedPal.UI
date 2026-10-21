@@ -1,16 +1,44 @@
 <div class="generic-template">
-  <h3>Datos Específicos de la Especialidad</h3>
+  <h3>{{ 'MEDICAL_HISTORY.TEMPLATE_GENERIC_TITLE' | translate }}</h3>
 
   <mat-form-field appearance="outline" class="w-100">
-    <mat-label>Información Adicional</mat-label>
+    <mat-label>{{ 'MEDICAL_HISTORY.TEMPLATE_GENERIC_INFO_LABEL' | translate }}</mat-label>
     <textarea
       matInput
       rows="8"
       [value]="genericData.customData"
       (input)="updateData($any($event.target).value)"
       [disabled]="disabled"
-      placeholder="Ingrese datos específicos de la especialidad en formato libre..."
+      [placeholder]="'MEDICAL_HISTORY.TEMPLATE_GENERIC_PLACEHOLDER' | translate"
     ></textarea>
-    <mat-hint>Puede ingresar texto libre o datos en formato JSON</mat-hint>
+    <mat-hint>{{ 'MEDICAL_HISTORY.TEMPLATE_GENERIC_HINT' | translate }}</mat-hint>
   </mat-form-field>
+
+  <app-measurements
+    [ngModel]="genericData.measurements"
+    (ngModelChange)="onMeasurementsChange($event)"
+  ></app-measurements>
+
+  <!-- Consultation Engine compartidos -->
+  <div class="engine-section" *ngIf="!hideEngine">
+    <app-clinical-notes
+      [ngModel]="genericData.clinicalNotes || ''"
+      (ngModelChange)="onClinicalNotesChange($event)"
+    ></app-clinical-notes>
+
+    <app-diagnoses
+      [ngModel]="diagnosisValue"
+      (ngModelChange)="onDiagnosisChange($event)"
+    ></app-diagnoses>
+
+    <app-treatments
+      [ngModel]="genericData.treatments"
+      (ngModelChange)="onTreatmentsChange($event)"
+    ></app-treatments>
+
+    <app-clinical-attachments
+      [attachments]="genericData.attachments || []"
+      (attachmentsChange)="onAttachmentsChange($event)"
+    ></app-clinical-attachments>
+  </div>
 </div>

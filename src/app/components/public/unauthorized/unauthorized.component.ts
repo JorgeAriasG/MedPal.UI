@@ -5,19 +5,23 @@
  * Used by guards and interceptors when 403 Forbidden is encountered
  */
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-unauthorized',
   templateUrl: './unauthorized.component.html',
   styleUrls: ['./unauthorized.component.css'],
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
 })
-export class UnauthorizedComponent implements OnInit {
+export class UnauthorizedComponent implements OnInit, OnDestroy {
   returnUrl: string | null = null;
+  private destroy$ = new Subject<void>();
 
   constructor(
     private router: Router,
@@ -25,17 +29,18 @@ export class UnauthorizedComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Get return URL from query params if available
-    this.activatedRoute.queryParams.subscribe((params) => {
-      this.returnUrl = params['returnUrl'] || null;
-    });
-
-    console.warn('[UnauthorizedComponent] User attempted to access unauthorized resource');
+    this.activatedRoute.queryParams
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((params) => {
+        this.returnUrl = params['returnUrl'] || null;
+      });
   }
 
-  /**
-   * Navigate back to previous page or home
-   */
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   goBack(): void {
     if (this.returnUrl) {
       this.router.navigateByUrl(this.returnUrl);
@@ -44,9 +49,6 @@ export class UnauthorizedComponent implements OnInit {
     }
   }
 
-  /**
-   * Navigate to home page
-   */
   goHome(): void {
     this.router.navigate(['/']);
   }

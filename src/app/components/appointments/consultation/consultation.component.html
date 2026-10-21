@@ -1,0 +1,103 @@
+<div class="consultation-layout">
+  <!-- Loading -->
+  <div class="loading-screen" *ngIf="loading">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>Cargando consulta...</p>
+  </div>
+
+  <!-- Error -->
+  <div class="loading-screen" *ngIf="!loading && error">
+    <mat-icon class="error-icon">error_outline</mat-icon>
+    <p>No se pudo cargar la consulta</p>
+    <button mat-stroked-button (click)="goBack()">Volver a calendario</button>
+  </div>
+
+  <!-- Content -->
+  <div class="consultation-body" *ngIf="!loading && !error && appointment">
+    <div class="consultation-content">
+      <!-- Header -->
+      <div class="consultation-header">
+        <div class="header-content">
+          <div class="header-left">
+            <button mat-icon-button class="back-btn" (click)="goBack()">
+              <mat-icon>arrow_back</mat-icon>
+            </button>
+          </div>
+
+          <div class="patient-info">
+            <div class="avatar-container">
+              <mat-icon class="avatar-icon">account_circle</mat-icon>
+            </div>
+            <div class="patient-details">
+              <h1 class="patient-name">
+                {{ patient?.name || appointment.patient?.name || '' }} {{ patient?.middlename || '' }} {{ patient?.lastname || appointment.patient?.lastname || '' }}
+              </h1>
+              <p class="patient-contact">
+                <mat-icon class="icon-small">email</mat-icon>
+                {{ patient?.email || appointment.patient?.email || '—' }}
+                <span class="divider-dot">•</span>
+                <mat-icon class="icon-small">phone</mat-icon>
+                {{ patient?.phone || appointment.patient?.phone || '—' }}
+                <span class="divider-dot">•</span>
+                <mat-icon class="icon-small">calendar_today</mat-icon>
+                {{ appointment.date }} {{ appointment.time }}
+              </p>
+              <p class="patient-meta">
+                <mat-icon class="icon-small">star</mat-icon>
+                {{ specialtyConfig.label }}
+              </p>
+            </div>
+          </div>
+
+          <div class="header-actions">
+            <span class="status-badge" [attr.data-status]="appointment.status">
+              {{ appointment.status }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Alerts banner -->
+      <div class="alerts-section" *ngIf="patientDetailsId">
+        <app-alerts [patientDetailsId]="patientDetailsId" [antecedentsData]="antecedentsData"></app-alerts>
+      </div>
+
+      <!-- Protocolo por especialidad -->
+      <div class="workspace-content">
+        <app-specialty-tabs
+          [patient]="patient"
+          [patientDetailsId]="patientDetailsId"
+          [medicalHistory]="medicalHistory"
+          [prescriptions]="prescriptions"
+          [allergies]="allergies"
+          [lastWeight]="lastWeight"
+          [lastHeight]="lastHeight"
+          [specialty]="userSpecialty"
+          [showClosure]="true"
+          [(ngModel)]="consultationData.specialtyData"
+        ></app-specialty-tabs>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Action Bar -->
+  <div class="action-bar" *ngIf="!loading && appointment">
+    <button mat-button class="draft-btn" (click)="saveDraft()" [disabled]="saving">
+      <mat-icon>save</mat-icon>
+      Guardar borrador
+    </button>
+    <div class="action-right">
+      <button mat-stroked-button class="presc-btn" (click)="generatePrescription()" [disabled]="saving">
+        <mat-icon>receipt_long</mat-icon>
+        Generar Receta
+      </button>
+      <button mat-stroked-button class="cancel-btn" (click)="goBack()">
+        Cancelar
+      </button>
+      <button mat-raised-button color="primary" class="complete-btn" (click)="completeConsultation()" [disabled]="saving">
+        <mat-icon>check_circle</mat-icon>
+        {{ saving ? 'Guardando...' : 'Completar Consulta' }}
+      </button>
+    </div>
+  </div>
+</div>

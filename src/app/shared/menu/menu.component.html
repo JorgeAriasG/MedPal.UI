@@ -1,67 +1,97 @@
-<nav class="menu-container">
+<nav class="menu-container" [class.collapsed]="isCollapsed">
   <div class="menu-header">
     <div class="menu-logo">
-      <mat-icon class="logo-icon">medical_services</mat-icon>
-      <span class="logo-text">MediSchedule</span>
+      <img src="assets/logo-240-invert.png" alt="ClinicFlow" class="logo-img">
     </div>
+    <button mat-icon-button class="toggle-btn" (click)="toggleSidebar()" [attr.aria-label]="'MENU.TOGGLE_SIDEBAR' | translate">
+      <mat-icon>{{ isCollapsed ? 'chevron_right' : 'chevron_left' }}</mat-icon>
+    </button>
   </div>
 
   <mat-list class="menu-list">
+    <!-- Home - always visible -->
     <mat-list-item class="menu-item">
       <button mat-button routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" class="menu-link">
-        <mat-icon class="menu-icon">home</mat-icon>
-        <span class="menu-text">Home</span>
+        <mat-icon class="menu-icon">dashboard</mat-icon>
+        <span class="menu-text" *ngIf="!isCollapsed">{{ 'MENU.HOME' | translate }}</span>
       </button>
     </mat-list-item>
 
-    <mat-list-item class="menu-item">
+    <!-- Appointments - staff only -->
+    <mat-list-item class="menu-item" *ngIf="hasRole(['SuperAdmin', 'AccountAdmin', 'ClinicAdmin', 'HealthProfessional', 'Receptionist'])">
       <button mat-button routerLink="/appointments" routerLinkActive="active" class="menu-link">
         <mat-icon class="menu-icon">calendar_month</mat-icon>
-        <span class="menu-text">Appointments</span>
+        <span class="menu-text" *ngIf="!isCollapsed">{{ 'MENU.APPOINTMENTS' | translate }}</span>
       </button>
     </mat-list-item>
 
-    <mat-list-item class="menu-item">
+    <!-- Patients - staff only -->
+    <mat-list-item class="menu-item" *ngIf="hasRole(['SuperAdmin', 'AccountAdmin', 'ClinicAdmin', 'HealthProfessional', 'Receptionist'])">
       <button mat-button routerLink="/patients" routerLinkActive="active" class="menu-link">
         <mat-icon class="menu-icon">people</mat-icon>
-        <span class="menu-text">Patients</span>
+        <span class="menu-text" *ngIf="!isCollapsed">{{ 'MENU.PATIENTS' | translate }}</span>
       </button>
     </mat-list-item>
 
-    <mat-list-item class="menu-item">
-      <button mat-button routerLink="/clinics" routerLinkActive="active" class="menu-link">
-        <mat-icon class="menu-icon">local_hospital</mat-icon>
-        <span class="menu-text">Clinics</span>
-      </button>
-    </mat-list-item>
-
-    <mat-list-item class="menu-item">
-      <button mat-button routerLink="/users" routerLinkActive="active" class="menu-link">
-        <mat-icon class="menu-icon">group</mat-icon>
-        <span class="menu-text">Users</span>
-      </button>
-    </mat-list-item>
-
-    <mat-list-item class="menu-item">
-      <button mat-button routerLink="/roles" routerLinkActive="active" class="menu-link">
-        <mat-icon class="menu-icon">admin_panel_settings</mat-icon>
-        <span class="menu-text">Roles</span>
-      </button>
-    </mat-list-item>
-
-    <mat-list-item class="menu-item">
+    <!-- Prescriptions - staff only -->
+    <mat-list-item class="menu-item" *ngIf="hasRole(['SuperAdmin', 'AccountAdmin', 'ClinicAdmin', 'HealthProfessional'])">
       <button mat-button routerLink="/prescriptions/new" routerLinkActive="active" class="menu-link">
         <mat-icon class="menu-icon">description</mat-icon>
-        <span class="menu-text">Prescriptions</span>
+        <span class="menu-text" *ngIf="!isCollapsed">{{ 'MENU.PRESCRIPTIONS' | translate }}</span>
+      </button>
+    </mat-list-item>
+
+    <!-- Reports - admin only -->
+    <mat-list-item class="menu-item" *ngIf="hasRole(['SuperAdmin', 'AccountAdmin', 'ClinicAdmin'])">
+      <button mat-button routerLink="/reports" routerLinkActive="active" class="menu-link">
+        <mat-icon class="menu-icon">analytics</mat-icon>
+        <span class="menu-text" *ngIf="!isCollapsed">{{ 'MENU.REPORTS' | translate }}</span>
+      </button>
+    </mat-list-item>
+
+    <mat-divider *ngIf="!isCollapsed" class="section-divider"></mat-divider>
+    <p class="section-header" *ngIf="!isCollapsed">{{ 'MENU.NUTRITION' | translate }}</p>
+
+    <mat-list-item class="menu-item" *ngIf="hasRole(['SuperAdmin', 'AccountAdmin', 'ClinicAdmin', 'HealthProfessional'])">
+      <button mat-button routerLink="/nutrition/foods" routerLinkActive="active" class="menu-link">
+        <mat-icon class="menu-icon">menu_book</mat-icon>
+        <span class="menu-text" *ngIf="!isCollapsed">{{ 'MENU.FOOD_DATABASE' | translate }}</span>
+      </button>
+    </mat-list-item>
+
+    <mat-divider *ngIf="!isCollapsed" class="section-divider"></mat-divider>
+    <p class="section-header" *ngIf="!isCollapsed">{{ 'MENU.SETTINGS' | translate }}</p>
+
+    <!-- Clinics - admin only -->
+    <mat-list-item class="menu-item" *ngIf="hasRole(['SuperAdmin', 'AccountAdmin', 'ClinicAdmin'])">
+      <button mat-button routerLink="/clinics" routerLinkActive="active" class="menu-link">
+        <mat-icon class="menu-icon">local_hospital</mat-icon>
+        <span class="menu-text" *ngIf="!isCollapsed">{{ 'MENU.CLINICS' | translate }}</span>
+      </button>
+    </mat-list-item>
+
+    <!-- Users - SuperAdmin/AccountAdmin only -->
+    <mat-list-item class="menu-item" *ngIf="hasRole(['SuperAdmin', 'AccountAdmin'])">
+      <button mat-button routerLink="/users" routerLinkActive="active" class="menu-link">
+        <mat-icon class="menu-icon">group</mat-icon>
+        <span class="menu-text" *ngIf="!isCollapsed">{{ 'MENU.USERS' | translate }}</span>
+      </button>
+    </mat-list-item>
+
+    <!-- Subscription - all authenticated users -->
+    <mat-list-item class="menu-item">
+      <button mat-button routerLink="/settings" routerLinkActive="active" class="menu-link">
+        <mat-icon class="menu-icon">subscriptions</mat-icon>
+        <span class="menu-text" *ngIf="!isCollapsed">{{ 'MENU.SUBSCRIPTION' | translate }}</span>
       </button>
     </mat-list-item>
   </mat-list>
 
   <div class="menu-footer">
     <mat-divider class="menu-divider"></mat-divider>
-    <button mat-button class="logout-btn" (click)="logout()">
+    <button mat-button class="logout-btn" (click)="logout()" [attr.aria-label]="'MENU.LOGOUT' | translate">
       <mat-icon class="menu-icon">logout</mat-icon>
-      <span class="menu-text">Logout</span>
+      <span class="menu-text" *ngIf="!isCollapsed">{{ 'MENU.LOGOUT' | translate }}</span>
     </button>
   </div>
 </nav>

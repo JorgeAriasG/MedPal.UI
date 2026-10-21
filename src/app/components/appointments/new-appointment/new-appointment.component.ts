@@ -18,22 +18,23 @@ import { IPatient } from 'src/app/entities/IPatient';
 import { createFormGroupFromConfig } from 'src/app/shared/utils/form-utils';
 import { PatientsService } from '../../patients/services/patients.service';
 import { Observable, Subject, catchError, of } from 'rxjs';
-import { map, startWith, takeUntil } from 'rxjs/operators';
+import { debounceTime, switchMap, map, startWith, takeUntil, distinctUntilChanged } from 'rxjs/operators';
 import {
   MatAutocompleteActivatedEvent,
   MatAutocompleteSelectedEvent,
 } from '@angular/material/autocomplete';
-import { AppointmensService } from '../services/appointmens.service';
+import { AppointmentsService } from '../services/appointments.service';
 import {
   toDateOnlyObject,
   toTimeObject,
 } from 'src/app/shared/utils/date-utils';
+import { TranslateService } from '@ngx-translate/core';
 import { Store } from '@ngrx/store';
 import {
-  selectClinicId,
-  selectUserId,
+  selectAuthContext,
 } from 'src/app/store/selectors/auth.selectors';
 import { HttpErrorResponse } from '@angular/common/http';
+import { BookingService, BookingLinkResponse } from 'src/app/services/booking.service';
 
 @Component({
   selector: 'app-new-appointment',
@@ -52,8 +53,13 @@ export class NewAppointmentComponent implements OnInit, OnDestroy {
   clinicId: number | null | undefined;
   isEditMode = false;
   isLoading = false;
+  linkLoading = false;
   appointmentId: number | undefined;
   statusOptions: any[] = [];
+  clinicOpen: { hour: number; minute: number } | null = null;
+  clinicClose: { hour: number; minute: number } | null = null;
+  availableSlots: { hour: number; minute: number; label: string }[] = [];
+  existingAppointments: any[] = [];
 
   private destroy$ = new Subject<void>();
 
@@ -62,9 +68,11 @@ export class NewAppointmentComponent implements OnInit, OnDestroy {
     @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: any,
     private fb: FormBuilder,
     private patientService: PatientsService,
-    private appointmentService: AppointmensService,
+    private appointmentService: AppointmentsService,
+    private bookingService: BookingService,
     private store: Store,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private translate: TranslateService
   ) {
     this.patientForm = createFormGroupFromConfig(this.fb, patientFormConfig);
     this.appointmentForm = createFormGroupFromConfig(
@@ -72,11 +80,11 @@ export class NewAppointmentComponent implements OnInit, OnDestroy {
       appointmentFormConfig
     );
     this.statusOptions = appointmentFormConfig['status'].options || [];
-    console.log('Patient form:', this.patientForm);
-    console.log('Appointment form:', this.appointmentForm);
     this.patientForm.get('lastname')?.disable();
     this.patientForm.get('email')?.disable();
     this.patientForm.get('phone')?.disable();
+
+    this.clinicId = this.dialogData?.clinicId ?? null;
 
     if (this.dialogData?.appointment) {
       this.isEditMode = true;
@@ -85,33 +93,27 @@ export class NewAppointmentComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // Obtener userId del store
     this.store
-      .select(selectUserId)
+      .select(selectAuthContext)
       .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (userId) => {
-          console.log('User ID from store:', userId);
-          this.userId = userId;
-        },
-        error: (err) => {
-          console.error('Error getting user ID from store:', err);
-        },
+      .subscribe(({ userId, clinicId, clinicOpen, clinicClose }) => {
+        this.userId = userId;
+        if (clinicId) {
+          this.clinicId = clinicId;
+        }
+        this.clinicOpen = clinicOpen;
+        this.clinicClose = clinicClose;
+        this.getPatients();
+        this.generateSlots();
       });
 
-    // Obtener clinicId del store
-    this.store
-      .select(selectClinicId)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (clinicId) => {
-          console.log('Clinic ID from store:', clinicId);
-          this.clinicId = clinicId;
-          this.getPatients();
-        },
-        error: (err) => {
-          console.error('Error getting clinic ID from store:', err);
-        },
+    this.appointmentForm.get('durationMinutes')?.setValue(30);
+    this.appointmentForm.get('durationMinutes')?.disable();
+
+    this.appointmentForm.get('date')?.valueChanges
+      .pipe(takeUntil(this.destroy$), distinctUntilChanged())
+      .subscribe((date) => {
+        this.loadDayAppointments(date);
       });
 
     this.filteredPatients = this.patientForm.get('name')!.valueChanges.pipe(
@@ -136,31 +138,33 @@ export class NewAppointmentComponent implements OnInit, OnDestroy {
     if (this.isEditMode) {
       this.setEditData();
     }
+
+    const initialDate = this.appointmentForm.get('date')?.value;
+    if (initialDate) {
+      this.loadDayAppointments(initialDate);
+    }
   }
 
   setEditData(): void {
     const app = this.dialogData.appointment;
     this.selectedPatient = app.patient;
     
-    // Convert backend strings/dates to what the form components expect
-    const date = new Date(app.date);
-    // Para el timepicker de material, a veces necesita un objeto Date o string HH:mm
+    const [y, mo, d] = app.date.split('-').map(Number);
+    const date = new Date(y, mo - 1, d);
     const [h, m] = app.time.split(':');
-    const time = new Date();
-    time.setHours(parseInt(h), parseInt(m), 0);
 
     this.appointmentForm.patchValue({
       date: date,
-      time: time,
+      time: { hour: parseInt(h), minute: parseInt(m) },
       status: app.status,
       notes: app.notes,
-      durationMinutes: app.durationMinutes || 30
+      durationMinutes: app.durationMinutes || 30,
     });
 
     if (app.patient) {
       this.patientForm.patchValue({
         id: app.patient.id,
-        name: app.patient.name,
+        name: app.patient,
         lastname: app.patient.lastname,
         email: app.patient.email,
         phone: app.patient.phone,
@@ -208,13 +212,13 @@ export class NewAppointmentComponent implements OnInit, OnDestroy {
 
   saveAppointment(): void {
     if (this.appointmentForm.invalid || (!this.selectedPatient && !this.isEditMode)) {
-      this.snackBar.open('Please fill all required fields correctly.', 'Close', { duration: 3000 });
+      this.snackBar.open(this.translate.instant('ERRORS.INVALID_FORM'), this.translate.instant('COMMON.CLOSE'), { duration: 3000 });
       return;
     }
 
     this.isLoading = true;
     const dateValue: Date = this.appointmentForm.get('date')?.value;
-    const timeValue: Date | string = this.appointmentForm.get('time')?.value;
+    const timeValue: any = this.appointmentForm.get('time')?.value;
 
     const appointment: IAppointment = {
       id: this.appointmentId,
@@ -225,7 +229,7 @@ export class NewAppointmentComponent implements OnInit, OnDestroy {
       notes: this.appointmentForm.get('notes')?.value || '',
       date: toDateOnlyObject(dateValue)!,
       time: toTimeObject(timeValue)!,
-      durationMinutes: parseInt(this.appointmentForm.get('durationMinutes')?.value)
+      durationMinutes: 30,
     };
 
     const request = this.isEditMode 
@@ -248,15 +252,15 @@ export class NewAppointmentComponent implements OnInit, OnDestroy {
           message = error.error.message;
         }
 
-        this.snackBar.open(message, 'Close', { duration: 5000, panelClass: ['error-snackbar'] });
+        this.snackBar.open(message, this.translate.instant('COMMON.CLOSE'), { duration: 5000, panelClass: ['error-snackbar'] });
         return of(null);
       })
     ).subscribe((response) => {
       if (response !== null) {
         this.isLoading = false;
         this.snackBar.open(
-          this.isEditMode ? 'Appointment updated successfully!' : 'Appointment created successfully!', 
-          'Success', 
+          this.isEditMode ? this.translate.instant('APPOINTMENTS.SNACKBAR_SUCCESS_UPDATE') : this.translate.instant('APPOINTMENTS.SNACKBAR_SUCCESS_CREATE'), 
+          this.translate.instant('COMMON.ACCEPT'), 
           { duration: 3000 }
         );
         this.closeDialog(true);
@@ -264,12 +268,107 @@ export class NewAppointmentComponent implements OnInit, OnDestroy {
     });
   }
 
+  private loadDayAppointments(date: Date | null): void {
+    if (!date || !this.clinicId) {
+      this.existingAppointments = [];
+      this.generateSlots();
+      return;
+    }
+
+    const y = date.getFullYear();
+    const mo = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    const dateStr = `${y}-${mo}-${d}`;
+
+    this.appointmentService
+      .getAppointments(Number(this.clinicId), dateStr)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((apps: any) => {
+        this.existingAppointments = apps || [];
+        this.generateSlots();
+      });
+  }
+
+  private generateSlots(): void {
+    if (!this.clinicOpen || !this.clinicClose) {
+      this.availableSlots = [];
+      return;
+    }
+
+    const slots: { hour: number; minute: number; label: string }[] = [];
+    for (let h = this.clinicOpen.hour; h <= this.clinicClose.hour; h++) {
+      const minStart = h === this.clinicOpen.hour ? this.clinicOpen.minute : 0;
+      const minEnd = h === this.clinicClose.hour ? this.clinicClose.minute : 60;
+
+      for (let m = minStart; m < minEnd; m += 30) {
+        const slotStart = h * 60 + m;
+        const slotEnd = slotStart + 30;
+
+        const occupied = this.existingAppointments.some((a) => {
+          if (this.isEditMode && a.id === this.appointmentId) return false;
+          const aH = a.time?.hour ?? Number(a.time?.split(':')[0]);
+          const aM = a.time?.minute ?? Number(a.time?.split(':')[1]);
+          const appStart = aH * 60 + aM;
+          const appEnd = appStart + (a.durationMinutes || 30);
+          return slotStart < appEnd && slotEnd > appStart;
+        });
+
+        if (!occupied) {
+          slots.push({
+            hour: h,
+            minute: m,
+            label: `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`,
+          });
+        }
+      }
+    }
+
+    this.availableSlots = slots;
+  }
+
   getPatients(): void {
     this.patientService
       .getPatients(this.clinicId)
+      .pipe(takeUntil(this.destroy$))
       .subscribe((patients: IPatient[]) => {
         this.patients = patients;
-        console.log('Patients:', this.patients);
+      });
+  }
+
+  generateBookingLink(): void {
+    if (!this.clinicId || !this.userId) {
+      this.snackBar.open(
+        this.translate.instant('APPOINTMENTS.LINK_REQUIRED_CONTEXT'),
+        this.translate.instant('COMMON.CLOSE'),
+        { duration: 3000 }
+      );
+      return;
+    }
+
+    this.linkLoading = true;
+    this.bookingService
+      .generateStaffLink(this.clinicId, this.userId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (res: BookingLinkResponse) => {
+          this.linkLoading = false;
+          if (navigator.clipboard) {
+            navigator.clipboard.writeText(res.url).catch(() => undefined);
+          }
+          this.snackBar.open(
+            this.translate.instant('APPOINTMENTS.LINK_COPIED'),
+            this.translate.instant('COMMON.ACCEPT'),
+            { duration: 4000 }
+          );
+        },
+        error: () => {
+          this.linkLoading = false;
+          this.snackBar.open(
+            this.translate.instant('APPOINTMENTS.LINK_ERROR'),
+            this.translate.instant('COMMON.CLOSE'),
+            { duration: 4000, panelClass: ['error-snackbar'] }
+          );
+        },
       });
   }
 }

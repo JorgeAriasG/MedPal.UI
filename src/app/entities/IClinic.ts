@@ -3,6 +3,6 @@ export interface IClinic {
   name: string,
   location: string,
   contactInfo: string,
-  open?: { hour: number, minute: number },
-  close?: { hour: number, minute: number }
+  open?: string,
+  close?: string
 }

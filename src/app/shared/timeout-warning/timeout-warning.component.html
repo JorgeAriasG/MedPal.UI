@@ -1,0 +1,21 @@
+<div class="timeout-overlay">
+  <div class="timeout-card">
+    <div class="timeout-icon">
+      <mat-icon>timer</mat-icon>
+    </div>
+    <h2 class="timeout-title">{{ 'TIMEOUT.TITLE' | translate }}</h2>
+    <p class="timeout-message">{{ 'TIMEOUT.MESSAGE' | translate }}</p>
+    <div class="timeout-countdown">
+      <span class="countdown-value">{{ displayMinutes }}:{{ displaySeconds | number:'2.0' }}</span>
+      <span class="countdown-label">{{ 'TIMEOUT.SECONDS_REMAINING' | translate }}</span>
+    </div>
+    <div class="timeout-actions">
+      <button mat-stroked-button color="primary" (click)="onLogout()">
+        {{ 'TIMEOUT.LOGOUT' | translate }}
+      </button>
+      <button mat-raised-button color="primary" (click)="onContinue()">
+        {{ 'TIMEOUT.CONTINUE' | translate }}
+      </button>
+    </div>
+  </div>
+</div>

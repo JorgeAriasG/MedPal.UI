@@ -4,6 +4,7 @@ import { ApiService } from './api.service';
 import {
   MedicalHistoryReadDTO,
   MedicalHistoryWriteDTO,
+  MedicalHistorySummaryDTO,
 } from '../entities/medical-history.model';
 import { SpecialtyDataType } from '../entities/specialty-templates.model';
 
@@ -37,6 +38,18 @@ export class MedicalHistoryService {
   }
 
   /**
+   * Get a lightweight list of recent histories for the reference panel
+   */
+  getRecentHistory(
+    patientDetailsId: number,
+    take = 10
+  ): Observable<MedicalHistorySummaryDTO[]> {
+    return this.apiService.get<MedicalHistorySummaryDTO[]>(
+      `${this.endpoint}/patient/${patientDetailsId}/recent?take=${take}`
+    );
+  }
+
+  /**
    * Serialize specialty data to JSON string
    */
   serializeSpecialtyData(data: SpecialtyDataType): string {
@@ -56,7 +69,11 @@ export class MedicalHistoryService {
       if (!json || json.trim() === '') {
         return null;
       }
-      return JSON.parse(json) as T;
+      const parsed = JSON.parse(json);
+      if (typeof parsed === 'object' && parsed !== null && Object.keys(parsed).length === 0) {
+        return null;
+      }
+      return parsed as T;
     } catch (error) {
       console.error('Error parsing specialty data:', error);
       return null;

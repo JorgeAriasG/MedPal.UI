@@ -1,9 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { Subject } from 'rxjs';
+import { Subject, forkJoin } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { AppointmensService } from '../appointments/services/appointmens.service';
+import { AppointmentsService } from '../appointments/services/appointments.service';
 import { PatientsService } from '../patients/services/patients.service';
 import { MatDialog } from '@angular/material/dialog';
 import { NewAppointmentComponent } from '../appointments/new-appointment/new-appointment.component';
@@ -12,6 +12,8 @@ import { IAppointment } from 'src/app/entities/IAppointment';
 import { IPatient } from 'src/app/entities/IPatient';
 import { selectUserId } from 'src/app/store/selectors/auth.selectors';
 import { ClinicContextService } from 'src/app/services/clinic-context.service';
+import { KeyboardShortcutService } from 'src/app/services/keyboard-shortcut.service';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-home',
@@ -26,13 +28,15 @@ export class HomeComponent implements OnInit, OnDestroy {
   clinicId: number | null | undefined;
   userId: number | null | undefined;
   currentUser: any = null;
+  userName = '';
+  loading = true;
 
   // KPIs
   appointmentsTodayCount: number = 0;
   appointmentsThisWeekCount: number = 0;
+  todayCompleted: number = 0;
+  todayCancelled: number = 0;
   totalPatientsThisMonth: number = 0;
-  newPatientsThisMonth: number = 0;
-  completionRatePercentage: number = 0;
   nextAppointment: any = null;
 
   // Lists
@@ -40,20 +44,38 @@ export class HomeComponent implements OnInit, OnDestroy {
   recentPatients: IPatient[] = [];
   patientMap: Map<number | undefined, IPatient> = new Map();
 
+  get greeting(): string {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Buenos días';
+    if (hour < 18) return 'Buenas tardes';
+    return 'Buenas noches';
+  }
+
+  get todayDate(): string {
+    const today = new Date();
+    const options: Intl.DateTimeFormatOptions = { weekday: 'long', day: 'numeric', month: 'long' };
+    return today.toLocaleDateString('es-ES', options);
+  }
+
   constructor(
-    private appointmentService: AppointmensService,
+    private appointmentService: AppointmentsService,
     private patientService: PatientsService,
     private clinicContextService: ClinicContextService,
+    private shortcutService: KeyboardShortcutService,
+    private authService: AuthService,
     private store: Store,
     private router: Router,
     private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
-    // Use ClinicContextService to intelligently determine clinic context
-    // This handles all role-based logic automatically:
-    // - SuperAdmin/AccountAdmin: returns null (no clinic required)
-    // - Clinical roles: returns assigned clinic or first available
+    this.authService.currentUser$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((user) => {
+        this.currentUser = user;
+        this.userName = user?.name || '';
+      });
+
     this.clinicContextService
       .getClinicContext()
       .pipe(takeUntil(this.destroy$))
@@ -62,10 +84,6 @@ export class HomeComponent implements OnInit, OnDestroy {
           if (clinicId) {
             this.clinicId = clinicId;
             this.loadDashboardData();
-          } else {
-            // No clinic context available for this user
-            // This is expected for admin roles
-            console.log('No clinic context available for this user');
           }
         },
         error: (err) => console.error('Error getting clinic context:', err),
@@ -85,13 +103,13 @@ export class HomeComponent implements OnInit, OnDestroy {
   loadDashboardData(): void {
     if (!this.clinicId) return;
 
-    // Cargar pacientes primero para crear mapa de búsqueda
-    this.patientService
-      .getPatients(this.clinicId)
+    forkJoin({
+      patients: this.patientService.getPatients(this.clinicId),
+      appointments: this.appointmentService.getAppointments(this.clinicId!),
+    })
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (patients: IPatient[]) => {
-          // Crear mapa de pacientes por ID para búsqueda rápida
+        next: ({ patients, appointments }: { patients: IPatient[]; appointments: any[] }) => {
           this.patientMap.clear();
           patients.forEach((patient) => {
             if (patient.id) {
@@ -99,19 +117,13 @@ export class HomeComponent implements OnInit, OnDestroy {
             }
           });
           this.calculatePatientMetrics(patients);
-
-          // Ahora cargar citas
-          this.appointmentService
-            .getAppointments(this.clinicId!)
-            .pipe(takeUntil(this.destroy$))
-            .subscribe({
-              next: (appointments: any[]) => {
-                this.calculateAppointmentMetrics(appointments);
-              },
-              error: (err) => console.error('Error loading appointments:', err),
-            });
+          this.calculateAppointmentMetrics(appointments);
+          this.loading = false;
         },
-        error: (err) => console.error('Error loading patients:', err),
+        error: (err) => {
+          console.error('Error loading dashboard data:', err);
+          this.loading = false;
+        },
       });
   }
 
@@ -126,19 +138,20 @@ export class HomeComponent implements OnInit, OnDestroy {
     endOfWeek.setDate(today.getDate() + 6);
     endOfWeek.setHours(23, 59, 59, 999);
 
-    // Citas hoy
-    this.appointmentsTodayCount = appointments.filter((apt) => {
+    const todayAppointments = appointments.filter((apt) => {
       const aptDate = this.parseDate(apt.date);
       return aptDate >= today && aptDate <= endOfToday;
-    }).length;
+    });
 
-    // Citas esta semana
+    this.appointmentsTodayCount = todayAppointments.length;
+    this.todayCompleted = todayAppointments.filter((apt) => apt.status === 'Completed').length;
+    this.todayCancelled = todayAppointments.filter((apt) => apt.status === 'Cancelled').length;
+
     this.appointmentsThisWeekCount = appointments.filter((apt) => {
       const aptDate = this.parseDate(apt.date);
       return aptDate >= today && aptDate <= endOfWeek;
     }).length;
 
-    // Próxima cita
     const futureAppointments = appointments
       .filter((apt) => this.parseDate(apt.date) >= today)
       .sort((a, b) => {
@@ -149,7 +162,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     this.nextAppointment = futureAppointments[0] || null;
 
-    // Upcoming appointments (próximas 48 horas)
     const endOf48h = new Date(today);
     endOf48h.setDate(today.getDate() + 2);
     endOf48h.setHours(23, 59, 59, 999);
@@ -170,22 +182,10 @@ export class HomeComponent implements OnInit, OnDestroy {
         return timeA - timeB;
       });
 
-    // Tasa de completitud
-    const completedAppointments = appointments.filter(
-      (apt) => apt.status === 'Completed'
-    ).length;
-    this.completionRatePercentage =
-      appointments.length > 0
-        ? Math.round((completedAppointments / appointments.length) * 100)
-        : 0;
   }
 
   private calculatePatientMetrics(patients: IPatient[]): void {
-    // Total patients this month (use clinic's patient list as proxy)
     this.totalPatientsThisMonth = patients.length;
-    this.newPatientsThisMonth = Math.max(0, Math.floor(patients.length * 0.15)); // Estimate ~15% as new
-
-    // Pacientes recientes (últimas 4 - usando el orden del arreglo)
     this.recentPatients = patients.slice(0, 4);
   }
 
@@ -199,7 +199,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     return hour * 60 + minute;
   }
 
-  // Navigation methods
   navigateToCalendar(): void {
     this.router.navigate(['/appointments']);
   }
@@ -235,6 +234,9 @@ export class HomeComponent implements OnInit, OnDestroy {
     const patient = this.patientMap.get(appointment.patientId);
     const dialogRef = this.dialog.open(EditModalComponent, {
       width: '600px',
+      maxHeight: '90vh',
+      disableClose: false,
+      panelClass: 'custom-dialog',
       data: {
         entityType: 'appointment',
         data: {
@@ -245,7 +247,7 @@ export class HomeComponent implements OnInit, OnDestroy {
           patientName: patient?.name,
           patientLastname: patient?.lastname,
         },
-        title: 'Edit Appointment',
+        title: 'APPOINTMENTS.DIALOG_EDIT_TITLE',
       },
     });
 
@@ -265,10 +267,14 @@ export class HomeComponent implements OnInit, OnDestroy {
     const diffTime = date.getTime() - now.getTime();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-    if (diffDays === 0) return 'Today';
-    if (diffDays === 1) return 'Tomorrow';
-    if (diffDays > 1 && diffDays <= 7) return `In ${diffDays} days`;
-    return diffDays > 7 ? 'Next week' : 'Overdue';
+    if (diffDays === 0) return 'Hoy';
+    if (diffDays === 1) return 'Mañana';
+    if (diffDays > 1 && diffDays <= 7) return `En ${diffDays} días`;
+    return diffDays > 7 ? 'Siguiente semana' : 'Atrasado';
+  }
+
+  openOmnibar(): void {
+    this.shortcutService.triggerOmnibar();
   }
 
   ngOnDestroy(): void {

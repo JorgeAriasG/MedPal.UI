@@ -3,7 +3,7 @@
  * Manages state for audit log viewing and filtering
  */
 
-import { IMedicalRecordAccessLog, AuditLogFilter } from '../../entities';
+import { IMedicalRecordAccessLog, AuditLogFilter, AuditReport } from '../../entities';
 
 /**
  * Pagination information for paginated results
@@ -74,6 +74,11 @@ export interface AuditState {
    * Error message for report generation
    */
   reportError: string | null;
+
+  /**
+   * Generated audit report data
+   */
+  report: AuditReport | null;
 }
 
 /**
@@ -96,4 +101,5 @@ export const initialAuditState: AuditState = {
   selectedLog: null,
   reportLoading: false,
   reportError: null,
+  report: null,
 };

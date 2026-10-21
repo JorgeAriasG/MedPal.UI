@@ -17,6 +17,29 @@ import * as ConsentActions from './consent.actions';
 export const consentReducer = createReducer(
   initialConsentState,
 
+  // Load All Consents (admin view)
+  on(ConsentActions.loadAllConsents, (state) => ({
+    ...state,
+    loading: true,
+    error: null
+  })),
+
+  on(ConsentActions.loadAllConsentsSuccess, (state, { consents }) => ({
+    ...state,
+    consents,
+    pendingConsents: consents.filter(c => !c.isApproved && !c.isDeleted),
+    approvedConsents: consents.filter(c => c.isApproved && !c.isDeleted),
+    revokedConsents: consents.filter(c => c.isDeleted),
+    loading: false,
+    error: null
+  })),
+
+  on(ConsentActions.loadAllConsentsFailure, (state, { error }) => ({
+    ...state,
+    loading: false,
+    error
+  })),
+
   // Load Patient Consents
   on(ConsentActions.loadPatientConsents, (state) => ({
     ...state,
@@ -79,7 +102,7 @@ export const consentReducer = createReducer(
     submissionError: null
   })),
 
-  on(ConsentActions.approvConsentSuccess, (state, { consent }) => ({
+  on(ConsentActions.approveConsentSuccess, (state, { consent }) => ({
     ...state,
     consents: state.consents.map(c => c.id === consent.id ? consent : c),
     pendingConsents: state.pendingConsents.filter(c => c.id !== consent.id),
@@ -123,19 +146,24 @@ export const consentReducer = createReducer(
     submissionError: null
   })),
 
-  on(ConsentActions.revokeConsentSuccess, (state, { consentId }) => ({
-    ...state,
-    consents: state.consents.map(c =>
-      c.id === consentId ? { ...c, isDeleted: true } : c
-    ),
-    approvedConsents: state.approvedConsents.filter(c => c.id !== consentId),
-    revokedConsents: state.revokedConsents.filter(c => c.id !== consentId).concat(
-      state.consents.find(c => c.id === consentId)!
-    ),
-    selectedConsent: state.selectedConsent?.id === consentId ? null : state.selectedConsent,
-    submitting: false,
-    submissionError: null
-  })),
+  on(ConsentActions.revokeConsentSuccess, (state, { consentId }) => {
+    const revokedConsent = state.consents.find(c => c.id === consentId);
+    const updatedConsent = revokedConsent ? { ...revokedConsent, isDeleted: true } : null;
+    return {
+      ...state,
+      consents: state.consents.map(c =>
+        c.id === consentId ? { ...c, isDeleted: true } : c
+      ),
+      pendingConsents: state.pendingConsents.filter(c => c.id !== consentId),
+      approvedConsents: state.approvedConsents.filter(c => c.id !== consentId),
+      revokedConsents: updatedConsent
+        ? [...state.revokedConsents, updatedConsent]
+        : state.revokedConsents,
+      selectedConsent: state.selectedConsent?.id === consentId ? null : state.selectedConsent,
+      submitting: false,
+      submissionError: null,
+    };
+  }),
 
   on(ConsentActions.revokeConsentFailure, (state, { error }) => ({
     ...state,

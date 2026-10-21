@@ -102,8 +102,8 @@ export class AuditLogService {
    */
   exportLogs(filter: AuditLogFilter = {}, format: string = 'csv'): Observable<Blob> {
     const queryParams = this.buildQueryString(filter);
-    // Note: This may need special handling in ApiService for blob response
-    const url = `${this.endpoint}/export${queryParams}&format=${format}`;
+    const separator = queryParams ? '&' : '?';
+    const url = `${this.endpoint}/export${queryParams}${separator}format=${format}`;
     return this.apiService.get<Blob>(url);
   }
 
@@ -222,6 +222,12 @@ export class AuditLogService {
   downloadFile(blob: Blob, filename: string): void {
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
   }
 
   /**

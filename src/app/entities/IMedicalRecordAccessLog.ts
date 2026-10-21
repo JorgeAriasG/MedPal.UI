@@ -65,6 +65,26 @@ export interface IMedicalRecordAccessLog {
    * Session identifier for tracking user session
    */
   sessionId: string;
+
+  /**
+   * Display name of the user who accessed the record (API-enriched)
+   */
+  userName?: string;
+
+  /**
+   * Display name of the patient whose record was accessed (API-enriched)
+   */
+  patientName?: string;
+
+  /**
+   * Display name of the clinic that performed the access (API-enriched)
+   */
+  accessingClinicName?: string;
+
+  /**
+   * Display name of the clinic that owns the medical record (API-enriched)
+   */
+  ownerClinicName?: string;
 }
 
 /**

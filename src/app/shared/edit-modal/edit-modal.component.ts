@@ -14,10 +14,12 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { formConfigMap, FormFieldConfig } from 'src/app/conf/form-config';
+import { TranslateService } from '@ngx-translate/core';
 import { ClinicService } from 'src/app/components/clinics/services/clinic.service';
 import { IClinic } from 'src/app/entities/IClinic';
 import { RolesService } from 'src/app/components/user/roles/services/roles.service';
 import { IRole } from 'src/app/entities/IRole';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-edit-modal',
@@ -30,17 +32,21 @@ export class EditModalComponent implements OnInit, OnDestroy {
   form: FormGroup;
   fields: any[] = [];
   private destroy$ = new Subject<void>();
+  private canAssignClinic = true;
 
   constructor(
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<EditModalComponent>,
     private clinicService: ClinicService,
-    private rolesService: RolesService
+    private rolesService: RolesService,
+    private translate: TranslateService,
+    private authService: AuthService
   ) {
     this.form = this.fb.group({});
   }
 
   ngOnInit(): void {
+    this.canAssignClinic = this.authService.isAdmin();
     try {
       if (
         this.inputData?.entityType &&
@@ -84,8 +90,12 @@ export class EditModalComponent implements OnInit, OnDestroy {
             value: clinic.id,
           }));
 
-          // Actualizar la configuración del campo principalClinicId (para users) o clinicId (para patients)
-          const clinicFieldKey = this.inputData?.entityType === 'user' || 'userEdit' ? 'principalClinicId' : 'clinicId';
+          // Actualizar la configuración del campo clinicId (para users) o clinicIds (para patients)
+          const entityType = this.inputData?.entityType;
+          const clinicFieldKey =
+            entityType === 'user' || entityType === 'userEdit'
+              ? 'clinicId'
+              : 'clinicIds';
           config[clinicFieldKey] = {
             ...config[clinicFieldKey],
             options: clinicOptions,
@@ -169,9 +179,29 @@ export class EditModalComponent implements OnInit, OnDestroy {
             : [fieldConfig.validators]
           : [];
 
-        const fieldValue =
+        const isClinicLocked =
+          (key === 'clinicIds' || key === 'clinicId') && !this.canAssignClinic;
+
+        let fieldValue =
           data && data[key] !== undefined ? data[key] : initialValue;
-        const isDisabled = data && data[key] && key === 'clinic' ? true : false;
+        // Ocultar emails placeholder en la edición: el staff ve el campo vacío
+        // y solo se persiste si escribe un email real.
+        if (
+          key === 'email' &&
+          typeof fieldValue === 'string' &&
+          fieldValue.endsWith('@clinicflow.temp')
+        ) {
+          fieldValue = '';
+        }
+        if (
+          isClinicLocked &&
+          (fieldValue === null || fieldValue === undefined || fieldValue === '')
+        ) {
+          fieldValue = this.authService.getClinicId() ?? fieldValue;
+        }
+        const isDisabled =
+          (data && data[key] && key === 'clinic' ? true : false) ||
+          isClinicLocked;
 
         // Crear el control con disabled en el constructor
         group[key] = new FormControl(
@@ -195,7 +225,6 @@ export class EditModalComponent implements OnInit, OnDestroy {
     }
 
     this.form = new FormGroup(group);
-    console.log('Form created from config:', Object.keys(this.form.controls));
   }
 
   /**
@@ -226,12 +255,10 @@ export class EditModalComponent implements OnInit, OnDestroy {
     });
 
     this.form = new FormGroup(group);
-    console.log('Form created from fields:', Object.keys(this.form.controls));
   }
 
   /**
    * Construye el formulario automáticamente desde los datos
-   * Fallback para datos no configurados
    */
   private buildFormAuto(data: any): void {
     const excludeKeys = [
@@ -276,7 +303,6 @@ export class EditModalComponent implements OnInit, OnDestroy {
     }
 
     this.form = new FormGroup(group);
-    console.log('Form created auto:', Object.keys(this.form.controls));
   }
 
   private formatLabel(key: string): string {
@@ -316,18 +342,18 @@ export class EditModalComponent implements OnInit, OnDestroy {
 
     if (lowerKey.includes('gender')) {
       return [
-        { label: 'Male', value: 'M' },
-        { label: 'Female', value: 'F' },
-        { label: 'Other', value: 'O' },
+        { label: this.translate.instant('PATIENTS.GENDER_MALE'), value: 'M' },
+        { label: this.translate.instant('PATIENTS.GENDER_FEMALE'), value: 'F' },
+        { label: this.translate.instant('PATIENTS.GENDER_OTHER'), value: 'O' },
       ];
     }
 
     if (lowerKey.includes('status')) {
       return [
-        { label: 'Pending', value: 'pending' },
-        { label: 'Confirmed', value: 'confirmed' },
-        { label: 'Cancelled', value: 'cancelled' },
-        { label: 'Completed', value: 'completed' },
+        { label: this.translate.instant('APPOINTMENTS.STATUS_SCHEDULED'), value: 'scheduled' },
+        { label: this.translate.instant('APPOINTMENTS.STATUS_CONFIRMED'), value: 'confirmed' },
+        { label: this.translate.instant('APPOINTMENTS.STATUS_CANCELLED'), value: 'cancelled' },
+        { label: this.translate.instant('APPOINTMENTS.STATUS_COMPLETED'), value: 'completed' },
       ];
     }
 
@@ -337,8 +363,8 @@ export class EditModalComponent implements OnInit, OnDestroy {
     }
 
     return [
-      { label: 'Yes', value: true },
-      { label: 'No', value: false },
+      { label: this.translate.instant('COMMON.YES'), value: true },
+      { label: this.translate.instant('COMMON.NO'), value: false },
     ];
   }
 

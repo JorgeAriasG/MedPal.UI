@@ -16,6 +16,8 @@ import {
   EventEmitter,
   ChangeDetectionStrategy,
   OnInit,
+  OnChanges,
+  SimpleChanges,
   ViewChild,
   AfterViewInit,
 } from '@angular/core';
@@ -27,6 +29,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatCardModule } from '@angular/material/card';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { IMedicalRecordAccessLog } from '../../../entities';
 
 /**
@@ -48,10 +51,11 @@ import { IMedicalRecordAccessLog } from '../../../entities';
     MatChipsModule,
     MatTooltipModule,
     MatCardModule,
+    TranslateModule,
   ],
 })
 export class AuditLogTableComponent
-  implements OnInit, AfterViewInit {
+  implements OnInit, AfterViewInit, OnChanges {
   /**
    * Input: Audit logs to display
    */
@@ -97,13 +101,25 @@ export class AuditLogTableComponent
     'actions',
   ];
 
-  constructor() {}
+  constructor(private translate: TranslateService) {}
 
   /**
    * Component lifecycle: Initialize
    */
   ngOnInit(): void {
     // Additional initialization if needed
+  }
+
+  /**
+   * Component lifecycle: On Changes
+   * Re-sync paginator when pagination input changes
+   */
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['pagination'] && this.paginator && this.pagination) {
+      this.paginator.pageIndex = this.pagination.page - 1;
+      this.paginator.pageSize = this.pagination.pageSize;
+      this.paginator.length = this.pagination.totalItems;
+    }
   }
 
   /**
@@ -158,6 +174,6 @@ export class AuditLogTableComponent
    * @param hasConsent Whether access had valid consent
    */
   getConsentText(hasConsent: boolean): string {
-    return hasConsent ? 'Yes' : 'No';
+    return hasConsent ? this.translate.instant('AUDIT.CONSENT_YES') : this.translate.instant('AUDIT.CONSENT_NO');
   }
 }

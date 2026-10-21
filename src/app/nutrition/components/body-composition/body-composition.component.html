@@ -1,0 +1,162 @@
+<div class="body-composition-container">
+  <div class="section-header">
+    <h3>
+      <mat-icon>monitor_weight</mat-icon>
+      {{ 'NUTRITION.BODY_COMP_TITLE' | translate }}
+    </h3>
+    <button mat-stroked-button color="primary" (click)="syncFromInBody()" [disabled]="syncing">
+      <mat-icon>sync</mat-icon>
+      {{ syncing ? ('NUTRITION.SYNCING' | translate) : ('NUTRITION.SYNC_INBODY' | translate) }}
+    </button>
+  </div>
+
+  <div *ngIf="loading" class="loading-section">
+    <mat-spinner diameter="32"></mat-spinner>
+  </div>
+
+  <!-- Latest scan highlight -->
+  <div class="latest-scan card" *ngIf="latest && !loading">
+    <div class="scan-header">
+      <span class="scan-date">{{ latest.recordedAt | date:'fullDate' }}</span>
+      <span class="scan-source">{{ latest.source === 'inbody' ? 'InBody' : 'Manual' }}</span>
+    </div>
+    <div class="scan-metrics">
+      <div class="metric">
+        <span class="metric-label">{{ 'NUTRITION.WEIGHT' | translate }}</span>
+        <span class="metric-value">{{ latest.weight }} <small>kg</small></span>
+      </div>
+      <div class="metric">
+        <span class="metric-label">BMI</span>
+        <span class="metric-value" [style.color]="getBmiColor(latest.bmi)">{{ latest.bmi }}</span>
+      </div>
+      <div class="metric">
+        <span class="metric-label">{{ 'NUTRITION.SMM' | translate }}</span>
+        <span class="metric-value">{{ latest.muscleMass }} <small>kg</small></span>
+      </div>
+      <div class="metric">
+        <span class="metric-label">{{ 'NUTRITION.BODY_FAT_PCT' | translate }}</span>
+        <span class="metric-value">{{ latest.bodyFatPercentage }} <small>%</small></span>
+      </div>
+      <div class="metric">
+        <span class="metric-label">{{ 'NUTRITION.VISCERAL_FAT' | translate }}</span>
+        <span class="metric-value" [style.color]="getVisceralFatColor(latest.visceralFat)">
+          {{ latest.visceralFat }}
+        </span>
+        <span class="metric-badge" [style.background]="getVisceralFatColor(latest.visceralFat)">
+
+          {{ getVisceralFatLabel(latest.visceralFat) }}
+        </span>
+      </div>
+      <div class="metric">
+        <span class="metric-label">BMR</span>
+        <span class="metric-value">{{ latest.bmr }} <small>kcal</small></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Segmental Lean -->
+  <div class="segmental-card card" *ngIf="latest?.segmentalLean && !loading">
+    <h4>{{ 'NUTRITION.SEGMENTAL_LEAN' | translate }}</h4>
+    <div class="segmental-bars">
+      <div class="segmental-item">
+        <span class="seg-label">{{ 'NUTRITION.RIGHT_ARM' | translate }}</span>
+        <div class="seg-bar-track">
+          <div class="seg-bar" [style.width.%]="(latest!.segmentalLean!.rightArm / 5) * 100" style="background:#5B6CFF"></div>
+        </div>
+        <span class="seg-value">{{ latest!.segmentalLean!.rightArm }} kg</span>
+      </div>
+      <div class="segmental-item">
+        <span class="seg-label">{{ 'NUTRITION.LEFT_ARM' | translate }}</span>
+        <div class="seg-bar-track">
+          <div class="seg-bar" [style.width.%]="(latest!.segmentalLean!.leftArm / 5) * 100" style="background:#5B6CFF"></div>
+        </div>
+        <span class="seg-value">{{ latest!.segmentalLean!.leftArm }} kg</span>
+      </div>
+      <div class="segmental-item">
+        <span class="seg-label">{{ 'NUTRITION.TRUNK' | translate }}</span>
+        <div class="seg-bar-track">
+          <div class="seg-bar" [style.width.%]="(latest!.segmentalLean!.trunk / 30) * 100" style="background:#10b981"></div>
+        </div>
+        <span class="seg-value">{{ latest!.segmentalLean!.trunk }} kg</span>
+      </div>
+      <div class="segmental-item">
+        <span class="seg-label">{{ 'NUTRITION.RIGHT_LEG' | translate }}</span>
+        <div class="seg-bar-track">
+          <div class="seg-bar" [style.width.%]="(latest!.segmentalLean!.rightLeg / 12) * 100" style="background:#f59e0b"></div>
+        </div>
+        <span class="seg-value">{{ latest!.segmentalLean!.rightLeg }} kg</span>
+      </div>
+      <div class="segmental-item">
+        <span class="seg-label">{{ 'NUTRITION.LEFT_LEG' | translate }}</span>
+        <div class="seg-bar-track">
+          <div class="seg-bar" [style.width.%]="(latest!.segmentalLean!.leftLeg / 12) * 100" style="background:#f59e0b"></div>
+        </div>
+        <span class="seg-value">{{ latest!.segmentalLean!.leftLeg }} kg</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Body Water -->
+  <div class="water-card card" *ngIf="latest && !loading">
+    <h4>{{ 'NUTRITION.BODY_WATER' | translate }}</h4>
+    <div class="water-metrics">
+      <div class="water-item">
+        <span class="label">{{ 'NUTRITION.INTRACELLULAR_WATER' | translate }}</span>
+        <span class="value">{{ latest.intracellularWater }} L</span>
+      </div>
+      <div class="water-item">
+        <span class="label">{{ 'NUTRITION.EXTRACELLULAR_WATER' | translate }}</span>
+        <span class="value">{{ latest.extracellularWater }} L</span>
+      </div>
+      <div class="water-item">
+        <span class="label">{{ 'NUTRITION.TOTAL_BODY_WATER' | translate }}</span>
+        <span class="value" style="font-weight:700">{{ latest.totalBodyWater }} L</span>
+      </div>
+      <div class="water-item">
+        <span class="label">ECW/TBW</span>
+        <span class="value" [style.color]="latest.ecwTbwRatio > 0.39 ? '#ef4444' : '#10b981'">
+          {{ latest.ecwTbwRatio }}
+          <small *ngIf="latest.ecwTbwRatio > 0.39">({{ 'NUTRITION.ECW_HIGH' | translate }})</small>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- History Table -->
+  <div class="history-section" *ngIf="entries.length > 1 && !loading">
+    <h4>{{ 'NUTRITION.HISTORY_TITLE' | translate }}</h4>
+    <div class="table-container">
+      <table mat-table [dataSource]="entries" class="history-table">
+        <ng-container matColumnDef="date">
+          <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.DATE' | translate }}</th>
+          <td mat-cell *matCellDef="let row">{{ row.recordedAt | date:'MMM yyyy' }}</td>
+        </ng-container>
+        <ng-container matColumnDef="weight">
+          <th mat-header-cell *matHeaderCellDef>{{ 'NUTRITION.WEIGHT' | translate }}</th>
+          <td mat-cell *matCellDef="let row">{{ row.weight }}</td>
+        </ng-container>
+        <ng-container matColumnDef="bmi">
+          <th mat-header-cell *matHeaderCellDef>BMI</th>
+          <td mat-cell *matCellDef="let row">
+            <span class="bmi-badge" [style.background]="getBmiColor(row.bmi)">{{ row.bmi }}</span>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="smm">
+          <th mat-header-cell *matHeaderCellDef>{{ 'NUTRITION.SMM_SHORT' | translate }}</th>
+          <td mat-cell *matCellDef="let row">{{ row.muscleMass }}</td>
+        </ng-container>
+        <ng-container matColumnDef="bfp">
+          <th mat-header-cell *matHeaderCellDef>{{ 'NUTRITION.BODY_FAT_PCT' | translate }}</th>
+          <td mat-cell *matCellDef="let row">{{ row.bodyFatPercentage }}%</td>
+        </ng-container>
+        <ng-container matColumnDef="vfl">
+          <th mat-header-cell *matHeaderCellDef>{{ 'NUTRITION.VF' | translate }}</th>
+          <td mat-cell *matCellDef="let row">{{ row.visceralFat }}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="['date','weight','bmi','smm','bfp','vfl']"></tr>
+        <tr mat-row *matRowDef="let row; columns: ['date','weight','bmi','smm','bfp','vfl'];"></tr>
+      </table>
+    </div>
+  </div>
+</div>

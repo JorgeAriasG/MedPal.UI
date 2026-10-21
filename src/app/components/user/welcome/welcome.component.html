@@ -1,0 +1,61 @@
+<div class="welcome-container">
+  <div class="welcome-card">
+
+    <div class="loading-state" *ngIf="state === 'loading'">
+      <div class="spinner"></div>
+      <h1>Creando tu cuenta...</h1>
+      <div class="progress-track">
+        <div class="progress-fill"></div>
+      </div>
+      <p class="subtitle">Estamos configurando todo para que empieces a trabajar.</p>
+    </div>
+
+    <div class="success-state" *ngIf="state === 'success'">
+      <div class="checkmark-circle">
+        <svg class="checkmark" viewBox="0 0 52 52">
+          <circle class="checkmark-circle-bg" cx="26" cy="26" r="25" fill="none"/>
+          <path class="checkmark-check" fill="none" d="M14 27l7 7 16-16"/>
+        </svg>
+      </div>
+      <img src="assets/logo-240.png" alt="ClinicFlow" class="welcome-logo">
+      <h1>¡Bienvenido!</h1>
+      <p class="subtitle">Tu cuenta está lista. Aquí tienes los primeros pasos:</p>
+      <div class="steps">
+        <div class="step">
+          <div class="step-number">1</div>
+          <div class="step-text">
+            <strong>Configura tu clínica</strong>
+            <span>Agrega horarios, dirección y datos de contacto</span>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-number">2</div>
+          <div class="step-text">
+            <strong>Agrega pacientes</strong>
+            <span>Registra a tus primeros pacientes en el sistema</span>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-number">3</div>
+          <div class="step-text">
+            <strong>Agenda tu primera cita</strong>
+            <span>Comienza a gestionar tu consultorio digitalmente</span>
+          </div>
+        </div>
+      </div>
+      <button class="btn-primary" (click)="goToDashboard()">
+        Ir al Dashboard
+        <span class="btn-arrow">→</span>
+      </button>
+    </div>
+
+    <div class="error-state" *ngIf="state === 'error'">
+      <div class="error-icon">✕</div>
+      <h1>Algo salió mal</h1>
+      <p class="subtitle">{{ errorMessage }}</p>
+      <p class="help-text">El pago fue procesado correctamente en Stripe, pero no se pudo crear tu cuenta.</p>
+      <button class="btn-secondary" (click)="goToDashboard()">Ir al inicio</button>
+    </div>
+
+  </div>
+</div>

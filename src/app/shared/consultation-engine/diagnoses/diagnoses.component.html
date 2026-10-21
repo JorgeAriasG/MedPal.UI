@@ -1,0 +1,19 @@
+<div class="diagnoses">
+  <mat-form-field appearance="outline" class="w-100">
+    <mat-label>{{ label }}</mat-label>
+    <input
+      matInput
+      [value]="value.diagnosis"
+      (input)="onDiagnosisInput($any($event.target).value)"
+      [placeholder]="placeholder"
+      [disabled]="disabled"
+    />
+  </mat-form-field>
+
+  <app-cie10-search
+    label="Códigos CIE-10"
+    placeholder="Buscar código o descripción..."
+    [ngModel]="value.cie10Codes"
+    (ngModelChange)="onCie10Change($event)"
+  ></app-cie10-search>
+</div>

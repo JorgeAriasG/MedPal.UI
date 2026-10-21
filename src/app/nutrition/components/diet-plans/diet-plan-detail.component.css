@@ -1,0 +1,192 @@
+.diet-plan-detail {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.detail-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.detail-header h2 {
+  font-size: 22px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+  flex: 1;
+}
+
+.header-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.loading-section {
+  display: flex;
+  justify-content: center;
+  padding: 48px 0;
+}
+
+.plan-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.summary-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+}
+
+.summary-card {
+  background: white;
+  border-radius: 16px;
+  border: 1px solid rgba(0,0,0,0.05);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+  padding: 16px;
+  text-align: center;
+  border-left: 4px solid #6b7280;
+}
+
+.summary-card.protein { border-left-color: #5B6CFF; }
+.summary-card.carbs { border-left-color: #10b981; }
+.summary-card.fat { border-left-color: #f59e0b; }
+
+.summary-card .label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #6b7280;
+}
+
+.summary-card .value {
+  font-size: 22px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.plan-desc {
+  color: #6b7280;
+  font-size: 14px;
+  margin: 0;
+}
+
+.plan-objective {
+  font-size: 14px;
+  color: #374151;
+  margin: 0;
+}
+
+.plan-dates {
+  display: flex;
+  gap: 20px;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.plan-dates mat-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  vertical-align: middle;
+}
+
+.meals-section h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 16px;
+}
+
+.meals-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.meal-card {
+  background: white;
+  border-radius: 16px;
+  border: 1px solid rgba(0,0,0,0.05);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+  padding: 20px 24px;
+}
+
+.meal-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.meal-type-badge {
+  font-size: 12px;
+  padding: 2px 10px;
+  border-radius: 12px;
+  background: #eef2ff;
+  color: #5B6CFF;
+  font-weight: 500;
+}
+
+.meal-time {
+  font-size: 13px;
+  color: #6b7280;
+  margin-left: 8px;
+}
+
+.meal-calories {
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.meal-name {
+  font-size: 15px;
+  font-weight: 500;
+  color: #374151;
+  margin: 0 0 12px;
+}
+
+.meal-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.meal-table th {
+  text-align: left;
+  padding: 6px 8px;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.meal-table td {
+  padding: 6px 8px;
+  border-bottom: 1px solid rgba(0,0,0,0.04);
+  color: #374151;
+}
+
+.preparation {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  color: #6b7280;
+  margin: 8px 0 0;
+}
+
+.preparation mat-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+}
+
+@media print {
+  .detail-header { display: none; }
+  .header-actions { display: none; }
+}

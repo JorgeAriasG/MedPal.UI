@@ -6,36 +6,52 @@
 @import "@angular/material/prebuilt-themes/indigo-pink.css";
 @import "app/shared/styles/tables.css";
 @import "app/shared/styles/dialogs.css";
+@import "app/shared/styles/calendar-overrides.css";
 
 /* ========== CSS CUSTOM PROPERTIES / DESIGN TOKENS ========== */
 
 :root {
   /* ===== COLOR PALETTE ===== */
-  /* Primary Colors */
-  --color-primary: #1976D2;
-  --color-primary-dark: #1565C0;
-  --color-primary-light: #42A5F5;
+  /* Brand Colors */
+  --color-primary: #2C3E50;
+  --color-primary-dark: #1A2530;
+  --color-primary-light: #E8EDF1;
+  --color-secondary: #A3C7B5;
+  --color-primary-hover: #4F6B83;
+
+  /* Accent (textos/iconos, nunca fondos) */
+  --color-accent: #5B6CFF;
+  --color-accent-soft: rgba(91, 108, 255, 0.1);
 
   /* Status Colors */
-  --color-success: #4CAF50;
-  --color-warning: #FF9800;
-  --color-danger: #F44336;
-  --color-info: #2196F3;
+  --color-success: #34D399;
+  --color-warning: #FBBF24;
+  --color-danger: #F87171;
+  --color-info: #60A5FA;
+
+  /* Status Icon/Text Colors */
+  --color-success-icon: #10B981;
+  --color-danger-icon: #EF4444;
+  --color-warning-icon: #D97706;
+  --color-error-text: #DC2626;
 
   /* Medical-Specific Colors */
-  --color-allergy: #FF5252;
-  --color-prescription: #7B1FA2;
-  --color-consultation: #0097A7;
-  --color-clinic: #558B2F;
+  --color-allergy: #FB7185;
+  --color-prescription: #A78BFA;
+  --color-consultation: #2DD4BF;
+  --color-clinic: #4ADE80;
 
   /* Neutral Colors */
-  --color-bg-page: #F5F7FA;
+  --color-bg-page: #F5F4EF;
   --color-bg-surface: #FFFFFF;
   --color-border: #E0E0E0;
-  --color-text-primary: #212121;
-  --color-text-secondary: #757575;
-  --color-text-disabled: #BDBDBD;
-  --color-divider: #EEEEEE;
+  --color-text-primary: #111827;
+  --color-text-secondary: #6B7280;
+  --color-text-medium: #374151;
+  --color-text-disabled: #D1D5DB;
+  --color-bg-hover: #EDEDE8;
+  --color-divider: #E0E0E0;
+  --border-soft: rgba(0, 0, 0, 0.05);
 
   /* ===== TYPOGRAPHY ===== */
   --font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -66,22 +82,23 @@
   --spacing-3xl: 64px;
 
   /* ===== BORDER & RADIUS ===== */
-  --border-radius-xs: 2px;
-  --border-radius-sm: 4px;
-  --border-radius-md: 8px;
-  --border-radius-lg: 12px;
+  --border-radius-xs: 4px;
+  --border-radius-sm: 8px;
+  --border-radius-md: 12px;
+  --border-radius-lg: 16px;
+  --border-radius-xl: 24px;
   --border-width: 1px;
 
   /* ===== SHADOWS ===== */
-  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.08);
-  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.12);
-  --shadow-xl: 0 8px 24px rgba(0, 0, 0, 0.15);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.06);
+  --shadow-xl: 0 12px 32px rgba(0, 0, 0, 0.08);
 
   /* ===== TRANSITIONS ===== */
-  --transition-fast: 150ms ease-in-out;
-  --transition-normal: 250ms ease-in-out;
-  --transition-slow: 350ms ease-in-out;
+  --transition-fast: 150ms ease;
+  --transition-normal: 200ms ease;
+  --transition-slow: 300ms ease;
 
   /* ===== RESPONSIVE BREAKPOINTS ===== */
   --breakpoint-mobile: 576px;
@@ -97,6 +114,18 @@
   --z-modal: 1050;
   --z-popover: 1060;
   --z-tooltip: 1070;
+}
+
+/* ========== KEYFRAMES GLOBALES ========== */
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-12px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* ========== BASE STYLES ========== */
@@ -287,6 +316,12 @@ small, .text-small {
   }
 }
 
+@media (max-width: 768px) {
+  .cf-page-container {
+    padding: var(--spacing-md);
+  }
+}
+
 .flex-center {
   display: flex;
   align-items: center;
@@ -329,9 +364,9 @@ small, .text-small {
 
 .card {
   background: var(--color-bg-surface);
-  border-radius: var(--border-radius-md);
-  box-shadow: var(--shadow-md);
-  padding: var(--spacing-md);
+  border-radius: var(--border-radius-lg);
+  border: 1px solid var(--color-border);
+  padding: var(--spacing-lg);
   transition: box-shadow var(--transition-normal), transform var(--transition-normal);
 }
 
@@ -346,23 +381,38 @@ small, .text-small {
 
 /* ========== BUTTON OVERRIDES FOR DESIGN SYSTEM ========== */
 
-.mat-mdc-raised-button, .mat-mdc-button {
-  text-transform: uppercase;
+.mat-mdc-raised-button, .mat-mdc-button, .mat-mdc-stroked-button {
   font-weight: var(--font-weight-medium);
-  letter-spacing: 0.5px;
-  transition: all var(--transition-fast);
+  border-radius: 28px;
+  padding: 4px 24px;
+  letter-spacing: 0.3px;
+  transition: all var(--transition-normal);
 }
 
 .mat-mdc-raised-button.mat-primary {
   background-color: var(--color-primary) !important;
 }
 
+.mat-mdc-raised-button.mat-primary:not([disabled]):hover {
+  background-color: var(--color-primary-hover) !important;
+  box-shadow: var(--shadow-md);
+}
+
 .mat-mdc-raised-button.mat-warn {
   background-color: var(--color-danger) !important;
 }
 
-.mat-mdc-button:not([disabled]) {
+.mat-mdc-button:not([disabled]),
+.mat-mdc-stroked-button:not([disabled]) {
   color: var(--color-primary);
+}
+
+.mat-mdc-stroked-button:not([disabled]) {
+  border-color: var(--color-border);
+}
+
+.mat-mdc-unelevated-button:not([disabled]) {
+  background-color: var(--color-primary);
 }
 
 /* ========== INPUT STYLES ========== */
@@ -375,29 +425,194 @@ small, .text-small {
   padding-bottom: var(--spacing-sm);
 }
 
-/* ========== MATERIAL CARD OVERRIDES ========== */
-
-.mat-mdc-card {
-  border-radius: var(--border-radius-md);
-  box-shadow: var(--shadow-md);
+.mat-mdc-form-field .mdc-notched-outline__leading {
+  border-radius: 12px 0 0 12px !important;
 }
 
-.mat-mdc-card:hover {
+.mat-mdc-form-field .mdc-notched-outline__trailing {
+  border-radius: 0 12px 12px 0 !important;
+}
+
+.mat-mdc-form-field:not(.mat-form-field-disabled) .mdc-text-field--outline {
+  transition: box-shadow var(--transition-normal), border-color var(--transition-normal);
+}
+
+.mat-mdc-form-field.mat-focused .mdc-notched-outline__leading,
+.mat-mdc-form-field.mat-focused .mdc-notched-outline__notch,
+.mat-mdc-form-field.mat-focused .mdc-notched-outline__trailing {
+  border-color: var(--color-primary) !important;
+}
+
+.mat-mdc-form-field.mat-focused {
+  .mdc-text-field--outline {
+    box-shadow: 0 0 0 4px rgba(44, 62, 80, 0.12);
+  }
+}
+
+/* ========== MATERIAL CARD OVERRIDES ========== */
+
+mat-card.mat-mdc-card {
+  background: var(--color-bg-surface);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border-soft);
+}
+
+mat-card.mat-mdc-card:hover {
   box-shadow: var(--shadow-lg);
+}
+
+.mat-mdc-card mat-card-header {
+  padding: 0;
+  margin-bottom: var(--spacing-lg);
+}
+
+.mat-mdc-card mat-card-title {
+  font-size: 18px;
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--color-text-primary);
+  margin-bottom: 2px;
+}
+
+.mat-mdc-card mat-card-subtitle {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+.cf-card-icon,
+.mat-icon.cf-card-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  font-size: 20px;
+  color: var(--color-accent);
+  background: var(--color-accent-soft);
+}
+
+/* ========== CF PAGE PATTERN (linea global referencias Settings) ========== */
+
+.cf-page-container {
+  padding: var(--spacing-lg) var(--spacing-xl);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.cf-page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-lg);
+  flex-wrap: wrap;
+  margin-bottom: var(--spacing-xl);
+}
+
+.cf-header-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 240px;
+}
+
+.cf-page-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  font-size: 28px;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+}
+
+.cf-title-icon,
+.mat-icon.cf-title-icon {
+  font-size: 28px;
+  width: 28px;
+  height: 28px;
+  color: var(--color-accent);
+  flex-shrink: 0;
+}
+
+.cf-page-header .cf-page-subtitle {
+  margin: 0 0 0 40px;
+  font-size: 15px;
+  color: var(--color-text-secondary);
+}
+
+.cf-loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-3xl) 0;
+  color: var(--color-text-secondary);
+}
+
+/* ========== CF ALERTS (tiles de aviso compartidos) ========== */
+
+.cf-alert {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-radius: 12px;
+  font-size: 14px;
+}
+
+.cf-alert mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.cf-alert p {
+  margin: 0;
+}
+
+.cf-alert-error {
+  background: #FEF2F2;
+  border: 1px solid #FECACA;
+  color: var(--color-error-text);
+  padding: 16px 20px;
+}
+
+.cf-alert-error mat-icon {
+  color: var(--color-error-text);
+}
+
+.cf-alert-warning {
+  background: #FFFBEB;
+  border: 1px solid #FDE68A;
+  color: #92400E;
+  border-radius: 8px;
+  padding: 12px 16px;
+}
+
+.cf-alert-warning mat-icon {
+  color: var(--color-warning-icon);
 }
 
 /* ========== MATERIAL TAB OVERRIDES ========== */
 
 .mat-mdc-tab-list {
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-divider);
 }
 
 .mat-mdc-tab {
   font-weight: var(--font-weight-medium);
+  letter-spacing: 0;
 }
 
 .mat-mdc-tab.mat-mdc-tab-active {
   color: var(--color-primary);
+}
+
+.mat-mdc-tab .mdc-tab-indicator__content--underline {
+  border-color: var(--color-primary) !important;
 }
 
 /* ========== MATERIAL CHIP OVERRIDES ========== */
@@ -510,4 +725,31 @@ small, .text-small {
   .col-6 { grid-column: span 12; }
   .col-4 { grid-column: span 12; }
   .col-3 { grid-column: span 12; }
+}
+
+/* ========== TOASTS ========== */
+
+.cf-toast-success .mat-mdc-snack-bar-action,
+.cf-toast-error .mat-mdc-snack-bar-action,
+.cf-toast-warn .mat-mdc-snack-bar-action {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.cf-toast-success {
+  --mdc-snackbar-container-color: #065F46;
+  --mdc-snackbar-supporting-text-color: #ffffff;
+  --mat-snack-bar-button-color: #ffffff;
+}
+
+.cf-toast-error {
+  --mdc-snackbar-container-color: #991B1B;
+  --mdc-snackbar-supporting-text-color: #ffffff;
+  --mat-snack-bar-button-color: #ffffff;
+}
+
+.cf-toast-warn {
+  --mdc-snackbar-container-color: #92400E;
+  --mdc-snackbar-supporting-text-color: #ffffff;
+  --mat-snack-bar-button-color: #ffffff;
 }

@@ -1,45 +1,33 @@
-/**
- * Audit Reports Module
- * Feature module for audit report generation and analytics
- *
- * @note Phase 3b implementation - currently a placeholder
- */
-
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
-import { AuditAdminGuard } from '../../guards/audit-admin.guard';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatButtonModule } from '@angular/material/button';
+import { TranslateModule } from '@ngx-translate/core';
 
-/**
- * Routes for audit reports feature module
- * @note Phase 3b: Will contain report generation, analytics, and exports
- */
+import { AuditReportsPageComponent } from './audit-reports-page/audit-reports-page.component';
+import { AuditReportFiltersModule } from './audit-report-filters/audit-report-filters.module';
+import { AuditReportDashboardModule } from './audit-report-dashboard/audit-report-dashboard.module';
+
 const routes: Routes = [
-  // Placeholder for Phase 3b implementation
-  // {
-  //   path: '',
-  //   component: AuditReportsComponent,
-  //   canActivate: [AuditAdminGuard],
-  // },
+  {
+    path: '',
+    component: AuditReportsPageComponent,
+  },
 ];
 
-/**
- * AuditReportsModule
- * Feature module for audit report generation and analytics
- *
- * @note Phase 3b: Placeholder - will be populated with report components
- *
- * Provides:
- * - Report generation interface
- * - Analytics dashboard
- * - Export functionality
- * - Custom report builder
- */
 @NgModule({
+  declarations: [AuditReportsPageComponent],
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
+    MatIconModule,
+    MatProgressSpinnerModule,
+    MatButtonModule,
+    TranslateModule,
+    AuditReportFiltersModule,
+    AuditReportDashboardModule,
   ],
-  providers: [AuditAdminGuard],
 })
 export class AuditReportsModule {}

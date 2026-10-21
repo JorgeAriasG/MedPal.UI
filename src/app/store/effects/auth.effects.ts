@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { AuthService } from '../../services/auth.service';
+import { PermissionService } from '../../services/permission.service';
+import { decodeTokenClaims } from '../../utils/token-utils';
 import {
   login,
   loginSuccess,
@@ -16,6 +18,7 @@ import { of } from 'rxjs';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { ClinicService } from 'src/app/components/clinics/services/clinic.service';
+import { toHourMinute } from 'src/app/shared/utils/date-utils';
 
 @Injectable()
 export class AuthEffects {
@@ -25,21 +28,29 @@ export class AuthEffects {
     private router: Router,
     private store: Store,
     private clinicService: ClinicService,
+    private permissionService: PermissionService,
   ) {}
 
   login$ = createEffect(() =>
     this.actions$.pipe(
       ofType(login),
       mergeMap((action) => {
-        console.log('Login action received:', action);
         return this.authService.login(action.email, action.password).pipe(
-          map((response) => {
-            console.log('Login successful:', response);
+          map((response: any) => {
+            // Decode token claims using centralized helper
+            const claims = decodeTokenClaims(response.token);
+
             return loginSuccess({
-              userId: response.id,
+              userId: claims.userId,
               userToken: response.token,
-              userRole: response.role,
-              principalClinicId: response.principalClinicId ?? null,
+              userRole: claims.role || response.role || null,
+              clinicId: claims.clinicId,
+              accountId: claims.accountId,
+              userType: claims.userType,
+              patientId: claims.patientId,
+              roles: claims.roles,
+              name: response.name,
+              email: response.email,
             });
           }),
           catchError((error) => {
@@ -56,7 +67,7 @@ export class AuthEffects {
     this.actions$.pipe(
       ofType(loginSuccess),
       switchMap(() => {
-        console.log('Login successful - loading user profile');
+        this.permissionService.refreshPermissions();
         return of(loadUserProfile());
       }),
     ),
@@ -70,7 +81,6 @@ export class AuthEffects {
       switchMap(() => {
         return this.authService.getCurrentUser().pipe(
           map((response) => {
-            console.log('User profile loaded:', response);
             return loadUserProfileSuccess({
               specialty: response.specialty || 'General',
             });
@@ -99,57 +109,52 @@ export class AuthEffects {
     ),
   );
 
-  // After clinic selection, handle clinic assignment intelligently
-  // Only fetch clinics if user has a role that should have access to them
+  // After login, ensure a valid clinic is always assigned.
+  // If clinicId is valid, find that specific clinic.
+  // If clinicId is 0/null/missing, assign the first available clinic.
   loginSuccessClinic$ = createEffect(
     () =>
       this.actions$.pipe(
         ofType(loginSuccess),
-        tap(({ principalClinicId, userRole }) => {
-          console.log(
-            'Login success - clinicId:',
-            principalClinicId,
-            'userRole:',
-            userRole,
+        switchMap(({ clinicId }) => {
+          const hasValidClinicId =
+            clinicId !== null &&
+            clinicId !== undefined &&
+            clinicId !== 0;
+
+          return this.clinicService.getClinics().pipe(
+            map((clinics) => {
+              if (!clinics || clinics.length === 0) {
+                console.warn('No clinics available');
+                return { type: '[Clinic] No Clinics Available' };
+              }
+
+              let clinic = null;
+
+              // If we have a specific clinicId, try to find that exact clinic
+              if (hasValidClinicId) {
+                clinic = clinics.find((c: { id: number | null }) => c.id === clinicId);
+              }
+
+              // Fallback: use the first available clinic
+              if (!clinic) {
+                clinic = clinics[0];
+              }
+
+              return setClinic({
+                clinicId: clinic?.id ?? null,
+                open: clinic?.open ? toHourMinute(clinic.open) : null,
+                close: clinic?.close ? toHourMinute(clinic.close) : null,
+              });
+            }),
+            catchError((err) => {
+              console.warn('Could not load clinic hours:', err);
+              return of({ type: '[Clinic] Load Clinic Hours Error' });
+            }),
           );
-
-          // Roles that are clinic-based and may need clinic assignment
-          const CLINIC_REQUIRING_ROLES = [
-            'Doctor',
-            'HealthProfessional',
-            'Receptionist',
-            'Patient',
-            'ClinicAdmin',
-          ];
-
-          // Only attempt to fetch clinics if:
-          // 1. User role requires a clinic AND
-          // 2. clinicId is not already set
-          if (
-            CLINIC_REQUIRING_ROLES.includes(userRole) &&
-            (principalClinicId === null ||
-              principalClinicId === undefined ||
-              principalClinicId === 0)
-          ) {
-            this.clinicService.getClinics().subscribe({
-              next: (clinics) => {
-                if (clinics && clinics.length > 0) {
-                  console.log('Setting default clinic:', clinics[0].id);
-                  this.store.dispatch(
-                    setClinic({ principalClinicId: clinics[0].id ?? null }),
-                  );
-                }
-              },
-              error: (err) => {
-                console.warn('Could not automatically assign clinic:', err);
-                // Don't block login flow - user may have different permissions
-                // SuperAdmin and AccountAdmin don't need clinics
-              },
-            });
-          }
         }),
       ),
-    { dispatch: false },
+    { dispatch: true },
   );
 
   // Navigate to home after user profile is loaded
@@ -157,8 +162,7 @@ export class AuthEffects {
     () =>
       this.actions$.pipe(
         ofType(loadUserProfileSuccess),
-        tap(({ specialty }) => {
-          console.log('User profile updated with specialty:', specialty);
+        tap(() => {
           this.router.navigate(['']);
         }),
       ),
@@ -171,7 +175,6 @@ export class AuthEffects {
       this.actions$.pipe(
         ofType(logout),
         tap(() => {
-          console.log('Logging out - navigating to login');
           this.router.navigate(['/login']);
         }),
       ),

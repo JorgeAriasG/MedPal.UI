@@ -1,0 +1,115 @@
+<div class="omnibar-overlay" *ngIf="isOpen" (click)="close()" [@fadeInOut]>
+  <div class="omnibar-container" (click)="$event.stopPropagation()" [@scaleIn]>
+    <div class="omnibar-search">
+      <span class="search-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+      </span>
+      <input 
+        #searchInput
+        type="text" 
+        [placeholder]="'OMNIBAR.PLACEHOLDER' | translate" 
+        (input)="onSearch($event)"
+        (keydown.arrowdown)="moveFocus(1)"
+        (keydown.arrowup)="moveFocus(-1)"
+        (keydown.enter)="executeAction()"
+      >
+      <kbd class="shortcut-hint">ESC</kbd>
+    </div>
+
+    <div class="omnibar-results" *ngIf="!promptMode">
+      <!-- MODO SUGERENCIAS (Cuando está vacío) -->
+      <div class="result-group" *ngIf="!searchTerm">
+        <div class="group-label">{{ 'OMNIBAR.SUGGESTED_ACTIONS' | translate }}</div>
+        <div class="result-item action-item" [class.selected]="selectedIndex === 0" (click)="createQuickAppointment()">
+          <span class="item-icon plus-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+          </span>
+          <div class="item-content">
+            <span class="item-title">{{ 'OMNIBAR.QUICK_APPOINTMENT' | translate }}</span>
+            <span class="item-desc">{{ 'OMNIBAR.QUICK_APPOINTMENT_DESC' | translate }}</span>
+          </div>
+        </div>
+        <div class="result-item action-item" [class.selected]="selectedIndex === 1" (click)="close(); router.navigate(['/patients/new'])">
+          <span class="item-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" x2="19" y1="8" y2="14"/><line x1="22" x2="16" y1="11" y2="11"/></svg>
+          </span>
+          <div class="item-content">
+            <span class="item-title">{{ 'OMNIBAR.NEW_PATIENT' | translate }}</span>
+            <span class="item-desc">{{ 'OMNIBAR.NEW_PATIENT_DESC' | translate }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- MODO BÚSQUEDA (Cuando hay texto) -->
+      <div class="result-group" *ngIf="searchTerm">
+        <div class="group-label">{{ 'OMNIBAR.ACTIONS' | translate }}</div>
+        <div 
+          class="result-item action-item" 
+          [class.selected]="selectedIndex === 0"
+          (click)="createQuickAppointment()"
+        >
+          <span class="item-icon plus-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+          </span>
+          <div class="item-content">
+            <span class="item-title">{{ 'OMNIBAR.BOOK_FOR' | translate:{searchTerm: searchTerm} }}</span>
+            <span class="item-desc">{{ 'OMNIBAR.GHOST_DESC' | translate }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="result-group" *ngIf="results.length > 0 && searchTerm">
+        <div class="group-label">{{ 'OMNIBAR.FOUND_PATIENTS' | translate }}</div>
+        <div 
+          *ngFor="let res of results; let i = index" 
+          class="result-item"
+          [class.selected]="selectedIndex === i + 1"
+          (click)="selectPatient(res)"
+        >
+          <span class="item-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </span>
+          <div class="item-content">
+            <span class="item-title">{{ res.name }} {{ res.lastname }}</span>
+            <span class="item-desc">{{ displayEmail(res.email) }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL NO-BLOQUEANTE: completar teléfono + consentimiento WhatsApp -->
+    <div class="omnibar-prompt" *ngIf="promptMode" [@scaleIn]>
+      <span class="prompt-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      </span>
+      <div class="prompt-content">
+        <div class="prompt-title">{{ 'OMNIBAR.PHONE_PROMPT_TITLE' | translate }}</div>
+        <div class="prompt-desc">{{ 'OMNIBAR.PHONE_PROMPT_DESC' | translate }}</div>
+        <input 
+          class="prompt-phone"
+          type="tel"
+          [(ngModel)]="promptPhone"
+          [placeholder]="'OMNIBAR.PHONE_PLACEHOLDER' | translate"
+          (keydown.enter)="savePhonePrompt()"
+        >
+        <label class="prompt-consent">
+          <input type="checkbox" [(ngModel)]="promptConsent" />
+          <span>{{ 'OMNIBAR.PHONE_CONSENT' | translate }}</span>
+        </label>
+        <div class="prompt-hint">{{ 'OMNIBAR.PHONE_HINT' | translate }}</div>
+        <div class="prompt-actions">
+          <button class="prompt-skip" (click)="dismissPhonePrompt()">{{ 'OMNIBAR.PHONE_SKIP' | translate }}</button>
+          <button class="prompt-save" (click)="savePhonePrompt()" [disabled]="promptSaving">
+            {{ promptSaving ? ('OMNIBAR.PHONE_SAVING' | translate) : ('OMNIBAR.PHONE_SAVE' | translate) }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="omnibar-footer" *ngIf="!promptMode">
+      <span><kbd>↑↓</kbd> {{ 'OMNIBAR.NAVIGATE' | translate }}</span>
+      <span><kbd>Enter</kbd> {{ 'OMNIBAR.SELECT' | translate }}</span>
+      <span><kbd>Esc</kbd> {{ 'OMNIBAR.CLOSE' | translate }}</span>
+    </div>
+  </div>
+</div>

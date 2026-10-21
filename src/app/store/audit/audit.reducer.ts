@@ -77,8 +77,9 @@ export const auditReducer = createReducer(
     reportError: null,
   })),
 
-  on(AuditActions.generateAuditReportSuccess, (state) => ({
+  on(AuditActions.generateAuditReportSuccess, (state, { report }) => ({
     ...state,
+    report,
     reportLoading: false,
     reportError: null,
   })),
@@ -88,6 +89,8 @@ export const auditReducer = createReducer(
     reportError: error,
     reportLoading: false,
   })),
+
+  on(AuditActions.clearAuditReportError, (state) => ({ ...state, reportError: null })),
 
   // Export Logs
   on(AuditActions.exportAuditLogs, (state) => ({

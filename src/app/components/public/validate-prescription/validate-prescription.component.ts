@@ -1,10 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { PrescriptionService } from 'src/app/services/prescription.service';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatButtonModule } from '@angular/material/button';
+import { RouterModule } from '@angular/router';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-validate-prescription',
@@ -14,19 +19,25 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     MatCardModule,
     MatIconModule,
     MatProgressSpinnerModule,
+    MatButtonModule,
+    RouterModule,
+    TranslateModule,
   ],
   templateUrl: './validate-prescription.component.html',
   styleUrl: './validate-prescription.component.css',
 })
-export class ValidatePrescriptionComponent implements OnInit {
+export class ValidatePrescriptionComponent implements OnInit, OnDestroy {
   isValid: boolean | null = null;
   loading: boolean = true;
   prescriptionData: any = null;
   errorMessage: string = '';
+  window = window;
+  private destroy$ = new Subject<void>();
 
   constructor(
     private route: ActivatedRoute,
-    private prescriptionService: PrescriptionService
+    private prescriptionService: PrescriptionService,
+    private translate: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -35,29 +46,34 @@ export class ValidatePrescriptionComponent implements OnInit {
       this.validate(code);
     } else {
       this.loading = false;
-      this.errorMessage = 'No validation code provided.';
+      this.errorMessage = this.translate.instant('VALIDATE_PRESCRIPTION.INVALID_FALLBACK');
     }
   }
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   validate(code: string) {
-    this.prescriptionService.validatePrescription(code).subscribe({
-      next: (res) => {
-        this.loading = false;
-        if (res && res.isValid) {
-          this.isValid = true;
-          this.prescriptionData = res.prescription;
-        } else {
+    this.prescriptionService.validatePrescription(code)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (res) => {
+          this.loading = false;
+          if (res && res.isValid) {
+            this.isValid = true;
+            this.prescriptionData = res.prescription ? res.prescription : res;
+          } else {
+            this.isValid = false;
+            this.errorMessage = this.translate.instant('VALIDATE_PRESCRIPTION.INVALID_FALLBACK');
+          }
+        },
+        error: (err) => {
+          this.loading = false;
           this.isValid = false;
-          this.errorMessage = 'Invalid or Expired Prescription Code.';
-        }
-      },
-      error: (err) => {
-        this.loading = false;
-        this.isValid = false;
-        this.errorMessage =
-          'Unable to verify prescription. Please try again or contact the clinic.';
-        console.error(err);
-      },
-    });
+          this.errorMessage = this.translate.instant('VALIDATE_PRESCRIPTION.INVALID_FALLBACK');
+        },
+      });
   }
 }

@@ -54,15 +54,6 @@ export class AuditContextInterceptor implements HttpInterceptor {
         },
       });
 
-      // Remove empty headers
-      auditReq = auditReq.clone({
-        setHeaders: {
-          'X-Account-Id': context.accountId?.toString() || undefined,
-          'X-Clinic-Id': context.clinicId?.toString() || undefined,
-          'X-User-Id': context.userId?.toString() || undefined,
-        } as any,
-      });
-
       return next.handle(auditReq).pipe(
         catchError((error: HttpErrorResponse) =>
           this.handleError(error)

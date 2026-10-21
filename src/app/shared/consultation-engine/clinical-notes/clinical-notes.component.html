@@ -1,0 +1,13 @@
+<div class="clinical-notes">
+  <mat-form-field appearance="outline" class="w-100">
+    <mat-label>{{ label }}</mat-label>
+    <textarea
+      matInput
+      [value]="value"
+      (input)="onInput($any($event.target).value)"
+      [rows]="rows"
+      [placeholder]="placeholder"
+      [disabled]="disabled"
+    ></textarea>
+  </mat-form-field>
+</div>

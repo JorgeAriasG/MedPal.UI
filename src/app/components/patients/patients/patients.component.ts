@@ -8,6 +8,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { fadeIn } from 'src/app/shared/animations';
 import { Store } from '@ngrx/store';
 import { selectClinicId } from 'src/app/store/selectors/auth.selectors';
+import { displayEmail } from 'src/app/utils/patient-utils';
 import { Subject } from 'rxjs';
 import { takeUntil, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { trigger, transition, style, animate } from '@angular/animations';
@@ -68,7 +69,6 @@ export class PatientsComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (clinicId) => {
           this.clinicId = clinicId;
-          console.log('Clinic ID in PatientsComponent from store:', clinicId);
           this.getPatients();
         },
       });
@@ -142,59 +142,64 @@ export class PatientsComponent implements OnInit, OnDestroy {
     this.patientsService
       .deletePatient(id)
       .pipe(takeUntil(this.destroy$))
-      .subscribe((res) => {
+      .subscribe(() => {
         this.getPatients();
-        console.log(res);
       });
   }
 
-  // editPatient(patient: IPatient): void {
-  //   this.editPatientData = { ...patient };
-  //   console.log('EditPatientData: ', this.editPatientData);
-  //   this.editPatientId = this.editPatientData.id;
-  // }
-
   editPatient(patient: IPatient): void {
+    // Normalizar clinicIds para el formulario (array → scalar para dropdown single-select)
+    const modalData = {
+      ...patient,
+      clinicIds: patient.clinicIds?.length ? patient.clinicIds[0] : null,
+    };
     this.dialog
       .open(EditModalComponent, {
+        width: '640px',
+        maxHeight: '90vh',
+        disableClose: false,
+        panelClass: 'custom-dialog',
         data: {
           entityType: 'patient',
-          data: patient,
-          title: 'Edit Patient',
+          data: modalData,
+          title: 'PATIENTS.EDIT_TITLE',
         },
       })
       .afterClosed()
       .subscribe((result) => {
         if (result) {
+          // Normalizar clinicIds de vuelta a array antes de enviar al API
+          if (result.clinicIds !== undefined && result.clinicIds !== null) {
+            result.clinicIds = Array.isArray(result.clinicIds) ? result.clinicIds : [result.clinicIds];
+          }
           this.saveEdit(result);
         }
       });
   }
 
-  saveNewPatient(patient: IPatient): void {
-    this.patientsService
-      .addPatient(patient)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((res) => {
-        this.getPatients();
-        console.log(res);
-      });
-    }
-
   saveEdit(patient: Partial<IPatient>): void {
+    // Asegurar que clinicIds sea array antes de enviar
+    if ((patient as any).clinicIds !== undefined && (patient as any).clinicIds !== null) {
+      (patient as any).clinicIds = Array.isArray((patient as any).clinicIds)
+        ? (patient as any).clinicIds
+        : [(patient as any).clinicIds];
+    }
     this.patientsService
       .editPatient(patient)
       .pipe(takeUntil(this.destroy$))
-      .subscribe((res) => {
+      .subscribe(() => {
         this.cancelEdit();
         this.getPatients();
-        console.log(res);
       });
   }
 
   cancelEdit(): void {
     this.editPatientId = null;
     this.editPatientData = {};
+  }
+
+  displayEmail(email?: string | null): string {
+    return displayEmail(email);
   }
 
   trackByPatient(index: number, patient: IPatient): string {

@@ -19,13 +19,14 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { TranslateModule } from '@ngx-translate/core';
 import { AuditLogFilter } from '../../../entities';
 
 /**
@@ -47,6 +48,7 @@ import { AuditLogFilter } from '../../../entities';
     MatSelectModule,
     MatButtonModule,
     MatIconModule,
+    TranslateModule,
   ],
 })
 export class AuditLogFiltersComponent implements OnInit {
@@ -95,8 +97,8 @@ export class AuditLogFiltersComponent implements OnInit {
   private createFilterForm(): FormGroup {
     return this.fb.group({
       dateRange: this.fb.group({
-        dateFrom: ['', [Validators.required]],
-        dateTo: ['', [Validators.required]],
+        dateFrom: [''],
+        dateTo: [''],
       }),
       userId: [''],
       clinicId: [''],

@@ -6,6 +6,7 @@ import {
   NutritionData,
   GenericData,
 } from 'src/app/entities/specialty-templates.model';
+import { SPECIALTY_CONFIG, resolveSpecialty } from 'src/app/config/specialty-config';
 
 @Component({
   selector: 'app-history-timeline',
@@ -27,7 +28,7 @@ export class HistoryTimelineComponent implements OnChanges {
   searchTerm: string = '';
   filteredEntries: MedicalHistoryReadDTO[] = [];
  
-  specialties: string[] = ['Todas', 'Dental', 'Nutrición', 'General'];
+  specialties: string[] = ['Todas', 'Dental', 'Nutrition', 'General'];
 
   constructor(private medicalHistoryService: MedicalHistoryService) {}
 
@@ -94,6 +95,10 @@ export class HistoryTimelineComponent implements OnChanges {
     this.applyFilters();
   }
 
+  getSpecialtyLabel(specialty: string): string {
+    return SPECIALTY_CONFIG[resolveSpecialty(specialty)]?.label || specialty;
+  }
+
   parseSpecialtyData(entry: MedicalHistoryReadDTO): any {
     return this.medicalHistoryService.parseSpecialtyData(entry.specialtyData);
   }
@@ -128,8 +133,8 @@ export class HistoryTimelineComponent implements OnChanges {
     return colors[status] || '#4caf50';
   }
 
-  getIMCColor(imc: number): string {
-    if (imc === 0) return '#9e9e9e';
+  getIMCColor(imc: number | undefined | null): string {
+    if (imc == null || imc === 0) return '#9e9e9e';
     if (imc < 18.5) return '#ff9800';
     if (imc < 25) return '#4caf50';
     if (imc < 30) return '#ff9800';

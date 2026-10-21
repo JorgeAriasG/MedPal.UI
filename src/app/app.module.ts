@@ -1,4 +1,3 @@
-import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { NgModule, isDevMode } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
@@ -11,11 +10,16 @@ import {
   withInterceptorsFromDi,
   HTTP_INTERCEPTORS,
 } from '@angular/common/http';
+import { provideTranslateService } from '@ngx-translate/core';
+import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { LoginComponent } from './components/user/login/login.component';
 import { SharedModule } from './shared/shared.module';
 import { SignupComponent } from './components/user/signup/signup.component';
+import { WelcomeComponent } from './components/user/welcome/welcome.component';
+import { BookingComponent } from './components/public/booking/booking.component';
+import { CompleteRegistrationComponent } from './components/public/complete-registration/complete-registration.component';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
@@ -31,6 +35,7 @@ import { AuditContextInterceptor } from './interceptors/audit-context.intercepto
 import { localStorageSync } from 'ngrx-store-localstorage';
 import { ActionReducer, MetaReducer } from '@ngrx/store';
 
+
 // Meta-reducer para persistencia automática del state
 export function localStorageSyncReducer(
   reducer: ActionReducer<any>
@@ -38,7 +43,7 @@ export function localStorageSyncReducer(
   return localStorageSync({
     keys: ['auth'], // Solo persiste el state de auth
     rehydrate: true, // Rehidrata automáticamente al cargar la app
-    storage: sessionStorage, // Usa sessionStorage en lugar de localStorage
+    storage: localStorage, // Cambiado de sessionStorage a localStorage
     storageKeySerializer: (key) => `ngrx_${key}`, // Prefijo para las keys
   })(reducer);
 }
@@ -46,7 +51,7 @@ export function localStorageSyncReducer(
 export const metaReducers: MetaReducer<any>[] = [localStorageSyncReducer];
 
 @NgModule({
-  declarations: [AppComponent, LoginComponent, SignupComponent],
+  declarations: [AppComponent, LoginComponent, SignupComponent, WelcomeComponent, BookingComponent, CompleteRegistrationComponent],
   bootstrap: [AppComponent],
   imports: [
     BrowserModule,
@@ -69,6 +74,11 @@ export const metaReducers: MetaReducer<any>[] = [localStorageSyncReducer];
   ],
   providers: [
     provideHttpClient(withInterceptorsFromDi()),
+    provideTranslateService({ fallbackLang: 'es' }),
+    provideTranslateHttpLoader({
+      prefix: './assets/i18n/',
+      suffix: '.json',
+    }),
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: AuditContextInterceptor, multi: true },
   ],

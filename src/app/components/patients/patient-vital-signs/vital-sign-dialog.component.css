@@ -1,0 +1,36 @@
+.vital-sign-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 8px;
+}
+
+.form-section-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 8px;
+  margin-bottom: 4px;
+}
+
+.form-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.field-small {
+  flex: 1;
+  min-width: 140px;
+}
+
+.w-100 {
+  width: 100%;
+}
+
+.inline-spinner {
+  display: inline-block;
+  margin-right: 4px;
+}

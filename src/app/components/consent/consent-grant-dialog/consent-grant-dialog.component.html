@@ -1,0 +1,66 @@
+<h2 mat-dialog-title>
+  <mat-icon class="dialog-title-icon">add_circle</mat-icon>
+  {{ 'CONSENTS.GRANT_DIALOG_TITLE' | translate }}
+</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="consentForm" class="consent-dialog-form">
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'CONSENTS.PATIENT' | translate }}</mat-label>
+      <input matInput formControlName="patientDetailsId" type="number" placeholder="ID del paciente">
+      <mat-error *ngIf="consentForm.get('patientDetailsId')?.hasError('required')">
+        {{ 'ERRORS.REQUIRED' | translate }}
+      </mat-error>
+    </mat-form-field>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'CONSENTS.REQUESTING_CLINIC' | translate }}</mat-label>
+        <input matInput formControlName="requestingClinicId" type="number" placeholder="ID clínica solicitante">
+        <mat-error *ngIf="consentForm.get('requestingClinicId')?.hasError('required')">
+          {{ 'ERRORS.REQUIRED' | translate }}
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'CONSENTS.OWNER_CLINIC' | translate }}</mat-label>
+        <input matInput formControlName="ownerClinicId" type="number" placeholder="ID clínica propietaria">
+        <mat-error *ngIf="consentForm.get('ownerClinicId')?.hasError('required')">
+          {{ 'ERRORS.REQUIRED' | translate }}
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'CONSENTS.SCOPE' | translate }}</mat-label>
+      <mat-select formControlName="consentScope">
+        <mat-option *ngFor="let scope of scopeOptions" [value]="scope.value">
+          {{ scope.label }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'CONSENTS.EXPIRY_DATE' | translate }}</mat-label>
+      <input matInput [matDatepicker]="picker" formControlName="expiryDate" [min]="minDate">
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'CONSENTS.NOTES' | translate }}</mat-label>
+      <textarea matInput formControlName="notes" rows="3"
+        placeholder="{{ 'CONSENTS.NOTES' | translate }} ({{ 'COMMON.OPTIONAL' | translate }})"></textarea>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>{{ 'COMMON.CANCEL' | translate }}</button>
+  <button mat-flat-button color="primary"
+    (click)="onSubmit()"
+    [disabled]="consentForm.invalid || submitting">
+    <mat-spinner *ngIf="submitting" diameter="18" class="btn-spinner"></mat-spinner>
+    <span *ngIf="!submitting">{{ 'COMMON.SUBMIT' | translate }}</span>
+  </button>
+</mat-dialog-actions>

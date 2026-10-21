@@ -29,10 +29,20 @@ export interface LoginResponse {
   accountId?: number;
 
   /** Clinic ID - clinic-specific scope */
-  principalClinicId?: number;
+  clinicId: number;
 
   /** Array of permission strings (e.g., 'Users.Create', 'Patients.View') */
   permissions?: string[];
+}
+
+/**
+ * Register Response DTO
+ * Returned by backend after successful registration
+ */
+export interface RegisterResponse {
+  user: LoginResponse;
+  checkoutUrl?: string;
+  sessionId?: string;
 }
 
 /**
@@ -51,6 +61,45 @@ export interface RegisterRequest {
 
   /** Accept privacy policy and terms */
   acceptPrivacyTerms: boolean;
+
+  /** Selected subscription plan (SOLO/CONSULTORIO/CLINICA) */
+  planName?: string;
+}
+
+/**
+ * Initiate Registration DTOs
+ * Used for the new payment-first registration flow with Stripe Embedded Checkout
+ */
+export interface InitiateRegRequest {
+  name: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+  professionalLicenseNumber: string;
+  specialty?: string;
+  acceptPrivacyTerms: boolean;
+  planName?: string;
+}
+
+export interface InitiateRegResponse {
+  clientSecret: string;
+  sessionId: string;
+  publishableKey: string;
+}
+
+export interface CompleteRegRequest {
+  sessionId: string;
+}
+
+export interface CompleteRegResponse {
+  id: number;
+  name: string;
+  email: string;
+  token: string;
+  role: string;
+  accountId: number;
+  clinicId: number;
+  permissions?: string[];
 }
 
 /**
@@ -74,7 +123,7 @@ export interface User {
   accountId?: number;
 
   /** Clinic ID - null if not clinic-scoped */
-  principalClinicId?: number;
+  clinicId?: number;
 }
 
 /**
@@ -179,7 +228,6 @@ export enum UserRole {
   SUPER_ADMIN = 'SuperAdmin',
   ACCOUNT_ADMIN = 'AccountAdmin',
   CLINIC_ADMIN = 'ClinicAdmin',
-  DOCTOR = 'Doctor',
   HEALTH_PROFESSIONAL = 'HealthProfessional',
   RECEPTIONIST = 'Receptionist',
   PATIENT = 'Patient',
@@ -200,6 +248,5 @@ export const ADMIN_ROLES = [
  * Roles that provide medical/clinical access
  */
 export const CLINICAL_ROLES = [
-  UserRole.DOCTOR,
   UserRole.HEALTH_PROFESSIONAL,
 ] as const;

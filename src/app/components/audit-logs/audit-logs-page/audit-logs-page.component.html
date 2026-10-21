@@ -1,4 +1,4 @@
-<div class="audit-logs-container">
+<div class="audit-logs-container cf-page-container">
   <!-- Error Message Display -->
   <div *ngIf="error$ | async as error" class="error-banner">
     <mat-card class="error-card">
@@ -17,17 +17,15 @@
   <!-- Main Content -->
   <div class="audit-logs-content">
     <!-- Page Header -->
-    <mat-card class="page-header">
-      <mat-card-header>
-        <mat-card-title>
-          <mat-icon class="title-icon">security_audit</mat-icon>
-          Audit Logs
-        </mat-card-title>
-        <mat-card-subtitle
-          >Monitor access to medical records and patient data</mat-card-subtitle
-        >
-      </mat-card-header>
-    </mat-card>
+    <div class="cf-page-header">
+      <div class="cf-header-content">
+        <div class="cf-page-title">
+          <mat-icon class="cf-title-icon">security_audit</mat-icon>
+          <span>{{ 'AUDIT.TITLE' | translate }}</span>
+        </div>
+        <p class="cf-page-subtitle">{{ 'AUDIT.SUBTITLE' | translate }}</p>
+      </div>
+    </div>
 
     <!-- Filters Component -->
     <app-audit-log-filters
@@ -37,9 +35,9 @@
     ></app-audit-log-filters>
 
     <!-- Loading State -->
-    <div *ngIf="loading$ | async" class="loading-container">
+    <div *ngIf="loading$ | async" class="cf-loading-container">
       <mat-spinner diameter="50"></mat-spinner>
-      <p class="loading-text">Loading audit logs...</p>
+      <p class="loading-text">{{ 'AUDIT.LOADING' | translate }}</p>
     </div>
 
     <!-- Empty State -->
@@ -53,10 +51,8 @@
       <mat-card>
         <mat-card-content>
           <mat-icon class="empty-icon">info</mat-icon>
-          <p class="empty-text">No audit logs found</p>
-          <p class="empty-subtext">
-            Try adjusting your filters or date range
-          </p>
+          <p class="empty-text">{{ 'AUDIT.EMPTY_TITLE' | translate }}</p>
+          <p class="empty-subtext">{{ 'AUDIT.EMPTY_MESSAGE' | translate }}</p>
         </mat-card-content>
       </mat-card>
     </div>

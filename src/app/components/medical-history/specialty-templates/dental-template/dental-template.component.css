@@ -2,6 +2,15 @@
   padding: 20px;
 }
 
+.engine-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+
 .teeth-row {
   display: flex;
   justify-content: center;

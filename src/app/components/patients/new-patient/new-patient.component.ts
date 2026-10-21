@@ -5,6 +5,7 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { PatientsService } from 'src/app/components/patients/services/patients.service';
 import { IPatient } from 'src/app/entities/IPatient';
 import { Store } from '@ngrx/store';
@@ -31,8 +32,9 @@ export class NewPatientComponent implements OnInit, OnDestroy {
     address: '',
     dob: new Date(),
     gender: '',
+    curp: '',
     emergencyContact: '',
-    clinicId: null,
+    clinicIds: [],
   };
 
   emailError: string | null = null;
@@ -41,7 +43,11 @@ export class NewPatientComponent implements OnInit, OnDestroy {
 
   private destroy$ = new Subject<void>();
 
-  constructor(private patientsService: PatientsService, private store: Store) {}
+  constructor(
+    private patientsService: PatientsService,
+    private store: Store,
+    private translate: TranslateService
+  ) {}
 
   ngOnInit(): void {
     // Obtener clinicId del store
@@ -50,8 +56,7 @@ export class NewPatientComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (clinicId) => {
-          console.log('Clinic ID from store:', clinicId);
-          this.newPatient.clinicId = clinicId;
+          this.newPatient.clinicIds = clinicId ? [clinicId] : [];
         },
         error: (err) => {
           console.error('Error getting clinic ID from store:', err);
@@ -70,15 +75,23 @@ export class NewPatientComponent implements OnInit, OnDestroy {
     this.ageError = null;
 
     if (!this.validateAge()) {
-      this.ageError = 'Patient must be at least 18 years old.';
+      this.ageError = this.translate.instant('PATIENTS.ERROR_AGE');
       return;
     }
 
     this.isSubmitting = true;
-    this.patientsService.checkEmail(this.newPatient.email).subscribe({
+
+    const email = (this.newPatient.email || '').trim();
+    if (!email) {
+      // Email opcional: el backend asigna placeholder único al crear.
+      this.savePatient();
+      return;
+    }
+
+    this.patientsService.checkEmail(email).subscribe({
       next: (exists) => {
         if (exists) {
-          this.emailError = 'This email is already registered.';
+          this.emailError = this.translate.instant('PATIENTS.ERROR_EMAIL_EXISTS');
           this.isSubmitting = false;
         } else {
           this.savePatient();
@@ -108,8 +121,7 @@ export class NewPatientComponent implements OnInit, OnDestroy {
       .addPatient(this.newPatient)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (response: any) => {
-          console.log('Patient added successfully:', response);
+        next: () => {
           this.isSubmitting = false;
           this.patientAdded.emit();
           this.resetForm();
@@ -132,8 +144,9 @@ export class NewPatientComponent implements OnInit, OnDestroy {
       address: '',
       dob: new Date(),
       gender: '',
+      curp: '',
       emergencyContact: '',
-      clinicId: null,
+      clinicIds: [],
     };
   }
 }

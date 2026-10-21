@@ -1,0 +1,105 @@
+.filters-card {
+  box-shadow: var(--shadow-sm);
+  border-radius: var(--border-radius-lg);
+}
+
+.filters-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--color-border);
+  margin: 0;
+}
+
+.filters-header mat-card-title {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.filters-content {
+  padding: 1.5rem;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.filter-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.filter-field {
+  width: 100%;
+}
+
+.filter-actions {
+  display: flex;
+  gap: 1rem;
+  padding-top: 0.5rem;
+}
+
+.generate-btn,
+.reset-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 180px;
+  justify-content: center;
+}
+
+.generate-btn {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+.generate-btn:hover:not(:disabled) {
+  background-color: var(--color-primary-dark);
+}
+
+.generate-btn:disabled {
+  background-color: #d1d5db;
+  color: #9ca3af;
+}
+
+.reset-btn {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.reset-btn:hover:not(:disabled) {
+  background-color: rgba(44, 62, 80, 0.06);
+}
+
+.reset-btn:disabled {
+  border-color: #d1d5db;
+  color: #9ca3af;
+}
+
+@media (max-width: 768px) {
+  .filters-content {
+    padding: 1rem;
+  }
+
+  .filter-row {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .filter-actions {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .generate-btn,
+  .reset-btn {
+    width: 100%;
+    min-width: unset;
+  }
+}

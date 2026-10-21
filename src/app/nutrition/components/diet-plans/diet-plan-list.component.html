@@ -1,0 +1,58 @@
+<div class="diet-plan-list">
+  <div class="section-header">
+    <h3>
+      <mat-icon>restaurant</mat-icon>
+      {{ 'NUTRITION.DIET_PLANS_TITLE' | translate }}
+    </h3>
+    <button mat-raised-button color="primary" (click)="newPlan()">
+      <mat-icon>add</mat-icon>
+      {{ 'NUTRITION.NEW_DIET_PLAN' | translate }}
+    </button>
+  </div>
+
+  <div *ngIf="loading" class="loading-section">
+    <mat-spinner diameter="32"></mat-spinner>
+  </div>
+
+  <div *ngIf="!loading && plans.length === 0" class="empty-state">
+    <mat-icon class="empty-icon">restaurant</mat-icon>
+    <h3>{{ 'NUTRITION.NO_DIET_PLANS' | translate }}</h3>
+    <p>{{ 'NUTRITION.NO_DIET_PLANS_MSG' | translate }}</p>
+    <button mat-stroked-button color="primary" (click)="newPlan()">
+      <mat-icon>add</mat-icon>
+      {{ 'NUTRITION.CREATE_FIRST_PLAN' | translate }}
+    </button>
+  </div>
+
+  <div class="plans-grid" *ngIf="!loading && plans.length > 0">
+    <div class="plan-card card" *ngFor="let plan of plans"
+      [class.active]="isActive(plan)" (click)="viewPlan(plan.id!)">
+      <div class="plan-header">
+        <h4 class="plan-title">{{ plan.name }}</h4>
+        <span class="plan-status" [class.active]="isActive(plan)">
+          {{ isActive(plan) ? ('NUTRITION.ACTIVE' | translate) : ('NUTRITION.INACTIVE' | translate) }}
+        </span>
+      </div>
+      <p class="plan-desc" *ngIf="plan.description">{{ plan.description }}</p>
+      <div class="plan-meta">
+        <span class="meta-item">
+          <mat-icon>local_fire_department</mat-icon>
+          {{ getTotalCalories(plan) }} kcal
+        </span>
+        <span class="meta-item">
+          <mat-icon>calendar_today</mat-icon>
+          {{ plan.startDate | date:'dd/MM/yyyy' }}
+          <span *ngIf="plan.endDate"> - {{ plan.endDate | date:'dd/MM/yyyy' }}</span>
+        </span>
+      </div>
+      <div class="plan-actions" (click)="$event.stopPropagation()">
+        <button mat-icon-button [matTooltip]="'COMMON.VIEW_DETAILS' | translate" (click)="viewPlan(plan.id!)">
+          <mat-icon>visibility</mat-icon>
+        </button>
+        <button mat-icon-button [matTooltip]="'COMMON.DELETE' | translate" (click)="deletePlan(plan.id!)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

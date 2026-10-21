@@ -8,10 +8,25 @@
 import { createAction, props } from '@ngrx/store';
 import { IPatientConsent, ConsentRequestDto, ConsentApprovalDto } from '../../entities';
 
+// Load All Consents (admin/staff view)
+export const loadAllConsents = createAction(
+  '[Consent] Load All Consents'
+);
+
+export const loadAllConsentsSuccess = createAction(
+  '[Consent] Load All Consents Success',
+  props<{ consents: IPatientConsent[] }>()
+);
+
+export const loadAllConsentsFailure = createAction(
+  '[Consent] Load All Consents Failure',
+  props<{ error: string }>()
+);
+
 // Load Patient Consents
 export const loadPatientConsents = createAction(
   '[Consent] Load Patient Consents',
-  props<{ patientId: number }>()
+  props<{ patientDetailsId: number }>()
 );
 
 export const loadPatientConsentsSuccess = createAction(
@@ -56,7 +71,7 @@ export const approveConsent = createAction(
   props<{ consentId: number; notes?: string }>()
 );
 
-export const approvConsentSuccess = createAction(
+export const approveConsentSuccess = createAction(
   '[Consent] Approve Consent Success',
   props<{ consent: IPatientConsent }>()
 );

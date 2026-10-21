@@ -25,8 +25,11 @@ export function toDateOnlyObject(date: Date | string | null) {
   };
 }
 
-export function toTimeObject(dateOrTime: Date | string | null) {
+export function toTimeObject(dateOrTime: Date | string | { hour: number; minute: number } | null) {
   if (!dateOrTime) return null;
+  if (typeof dateOrTime === 'object' && 'hour' in dateOrTime && 'minute' in dateOrTime) {
+    return { hour: Number(dateOrTime.hour), minute: Number(dateOrTime.minute) };
+  }
   if (typeof dateOrTime === 'string' && dateOrTime.includes(':')) {
     const [hour, minute] = dateOrTime.split(':').map(Number);
     return { hour: hour || 0, minute: minute || 0 };

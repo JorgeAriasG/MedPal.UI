@@ -10,7 +10,6 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 
 import { AuditLogsPageComponent } from './audit-logs-page/audit-logs-page.component';
-import { AuditAccessGuard } from '../../guards/audit-access.guard';
 
 /**
  * Audit Logs module routes
@@ -20,7 +19,6 @@ const routes: Routes = [
   {
     path: '',
     component: AuditLogsPageComponent,
-    canActivate: [AuditAccessGuard],
   },
 ];
 
@@ -32,8 +30,7 @@ const routes: Routes = [
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
-    AuditLogsPageComponent, // Import as standalone component
+    AuditLogsPageComponent,
   ],
-  providers: [AuditAccessGuard],
 })
 export class AuditLogsModule {}

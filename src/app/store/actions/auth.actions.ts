@@ -8,11 +8,19 @@ export const login = createAction(
 export const loginSuccess = createAction(
   '[Auth] Login Success',
   props<{
-    userId: number;
+    userId: number | null;
     userToken: string;
-    principalClinicId: number | null;
-    userRole: string;
-    specialty?: string;
+    clinicId: number | null;
+    userRole: string | null;
+    specialty?: string | null;
+    clinicOpen?: { hour: number; minute: number } | null;
+    clinicClose?: { hour: number; minute: number } | null;
+    accountId?: number | null;
+    userType?: string | null;
+    patientId?: number | null;
+    roles?: string[];
+    name?: string | null;
+    email?: string | null;
   }>(),
 );
 
@@ -40,17 +48,35 @@ export const rehydrateAuthState = createAction(
   props<{
     userId: number | null;
     userToken: string | null;
-    principalClinicId: number | null;
+    clinicId: number | null;
     specialty?: string | null;
   }>(),
 );
 
 export const setClinic = createAction(
   '[Clinic] Set Clinic',
-  props<{ principalClinicId: number | null }>(),
+  props<{
+    clinicId: number | null;
+    open?: { hour: number; minute: number } | null;
+    close?: { hour: number; minute: number } | null;
+  }>(),
 );
 
 export const setLoading = createAction(
   '[Auth] Set Loading',
   props<{ loading: boolean }>(),
+);
+
+export const setAuthClaims = createAction(
+  '[Auth] Set Claims',
+  props<{
+    claims: {
+      userId: number | null;
+      accountId: number | null;
+      clinicId: number | null;
+      roles: string[];
+      userType: string | null;
+      patientId: number | null;
+    };
+  }>(),
 );

@@ -35,6 +35,8 @@ export class RolesListComponent implements OnInit, OnDestroy {
   editRoleId: any = null;
   editRoleData: Partial<IRole> = {};
   clinicId: number | null | undefined;
+  loading: boolean = false;
+  searchQuery: string = '';
 
   private destroy$ = new Subject<void>();
 
@@ -51,7 +53,6 @@ export class RolesListComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (clinicId) => {
           this.clinicId = clinicId;
-          console.log('Clinic ID in RolesListComponent from store:', clinicId);
           this.getRoles();
         },
       });
@@ -70,7 +71,7 @@ export class RolesListComponent implements OnInit, OnDestroy {
       data: {
         entityType: 'role',
         data: {},
-        title: 'Create New Role',
+        title: 'ROLES.DIALOG_CREATE_TITLE',
         isCreate: true
       }
     });
@@ -82,13 +83,18 @@ export class RolesListComponent implements OnInit, OnDestroy {
     });
   }
 
+  onSearch(event: any): void {
+    this.searchQuery = (event.target as HTMLInputElement).value;
+  }
+
   getRoles(): void {
+    this.loading = true;
     this.rolesService
       .getRoles(this.clinicId)
       .pipe(takeUntil(this.destroy$))
       .subscribe((roles: IRole[]) => {
         this.roles = roles;
-        console.log('Roles loaded:', this.roles);
+        this.loading = false;
       });
   }
 
@@ -96,9 +102,8 @@ export class RolesListComponent implements OnInit, OnDestroy {
     this.rolesService
       .deleteRole(id)
       .pipe(takeUntil(this.destroy$))
-      .subscribe((res) => {
+      .subscribe(() => {
         this.getRoles();
-        console.log(res);
       });
   }
 
@@ -108,10 +113,11 @@ export class RolesListComponent implements OnInit, OnDestroy {
         data: {
           entityType: 'role',
           data: role,
-          title: 'Edit Role',
+          title: 'ROLES.DIALOG_EDIT_TITLE',
         },
       })
       .afterClosed()
+      .pipe(takeUntil(this.destroy$))
       .subscribe((result) => {
         if (result) {
           this.saveEdit(result);
@@ -123,10 +129,9 @@ export class RolesListComponent implements OnInit, OnDestroy {
     this.rolesService
       .editRole(role)
       .pipe(takeUntil(this.destroy$))
-      .subscribe((res) => {
+      .subscribe(() => {
         this.cancelEdit();
         this.getRoles();
-        console.log(res);
       });
   }
 

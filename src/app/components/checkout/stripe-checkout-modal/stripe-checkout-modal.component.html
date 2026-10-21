@@ -1,0 +1,19 @@
+<div class="checkout-modal">
+  <div class="checkout-header">
+    <h2>{{ 'CHECKOUT.MODAL_TITLE' | translate }}</h2>
+  </div>
+  <div class="checkout-body">
+    <div class="loading-state" *ngIf="loading">
+      <mat-spinner diameter="32"></mat-spinner>
+      <p>{{ 'CHECKOUT.STRIPE_LOADING' | translate }}</p>
+    </div>
+    <div class="error-state" *ngIf="error">
+      <mat-icon color="warn">error_outline</mat-icon>
+      <p>{{ error }}</p>
+      <button mat-raised-button color="primary" (click)="dialogRef.close(false)">
+        {{ 'COMMON.CLOSE' | translate }}
+      </button>
+    </div>
+    <div #checkoutContainer class="stripe-checkout" [class.hidden]="loading || !!error"></div>
+  </div>
+</div>

@@ -11,9 +11,9 @@ import {
 } from 'src/app/entities/IPrescription';
 import { PrescriptionService } from 'src/app/services/prescription.service';
 import {
-  selectClinicId,
-  selectUserId,
+  selectAuthContext,
 } from 'src/app/store/selectors/auth.selectors';
+import { TranslateService } from '@ngx-translate/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { fadeIn } from 'src/app/shared/animations';
 
@@ -30,6 +30,7 @@ export class CreatePrescriptionComponent implements OnInit, OnDestroy {
   clinicId: number | null = null;
   userId: number | null = null;
   destroy$ = new Subject<void>();
+  private itemDestroy$: Subject<void>[] = [];
   infoMessage: string = '';
   errorMessage: string = '';
   matchingAllergies: string[] = [];
@@ -41,7 +42,8 @@ export class CreatePrescriptionComponent implements OnInit, OnDestroy {
     private patientsService: PatientsService,
     private prescriptionService: PrescriptionService,
     private store: Store,
-    private router: Router
+    private router: Router,
+    private translate: TranslateService
   ) {
     this.prescriptionForm = this.fb.group({
       patientId: ['', Validators.required],
@@ -52,18 +54,14 @@ export class CreatePrescriptionComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.store
-      .select(selectClinicId)
+      .select(selectAuthContext)
       .pipe(takeUntil(this.destroy$))
-      .subscribe((id) => {
-        this.clinicId = id;
-        this.loadPatients();
-      });
-
-    this.store
-      .select(selectUserId)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((id) => {
-        this.userId = id;
+      .subscribe(({ clinicId, userId }) => {
+        this.clinicId = clinicId;
+        this.userId = userId;
+        if (clinicId) {
+          this.loadPatients();
+        }
       });
 
     // Handle pre-selection of patient from query params
@@ -81,6 +79,7 @@ export class CreatePrescriptionComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.itemDestroy$.forEach(d => { d.next(); d.complete(); });
     this.destroy$.next();
     this.destroy$.complete();
   }
@@ -112,15 +111,17 @@ export class CreatePrescriptionComponent implements OnInit, OnDestroy {
       notes: [''],
     });
 
+    const itemDestroy$ = new Subject<void>();
     itemGroup.get('medication')?.valueChanges
       .pipe(
-        takeUntil(this.destroy$),
+        takeUntil(itemDestroy$),
         debounceTime(500)
       )
       .subscribe(() => {
         this.verifyAllergies();
       });
 
+    this.itemDestroy$.push(itemDestroy$);
     this.items.push(itemGroup);
   }
 
@@ -152,13 +153,16 @@ export class CreatePrescriptionComponent implements OnInit, OnDestroy {
   }
 
   removeItem(index: number) {
+    this.itemDestroy$[index]?.next();
+    this.itemDestroy$[index]?.complete();
+    this.itemDestroy$.splice(index, 1);
     this.items.removeAt(index);
   }
 
   savePrescription() {
     if (this.prescriptionForm.invalid || this.matchingAllergies.length > 0) {
       if (this.matchingAllergies.length > 0) {
-        this.errorMessage = 'Cannot save: Patient is allergic to one or more medications.';
+        this.errorMessage = this.translate.instant('PRESCRIPTIONS.SNACKBAR_ALLERGY');
       }
       return;
     }
@@ -183,21 +187,23 @@ export class CreatePrescriptionComponent implements OnInit, OnDestroy {
       expiresAt: expiresAt,
     };
 
-    this.prescriptionService.createPrescription(payload).subscribe({
-      next: (res) => {
-        this.infoMessage = 'Prescription created successfully!';
-        setTimeout(() => {
-          if (res.id) {
-            this.router.navigate(['/prescriptions/detail', res.id]);
-          } else {
-            this.router.navigate(['/']);
-          }
-        }, 1500);
-      },
-      error: (err) => {
-        this.errorMessage = 'Error creating prescription.';
-        console.error(err);
-      },
-    });
+    this.prescriptionService.createPrescription(payload)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (res) => {
+          this.infoMessage = this.translate.instant('PRESCRIPTIONS.SNACKBAR_SUCCESS');
+          setTimeout(() => {
+            if (res.id) {
+              this.router.navigate(['/prescriptions/detail', res.id]);
+            } else {
+              this.router.navigate(['/']);
+            }
+          }, 1500);
+        },
+        error: (err) => {
+          this.errorMessage = this.translate.instant('PRESCRIPTIONS.SNACKBAR_ERROR');
+          console.error(err);
+        },
+      });
   }
 }

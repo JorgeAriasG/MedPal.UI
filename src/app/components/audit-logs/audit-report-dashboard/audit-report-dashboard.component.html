@@ -1,0 +1,139 @@
+<div class="dashboard-container" *ngIf="report">
+  <!-- KPI Cards -->
+  <div class="kpi-row">
+    <div class="kpi-card kpi-primary">
+      <div class="kpi-icon-wrap kpi-icon-primary">
+        <mat-icon>visibility</mat-icon>
+      </div>
+      <div class="kpi-info">
+        <span class="kpi-value">{{ report.totalAccesses }}</span>
+        <span class="kpi-label">{{ 'AUDIT.REPORTS.TOTAL_ACCESSES' | translate }}</span>
+      </div>
+    </div>
+
+    <div class="kpi-card kpi-danger">
+      <div class="kpi-icon-wrap kpi-icon-danger">
+        <mat-icon>gpp_bad</mat-icon>
+      </div>
+      <div class="kpi-info">
+        <span class="kpi-value">{{ report.consentViolations }}</span>
+        <span class="kpi-label">{{ 'AUDIT.REPORTS.CONSENT_VIOLATIONS' | translate }}</span>
+      </div>
+    </div>
+
+    <div class="kpi-card kpi-accent">
+      <div class="kpi-icon-wrap kpi-icon-accent">
+        <mat-icon>people</mat-icon>
+      </div>
+      <div class="kpi-info">
+        <span class="kpi-value">{{ report.accessesByUser.length }}</span>
+        <span class="kpi-label">{{ 'AUDIT.REPORTS.UNIQUE_USERS' | translate }}</span>
+      </div>
+    </div>
+
+    <div class="kpi-card kpi-success">
+      <div class="kpi-icon-wrap kpi-icon-success">
+        <mat-icon>local_hospital</mat-icon>
+      </div>
+      <div class="kpi-info">
+        <span class="kpi-value">{{ report.accessesByClinic.length }}</span>
+        <span class="kpi-label">{{ 'AUDIT.REPORTS.UNIQUE_CLINICS' | translate }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tables Row -->
+  <div class="tables-row">
+    <!-- Access by User Table -->
+    <mat-card class="table-card">
+      <mat-card-header>
+        <mat-card-title>{{ 'AUDIT.REPORTS.BY_USER' | translate }}</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="table-wrapper" *ngIf="report.accessesByUser.length > 0; else noUsers">
+          <table mat-table [dataSource]="report.accessesByUser" class="full-width-table">
+            <ng-container matColumnDef="userName">
+              <th mat-header-cell *matHeaderCellDef>{{ 'AUDIT.REPORTS.USER_NAME' | translate }}</th>
+              <td mat-cell *matCellDef="let row">{{ row.userName }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="accessCount">
+              <th mat-header-cell *matHeaderCellDef>{{ 'AUDIT.REPORTS.ACCESS_COUNT' | translate }}</th>
+              <td mat-cell *matCellDef="let row" class="numeric-cell">{{ row.accessCount }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="lastAccessTime">
+              <th mat-header-cell *matHeaderCellDef>{{ 'AUDIT.REPORTS.LAST_ACCESS' | translate }}</th>
+              <td mat-cell *matCellDef="let row">{{ formatDate(row.lastAccessTime) }}</td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="userDisplayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: userDisplayedColumns;"></tr>
+          </table>
+        </div>
+        <ng-template #noUsers>
+          <p class="no-data">{{ 'COMMON.NO_RESULTS' | translate }}</p>
+        </ng-template>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Access by Clinic Table -->
+    <mat-card class="table-card">
+      <mat-card-header>
+        <mat-card-title>{{ 'AUDIT.REPORTS.BY_CLINIC' | translate }}</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="table-wrapper" *ngIf="report.accessesByClinic.length > 0; else noClinics">
+          <table mat-table [dataSource]="report.accessesByClinic" class="full-width-table">
+            <ng-container matColumnDef="clinicName">
+              <th mat-header-cell *matHeaderCellDef>{{ 'AUDIT.REPORTS.CLINIC_NAME' | translate }}</th>
+              <td mat-cell *matCellDef="let row">{{ row.clinicName }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="accessCount">
+              <th mat-header-cell *matHeaderCellDef>{{ 'AUDIT.REPORTS.ACCESS_COUNT' | translate }}</th>
+              <td mat-cell *matCellDef="let row" class="numeric-cell">{{ row.accessCount }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="consentViolationCount">
+              <th mat-header-cell *matHeaderCellDef>{{ 'AUDIT.REPORTS.VIOLATIONS' | translate }}</th>
+              <td mat-cell *matCellDef="let row" class="numeric-cell"
+                  [class.violation-highlight]="row.consentViolationCount > 0">
+                {{ row.consentViolationCount }}
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="clinicDisplayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: clinicDisplayedColumns;"></tr>
+          </table>
+        </div>
+        <ng-template #noClinics>
+          <p class="no-data">{{ 'COMMON.NO_RESULTS' | translate }}</p>
+        </ng-template>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Date Chart -->
+  <mat-card class="chart-card" *ngIf="report.accessesByDate.length > 0">
+    <mat-card-header>
+      <mat-card-title>{{ 'AUDIT.REPORTS.BY_DATE' | translate }}</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="chart-container">
+        <canvas baseChart
+          [data]="barChartData"
+          [options]="barChartOptions"
+          type="bar">
+        </canvas>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Footer Timestamp -->
+  <div class="report-footer">
+    <span class="generated-at">
+      {{ 'AUDIT.REPORTS.GENERATED_AT' | translate }}: {{ formatDate(report.generatedAt) }}
+    </span>
+  </div>
+</div>

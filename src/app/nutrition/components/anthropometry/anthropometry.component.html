@@ -1,0 +1,83 @@
+<div class="anthropometry-container">
+  <div class="section-header">
+    <h3>
+      <mat-icon>straighten</mat-icon>
+      {{ 'NUTRITION.ANTHROPOMETRY_TITLE' | translate }}
+    </h3>
+    <button mat-raised-button color="primary" (click)="openDialog()">
+      <mat-icon>add</mat-icon>
+      {{ 'NUTRITION.ANTHROPOMETRY_ADD' | translate }}
+    </button>
+  </div>
+
+  <div *ngIf="loading" class="loading-section">
+    <mat-spinner diameter="32"></mat-spinner>
+  </div>
+
+  <div *ngIf="error" class="error-banner">
+    <mat-icon>error_outline</mat-icon>
+    <span>{{ error }}</span>
+  </div>
+
+  <div *ngIf="!loading && dataSource.length === 0" class="empty-state">
+    <mat-icon class="empty-icon">straighten</mat-icon>
+    <h3>{{ 'NUTRITION.ANTHROPOMETRY_EMPTY_TITLE' | translate }}</h3>
+    <p>{{ 'NUTRITION.ANTHROPOMETRY_EMPTY_MESSAGE' | translate }}</p>
+    <button mat-stroked-button color="primary" (click)="openDialog()">
+      <mat-icon>add</mat-icon>
+      {{ 'NUTRITION.ANTHROPOMETRY_FIRST' | translate }}
+    </button>
+  </div>
+
+  <div *ngIf="!loading && dataSource.length > 0" class="table-container">
+    <table mat-table [dataSource]="dataSource" class="anthropometry-table">
+      <ng-container matColumnDef="recordedAt">
+        <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.DATE' | translate }}</th>
+        <td mat-cell *matCellDef="let row">{{ row.recordedAt | date:'dd/MM/yyyy' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="weight">
+        <th mat-header-cell *matHeaderCellDef>{{ 'NUTRITION.WEIGHT' | translate }}</th>
+        <td mat-cell *matCellDef="let row">{{ row.weight }} kg</td>
+      </ng-container>
+
+      <ng-container matColumnDef="bmi">
+        <th mat-header-cell *matHeaderCellDef>{{ 'NUTRITION.BMI' | translate }}</th>
+        <td mat-cell *matCellDef="let row">
+          <span class="bmi-badge" [style.background]="getBmiColor(row.bmi)">
+            {{ row.bmi }}
+          </span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="waistHipRatio">
+        <th mat-header-cell *matHeaderCellDef>{{ 'NUTRITION.WAIST_HIP_RATIO' | translate }}</th>
+        <td mat-cell *matCellDef="let row">
+          {{ row.waistHipRatio ? row.waistHipRatio.toFixed(2) : '—' }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="bodyFat">
+        <th mat-header-cell *matHeaderCellDef>{{ 'NUTRITION.BODY_FAT_PCT' | translate }}</th>
+        <td mat-cell *matCellDef="let row">
+          {{ row.bodyFatPercentageEstimated ? row.bodyFatPercentageEstimated + '%' : '—' }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let row">
+          <button mat-icon-button [matTooltip]="'COMMON.EDIT' | translate" (click)="openDialog(row)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button [matTooltip]="'COMMON.DELETE' | translate" (click)="delete(row.id!)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+</div>
