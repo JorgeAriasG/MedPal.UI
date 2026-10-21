@@ -43,6 +43,8 @@ export class WelcomeComponent implements OnInit, OnDestroy {
             userToken: response.token,
             userRole: response.role,
             clinicId: response.clinicId,
+            name: response.name,
+            email: response.email,
           }));
           this.state = 'success';
         },

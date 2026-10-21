@@ -8,12 +8,17 @@
 
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
+import { take } from 'rxjs/operators';
+import { Store } from '@ngrx/store';
+import { decodeTokenClaims, hasValidRoles, isStaff, isPatient } from '../utils/token-utils';
+import { AuthState, initialState } from '../store/reducers/auth.reducer';
+import { selectAuthState } from '../store/selectors/auth.selectors';
 
 /**
  * Tenant Context Service
  * Extracts and maintains tenant/organization context from JWT claims
  *
- * @note Context updates when user logs in/out or token is refreshed
+ * @note Context updates with the NgRx auth store (single source of truth)
  */
 @Injectable({
   providedIn: 'root',
@@ -29,95 +34,69 @@ export class TenantContextService {
   // Subject for context changes
   private contextChange$ = new Subject<void>();
 
-  constructor() {
-    this.loadContextFromToken();
+  constructor(private store: Store<{ auth: AuthState }>) {
+    this.watchAuthState();
   }
 
   /**
-   * Load tenant context from JWT token
-   * Called on service initialization and after login
+   * Keep tenant context in sync with the NgRx auth store.
+   * The store is the single source of truth; it rehydrates from
+   * ngrx_auth on boot via ngrx-store-localstorage.
    */
-  private loadContextFromToken(): void {
+  private watchAuthState(): void {
+    this.store.select(selectAuthState).subscribe((state) => {
+      this.applyAuthState(state ?? initialState);
+    });
+  }
+
+  /**
+   * Apply an auth state snapshot to the tenant context fields.
+   */
+  private applyAuthState(s: AuthState): void {
     try {
-      // Try sessionStorage first (more secure), then localStorage
-      const token =
-        sessionStorage.getItem('ngrx_auth') ||
-        localStorage.getItem('ngrx_auth');
-
-      if (!token) {
+      // No token → no context
+      if (!s.userToken) {
         this.clearContext();
         return;
       }
 
-      // Parse auth state from JSON
-      const authState = JSON.parse(token);
-      const jwtToken = authState?.userToken;
+      // Use centralized decoder aligned with Jwt-Claims-Contract.md
+      const claims = decodeTokenClaims(s.userToken);
 
-      if (!jwtToken) {
+      // Critical security: if token has no valid roles[], treat as unauthenticated
+      if (!hasValidRoles(claims)) {
         this.clearContext();
         return;
       }
 
-      // Extract and decode JWT payload
-      const decodedPayload = this.decodeJWT(jwtToken);
+      // Extract tenant context from claims using snake_case names
+      this.accountId = claims.accountId || null;
+      this.clinicId = claims.clinicId || null;
+      this.userId = claims.userId || null;
+      this.role = claims.role || null;
+      this.roles = claims.roles;
 
-      if (!decodedPayload) {
-        this.clearContext();
-        return;
-      }
-
-      // Extract tenant context from claims
-      this.accountId = decodedPayload?.accountId || null;
-      this.clinicId = decodedPayload?.clinicId || null;
-      this.clinicIds = Array.isArray(decodedPayload?.clinicIds)
-        ? decodedPayload.clinicIds
-        : [];
-      this.userId = decodedPayload?.userId || decodedPayload?.sub || null;
-      this.role = decodedPayload?.role || null;
-      this.roles = Array.isArray(decodedPayload?.roles)
-        ? decodedPayload.roles
-        : [];
-
-      // If primary clinicId not set but clinicIds available, use first one
-      if (!this.clinicId && this.clinicIds.length > 0) {
-        this.clinicId = this.clinicIds[0];
+      // Set clinicIds from clinicId if available
+      if (claims.clinicId !== null) {
+        this.clinicIds = [claims.clinicId];
       }
 
       this.contextChange$.next();
     } catch (error) {
-      console.warn('Failed to load tenant context from token:', error);
+      console.warn('Failed to apply tenant context:', error);
       this.clearContext();
     }
   }
 
   /**
-   * Decode JWT token payload
-   * @param token JWT token string
-   * @returns Decoded payload object or null if invalid
-   */
-  private decodeJWT(token: string): any {
-    try {
-      const parts = token.split('.');
-      if (parts.length !== 3) {
-        throw new Error('Invalid JWT format');
-      }
-
-      const decoded = JSON.parse(
-        atob(parts[1].replace(/-/g, '+').replace(/_/g, '/'))
-      );
-      return decoded;
-    } catch (error) {
-      console.error('Failed to decode JWT:', error);
-      return null;
-    }
-  }
-
-  /**
-   * Refresh context from token
+   * Refresh context from store
    * Call this after login or token refresh
    */
   public refreshContext(): void {
-    this.loadContextFromToken();
+    this.store
+      .select(selectAuthState)
+      .pipe(take(1))
+      .subscribe((state) => this.applyAuthState(state ?? initialState));
   }
 
   /**

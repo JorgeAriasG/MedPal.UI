@@ -2,9 +2,13 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { tap } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
-import { logout } from '../store/actions/auth.actions';
+import {
+  logout,
+  loginSuccess,
+} from '../store/actions/auth.actions';
+import { AuthState, initialState } from '../store/reducers/auth.reducer';
+import { selectAuthState } from '../store/selectors/auth.selectors';
 import { PermissionService } from './permission.service';
 import { ApiService } from './api.service';
 import {
@@ -26,7 +30,10 @@ import {
  * Authentication Service
  *
  * Manages user authentication, role verification, and permissions checking.
- * Stores auth state in localStorage and provides reactive updates.
+ * Auth state is sourced from the NgRx store (single source of truth).
+ * Legacy localStorage keys (auth_token, user_role, user_permissions,
+ * user_data) are removed on boot; the store rehydrates via
+ * ngrx-store-localstorage (key 'auth').
  *
  * Key Features:
  * - JWT token management
@@ -42,29 +49,48 @@ export class AuthService {
   private loginEndpoint = 'User/login';
   private currentUserEndpoint = 'User/me';
 
-  // Storage keys
-  private readonly TOKEN_KEY = 'auth_token';
-  private readonly ROLE_KEY = 'user_role';
-  private readonly PERMISSIONS_KEY = 'user_permissions';
-  private readonly USER_KEY = 'user_data';
+  // Legacy storage keys removed one-shot on construction
+  private readonly LEGACY_STORAGE_KEYS = [
+    'auth_token',
+    'user_role',
+    'user_permissions',
+    'user_data',
+  ];
 
   // Observable auth state
-  private currentUserSubject = new BehaviorSubject<User | null>(
-    this.getUserFromStorage(),
-  );
+  private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
+
+  // Synchronous snapshot of the auth store (replaced store.value usage)
+  private authSnapshot: AuthState = initialState;
 
   constructor(
     private router: Router,
     private http: HttpClient,
-    private store: Store,
+    private store: Store<{ auth: AuthState }>,
     private apiService: ApiService,
     private permissionService: PermissionService,
-  ) {}
+  ) {
+    // One-shot cleanup of deprecated localStorage keys.
+    // NgRx store (persisted as ngrx_auth) is the only source of truth.
+    this.LEGACY_STORAGE_KEYS.forEach((key) =>
+      localStorage.removeItem(key),
+    );
+
+    // Keep a live snapshot of auth state and mirror it into currentUser$.
+    // This lets synchronous getters (getToken, getRole, getClinicId...)
+    // read from the store instead of localStorage.
+    this.store.select(selectAuthState).subscribe((state) => {
+      const snapshot = state ?? initialState;
+      this.authSnapshot = snapshot;
+      this.currentUserSubject.next(this.buildUserFromState(snapshot));
+    });
+  }
 
   /**
-   * Authenticate user with email and password
-   * Stores token, role, and permissions in localStorage
+   * Authenticate user with email and password.
+   * The calling flow (AuthEffects.login$) dispatches loginSuccess to the
+   * store on success; this method only returns the raw API observable.
    *
    * @param email User email
    * @param password User password (sent to backend for hashing)
@@ -72,81 +98,21 @@ export class AuthService {
    */
   login(email: string, password: string): Observable<LoginResponse> {
     const loginData = { email, password };
-    return this.apiService
-      .post<LoginResponse>(this.loginEndpoint, loginData)
-      .pipe(
-        tap((response: LoginResponse) => {
-          // Store token
-          localStorage.setItem(this.TOKEN_KEY, response.token);
-
-          // Store role
-          localStorage.setItem(this.ROLE_KEY, response.role);
-
-          // Store permissions as JSON array
-          const permissions = response.permissions || [];
-          localStorage.setItem(
-            this.PERMISSIONS_KEY,
-            JSON.stringify(permissions),
-          );
-
-          // Store user data
-          const user: User = {
-            id: response.id,
-            name: response.name,
-            email: response.email,
-            role: response.role,
-            accountId: response.accountId,
-            clinicId: response.clinicId,
-          };
-          localStorage.setItem(this.USER_KEY, JSON.stringify(user));
-
-          // Update observable
-          this.currentUserSubject.next(user);
-        }),
-      );
+    return this.apiService.post<LoginResponse>(this.loginEndpoint, loginData);
   }
 
   /**
    * Register new user
    *
    * @param registerData Registration data
-   * @returns Observable<LoginResponse>
+   * @returns Observable<RegisterResponse>
    */
   signup(registerData: RegisterRequest): Observable<RegisterResponse> {
-    return this.apiService
-      .post<RegisterResponse>('User/register', registerData)
-      .pipe(
-        tap((response: RegisterResponse) => {
-          const u = response.user;
-          if (!u || !u.token) return;
-
-          // Automatically log in after successful registration
-          localStorage.setItem(this.TOKEN_KEY, u.token);
-          localStorage.setItem(this.ROLE_KEY, u.role);
-          const permissions = u.permissions || [];
-          localStorage.setItem(
-            this.PERMISSIONS_KEY,
-            JSON.stringify(permissions),
-          );
-
-          const user: User = {
-            id: u.id,
-            name: u.name,
-            email: u.email,
-            role: u.role,
-            accountId: u.accountId,
-            clinicId: u.clinicId,
-          };
-          localStorage.setItem(this.USER_KEY, JSON.stringify(user));
-          this.currentUserSubject.next(user);
-        }),
-      );
+    return this.apiService.post<RegisterResponse>('User/register', registerData);
   }
 
   /**
    * Initiate registration with Stripe payment
-   * Creates a pending registration and Stripe Checkout Session.
-   * No account is created until payment is confirmed.
    *
    * @param dto Registration data including plan selection
    * @returns InitiateRegResponse with clientSecret for Embedded Checkout
@@ -157,54 +123,38 @@ export class AuthService {
 
   /**
    * Complete registration after successful Stripe payment
-   * Creates Account, User, Clinic, and Subscription in the backend.
-   * Auto-login on success.
    *
    * @param dto Contains sessionId from Stripe Checkout
    * @returns CompleteRegResponse with token and user data
    */
   completeRegistration(dto: CompleteRegRequest): Observable<CompleteRegResponse> {
-    return this.apiService.post<CompleteRegResponse>('User/complete-registration', dto)
-      .pipe(
-        tap((response: CompleteRegResponse) => {
-          if (!response.token) return;
-
-          localStorage.setItem(this.TOKEN_KEY, response.token);
-          localStorage.setItem(this.ROLE_KEY, response.role);
-          const permissions = response.permissions || [];
-          localStorage.setItem(this.PERMISSIONS_KEY, JSON.stringify(permissions));
-
-          const user: User = {
-            id: response.id,
-            name: response.name,
-            email: response.email,
-            role: response.role,
-            accountId: response.accountId,
-            clinicId: response.clinicId,
-          };
-          localStorage.setItem(this.USER_KEY, JSON.stringify(user));
-          this.currentUserSubject.next(user);
-        }),
-      );
+    return this.apiService.post<CompleteRegResponse>('User/complete-registration', dto);
   }
 
   /**
    * Persist authenticated user state (token, role, permissions, user data).
    * Used by external flows (e.g. patient complete-registration) to keep auth
    * state consistent with the normal login flow.
+   * Now delegates to the NgRx store, which is the single source of truth.
    */
   persistAuth(user: User, token: string, role: string, permissions: string[] = []): void {
-    localStorage.setItem(this.TOKEN_KEY, token);
-    localStorage.setItem(this.ROLE_KEY, role);
-    localStorage.setItem(this.PERMISSIONS_KEY, JSON.stringify(permissions));
-    localStorage.setItem(this.USER_KEY, JSON.stringify(user));
-    this.currentUserSubject.next(user);
+    this.store.dispatch(
+      loginSuccess({
+        userId: user.id,
+        userToken: token,
+        userRole: role,
+        accountId: user.accountId ?? null,
+        clinicId: user.clinicId ?? null,
+        name: user.name,
+        email: user.email,
+      }),
+    );
   }
 
   /**
    * Get current user profile data from backend
    *
-   * @returns Observable<User>
+   * @returns Observable<any>
    */
   getCurrentUser(): Observable<any> {
     return this.apiService.get(this.currentUserEndpoint);
@@ -212,22 +162,15 @@ export class AuthService {
 
   /**
    * Logout current user
-   * Clears all stored auth data and navigates to login
+   * Dispatches logout action to NgRx store, clears cached permissions,
+   * and navigates to login. Does NOT rely on localStorage keys.
    */
   logout(): void {
-    // Clear localStorage
-    localStorage.removeItem(this.TOKEN_KEY);
-    localStorage.removeItem(this.ROLE_KEY);
-    localStorage.removeItem(this.PERMISSIONS_KEY);
-    localStorage.removeItem(this.USER_KEY);
-
     // Clear cached JWT claims and permissions
     this.permissionService.clearPermissions();
 
-    // Update observable
-    this.currentUserSubject.next(null);
-
-    // Dispatch logout action to store
+    // Dispatch logout action to store — the reducer resets state to
+    // initialState, and ngrx-store-localstorage persists the reset.
     this.store.dispatch(logout());
 
     // Navigate to login
@@ -240,7 +183,7 @@ export class AuthService {
    * @returns boolean
    */
   isAuthenticated(): boolean {
-    return !!localStorage.getItem(this.TOKEN_KEY);
+    return !!this.authSnapshot.userToken;
   }
 
   /**
@@ -249,26 +192,62 @@ export class AuthService {
    * @returns JWT token or null
    */
   getToken(): string | null {
-    return localStorage.getItem(this.TOKEN_KEY);
+    return this.authSnapshot.userToken || null;
   }
 
   /**
    * Get current user's role
    *
-   * @returns User role (e.g., 'SuperAdmin', 'Doctor')
+   * @returns User role (e.g., 'SuperAdmin', 'Doctor') or null
    */
   getRole(): string | null {
-    return localStorage.getItem(this.ROLE_KEY);
+    return this.authSnapshot.roles?.[0] ?? this.authSnapshot.role ?? null;
   }
 
   /**
    * Get current user's permissions
+   * Derived from the store's roles using the same map as PermissionService.
+   * For minimal impact, derive a basic set from roles; callers should
+   * prefer PermissionService for audit/consent permission checks.
    *
    * @returns Array of permission strings
    */
   getPermissions(): string[] {
-    const perms = localStorage.getItem(this.PERMISSIONS_KEY);
-    return perms ? JSON.parse(perms) : [];
+    const roles = this.authSnapshot.roles || [];
+    const permMap: Record<string, string[]> = {
+      SUPER_ADMIN: [
+        'Users.ViewAll', 'Users.ViewOwn', 'Users.Create', 'Users.Update', 'Users.Delete', 'Users.Manage',
+        'Patients.ViewAll', 'Patients.ViewOwn', 'Patients.Create', 'Patients.Update', 'Patients.Delete',
+        'Appointments.ViewAll', 'Appointments.ViewOwn', 'Appointments.Create', 'Appointments.Update', 'Appointments.Cancel',
+        'MedicalRecords.ViewAll', 'MedicalRecords.ViewOwn', 'MedicalRecords.ViewAssigned', 'MedicalRecords.Create', 'MedicalRecords.Update',
+        'Prescriptions.Create', 'Prescriptions.View', 'Prescriptions.Update',
+        'Clinics.View', 'Clinics.Manage',
+        'Roles.View', 'Roles.Assign', 'Roles.Revoke', 'Roles.ViewAudit',
+        'Billing.View', 'Billing.Manage',
+        'Reports.Generate', 'Reports.View',
+        'Audit.View', 'Audit.Manage',
+        'Consent.View', 'Consent.Approve', 'Consent.Revoke',
+      ],
+      ACCOUNT_ADMIN: [
+        'Users.ViewAll', 'Users.ViewOwn', 'Users.Create', 'Users.Update', 'Users.Delete', 'Users.Manage',
+        'Patients.ViewAll', 'Patients.ViewOwn', 'Patients.Create', 'Patients.Update', 'Patients.Delete',
+        'Appointments.ViewAll', 'Appointments.ViewOwn', 'Appointments.Create', 'Appointments.Update', 'Appointments.Cancel',
+        'MedicalRecords.ViewAll', 'MedicalRecords.ViewOwn', 'MedicalRecords.ViewAssigned', 'MedicalRecords.Create', 'MedicalRecords.Update',
+        'Prescriptions.Create', 'Prescriptions.View', 'Prescriptions.Update',
+        'Clinics.View', 'Clinics.Manage',
+        'Roles.View', 'Roles.Assign', 'Roles.Revoke', 'Roles.ViewAudit',
+        'Billing.View', 'Billing.Manage',
+        'Reports.Generate', 'Reports.View',
+        'Audit.View', 'Audit.Manage',
+        'Consent.View', 'Consent.Approve', 'Consent.Revoke',
+      ],
+    };
+    const perms: string[] = [];
+    roles.forEach((role) => {
+      const rolePerms = permMap[role] || [];
+      perms.push(...rolePerms);
+    });
+    return [...new Set(perms)];
   }
 
   /**
@@ -309,7 +288,8 @@ export class AuthService {
    * @returns boolean
    */
   isSuperAdmin(): boolean {
-    return this.getRole() === UserRole.SUPER_ADMIN;
+    const role = this.getRole();
+    return role === UserRole.SUPER_ADMIN;
   }
 
   /**
@@ -318,7 +298,8 @@ export class AuthService {
    * @returns boolean
    */
   isAccountAdmin(): boolean {
-    return this.getRole() === UserRole.ACCOUNT_ADMIN;
+    const role = this.getRole();
+    return role === UserRole.ACCOUNT_ADMIN;
   }
 
   /**
@@ -327,7 +308,8 @@ export class AuthService {
    * @returns boolean
    */
   isClinicAdmin(): boolean {
-    return this.getRole() === UserRole.CLINIC_ADMIN;
+    const role = this.getRole();
+    return role === UserRole.CLINIC_ADMIN;
   }
 
   /**
@@ -346,7 +328,8 @@ export class AuthService {
    * @returns boolean
    */
   isHealthProfessional(): boolean {
-    return this.getRole() === UserRole.HEALTH_PROFESSIONAL;
+    const role = this.getRole();
+    return role === UserRole.HEALTH_PROFESSIONAL;
   }
 
   /**
@@ -365,7 +348,8 @@ export class AuthService {
    * @returns boolean
    */
   isReceptionist(): boolean {
-    return this.getRole() === UserRole.RECEPTIONIST;
+    const role = this.getRole();
+    return role === UserRole.RECEPTIONIST;
   }
 
   /**
@@ -374,7 +358,8 @@ export class AuthService {
    * @returns boolean
    */
   isPatient(): boolean {
-    return this.getRole() === UserRole.PATIENT;
+    const role = this.getRole();
+    return role === UserRole.PATIENT;
   }
 
   /**
@@ -383,8 +368,7 @@ export class AuthService {
    * @returns Account ID or null
    */
   getAccountId(): number | null {
-    const user = this.getUserFromStorage();
-    return user?.accountId ?? null;
+    return this.authSnapshot.accountId ?? null;
   }
 
   /**
@@ -393,8 +377,7 @@ export class AuthService {
    * @returns Clinic ID or null
    */
   getClinicId(): number | null {
-    const user = this.getUserFromStorage();
-    return user?.clinicId ?? null;
+    return this.authSnapshot.clinicId ?? null;
   }
 
   /**
@@ -403,26 +386,33 @@ export class AuthService {
    * @returns AuthContext
    */
   getAuthContext(): AuthContext {
-    const user = this.getUserFromStorage();
+    const state = this.authSnapshot;
     return {
-      user,
-      isAuthenticated: !!user,
-      token: this.getToken(),
-      role: this.getRole(),
+      user: this.buildUserFromState(state),
+      isAuthenticated: !!state.userToken,
+      token: state.userToken || null,
+      role: state.roles?.[0] ?? state.role ?? null,
       permissions: this.getPermissions(),
-      isLoading: false,
-      error: null,
+      isLoading: state.loading,
+      error: state.error,
     };
   }
 
   /**
-   * Retrieve user data from localStorage
-   * Private helper method
+   * Private: build a User model from the NgRx auth state.
    *
-   * @returns User or null
+   * @param state AuthState snapshot
+   * @returns User or null when not authenticated
    */
-  private getUserFromStorage(): User | null {
-    const userData = localStorage.getItem(this.USER_KEY);
-    return userData ? JSON.parse(userData) : null;
+  private buildUserFromState(state: AuthState): User | null {
+    if (!state.userId) return null;
+    return {
+      id: state.userId,
+      name: state.name || '',
+      email: state.email || '',
+      role: state.roles?.[0] ?? state.role ?? '',
+      accountId: state.accountId ?? undefined,
+      clinicId: state.clinicId ?? undefined,
+    };
   }
 }

@@ -2,9 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Store } from '@ngrx/store';
 import { BookingService } from 'src/app/services/booking.service';
-import { loginSuccess } from 'src/app/store/actions/auth.actions';
 import { AuthService } from 'src/app/services/auth.service';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -28,7 +26,6 @@ export class CompleteRegistrationComponent implements OnInit {
     private fb: FormBuilder,
     private bookingService: BookingService,
     private authService: AuthService,
-    private store: Store,
     private translate: TranslateService,
     private snackBar: MatSnackBar
   ) {
@@ -89,12 +86,6 @@ export class CompleteRegistrationComponent implements OnInit {
           role: 'Patient',
           clinicId: clinicId ?? undefined,
         }, result.token, 'Patient');
-        this.store.dispatch(loginSuccess({
-          userId: result.id,
-          userToken: result.token,
-          clinicId,
-          userRole: 'Patient',
-        }));
         this.snackBar.open(this.translate.instant('COMPLETE_REGISTRATION.SNACKBAR_SUCCESS'), this.translate.instant('COMMON.CLOSE'), { duration: 5000 });
         this.router.navigate(['/']);
       },

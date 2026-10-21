@@ -7,6 +7,7 @@ import { IPatient } from '../entities/IPatient';
 import { AppointmentsService } from '../components/appointments/services/appointments.service';
 import { PatientsService } from '../components/patients/services/patients.service';
 import { UserService } from '../components/user/services/user.service';
+import { AuthService } from './auth.service';
 import { ReportData, AppointmentSummary, DoctorPerformance } from '../models/report.models';
 
 @Injectable({ providedIn: 'root' })
@@ -15,6 +16,7 @@ export class ReportService {
     private appointmentsService: AppointmentsService,
     private patientsService: PatientsService,
     private userService: UserService,
+    private authService: AuthService,
   ) {}
 
   getReportData(clinicId: number, from: Date, to: Date, doctorId?: number | null, isAdmin?: boolean): Observable<ReportData> {
@@ -103,9 +105,7 @@ export class ReportService {
 
   private getCurrentUserList(): Observable<any[]> {
     try {
-      const raw = localStorage.getItem('user_data');
-      if (!raw) return of([]);
-      const user = JSON.parse(raw);
+      const user = this.authService.getAuthContext().user;
       if (user && user.id) {
         return of([{ id: user.id, name: user.name || 'Dr.', specialty: '' }]);
       }

@@ -6,11 +6,11 @@ import {
   HttpInterceptor,
   HttpErrorResponse,
 } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { Observable, throwError, combineLatest } from 'rxjs';
 import { catchError, switchMap, take } from 'rxjs/operators';
 import { AuthService } from '../services/auth.service';
 import { Store } from '@ngrx/store';
-import { userToken } from '../store/selectors/auth.selectors';
+import { selectClinicId, userToken } from '../store/selectors/auth.selectors';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
@@ -23,9 +23,11 @@ export class AuthInterceptor implements HttpInterceptor {
     request: HttpRequest<unknown>,
     next: HttpHandler
   ): Observable<HttpEvent<unknown>> {
-    return this.store.select(userToken).pipe(
-      take(1),
-      switchMap((token: string | null) => {
+    return combineLatest([
+      this.store.select(userToken).pipe(take(1)),
+      this.store.select(selectClinicId).pipe(take(1)),
+    ]).pipe(
+      switchMap(([token, clinicId]) => {
         let modifiedRequest = request;
         const authToken = token || this.authService.getToken();
 
@@ -37,32 +39,10 @@ export class AuthInterceptor implements HttpInterceptor {
           });
         }
 
-        const role = this.authService.getRole();
-        const permissions = this.authService.getPermissions();
-
-        if (role) {
+        const resolvedClinicId = clinicId ?? this.authService.getClinicId();
+        if (resolvedClinicId) {
           modifiedRequest = modifiedRequest.clone({
-            setHeaders: { 'X-User-Role': role },
-          });
-        }
-
-        if (permissions.length > 0) {
-          modifiedRequest = modifiedRequest.clone({
-            setHeaders: { 'X-User-Permissions': permissions.join(',') },
-          });
-        }
-
-        const clinicId = this.authService.getClinicId();
-        if (clinicId) {
-          modifiedRequest = modifiedRequest.clone({
-            setHeaders: { 'X-Clinic-Id': clinicId.toString() },
-          });
-        }
-
-        const accountId = this.authService.getAccountId();
-        if (accountId) {
-          modifiedRequest = modifiedRequest.clone({
-            setHeaders: { 'X-Account-Id': accountId.toString() },
+            setHeaders: { 'X-Clinic-Id': resolvedClinicId.toString() },
           });
         }
 

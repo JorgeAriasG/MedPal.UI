@@ -17,7 +17,7 @@ import {
 export class AssessmentCalculatorComponent implements OnInit {
   @Input() patientDetailsId!: number;
   @Input() weight = 70;
-  @Input() height = 1.7;
+  @Input() height = 170;
   @Input() age = 30;
   @Input() gender: 'male' | 'female' = 'male';
 
@@ -48,7 +48,7 @@ export class AssessmentCalculatorComponent implements OnInit {
   ngOnInit(): void {
     this.form.patchValue({
       weight: this.weight || 70,
-      height: this.height || 1.7,
+      height: this.height || 170,
       age: this.age || 30,
       gender: this.gender || 'male',
     });

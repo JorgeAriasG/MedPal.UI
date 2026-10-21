@@ -3,9 +3,15 @@
  * Manages role-based access control (RBAC) for audit and consent features
  *
  * Extracts permissions from JWT claims and provides methods for permission checking
+ * Now aligned with Jwt-Claims-Contract.md snake_case claims convention
  */
 
 import { Injectable } from '@angular/core';
+import { take } from 'rxjs/operators';
+import { Store } from '@ngrx/store';
+import { decodeTokenClaims, hasValidRoles } from '../utils/token-utils';
+import { AuthState, initialState } from '../store/reducers/auth.reducer';
+import { selectAuthState } from '../store/selectors/auth.selectors';
 
 /**
  * Available permissions in the system
@@ -27,6 +33,8 @@ export enum Permission {
  * Handles JWT claim extraction and permission checking
  *
  * @note Caches permissions to avoid repeated token parsing
+ * @note Uses centralized token-utils decoder for snake_case claims
+ * @note Sourced from the NgRx auth store (single source of truth)
  */
 @Injectable({
   providedIn: 'root',
@@ -35,30 +43,27 @@ export class PermissionService {
   private cachedPermissions: Set<string> = new Set();
   private cachedClaims: Map<string, any> = new Map();
 
-  constructor() {
-    this.loadPermissionsFromToken();
+  constructor(private store: Store<{ auth: AuthState }>) {
+    this.watchAuthState();
   }
 
   /**
-   * Load permissions from JWT token in storage
-   * Called on service initialization and after login
+   * Sync permissions/claims with the NgRx auth store.
+   * The store rehydrates from ngrx_auth on boot via ngrx-store-localstorage,
+   * so no direct localStorage reads are needed.
    */
-  private loadPermissionsFromToken(): void {
+  private watchAuthState(): void {
+    this.store.select(selectAuthState).subscribe((state) => {
+      this.applyAuthState(state ?? initialState);
+    });
+  }
+
+  /**
+   * Apply an auth state snapshot to the cached claims/permissions.
+   */
+  private applyAuthState(s: AuthState): void {
     try {
-      // Try sessionStorage first (more secure), then localStorage
-      const token =
-        sessionStorage.getItem('ngrx_auth') ||
-        localStorage.getItem('ngrx_auth');
-
-      if (!token) {
-        this.cachedPermissions.clear();
-        this.cachedClaims.clear();
-        return;
-      }
-
-      // Parse auth state from JSON
-      const authState = JSON.parse(token);
-      const jwtToken = authState?.userToken || localStorage.getItem('auth_token');
+      const jwtToken = s.userToken;
 
       if (!jwtToken) {
         this.cachedPermissions.clear();
@@ -66,52 +71,41 @@ export class PermissionService {
         return;
       }
 
-      // Extract and decode JWT payload
-      const decodedPayload = this.decodeJWT(jwtToken);
+      // Use centralized decoder aligned with new snake_case contract
+      const claims = decodeTokenClaims(jwtToken);
 
-      // Extract permissions from claims
-      const permissions = decodedPayload?.permissions || [];
-      // Roles may be under 'roles', 'role' (singular), or the Microsoft claim URI
-      const msRoles = decodedPayload?.['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
-      const roles = decodedPayload?.roles
-        || (decodedPayload?.role ? [decodedPayload.role] : null)
-        || msRoles
-        || [];
+      // Critical security: if token has no valid roles[], treat as unauthenticated
+      if (!hasValidRoles(claims)) {
+        // Token inválido - roles vacío → limpiar todo y tratar como no autenticado
+        this.cachedPermissions.clear();
+        this.cachedClaims.clear();
+        return;
+      }
 
-      // Build permission set from both explicit permissions and role-based permissions
-      this.cachedPermissions = new Set([
-        ...permissions,
-        ...this.derivePermissionsFromRoles(roles),
+      // Extract permissions from roles using the role-permission map
+      const roles = claims.roles;
+      const permissions: string[] = [];
+      roles.forEach((role) => {
+        const rolePermissions = this.derivePermissionsFromRoles([role]);
+        permissions.push(...rolePermissions);
+      });
+
+      this.cachedPermissions = new Set(permissions);
+
+      // Cache all claims for later use (e.g., tenant context, role checks)
+      this.cachedClaims = new Map<string, any>([
+        ['userType', claims.userType],
+        ['accountId', claims.accountId],
+        ['clinicId', claims.clinicId],
+        ['patientId', claims.patientId],
+        ['roles', claims.roles],
+        ['userId', claims.userId],
+        ['role', claims.role],
       ]);
-
-      // Cache all claims for later use
-      this.cachedClaims = new Map(Object.entries(decodedPayload || {}));
     } catch (error) {
       console.warn('Failed to load permissions from token:', error);
       this.cachedPermissions.clear();
       this.cachedClaims.clear();
-    }
-  }
-
-  /**
-   * Decode JWT token payload
-   * @param token JWT token string
-   * @returns Decoded payload object or null if invalid
-   */
-  private decodeJWT(token: string): any {
-    try {
-      const parts = token.split('.');
-      if (parts.length !== 3) {
-        throw new Error('Invalid JWT format');
-      }
-
-      const decoded = JSON.parse(
-        atob(parts[1].replace(/-/g, '+').replace(/_/g, '/'))
-      );
-      return decoded;
-    } catch (error) {
-      console.error('Failed to decode JWT:', error);
-      return null;
     }
   }
 
@@ -234,11 +228,14 @@ export class PermissionService {
   }
 
   /**
-   * Refresh permissions from token
+   * Refresh permissions from the auth store
    * Call this after login or token refresh
    */
   public refreshPermissions(): void {
-    this.loadPermissionsFromToken();
+    this.store
+      .select(selectAuthState)
+      .pipe(take(1))
+      .subscribe((state) => this.applyAuthState(state ?? initialState));
   }
 
   /**
@@ -325,26 +322,69 @@ export class PermissionService {
 
   /**
    * Can user view patient consent records?
+   * Also allows the patient themselves (via patientId and userType === "patient")
    * @returns true if user can view consent
    */
   public canViewConsent(): boolean {
-    return this.hasPermission(Permission.VIEW_CONSENT);
+    // Check explicit permission first
+    if (this.hasPermission(Permission.VIEW_CONSENT)) {
+      return true;
+    }
+
+    // Allow patient to view their own consents via userType and patientId
+    const userType = this.cachedClaims.get('userType');
+    const patientId = this.cachedClaims.get('patientId');
+
+    // If user is a patient, allow them to view their own consents
+    if (userType === 'patient' && patientId !== null) {
+      return true;
+    }
+
+    return false;
   }
 
   /**
    * Can user approve consent requests?
+   * Also allows the patient themselves for their own consents
    * @returns true if user can approve consent
    */
   public canApproveConsent(): boolean {
-    return this.hasPermission(Permission.APPROVE_CONSENT);
+    // Check explicit permission first
+    if (this.hasPermission(Permission.APPROVE_CONSENT)) {
+      return true;
+    }
+
+    // Allow patient to approve their own consents
+    const userType = this.cachedClaims.get('userType');
+    const patientId = this.cachedClaims.get('patientId');
+
+    if (userType === 'patient' && patientId !== null) {
+      return true;
+    }
+
+    return false;
   }
 
   /**
    * Can user revoke patient consent?
+   * Also allows the patient themselves to revoke their own consents
    * @returns true if user can revoke consent
    */
   public canRevokeConsent(): boolean {
-    return this.hasPermission(Permission.REVOKE_CONSENT);
+    // Check explicit permission first
+    if (this.hasPermission(Permission.REVOKE_CONSENT)) {
+      return true;
+    }
+
+    // Allow patient to revoke their own consents
+    const userType = this.cachedClaims.get('userType');
+    const patientId = this.cachedClaims.get('patientId');
+
+    if (userType === 'patient' && patientId !== null) {
+      return true;
+    }
+
+    return false;
   }
 
   /**
@@ -385,6 +425,38 @@ export class PermissionService {
   }
 
   /**
+   * Get user's userType from token claims
+   * @returns User type ("staff" or "patient") or null
+   */
+  public getUserType(): string | null {
+    return this.cachedClaims.get('userType') || null;
+  }
+
+  /**
+   * Get user's patientId from token claims
+   * @returns Patient ID or null if not a patient token
+   */
+  public getPatientId(): number | null {
+    return this.cachedClaims.get('patientId') || null;
+  }
+
+  /**
+   * Get user's accountId from token claims
+   * @returns Account ID or null
+   */
+  public getAccountId(): number | null {
+    return this.cachedClaims.get('accountId') || null;
+  }
+
+  /**
+   * Get user's clinicId from token claims
+   * @returns Clinic ID or null
+   */
+  public getClinicId(): number | null {
+    return this.cachedClaims.get('clinicId') || null;
+  }
+
+  /**
    * Get user's clinic IDs from token claims
    * @returns Array of clinic IDs or empty array if user has access to all
    */
@@ -416,7 +488,7 @@ export class PermissionService {
    */
   public isTokenExpired(): boolean {
     if (this.cachedClaims.size === 0) {
-      this.loadPermissionsFromToken();
+      this.refreshPermissions();
     }
     const exp = this.cachedClaims.get('exp');
     if (!exp) {

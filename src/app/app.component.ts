@@ -99,7 +99,7 @@ export class AppComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
         this.showTimeoutWarning = false;
-        this.authService.logout();
+        // this.authService.logout();
       });
   }
 
@@ -132,6 +132,6 @@ export class AppComponent implements OnInit, OnDestroy {
   onLogoutNow(): void {
     this.showTimeoutWarning = false;
     this.idleService.stop();
-    this.authService.logout();
+    // this.authService.logout();
   }
 }
